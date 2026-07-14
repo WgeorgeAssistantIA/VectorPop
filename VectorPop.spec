@@ -23,17 +23,20 @@ a = Analysis(
 )
 pyz = PYZ(a.pure)
 
+# Mode ONEDIR : l'exe ne contient que le code ; binaires + donnees sont a cote
+# (COLLECT). Lancement quasi instantane (pas d'extraction temporaire a chaud) et
+# UPX desactive (evite les faux positifs antivirus / rejets de certification
+# Store) -- meme configuration que VoxCut/InOneShot.
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.datas,
     [],
+    exclude_binaries=True,   # ONEDIR : binaires geres par COLLECT
     name='VectorPop',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
+    upx=False,
     upx_exclude=[],
     runtime_tmpdir=None,
     console=False,
@@ -43,4 +46,14 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
     icon=['assets\\icon.ico'],
+)
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.datas,
+    strip=False,
+    upx=False,
+    upx_exclude=[],
+    name='VectorPop',
 )

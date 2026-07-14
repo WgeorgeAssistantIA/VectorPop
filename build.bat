@@ -1,7 +1,8 @@
 @echo off
-REM ── Build de VectorPop.exe (onefile, fenetre, icone plume) ──
+REM ── Build de VectorPop (onedir, fenetre, icone plume) ──
 REM Build a partir de VectorPop.spec : il porte deja l'icone (assets\icon.ico),
 REM les datas (assets embarques pour l'icone runtime) et --collect-all vtracer.
+REM Onedir (pas onefile) : demarrage instantane + requis pour le packaging MSIX.
 cd /d "%~dp0"
 
 echo [1/2] Verification de l'environnement...
@@ -15,4 +16,4 @@ echo [2/2] Build PyInstaller (depuis VectorPop.spec)...
 ".venv\Scripts\pyinstaller.exe" --noconfirm VectorPop.spec
 
 echo.
-echo Termine -> dist\VectorPop.exe
+echo Termine -^> dist\VectorPop\VectorPop.exe

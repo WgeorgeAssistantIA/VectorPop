@@ -10,3 +10,11 @@ dist/
 # Packs d'assets generes (reproductibles via make_iconset.py / make_msix_assets.py)
 icons/
 msix_assets/
+
+# Payload MSIX assemble (Assets+VFS = copies de dist/ et msix_assets/, regenerable) ;
+# seul AppxManifest.xml (la source reelle) est versionne.
+msix_payload/Assets/
+msix_payload/VFS/
+
+# Paquets .msix signes (gros binaires, regenerables via le payload + makeappx/signtool)
+releases/
