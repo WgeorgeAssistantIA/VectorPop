@@ -1,0 +1,12 @@
+.venv/
+.venv-ai/
+__pycache__/
+*.pyc
+build/
+dist/
+*.svg
+!assets/**/*.svg
+
+# Packs d'assets generes (reproductibles via make_iconset.py / make_msix_assets.py)
+icons/
+msix_assets/

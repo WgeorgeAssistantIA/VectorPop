@@ -1,0 +1,5 @@
+# Optionnel : detourage IA (bouton "Detourage IA") pour fonds complexes.
+# Grosse dependance (modele ~170 Mo telecharge au 1er usage). Installer avec :
+#   .venv\Scripts\pip install -r requirements-ai.txt
+rembg>=2.0
+onnxruntime>=1.16
