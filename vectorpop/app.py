@@ -139,10 +139,12 @@ class BatchWorker(QThread):
     done = Signal(int, int, int)  # nb traites, nb echecs, nb avertissements post-traitement
 
     def __init__(self, files: list[Path], out_dir: Path, fmt: str,
-                 params: VectorParams, gradients: bool = False, refine: bool = False):
+                 params: VectorParams, gradients: bool = False, refine: bool = False,
+                 png_size: int = 2048):
         super().__init__()
         self._files, self._out_dir, self._fmt, self._params = files, out_dir, fmt, params
         self._gradients, self._refine = gradients, refine
+        self._png_size = png_size
         self._cancel = False
 
     def cancel(self):
@@ -176,7 +178,7 @@ class BatchWorker(QThread):
             if self._fmt == "svg":
                 out.write_text(txt, encoding="utf-8")
             elif self._fmt == "png":
-                svg_to_png(tmp, out)
+                svg_to_png(tmp, out, max_px=self._png_size)
             else:
                 svg_to_pdf(tmp, out)
             return warn is not None
@@ -564,6 +566,7 @@ class MainWindow(QMainWindow):
         self._batch: BatchWorker | None = None
         self._progress: QProgressDialog | None = None
         self._last_dir = ""                      # dernier dossier d'export (memorise)
+        self._last_png_size = 2048               # derniere resolution PNG choisie (memorisee)
         self._last_warn: str | None = None       # avertissement post-traitement en attente
 
         # Debounce de l'apercu live : on attend que l'utilisateur arrete de bouger.
@@ -1314,6 +1317,29 @@ class MainWindow(QMainWindow):
         else:
             self.setWindowTitle(self._t("app_name"))
 
+    # Resolutions PNG proposees (cote long, en pixels). 2048 = defaut historique.
+    PNG_SIZES = (512, 1024, 2048, 4096)
+
+    def _ask_png_size(self) -> int | None:
+        """Demande la resolution PNG (cote long). Renvoie None si annule."""
+        options = [
+            self._t("png_size_option", px=px)
+            + (f" ({self._t('png_size_recommended')})" if px == 2048 else "")
+            for px in self.PNG_SIZES
+        ]
+        try:
+            default_idx = self.PNG_SIZES.index(self._last_png_size)
+        except ValueError:
+            default_idx = self.PNG_SIZES.index(2048)
+        choice, ok = QInputDialog.getItem(
+            self, self._t("png_size_title"), self._t("png_size_label"),
+            options, default_idx, False)
+        if not ok:
+            return None
+        size = self.PNG_SIZES[options.index(choice)]
+        self._last_png_size = size
+        return size
+
     def export_any(self):
         if not self.svg_path:
             return
@@ -1327,7 +1353,10 @@ class MainWindow(QMainWindow):
         try:
             if "png" in flt or out.suffix.lower() == ".png":
                 out = out.with_suffix(".png")
-                svg_to_png(self.svg_path, out)
+                size = self._ask_png_size()
+                if size is None:
+                    return
+                svg_to_png(self.svg_path, out, max_px=size)
             elif "pdf" in flt or out.suffix.lower() == ".pdf":
                 out = out.with_suffix(".pdf")
                 svg_to_pdf(self.svg_path, out)
@@ -1357,21 +1386,28 @@ class MainWindow(QMainWindow):
             ["SVG", "PNG", "PDF"], 0, False)
         if not ok:
             return
+        png_size = 2048
+        if fmt == "PNG":
+            size = self._ask_png_size()
+            if size is None:
+                return
+            png_size = size
         out_dir = QFileDialog.getExistingDirectory(
             self, self._t("batch_out_dialog_title"), in_dir)
         if not out_dir:
             return
         self._last_dir = out_dir
-        self._start_batch(files, Path(out_dir), fmt.lower())
+        self._start_batch(files, Path(out_dir), fmt.lower(), png_size)
 
-    def _start_batch(self, files, out_dir, fmt):
+    def _start_batch(self, files, out_dir, fmt, png_size=2048):
         self._progress = QProgressDialog(
             self._t("batch_preparing"), self._t("batch_cancel"), 0, len(files), self)
         self._progress.setWindowTitle(self._t("title_batch"))
         self._progress.setWindowModality(Qt.WindowModal)
         self._progress.setMinimumDuration(0)
         self._batch = BatchWorker(files, out_dir, fmt, self.current_params(),
-                                  self.chk_grad.isChecked(), self.chk_refine.isChecked())
+                                  self.chk_grad.isChecked(), self.chk_refine.isChecked(),
+                                  png_size)
         self._batch.progress.connect(self._on_batch_progress)
         self._batch.done.connect(self._on_batch_done)
         self._progress.canceled.connect(self._batch.cancel)
@@ -1433,6 +1469,9 @@ class MainWindow(QMainWindow):
             if v is not None:
                 chk.setChecked(v in (True, "true", "True", 1, "1"))
         self._last_dir = s.value("last_dir", "") or ""
+        png_size = s.value("png_size")
+        if png_size is not None and int(png_size) in self.PNG_SIZES:
+            self._last_png_size = int(png_size)
 
     def _save_settings(self):
         s = self._settings
@@ -1445,6 +1484,7 @@ class MainWindow(QMainWindow):
         s.setValue("last_dir", self._last_dir)
         s.setValue("dark_mode", self._dark)
         s.setValue("lang", self.lang)
+        s.setValue("png_size", self._last_png_size)
 
 
 def main():

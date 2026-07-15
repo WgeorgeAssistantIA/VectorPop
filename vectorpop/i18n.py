@@ -141,6 +141,10 @@ STRINGS = {
         "export_dialog_title": "Exporter",
         "export_filter": "SVG vectoriel (*.svg);;PNG haute-def (*.png);;PDF vectoriel (*.pdf)",
         "err_export_failed": "Export échoué :\n{e}",
+        "png_size_title": "Résolution PNG",
+        "png_size_label": "Côté long de l'image :",
+        "png_size_option": "{px} px",
+        "png_size_recommended": "recommandé",
 
         "batch_dialog_title": "Dossier d'images à vectoriser",
         "title_batch": "Traitement par lot",
@@ -306,6 +310,10 @@ STRINGS = {
         "export_dialog_title": "Export",
         "export_filter": "Vector SVG (*.svg);;High-def PNG (*.png);;Vector PDF (*.pdf)",
         "err_export_failed": "Export failed:\n{e}",
+        "png_size_title": "PNG resolution",
+        "png_size_label": "Longest side:",
+        "png_size_option": "{px} px",
+        "png_size_recommended": "recommended",
 
         "batch_dialog_title": "Folder of images to vectorize",
         "title_batch": "Batch processing",
