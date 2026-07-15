@@ -142,13 +142,12 @@ STRINGS = {
         "export_filter": "SVG vectoriel (*.svg);;PNG haute-def (*.png);;PDF vectoriel (*.pdf)",
         "err_export_failed": "Export échoué :\n{e}",
         "png_size_title": "Résolution PNG",
-        "png_size_label": "Côté long de l'image :",
-        "png_size_option": "{px} px",
+        "png_size_label": "Côté long de l'image (clique un preset ou saisis une valeur) :",
         "png_size_recommended": "recommandé",
         "svg_size_title": "Taille du SVG",
         "svg_size_label": (
             "Le SVG reste net à n'importe quelle taille (c'est du vectoriel).\n"
-            "Choisis juste la taille \"native\" du fichier :"),
+            "Choisis juste la taille \"native\" du fichier (preset ou valeur libre) :"),
         "size_original": "Taille d'origine",
 
         "batch_dialog_title": "Dossier d'images à vectoriser",
@@ -316,13 +315,12 @@ STRINGS = {
         "export_filter": "Vector SVG (*.svg);;High-def PNG (*.png);;Vector PDF (*.pdf)",
         "err_export_failed": "Export failed:\n{e}",
         "png_size_title": "PNG resolution",
-        "png_size_label": "Longest side:",
-        "png_size_option": "{px} px",
+        "png_size_label": "Longest side (click a preset or type a custom value):",
         "png_size_recommended": "recommended",
         "svg_size_title": "SVG size",
         "svg_size_label": (
             "SVG stays crisp at any size (it's vector). Just pick the\n"
-            "\"native\" size baked into the file:"),
+            "\"native\" size baked into the file (preset or custom):"),
         "size_original": "Original size",
 
         "batch_dialog_title": "Folder of images to vectorize",

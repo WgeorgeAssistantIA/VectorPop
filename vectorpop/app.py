@@ -20,7 +20,7 @@ from PySide6.QtWidgets import (
     QApplication, QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFileDialog,
     QFrame, QGraphicsScene, QGraphicsView, QGroupBox, QHBoxLayout, QInputDialog,
     QLabel, QMainWindow, QMessageBox, QProgressBar, QProgressDialog, QPushButton,
-    QRubberBand, QScrollArea, QSizePolicy, QSlider, QSplitter, QVBoxLayout,
+    QRubberBand, QScrollArea, QSizePolicy, QSlider, QSpinBox, QSplitter, QVBoxLayout,
     QWidget,
 )
 from PIL import Image, ImageDraw
@@ -535,6 +535,68 @@ class CompareView(QWidget):
         p.drawLine(split_x, target.top(), split_x, target.bottom())
 
 
+class SizeDialog(QDialog):
+    """Choix d'une taille (px) : presets rapides (icônes classiques -> haute
+    def) + valeur libre, pour l'export PNG/SVG.
+
+    `value()` renvoie la taille choisie, ou 0 si "Taille d'origine" est cochée
+    (uniquement proposé quand `offer_original=True`, cas du SVG).
+    """
+
+    PRESETS = (16, 32, 48, 64, 128, 256, 512, 1024, 2048, 4096)
+    RECOMMENDED = 2048
+
+    def __init__(self, parent, title: str, label: str, default: int,
+                 offer_original: bool = False, recommended_tip: str = ""):
+        super().__init__(parent)
+        self.setWindowTitle(title)
+        lay = QVBoxLayout(self)
+
+        lbl = QLabel(label)
+        lbl.setWordWrap(True)
+        lay.addWidget(lbl)
+
+        self.spin = QSpinBox()
+        self.spin.setRange(8, 8192)
+        self.spin.setSuffix(" px")
+        self.spin.setSingleStep(8)
+        self.spin.setValue(default if default else self.RECOMMENDED)
+
+        self.chk_original: QCheckBox | None = None
+        if offer_original:
+            self.chk_original = QCheckBox(parent._t("size_original"))
+            self.chk_original.setChecked(default == 0)
+            self.chk_original.toggled.connect(self.spin.setDisabled)
+            self.spin.setDisabled(self.chk_original.isChecked())
+            lay.addWidget(self.chk_original)
+
+        presets_box = QHBoxLayout()
+        for p in self.PRESETS:
+            btn = QPushButton(str(p))
+            btn.setFixedWidth(44)
+            if p == self.RECOMMENDED and recommended_tip:
+                btn.setToolTip(recommended_tip)
+            btn.clicked.connect(lambda _=False, v=p: self._pick_preset(v))
+            presets_box.addWidget(btn)
+        lay.addLayout(presets_box)
+        lay.addWidget(self.spin)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        lay.addWidget(buttons)
+
+    def _pick_preset(self, v: int):
+        self.spin.setValue(v)
+        if self.chk_original is not None:
+            self.chk_original.setChecked(False)
+
+    def value(self) -> int:
+        if self.chk_original is not None and self.chk_original.isChecked():
+            return 0
+        return self.spin.value()
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -570,6 +632,7 @@ class MainWindow(QMainWindow):
         self._progress: QProgressDialog | None = None
         self._last_dir = ""                      # dernier dossier d'export (memorise)
         self._last_png_size = 2048               # derniere resolution PNG choisie (memorisee)
+        self._last_svg_size = 0                  # derniere taille SVG choisie (0 = origine)
         self._last_warn: str | None = None       # avertissement post-traitement en attente
 
         # Debounce de l'apercu live : on attend que l'utilisateur arrete de bouger.
@@ -1320,49 +1383,34 @@ class MainWindow(QMainWindow):
         else:
             self.setWindowTitle(self._t("app_name"))
 
-    # Resolutions PNG proposees (cote long, en pixels). 2048 = defaut historique.
-    PNG_SIZES = (512, 1024, 2048, 4096)
-
     def _ask_png_size(self) -> int | None:
-        """Demande la resolution PNG (cote long). Renvoie None si annule."""
-        options = [
-            self._t("png_size_option", px=px)
-            + (f" ({self._t('png_size_recommended')})" if px == 2048 else "")
-            for px in self.PNG_SIZES
-        ]
-        try:
-            default_idx = self.PNG_SIZES.index(self._last_png_size)
-        except ValueError:
-            default_idx = self.PNG_SIZES.index(2048)
-        choice, ok = QInputDialog.getItem(
+        """Demande la resolution PNG (cote long) : presets + valeur libre.
+        Renvoie None si annule."""
+        dlg = SizeDialog(
             self, self._t("png_size_title"), self._t("png_size_label"),
-            options, default_idx, False)
-        if not ok:
+            self._last_png_size, recommended_tip=self._t("png_size_recommended"))
+        if dlg.exec() != QDialog.DialogCode.Accepted:
             return None
-        size = self.PNG_SIZES[options.index(choice)]
+        size = dlg.value()
         self._last_png_size = size
         return size
 
     def _ask_svg_size(self) -> int | None:
-        """Demande la taille "native" du SVG (cote long). Le rendu vectoriel est
-        identique quelle que soit la taille choisie -- ca ne change que les
-        dimensions declarees dans le fichier (cf. export.resize_svg), pas la
-        precision du tracé. Renvoie 0 pour garder la taille d'origine (par
-        defaut), ou None si l'utilisateur annule.
+        """Demande la taille "native" du SVG (cote long) : presets + valeur libre,
+        ou "Taille d'origine". Le rendu vectoriel est identique quelle que soit
+        la taille choisie -- ca ne change que les dimensions declarees dans le
+        fichier (cf. export.resize_svg), pas la precision du tracé. Renvoie 0
+        pour garder la taille d'origine, ou None si l'utilisateur annule.
         """
-        options = [self._t("size_original")] + [
-            self._t("png_size_option", px=px)
-            + (f" ({self._t('png_size_recommended')})" if px == 2048 else "")
-            for px in self.PNG_SIZES
-        ]
-        choice, ok = QInputDialog.getItem(
+        dlg = SizeDialog(
             self, self._t("svg_size_title"), self._t("svg_size_label"),
-            options, 0, False)
-        if not ok:
+            self._last_svg_size, offer_original=True,
+            recommended_tip=self._t("png_size_recommended"))
+        if dlg.exec() != QDialog.DialogCode.Accepted:
             return None
-        if choice == options[0]:
-            return 0
-        return self.PNG_SIZES[options.index(choice) - 1]
+        size = dlg.value()
+        self._last_svg_size = size
+        return size
 
     def export_any(self):
         if not self.svg_path:
@@ -1506,8 +1554,11 @@ class MainWindow(QMainWindow):
                 chk.setChecked(v in (True, "true", "True", 1, "1"))
         self._last_dir = s.value("last_dir", "") or ""
         png_size = s.value("png_size")
-        if png_size is not None and int(png_size) in self.PNG_SIZES:
+        if png_size is not None and 8 <= int(png_size) <= 8192:
             self._last_png_size = int(png_size)
+        svg_size = s.value("svg_size")
+        if svg_size is not None and (int(svg_size) == 0 or 8 <= int(svg_size) <= 8192):
+            self._last_svg_size = int(svg_size)
 
     def _save_settings(self):
         s = self._settings
@@ -1521,6 +1572,7 @@ class MainWindow(QMainWindow):
         s.setValue("dark_mode", self._dark)
         s.setValue("lang", self.lang)
         s.setValue("png_size", self._last_png_size)
+        s.setValue("svg_size", self._last_svg_size)
 
 
 def main():
