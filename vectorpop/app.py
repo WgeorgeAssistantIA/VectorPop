@@ -25,7 +25,7 @@ from PySide6.QtWidgets import (
 )
 from PIL import Image, ImageDraw
 
-from .export import svg_to_pdf, svg_to_png
+from .export import resize_svg, svg_to_pdf, svg_to_png
 from .gradients import gradientize_svg, refine_colors, remove_shape_at
 from .optimize import optimize_svg
 from .i18n import PRESET_LABELS, STRINGS, detect_system_lang
@@ -140,11 +140,12 @@ class BatchWorker(QThread):
 
     def __init__(self, files: list[Path], out_dir: Path, fmt: str,
                  params: VectorParams, gradients: bool = False, refine: bool = False,
-                 png_size: int = 2048):
+                 png_size: int = 2048, svg_size: int = 0):
         super().__init__()
         self._files, self._out_dir, self._fmt, self._params = files, out_dir, fmt, params
         self._gradients, self._refine = gradients, refine
         self._png_size = png_size
+        self._svg_size = svg_size   # 0 = taille d'origine (cf. export.resize_svg)
         self._cancel = False
 
     def cancel(self):
@@ -176,6 +177,8 @@ class BatchWorker(QThread):
             tmp.write_text(txt, encoding="utf-8")
             out = self._out_dir / f"{f.stem}.{self._fmt}"
             if self._fmt == "svg":
+                if self._svg_size:
+                    txt = resize_svg(txt, self._svg_size)
                 out.write_text(txt, encoding="utf-8")
             elif self._fmt == "png":
                 svg_to_png(tmp, out, max_px=self._png_size)
@@ -1340,6 +1343,27 @@ class MainWindow(QMainWindow):
         self._last_png_size = size
         return size
 
+    def _ask_svg_size(self) -> int | None:
+        """Demande la taille "native" du SVG (cote long). Le rendu vectoriel est
+        identique quelle que soit la taille choisie -- ca ne change que les
+        dimensions declarees dans le fichier (cf. export.resize_svg), pas la
+        precision du tracé. Renvoie 0 pour garder la taille d'origine (par
+        defaut), ou None si l'utilisateur annule.
+        """
+        options = [self._t("size_original")] + [
+            self._t("png_size_option", px=px)
+            + (f" ({self._t('png_size_recommended')})" if px == 2048 else "")
+            for px in self.PNG_SIZES
+        ]
+        choice, ok = QInputDialog.getItem(
+            self, self._t("svg_size_title"), self._t("svg_size_label"),
+            options, 0, False)
+        if not ok:
+            return None
+        if choice == options[0]:
+            return 0
+        return self.PNG_SIZES[options.index(choice) - 1]
+
     def export_any(self):
         if not self.svg_path:
             return
@@ -1362,7 +1386,13 @@ class MainWindow(QMainWindow):
                 svg_to_pdf(self.svg_path, out)
             else:
                 out = out.with_suffix(".svg")
-                out.write_bytes(self.svg_path.read_bytes())
+                target = self._ask_svg_size()
+                if target is None:
+                    return
+                txt = self.svg_path.read_text(encoding="utf-8")
+                if target:
+                    txt = resize_svg(txt, target)
+                out.write_text(txt, encoding="utf-8")
             self._last_dir = str(out.parent)
         except Exception as e:  # noqa: BLE001
             QMessageBox.critical(self, self._t("title_error"), self._t("err_export_failed", e=e))
@@ -1387,19 +1417,25 @@ class MainWindow(QMainWindow):
         if not ok:
             return
         png_size = 2048
+        svg_size = 0
         if fmt == "PNG":
             size = self._ask_png_size()
             if size is None:
                 return
             png_size = size
+        elif fmt == "SVG":
+            size = self._ask_svg_size()
+            if size is None:
+                return
+            svg_size = size
         out_dir = QFileDialog.getExistingDirectory(
             self, self._t("batch_out_dialog_title"), in_dir)
         if not out_dir:
             return
         self._last_dir = out_dir
-        self._start_batch(files, Path(out_dir), fmt.lower(), png_size)
+        self._start_batch(files, Path(out_dir), fmt.lower(), png_size, svg_size)
 
-    def _start_batch(self, files, out_dir, fmt, png_size=2048):
+    def _start_batch(self, files, out_dir, fmt, png_size=2048, svg_size=0):
         self._progress = QProgressDialog(
             self._t("batch_preparing"), self._t("batch_cancel"), 0, len(files), self)
         self._progress.setWindowTitle(self._t("title_batch"))
@@ -1407,7 +1443,7 @@ class MainWindow(QMainWindow):
         self._progress.setMinimumDuration(0)
         self._batch = BatchWorker(files, out_dir, fmt, self.current_params(),
                                   self.chk_grad.isChecked(), self.chk_refine.isChecked(),
-                                  png_size)
+                                  png_size, svg_size)
         self._batch.progress.connect(self._on_batch_progress)
         self._batch.done.connect(self._on_batch_done)
         self._progress.canceled.connect(self._batch.cancel)

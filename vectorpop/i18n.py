@@ -145,6 +145,11 @@ STRINGS = {
         "png_size_label": "Côté long de l'image :",
         "png_size_option": "{px} px",
         "png_size_recommended": "recommandé",
+        "svg_size_title": "Taille du SVG",
+        "svg_size_label": (
+            "Le SVG reste net à n'importe quelle taille (c'est du vectoriel).\n"
+            "Choisis juste la taille \"native\" du fichier :"),
+        "size_original": "Taille d'origine",
 
         "batch_dialog_title": "Dossier d'images à vectoriser",
         "title_batch": "Traitement par lot",
@@ -314,6 +319,11 @@ STRINGS = {
         "png_size_label": "Longest side:",
         "png_size_option": "{px} px",
         "png_size_recommended": "recommended",
+        "svg_size_title": "SVG size",
+        "svg_size_label": (
+            "SVG stays crisp at any size (it's vector). Just pick the\n"
+            "\"native\" size baked into the file:"),
+        "size_original": "Original size",
 
         "batch_dialog_title": "Folder of images to vectorize",
         "title_batch": "Batch processing",
