@@ -176,6 +176,13 @@ def _preprocess(src: Path, params: VectorParams, reduce_colors: bool) -> Path:
         # Niveaux de gris -> seuillage net : ideal pour un trait propre.
         rgb = rgb.convert("L").point(lambda p: 255 if p > 128 else 0).convert("RGB")
     elif reduce_colors:
+        if not params.merge_colors:
+            # Sans fusion (degrade/glossy a preserver) : un filtre de mode absorbe
+            # les pixels isoles d'anti-aliasing dans leur voisinage dominant AVANT
+            # quantification, sans aplatir les vraies bandes de degrade voulues.
+            # Sinon chaque pixel de bruit devient sa propre fine couche vtracer
+            # (effet "contour en dents de scie" sur les bords ronds).
+            rgb = rgb.filter(ImageFilter.ModeFilter(size=3))
         # Quantification : reduit le bruit de couleur avant vtracer = moins de paths.
         n = max(2, min(256, 2 ** params.color_precision))
         rgb = rgb.quantize(colors=n, method=Image.MEDIANCUT).convert("RGB")
@@ -214,3 +221,86 @@ def vectorize(src: str | Path, dst: str | Path,
     finally:
         prepped.unlink(missing_ok=True)
     return dst
+
+
+def _rasterize_svg(svg_path: Path, w: int, h: int) -> np.ndarray:
+    """Rend un SVG en tableau RGBA (h, w, 4), pour le comparer pixel a pixel a
+    l'image source. Meme approche que gradients._render_label_map (QSvgRenderer
+    hors-ecran), mais avec anti-aliasing garde : c'est un rendu visuel, pas un
+    plan de labels.
+    """
+    from PySide6.QtCore import Qt as _Qt  # noqa: PLC0415 - import paresseux (evite Qt en tests headless)
+    from PySide6.QtGui import QImage, QPainter
+    from PySide6.QtSvg import QSvgRenderer
+
+    img = QImage(w, h, QImage.Format_ARGB32)
+    img.fill(_Qt.transparent)
+    painter = QPainter(img)
+    QSvgRenderer(str(svg_path)).render(painter)
+    painter.end()
+    ptr = img.constBits()
+    arr = np.frombuffer(ptr, np.uint8).reshape(h, w, 4).copy()  # BGRA (little-endian)
+    b, g, r, a = arr[..., 0], arr[..., 1], arr[..., 2], arr[..., 3]
+    return np.dstack([r, g, b, a])
+
+
+def _diff_score(reference: np.ndarray, candidate: np.ndarray) -> float:
+    """Erreur couleur moyenne (0-255) entre 2 images RGBA de meme taille.
+
+    Ponderee par la zone visible (alpha > 0 sur l'une OU l'autre) : une zone
+    ratee (presente sur une image, vide sur l'autre) compte comme une pleine
+    erreur de couleur plutot que d'etre ignorée.
+    """
+    visible = (reference[..., 3] > 0) | (candidate[..., 3] > 0)
+    if not visible.any():
+        return 0.0
+    diff = np.abs(reference[..., :3].astype(np.int16) - candidate[..., :3].astype(np.int16))
+    return float(diff[visible].mean())
+
+
+def auto_refine(src: str | Path, dst: str | Path, base_params: VectorParams,
+                 progress=None) -> tuple[VectorParams, float]:
+    """Recherche automatique de reglages par comparaison a l'image source.
+
+    Teste plusieurs combinaisons (precision couleur / fusion / seuil de coin),
+    rend chaque candidat et mesure son ecart pixel a l'original ; garde le
+    meilleur. Plus lent qu'une vectorisation simple (~N passes) : reserve a un
+    bouton dedie plutot qu'a l'apercu live. `progress(i, total, score)` est
+    appele apres chaque candidat si fourni.
+    """
+    src, dst = Path(src), Path(dst)
+    ref_png = _preprocess(src, base_params, reduce_colors=False)  # verite terrain : pas de quantif.
+    try:
+        ref_img = Image.open(ref_png).convert("RGBA")
+        w, h = ref_img.size
+        reference = np.asarray(ref_img)
+    finally:
+        ref_png.unlink(missing_ok=True)
+
+    candidates: list[VectorParams] = []
+    for colors in (6, 8):
+        for merge_thr in (0, 20, 36):
+            for corner in (35, 50):
+                p = VectorParams(**asdict(base_params))
+                p.color_precision = colors
+                p.merge_colors = merge_thr > 0
+                p.merge_threshold = merge_thr
+                p.corner_threshold = corner
+                candidates.append(p)
+
+    fd, tmp_svg = tempfile.mkstemp(suffix=".svg")
+    os.close(fd)
+    best_params, best_score = base_params, float("inf")
+    try:
+        for i, p in enumerate(candidates, 1):
+            vectorize(src, tmp_svg, p)
+            rendered = _rasterize_svg(Path(tmp_svg), w, h)
+            score = _diff_score(reference, rendered)
+            if progress:
+                progress(i, len(candidates), score)
+            if score < best_score:
+                best_score, best_params = score, p
+        vectorize(src, dst, best_params)
+    finally:
+        Path(tmp_svg).unlink(missing_ok=True)
+    return best_params, best_score

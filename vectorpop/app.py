@@ -33,7 +33,7 @@ from .theme import (
     ICON_COMPARE, ICON_CROP, ICON_EXPAND, ICON_HELP, ICON_LAYERS, ICON_MOON,
     ICON_RESET, ICON_SUN, ICON_TRASH, ICON_UNDO, build_qss, checker_brush, icon,
 )
-from .vectorizer import PRESETS, VectorParams, vectorize
+from .vectorizer import PRESETS, VectorParams, auto_refine, vectorize
 
 
 def _postprocess_svg(svg_path: Path, src_path: Path,
@@ -69,12 +69,12 @@ RECIPES = [
      dict(preset="flat", colors=6, merge_on=True, merge=24,
           grad=False, refine=True, bg=False, contrast=0, sharpen=0)),
     ("recipe_glossy_title", "recipe_glossy_desc",
-     dict(preset="detailed", colors=8, merge_on=False, corner=30,
+     dict(preset="detailed", colors=8, merge_on=False, corner=40, speckle=6,
           grad=True, refine=True, bg=False)),
     ("recipe_bw_title", "recipe_bw_desc",
      dict(preset="bw", grad=False, refine=False, bg=False)),
     ("recipe_photo_title", "recipe_photo_desc",
-     dict(preset="detailed", colors=8, merge_on=False,
+     dict(preset="detailed", colors=8, merge_on=False, speckle=6,
           grad=True, refine=True)),
     ("recipe_bg_title", "recipe_bg_desc",
      dict(preset="flat", bg=True, tol=32, refine=True)),
@@ -128,6 +128,29 @@ class VectorizeWorker(QThread):
             if warn:
                 self.warning.emit(warn)
             self.done.emit(str(self._out))
+        except Exception as e:  # noqa: BLE001 - remonte tout au thread UI
+            self.failed.emit(str(e))
+
+
+class AutoTuneWorker(QThread):
+    """Cherche les meilleurs reglages par comparaison a l'image source (plus lent :
+    plusieurs passes de vectorisation), au lieu de laisser l'utilisateur tatonner.
+    """
+
+    progress = Signal(int, int)   # (candidat en cours, total)
+    done = Signal(str, float)     # (chemin SVG produit, ecart pixel restant 0-255)
+    failed = Signal(str)
+
+    def __init__(self, src: Path, out: Path, params: VectorParams):
+        super().__init__()
+        self._src, self._out, self._params = src, out, params
+
+    def run(self):
+        try:
+            _, score = auto_refine(
+                self._src, self._out, self._params,
+                progress=lambda i, total, _s: self.progress.emit(i, total))
+            self.done.emit(str(self._out), score)
         except Exception as e:  # noqa: BLE001 - remonte tout au thread UI
             self.failed.emit(str(e))
 
@@ -259,8 +282,10 @@ class DropImage(QLabel):
         if self._demo_btn is None:
             return
         self._demo_btn.adjustSize()
+        # En bas de la zone (pas au centre) : le centre doit rester cliquable pour
+        # ouvrir directement le selecteur de fichier, sans que ce bouton l'intercepte.
         x = (self.width() - self._demo_btn.width()) // 2
-        y = (self.height() - self._demo_btn.height()) // 2 + 44  # sous le texte du placeholder
+        y = self.height() - self._demo_btn.height() - 20
         self._demo_btn.move(x, y)
 
     def dragEnterEvent(self, e):
@@ -625,6 +650,8 @@ class MainWindow(QMainWindow):
         self._demo_tmp: Path | None = None       # PNG temporaire de l'image d'exemple
         self._worker: VectorizeWorker | None = None
         self._cur_out: Path | None = None        # SVG temp du worker en cours
+        self._autotune_worker: AutoTuneWorker | None = None
+        self._autotune_out: Path | None = None   # SVG temp de la recherche auto
         self._silent = True                      # erreurs muettes (apercu live)
         self._pending = False                    # une relance est demandee
         self._pending_silent = True
@@ -794,11 +821,17 @@ class MainWindow(QMainWindow):
         self.btn_compare.setIconSize(QSize(18, 18))
         self.btn_compare.clicked.connect(self.open_compare)
         self.btn_compare.setEnabled(False)
-        for b in (self.btn_vec, self.btn_exp, self.btn_copy, self.btn_batch, self.btn_compare):
+        self.btn_autotune = self._tr_widget(
+            QPushButton(), "btn_autotune", "btn_autotune_tooltip")
+        self.btn_autotune.clicked.connect(self.run_autotune)
+        self.btn_autotune.setEnabled(False)
+        for b in (self.btn_vec, self.btn_exp, self.btn_copy, self.btn_batch,
+                  self.btn_compare, self.btn_autotune):
             b.setMinimumHeight(40)
 
         actions = QHBoxLayout()
         actions.addWidget(self.btn_vec)
+        actions.addWidget(self.btn_autotune)
         actions.addWidget(self.btn_exp)
         actions.addWidget(self.btn_copy)
         actions.addWidget(self.btn_compare)
@@ -1183,6 +1216,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(f"{self._t('app_name')} — {name}")
         self.original.show_image(path)
         self.btn_vec.setEnabled(True)
+        self.btn_autotune.setEnabled(True)
         self.btn_crop.setEnabled(True)
         self.btn_exp.setEnabled(False)
         self.btn_copy.setEnabled(False)
@@ -1288,6 +1322,63 @@ class MainWindow(QMainWindow):
         else:
             self._set_busy(False)                            # vraiment terminé
 
+    def run_autotune(self):
+        """Teste plusieurs reglages et garde celui le plus proche de l'original.
+
+        Plus lent que "Vectoriser" (~12 passes) : bouton dedie, pas d'apercu live.
+        """
+        if not self.src_path or self._autotune_worker is not None:
+            return
+        fd, out = tempfile.mkstemp(suffix=".svg")
+        os.close(fd)
+        self._autotune_out = Path(out)
+        self.btn_vec.setEnabled(False)
+        self.btn_autotune.setText(self._t("btn_autotune_running"))
+        self.btn_autotune.setEnabled(False)
+        self._set_busy(True, self._t("busy_autotune", i=0, total=0))
+        self._autotune_worker = AutoTuneWorker(
+            self.src_path, self._autotune_out, self.current_params())
+        self._autotune_worker.progress.connect(self._on_autotune_progress)
+        self._autotune_worker.done.connect(self._on_autotune_done)
+        self._autotune_worker.failed.connect(self._on_autotune_failed)
+        self._autotune_worker.start()
+
+    def _on_autotune_progress(self, i: int, total: int):
+        self.statusBar().showMessage(self._t("busy_autotune", i=i, total=total))
+
+    def _on_autotune_done(self, out_str: str, score: float):
+        out = Path(out_str)
+        self._optimize_in_place(out)
+        if self.svg_path and self.svg_path != out:
+            self.svg_path.unlink(missing_ok=True)
+        self.svg_path = out
+        self.preview.load(str(out))
+        self.btn_exp.setEnabled(True)
+        self.btn_copy.setEnabled(True)
+        self.btn_compare.setEnabled(True)
+        self.btn_del.setEnabled(True)
+        self._del_history.clear()
+        self.btn_undo.setEnabled(False)
+        self.statusBar().showMessage(self._t("status_autotune_done", score=round(score, 1)), 6000)
+        self._finish_autotune()
+
+    def _on_autotune_failed(self, msg: str):
+        QMessageBox.critical(
+            self, self._t("title_error"), self._t("err_vectorize_failed", msg=msg))
+        if self._autotune_out:
+            self._autotune_out.unlink(missing_ok=True)
+        self._finish_autotune()
+
+    def _finish_autotune(self):
+        if self._autotune_worker is not None:
+            self._autotune_worker.deleteLater()
+            self._autotune_worker = None
+        self._autotune_out = None
+        self.btn_autotune.setText(self._t("btn_autotune"))
+        self.btn_autotune.setEnabled(True)
+        self.btn_vec.setEnabled(True)
+        self._set_busy(False)
+
     def closeEvent(self, e):
         # Memorise les reglages pour la prochaine session.
         self._save_settings()
@@ -1297,12 +1388,16 @@ class MainWindow(QMainWindow):
             self._batch.wait(3000)
         if self._worker is not None:
             self._worker.wait(3000)
+        if self._autotune_worker is not None:
+            self._autotune_worker.wait(3000)
         if self._del_worker is not None:
             self._del_worker.wait(3000)
         if self.svg_path:
             self.svg_path.unlink(missing_ok=True)
         if self._cur_out:
             self._cur_out.unlink(missing_ok=True)
+        if self._autotune_out:
+            self._autotune_out.unlink(missing_ok=True)
         self._cleanup_crop_tmp()
         if self._paste_tmp:
             self._paste_tmp.unlink(missing_ok=True)

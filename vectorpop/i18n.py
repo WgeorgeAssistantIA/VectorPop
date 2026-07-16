@@ -99,6 +99,13 @@ STRINGS = {
         "btn_batch_tooltip": "Vectorise toutes les images d'un dossier avec les réglages actuels.",
         "btn_compare": " Comparer",
         "btn_compare_tooltip": "Ouvre une comparaison avant/après à glissière (original vs SVG).",
+        "btn_autotune": "Optimiser (plus long)",
+        "btn_autotune_running": "Optimisation…",
+        "btn_autotune_tooltip": (
+            "Teste plusieurs réglages, compare chaque rendu à l'image d'origine et\n"
+            "garde le plus fidèle. Plus lent qu'une vectorisation simple."),
+        "busy_autotune": "Optimisation en cours… ({i}/{total})",
+        "status_autotune_done": "Meilleur réglage trouvé (écart couleur restant : {score}/255).",
 
         "status_no_clip_image": "Presse-papiers : aucune image à coller.",
         "status_pasted": "Image collée depuis le presse-papiers.",
@@ -272,6 +279,13 @@ STRINGS = {
         "btn_batch_tooltip": "Vectorizes every image in a folder with the current settings.",
         "btn_compare": " Compare",
         "btn_compare_tooltip": "Opens a before/after slider comparison (original vs SVG).",
+        "btn_autotune": "Optimize (slower)",
+        "btn_autotune_running": "Optimizing…",
+        "btn_autotune_tooltip": (
+            "Tries several settings, compares each render to the original image,\n"
+            "and keeps the closest match. Slower than a plain vectorize."),
+        "busy_autotune": "Optimizing… ({i}/{total})",
+        "status_autotune_done": "Best settings found (remaining color gap: {score}/255).",
 
         "status_no_clip_image": "Clipboard: no image to paste.",
         "status_pasted": "Image pasted from clipboard.",
