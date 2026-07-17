@@ -18,3 +18,12 @@ msix_payload/VFS/
 
 # Paquets .msix signes (gros binaires, regenerables via le payload + makeappx/signtool)
 releases/
+
+# Site (TanStack Start) : deps, build, secrets
+site/node_modules/
+site/.output/
+site/.vercel/
+site/.tanstack/
+site/.env
+site/.env.*
+!site/.env.example

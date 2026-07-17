@@ -208,6 +208,67 @@ STRINGS = {
             "Fond photo/dégradé → « Détourage IA »."),
         "tip_blur_prob": "Image floue ou molle",
         "tip_blur_sol": "Monte « Netteté », voire « Contraste », pour des aplats mieux séparés.",
+
+        # --- Licence / Pro ---
+        "btn_pro": " Passer Pro",
+        "btn_pro_tooltip": "Débloquer VectorPop Pro — {price} €, paiement unique, à vie.",
+        "btn_pro_active": " Pro",
+        "btn_pro_active_tooltip": "Licence Pro active. Cliquez pour la gérer.",
+
+        "status_free": "Gratuit — {n} export(s) SVG restant(s) aujourd'hui",
+        "status_free_none": "Gratuit — limite du jour atteinte",
+        "status_pro": "Pro — exports illimités",
+
+        "feat_export_pdf": "L'export PDF vectoriel",
+        "feat_export_png": "L'export PNG haute définition",
+        "feat_bg_ai": "Le détourage IA",
+        "feat_autotune": "Le réglage automatique",
+        "feat_delete_shape": "La suppression d'aplats",
+        "feat_batch": "Le traitement par lot",
+
+        "upsell_title": "Réservé à VectorPop Pro",
+        "upsell_body": (
+            "{feat} fait partie de VectorPop Pro.\n\n"
+            "Le mode gratuit garde la vectorisation illimitée, les presets, tous "
+            "les réglages et {n} exports SVG par jour.\n\n"
+            "Pro : {price} €, une seule fois, à vie."),
+        "upsell_quota_title": "Limite du jour atteinte",
+        "upsell_quota_body": (
+            "Le mode gratuit permet {n} exports par jour. Le compteur repart "
+            "demain.\n\n"
+            "VectorPop Pro : exports illimités, PDF et PNG haute définition, "
+            "détourage IA, réglage automatique et traitement par lot.\n\n"
+            "{price} €, une seule fois, à vie."),
+        "upsell_buy": "Passer Pro — {price} €",
+        "upsell_have_key": "J'ai déjà une licence",
+        "upsell_later": "Plus tard",
+
+        "lic_title": "Activer VectorPop Pro",
+        "lic_hint": "Entrez l'email d'achat et la clé de licence reçue par mail.",
+        "lic_email": "Email",
+        "lic_key": "Clé de licence",
+        "lic_activate": "Activer",
+        "lic_buy": "Acheter une licence",
+        "lic_close": "Fermer",
+        "lic_ok_title": "Licence activée",
+        "lic_ok": "VectorPop Pro est activé. Merci !",
+        "lic_invalid": "Clé invalide. Vérifiez l'email d'achat et la clé de licence.",
+        "lic_empty": "Renseignez l'email et la clé de licence.",
+        "lic_nonet": "Aucune connexion Internet. L'activation nécessite une connexion (une seule fois).",
+        "lic_timeout": (
+            "Lemon Squeezy n'a pas répondu à temps. L'activation a peut-être "
+            "abouti : relancez VectorPop avant de réessayer, pour ne pas "
+            "consommer une seconde activation."),
+        "lic_active_title": "Licence Pro",
+        "lic_active_as": "VectorPop Pro est actif sur ce poste.\n\nLicence : {email}",
+        "lic_deactivate": "Désactiver sur ce poste",
+        "lic_deactivate_confirm": (
+            "Désactiver la licence sur ce poste ? Vous libérez l'activation et "
+            "pourrez l'utiliser sur un autre ordinateur."),
+        "lic_deactivated": "Licence désactivée sur ce poste. VectorPop repasse en gratuit.",
+        "lic_grace_warning": (
+            "Licence Pro non revalidée depuis un moment : reconnectez-vous à "
+            "Internet dans les {n} jours pour la conserver."),
     },
     "en": {
         "app_name": "VectorPop",
@@ -387,6 +448,67 @@ STRINGS = {
             "Photo/gradient background → 'AI background removal'."),
         "tip_blur_prob": "Blurry or soft image",
         "tip_blur_sol": "Raise 'Sharpness', or 'Contrast', for better-separated flats.",
+
+        # --- Licence / Pro ---
+        "btn_pro": " Go Pro",
+        "btn_pro_tooltip": "Unlock VectorPop Pro — €{price}, one-time, forever.",
+        "btn_pro_active": " Pro",
+        "btn_pro_active_tooltip": "Pro licence active. Click to manage it.",
+
+        "status_free": "Free — {n} SVG export(s) left today",
+        "status_free_none": "Free — daily limit reached",
+        "status_pro": "Pro — unlimited exports",
+
+        "feat_export_pdf": "Vector PDF export",
+        "feat_export_png": "High-resolution PNG export",
+        "feat_bg_ai": "AI background removal",
+        "feat_autotune": "Auto-tune",
+        "feat_delete_shape": "Shape removal",
+        "feat_batch": "Batch processing",
+
+        "upsell_title": "VectorPop Pro only",
+        "upsell_body": (
+            "{feat} is part of VectorPop Pro.\n\n"
+            "The free mode keeps unlimited vectorization, the presets, every "
+            "setting, and {n} SVG exports a day.\n\n"
+            "Pro: €{price}, once, forever."),
+        "upsell_quota_title": "Daily limit reached",
+        "upsell_quota_body": (
+            "Free mode allows {n} exports a day. The counter resets "
+            "tomorrow.\n\n"
+            "VectorPop Pro: unlimited exports, vector PDF and high-resolution "
+            "PNG, AI background removal, auto-tune and batch processing.\n\n"
+            "€{price}, once, forever."),
+        "upsell_buy": "Go Pro — €{price}",
+        "upsell_have_key": "I already have a licence",
+        "upsell_later": "Later",
+
+        "lic_title": "Activate VectorPop Pro",
+        "lic_hint": "Enter your purchase email and the licence key you received.",
+        "lic_email": "Email",
+        "lic_key": "Licence key",
+        "lic_activate": "Activate",
+        "lic_buy": "Buy a licence",
+        "lic_close": "Close",
+        "lic_ok_title": "Licence activated",
+        "lic_ok": "VectorPop Pro is active. Thank you!",
+        "lic_invalid": "Invalid key. Check your purchase email and licence key.",
+        "lic_empty": "Please fill in both the email and the licence key.",
+        "lic_nonet": "No Internet connection. Activation needs one (just once).",
+        "lic_timeout": (
+            "Lemon Squeezy did not answer in time. Activation may still have "
+            "gone through: restart VectorPop before trying again, so you don't "
+            "burn a second activation."),
+        "lic_active_title": "Pro licence",
+        "lic_active_as": "VectorPop Pro is active on this machine.\n\nLicence: {email}",
+        "lic_deactivate": "Deactivate on this machine",
+        "lic_deactivate_confirm": (
+            "Deactivate the licence on this machine? This frees the activation "
+            "so you can use it on another computer."),
+        "lic_deactivated": "Licence deactivated on this machine. VectorPop is back to free.",
+        "lic_grace_warning": (
+            "Your Pro licence hasn't been revalidated for a while: go online "
+            "within {n} days to keep it."),
     },
 }
 

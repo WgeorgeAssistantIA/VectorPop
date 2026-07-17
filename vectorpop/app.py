@@ -10,6 +10,7 @@ import importlib.util
 import os
 import sys
 import tempfile
+import webbrowser
 from pathlib import Path
 
 from PySide6.QtCore import Qt, QTimer, QThread, Signal, QRect, QSize, QSettings
@@ -19,14 +20,19 @@ from PySide6.QtSvgWidgets import QGraphicsSvgItem
 from PySide6.QtWidgets import (
     QApplication, QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFileDialog,
     QFrame, QGraphicsScene, QGraphicsView, QGroupBox, QHBoxLayout, QInputDialog,
-    QLabel, QMainWindow, QMessageBox, QProgressBar, QProgressDialog, QPushButton,
-    QRubberBand, QScrollArea, QSizePolicy, QSlider, QSpinBox, QSplitter, QVBoxLayout,
-    QWidget,
+    QLabel, QLineEdit, QMainWindow, QMessageBox, QProgressBar, QProgressDialog,
+    QPushButton, QRubberBand, QScrollArea, QSizePolicy, QSlider, QSpinBox,
+    QSplitter, QVBoxLayout, QWidget,
 )
 from PIL import Image, ImageDraw
 
 from .export import resize_svg, svg_to_pdf, svg_to_png
 from .gradients import gradientize_svg, refine_colors, remove_shape_at
+from .license import (
+    FEAT_AUTOTUNE, FEAT_BATCH, FEAT_BG_AI, FEAT_DELETE_SHAPE, FEAT_EXPORT_PDF,
+    FEAT_EXPORT_PNG, FREE_DAILY_MAX, PRO_PRICE_EUR, LicenseManager, UsageTracker,
+    buy_url,
+)
 from .optimize import optimize_svg
 from .i18n import PRESET_LABELS, STRINGS, detect_system_lang
 from .theme import (
@@ -622,6 +628,86 @@ class SizeDialog(QDialog):
         return self.spin.value()
 
 
+class LicenseRefreshWorker(QThread):
+    """Revalide la licence aupres de Lemon Squeezy, hors du thread UI.
+
+    Lance une fois au demarrage. Ne touche aucun widget : le seul effet est
+    d'ecrire license.json (repousser la grace, ou effacer une licence revoquee).
+    L'UI se remet a jour sur le signal `done`.
+    """
+
+    done = Signal()
+
+    def __init__(self, lic: LicenseManager):
+        super().__init__()
+        self._lic = lic
+
+    def run(self):
+        try:
+            self._lic.refresh_online()
+        except Exception:  # noqa: BLE001
+            pass          # une revalidation ratee ne doit jamais casser l'app
+        self.done.emit()
+
+
+class LicenseDialog(QDialog):
+    """Saisie email + cle de licence, ou gestion de la licence deja active."""
+
+    def __init__(self, win: "MainWindow"):
+        super().__init__(win)
+        self._win = win
+        self.setWindowTitle(win._t("lic_title"))
+        self.setMinimumWidth(430)
+
+        lay = QVBoxLayout(self)
+        hint = QLabel(win._t("lic_hint"))
+        hint.setWordWrap(True)
+        lay.addWidget(hint)
+
+        self.ed_email = QLineEdit(win.lic.email())
+        self.ed_email.setPlaceholderText(win._t("lic_email"))
+        self.ed_key = QLineEdit()
+        self.ed_key.setPlaceholderText(win._t("lic_key"))
+        for label_key, field in (("lic_email", self.ed_email), ("lic_key", self.ed_key)):
+            row = QHBoxLayout()
+            lbl = QLabel(win._t(label_key))
+            lbl.setMinimumWidth(110)
+            row.addWidget(lbl)
+            row.addWidget(field, 1)
+            lay.addLayout(row)
+
+        btns = QHBoxLayout()
+        btn_buy = QPushButton(win._t("lic_buy"))
+        btn_buy.clicked.connect(lambda: webbrowser.open(buy_url()))
+        btn_activate = QPushButton(win._t("lic_activate"))
+        btn_activate.clicked.connect(self._activate)
+        btn_activate.setDefault(True)
+        btns.addWidget(btn_buy)
+        btns.addStretch(1)
+        btns.addWidget(btn_activate)
+        lay.addLayout(btns)
+
+    def _activate(self):
+        email = self.ed_email.text().strip()
+        key = self.ed_key.text().strip()
+        if not email or not key:
+            QMessageBox.warning(self, self._win._t("lic_title"), self._win._t("lic_empty"))
+            return
+        ok, err = self._win.lic.activate(email, key)
+        if ok:
+            QMessageBox.information(self, self._win._t("lic_ok_title"), self._win._t("lic_ok"))
+            self._win.refresh_pro_ui()
+            self.accept()
+            return
+        # Messages traduits pour les cas connus ; sinon on remonte le texte brut
+        # de Lemon Squeezy, qui est deja explicite ("license key has reached
+        # its activation limit", "license key has been disabled"...).
+        msg = {"invalid": self._win._t("lic_invalid"),
+               "nonet":   self._win._t("lic_nonet"),
+               "timeout": self._win._t("lic_timeout")}.get(err, err)
+        QMessageBox.warning(self, self._win._t("lic_title"), msg)
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -637,6 +723,13 @@ class MainWindow(QMainWindow):
         self._rembg_missing = importlib.util.find_spec("rembg") is None
         self._retranslators: list = []            # callables a rejouer au changement de langue
         self._cur_display_name: str | None = None  # pour reconstruire le titre de fenetre
+
+        # Licence : is_pro() est purement local (aucun reseau), donc appelable
+        # a chaque clic sans geler l'UI. La revalidation en ligne part dans un
+        # thread a la fin de __init__.
+        self.lic = LicenseManager()
+        self.usage = UsageTracker()
+        self._lic_worker: LicenseRefreshWorker | None = None
 
         self.setWindowTitle(self._t("app_name"))
         self.setWindowIcon(app_icon())
@@ -728,6 +821,14 @@ class MainWindow(QMainWindow):
         self.btn_lang.setMinimumWidth(50)   # "FR"/"EN" + le padding des boutons (theme.py)
         self.btn_lang.clicked.connect(self.toggle_lang)
 
+        # Libelle pose par refresh_pro_ui() (depend de l'etat de la licence),
+        # d'ou l'absence de cle de traduction ici. Sans icone volontairement :
+        # ICON_LAYERS est deja celle du bouton « Lot », la reprendre ici
+        # laisserait croire a deux boutons de la meme famille.
+        self.btn_pro = QPushButton()
+        self.btn_pro.clicked.connect(self.open_license)
+        self._retranslators.append(self.refresh_pro_ui)
+
         self.lbl_preprocess = self._tr_widget(QLabel(), "label_preprocess")
         prep = QHBoxLayout()
         prep.addWidget(self.lbl_preprocess)
@@ -736,6 +837,7 @@ class MainWindow(QMainWindow):
         prep.addWidget(self.btn_del)
         prep.addWidget(self.btn_undo)
         prep.addStretch(1)
+        prep.addWidget(self.btn_pro)
         prep.addWidget(self.btn_help)
         prep.addWidget(self.btn_theme)
         prep.addWidget(self.btn_lang)
@@ -855,6 +957,11 @@ class MainWindow(QMainWindow):
         self.busy.setVisible(False)
         self.statusBar().addPermanentWidget(self.busy)
 
+        # Etat de la licence, en permanence dans la barre d'etat : en gratuit
+        # l'utilisateur doit voir fondre son quota AVANT de tomber dessus.
+        self.lbl_plan = QLabel()
+        self.statusBar().addPermanentWidget(self.lbl_plan)
+
         # Voile « en cours » PAR-DESSUS l'apercu SVG : impossible a rater.
         # (texte generique fixe ; le message specifique va dans la barre de statut).
         self.busy_overlay = self._tr_widget(QLabel(self.preview), "busy_overlay_generic")
@@ -873,6 +980,18 @@ class MainWindow(QMainWindow):
         if self._rembg_missing:
             self.chk_bg_ai.setChecked(False)
             self.chk_bg_ai.setEnabled(False)
+
+        # Verrou Pro sur le detourage IA. Branche APRES _load_settings pour que
+        # la restauration des reglages ne declenche pas l'upsell au demarrage.
+        self.chk_bg_ai.toggled.connect(self._guard_bg_ai)
+        if not self.lic.is_pro():
+            self.chk_bg_ai.setChecked(False)
+
+        # Revalidation de la licence en ligne, en tache de fond (jamais bloquante).
+        if self.lic.has_key():
+            self._lic_worker = LicenseRefreshWorker(self.lic)
+            self._lic_worker.done.connect(self.refresh_pro_ui)
+            self._lic_worker.start()
 
         # Coller une image depuis le presse-papiers (ex. capture d'ecran) : evite
         # de devoir d'abord la sauver dans un fichier pour la charger.
@@ -1077,6 +1196,9 @@ class MainWindow(QMainWindow):
 
     # --- suppression d'aplats (clic sur le SVG) ---
     def _toggle_delete_mode(self, on: bool):
+        if on and not self._require_pro(FEAT_DELETE_SHAPE):
+            self.btn_del.setChecked(False)   # re-entre ici avec on=False
+            return
         self.preview.set_delete_mode(on)
         if on:
             self.statusBar().showMessage(self._t("status_delete_mode"), 5000)
@@ -1329,6 +1451,8 @@ class MainWindow(QMainWindow):
         """
         if not self.src_path or self._autotune_worker is not None:
             return
+        if not self._require_pro(FEAT_AUTOTUNE):
+            return
         fd, out = tempfile.mkstemp(suffix=".svg")
         os.close(fd)
         self._autotune_out = Path(out)
@@ -1392,6 +1516,8 @@ class MainWindow(QMainWindow):
             self._autotune_worker.wait(3000)
         if self._del_worker is not None:
             self._del_worker.wait(3000)
+        if self._lic_worker is not None:
+            self._lic_worker.wait(3000)   # sinon Qt rale : thread detruit en marche
         if self.svg_path:
             self.svg_path.unlink(missing_ok=True)
         if self._cur_out:
@@ -1431,14 +1557,21 @@ class MainWindow(QMainWindow):
             pass
 
     def copy_svg(self):
-        """Copie le code SVG (optimisé) dans le presse-papiers."""
+        """Copie le code SVG (optimisé) dans le presse-papiers.
+
+        Compte dans le quota du jour au meme titre qu'un export : sans ca, la
+        limite du mode gratuit se contournerait par un simple Ctrl+C.
+        """
         if not self.svg_path:
+            return
+        if not self._can_export_now():
             return
         try:
             txt = self.svg_path.read_text(encoding="utf-8")
         except OSError:
             return
         QApplication.clipboard().setText(txt)
+        self._record_export()
         self.statusBar().showMessage(self._t("status_svg_copied"), 3000)
 
     # --- theme ---
@@ -1477,6 +1610,96 @@ class MainWindow(QMainWindow):
             self.setWindowTitle(f"{self._t('app_name')} — {self._cur_display_name}")
         else:
             self.setWindowTitle(self._t("app_name"))
+
+    # --- licence / mode gratuit ---
+
+    def refresh_pro_ui(self):
+        """Realigne l'UI sur l'etat courant de la licence (appelee au demarrage,
+        apres activation/desactivation, et au retour de la revalidation en ligne)."""
+        pro = self.lic.is_pro()
+        self.btn_pro.setText(self._t("btn_pro_active" if pro else "btn_pro"))
+        self.btn_pro.setToolTip(
+            self._t("btn_pro_active_tooltip") if pro
+            else self._t("btn_pro_tooltip", price=PRO_PRICE_EUR))
+        self._update_plan_label()
+        # Grace offline bientot epuisee : prevenir plutot que couper sans preavis.
+        days = self.lic.grace_days_left()
+        if pro and 0 < days <= 3:
+            self.statusBar().showMessage(self._t("lic_grace_warning", n=days), 10000)
+
+    def _update_plan_label(self):
+        if self.lic.is_pro():
+            self.lbl_plan.setText(self._t("status_pro"))
+            return
+        left = self.usage.remaining()
+        self.lbl_plan.setText(
+            self._t("status_free", n=left) if left else self._t("status_free_none"))
+
+    def open_license(self):
+        if not self.lic.is_pro():
+            LicenseDialog(self).exec()
+            return
+        box = QMessageBox(self)
+        box.setWindowTitle(self._t("lic_active_title"))
+        box.setText(self._t("lic_active_as", email=self.lic.email() or "—"))
+        deact = box.addButton(self._t("lic_deactivate"),
+                              QMessageBox.ButtonRole.DestructiveRole)
+        box.addButton(self._t("lic_close"), QMessageBox.ButtonRole.RejectRole)
+        box.exec()
+        if box.clickedButton() is not deact:
+            return
+        confirm = QMessageBox.question(self, self._t("lic_active_title"),
+                                       self._t("lic_deactivate_confirm"))
+        if confirm == QMessageBox.StandardButton.Yes:
+            self.lic.deactivate()
+            self.refresh_pro_ui()
+            QMessageBox.information(self, self._t("lic_active_title"),
+                                    self._t("lic_deactivated"))
+
+    def _show_upsell(self, title: str, body: str):
+        box = QMessageBox(self)
+        box.setWindowTitle(title)
+        box.setText(body)
+        box.setIcon(QMessageBox.Icon.Information)
+        buy = box.addButton(self._t("upsell_buy", price=PRO_PRICE_EUR),
+                            QMessageBox.ButtonRole.AcceptRole)
+        have = box.addButton(self._t("upsell_have_key"),
+                             QMessageBox.ButtonRole.ActionRole)
+        box.addButton(self._t("upsell_later"), QMessageBox.ButtonRole.RejectRole)
+        box.exec()
+        if box.clickedButton() is buy:
+            webbrowser.open(buy_url())
+        elif box.clickedButton() is have:
+            self.open_license()
+
+    def _require_pro(self, feature: str) -> bool:
+        """True si Pro. Sinon affiche l'upsell nomme et retourne False."""
+        if self.lic.is_pro():
+            return True
+        self._show_upsell(
+            self._t("upsell_title"),
+            self._t("upsell_body", feat=self._t(f"feat_{feature}"),
+                    n=FREE_DAILY_MAX, price=PRO_PRICE_EUR))
+        return False
+
+    def _can_export_now(self) -> bool:
+        """Quota du jour (gratuit). Affiche l'upsell une fois epuise."""
+        if self.lic.is_pro() or self.usage.can_export():
+            return True
+        self._show_upsell(self._t("upsell_quota_title"),
+                          self._t("upsell_quota_body", n=FREE_DAILY_MAX,
+                                  price=PRO_PRICE_EUR))
+        return False
+
+    def _record_export(self):
+        """Decompte un export du quota. Sans effet en Pro (illimite)."""
+        if not self.lic.is_pro():
+            self.usage.record_export()
+            self._update_plan_label()
+
+    def _guard_bg_ai(self, on: bool):
+        if on and not self._require_pro(FEAT_BG_AI):
+            self.chk_bg_ai.setChecked(False)
 
     def _ask_png_size(self) -> int | None:
         """Demande la resolution PNG (cote long) : presets + valeur libre.
@@ -1517,14 +1740,24 @@ class MainWindow(QMainWindow):
         if not f:
             return
         out = Path(f)
+        # Le format choisi determine le verrou : PNG et PDF sont Pro, le SVG
+        # passe par le quota du jour. Verifie AVANT tout travail d'export.
+        is_png = "png" in flt or out.suffix.lower() == ".png"
+        is_pdf = "pdf" in flt or out.suffix.lower() == ".pdf"
+        if is_png and not self._require_pro(FEAT_EXPORT_PNG):
+            return
+        if is_pdf and not self._require_pro(FEAT_EXPORT_PDF):
+            return
+        if not (is_png or is_pdf) and not self._can_export_now():
+            return
         try:
-            if "png" in flt or out.suffix.lower() == ".png":
+            if is_png:
                 out = out.with_suffix(".png")
                 size = self._ask_png_size()
                 if size is None:
                     return
                 svg_to_png(self.svg_path, out, max_px=size)
-            elif "pdf" in flt or out.suffix.lower() == ".pdf":
+            elif is_pdf:
                 out = out.with_suffix(".pdf")
                 svg_to_pdf(self.svg_path, out)
             else:
@@ -1537,6 +1770,7 @@ class MainWindow(QMainWindow):
                     txt = resize_svg(txt, target)
                 out.write_text(txt, encoding="utf-8")
             self._last_dir = str(out.parent)
+            self._record_export()
         except Exception as e:  # noqa: BLE001
             QMessageBox.critical(self, self._t("title_error"), self._t("err_export_failed", e=e))
 
@@ -1544,6 +1778,8 @@ class MainWindow(QMainWindow):
     def run_batch(self):
         if self._batch is not None:
             return  # un lot tourne deja
+        if not self._require_pro(FEAT_BATCH):
+            return
         in_dir = QFileDialog.getExistingDirectory(
             self, self._t("batch_dialog_title"), self._last_dir)
         if not in_dir:

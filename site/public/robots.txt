@@ -1,0 +1,13 @@
+# VectorPop — indexation bloquee tant que le site tourne sur l'URL Vercel.
+# Le domaine vectorpop.fr n'est pas encore depose : laisser Google indexer
+# l'URL *.vercel.app creerait un doublon du futur site.
+#
+# A FAIRE le jour du domaine : remplacer tout ce fichier par
+#
+#   User-agent: *
+#   Allow: /
+#
+#   Sitemap: https://vectorpop.fr/sitemap.xml
+
+User-agent: *
+Disallow: /
