@@ -1,3 +1,11 @@
+# NE PLUS RELANCER TEL QUEL (17/07) : SRC est une image generee par IA (Gemini)
+# qui encode sa "transparence" en damier visuel plutot qu'un vrai canal alpha.
+# Le retrait ci-dessous (saturation + flood-fill depuis les bords) rate les
+# fragments de damier isoles pres des coins arrondis -> liseré en damier sur
+# l'icone finale (repere sur l'app ET le site le 17/07). icons/VectorPop_master_1024.png
+# a ete nettoye a la main depuis -- ne pas l'ecraser en relancant ce script sans
+# d'abord fiabiliser la detection de fond (ou repartir d'une source sans damier
+# baked-in).
 from PIL import Image, ImageDraw, ImageFilter
 import numpy as np, os
 
