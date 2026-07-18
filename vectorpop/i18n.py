@@ -75,10 +75,22 @@ STRINGS = {
         "chk_bg": "Enlever le fond",
         "chk_bg_tooltip": "Detecte le fond uni (depuis les coins) et le rend transparent.",
         "chk_bg_ai": "Détourage IA",
-        "chk_bg_ai_tooltip": "Fond complexe (photo, dégradé). Nécessite rembg. Plus lent.",
-        "chk_bg_ai_unavailable_tooltip": (
-            "Détourage IA indisponible : le module rembg n'est pas installé "
-            "(voir requirements-ai.txt)."),
+        "chk_bg_ai_tooltip": "Fond complexe (photo, dégradé). Plus lent.",
+        "chk_bg_ai_download_tooltip": (
+            "Fond complexe (photo, dégradé). Cochez pour télécharger le module IA "
+            "(~120 Mo, une seule fois)."),
+        "ai_dl_confirm_title": "Télécharger le module IA",
+        "ai_dl_confirm_body": (
+            "Le détourage IA nécessite un module d'environ 120 Mo (téléchargé une "
+            "seule fois). Continuer ?"),
+        "ai_dl_progress_title": "Téléchargement du module IA…",
+        "ai_dl_progress_label": "Téléchargement en cours… {pct}%",
+        "ai_dl_progress_label_indeterminate": "Téléchargement en cours…",
+        "ai_dl_cancel": "Annuler",
+        "ai_dl_failed_title": "Échec du téléchargement",
+        "ai_dl_failed_body": "Le module IA n'a pas pu être installé : {msg}",
+        "ai_dl_cancelled": "Téléchargement du module IA annulé.",
+        "ai_dl_done": "Module IA installé — détourage IA activé.",
         "chk_merge": "Fusion couleurs",
         "chk_merge_tooltip": "Fusionne les teintes proches : aplats plus francs, SVG plus léger.",
         "chk_grad": "Dégradés (lisse)",
@@ -316,10 +328,22 @@ STRINGS = {
         "chk_bg": "Remove background",
         "chk_bg_tooltip": "Detects the flat background (from the corners) and makes it transparent.",
         "chk_bg_ai": "AI background removal",
-        "chk_bg_ai_tooltip": "Complex background (photo, gradient). Requires rembg. Slower.",
-        "chk_bg_ai_unavailable_tooltip": (
-            "AI background removal unavailable: the rembg module isn't installed "
-            "(see requirements-ai.txt)."),
+        "chk_bg_ai_tooltip": "Complex background (photo, gradient). Slower.",
+        "chk_bg_ai_download_tooltip": (
+            "Complex background (photo, gradient). Check to download the AI "
+            "module (~120 MB, one time only)."),
+        "ai_dl_confirm_title": "Download the AI module",
+        "ai_dl_confirm_body": (
+            "AI background removal needs a ~120 MB module (downloaded once). "
+            "Continue?"),
+        "ai_dl_progress_title": "Downloading AI module…",
+        "ai_dl_progress_label": "Downloading… {pct}%",
+        "ai_dl_progress_label_indeterminate": "Downloading…",
+        "ai_dl_cancel": "Cancel",
+        "ai_dl_failed_title": "Download failed",
+        "ai_dl_failed_body": "The AI module could not be installed: {msg}",
+        "ai_dl_cancelled": "AI module download cancelled.",
+        "ai_dl_done": "AI module installed — AI background removal enabled.",
         "chk_merge": "Merge colors",
         "chk_merge_tooltip": "Merges nearby shades: cleaner flats, lighter SVG.",
         "chk_grad": "Gradients (smooth)",

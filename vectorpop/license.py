@@ -94,6 +94,11 @@ def _get_data_dir() -> Path:
     return d
 
 
+def data_dir() -> Path:
+    """Acces public au dossier de donnees (reutilise par ai_module.py)."""
+    return _get_data_dir()
+
+
 # ── Cles HMAC (mode dev, hors Lemon Squeezy) ──────────────────────────────────
 
 def generate_key(email: str) -> str:

@@ -26,6 +26,7 @@ from PySide6.QtWidgets import (
 )
 from PIL import Image, ImageDraw
 
+from . import ai_module
 from .export import resize_svg, svg_to_pdf, svg_to_png
 from .gradients import gradientize_svg, refine_colors, remove_shape_at
 from .license import (
@@ -650,6 +651,36 @@ class LicenseRefreshWorker(QThread):
         self.done.emit()
 
 
+class AIDownloadWorker(QThread):
+    """Telecharge le module IA (rembg+onnxruntime) hors du thread UI.
+
+    Le module pese ~120 Mo : sans thread, la fenetre gelerait pendant
+    plusieurs dizaines de secondes voire minutes selon la connexion.
+    """
+
+    progress = Signal(int, int)   # (octets recus, total ; total vaut 0 si inconnu)
+    done = Signal()
+    failed = Signal(str)          # "cancelled" si annule par l'utilisateur
+
+    def __init__(self):
+        super().__init__()
+        self._cancel = False
+
+    def cancel(self):
+        self._cancel = True
+
+    def run(self):
+        try:
+            ai_module.download(
+                progress=lambda d, t: self.progress.emit(d, t),
+                should_cancel=lambda: self._cancel)
+            self.done.emit()
+        except ai_module.DownloadCancelled:
+            self.failed.emit("cancelled")
+        except Exception as e:  # noqa: BLE001
+            self.failed.emit(str(e))
+
+
 class LicenseDialog(QDialog):
     """Saisie email + cle de licence, ou gestion de la licence deja active."""
 
@@ -720,6 +751,7 @@ class MainWindow(QMainWindow):
         dark_setting = self._settings.value("dark_mode")
         self._dark = (dark_setting in (True, "true", "True", 1, "1")
                       if dark_setting is not None else False)
+        ai_module.ensure_on_path()   # rend rembg importable si deja telecharge
         self._rembg_missing = importlib.util.find_spec("rembg") is None
         self._retranslators: list = []            # callables a rejouer au changement de langue
         self._cur_display_name: str | None = None  # pour reconstruire le titre de fenetre
@@ -750,6 +782,8 @@ class MainWindow(QMainWindow):
         self._pending_silent = True
         self._batch: BatchWorker | None = None
         self._progress: QProgressDialog | None = None
+        self._ai_worker: AIDownloadWorker | None = None
+        self._ai_progress: QProgressDialog | None = None
         self._last_dir = ""                      # dernier dossier d'export (memorise)
         self._last_png_size = 2048               # derniere resolution PNG choisie (memorisee)
         self._last_svg_size = 0                  # derniere taille SVG choisie (0 = origine)
@@ -975,11 +1009,12 @@ class MainWindow(QMainWindow):
         self.apply_theme(self._dark)
         self.retranslate_ui()   # applique la langue chargee (bouton, tooltip rembg, etc.)
 
-        # Detourage IA (rembg) pas toujours installe : refleter la realite dans l'UI
-        # (sinon une case cochee + rembg absent = echec silencieux a chaque apercu).
+        # Detourage IA (rembg) pas toujours installe : la case reste cliquable
+        # (un utilisateur Pro doit pouvoir declencher le telechargement), mais
+        # on ne la restaure pas cochee tant que le module n'est pas la (sinon
+        # echec silencieux a chaque apercu).
         if self._rembg_missing:
             self.chk_bg_ai.setChecked(False)
-            self.chk_bg_ai.setEnabled(False)
 
         # Verrou Pro sur le detourage IA. Branche APRES _load_settings pour que
         # la restauration des reglages ne declenche pas l'upsell au demarrage.
@@ -1605,7 +1640,7 @@ class MainWindow(QMainWindow):
         self._repopulate_preset_combo()
         self._update_lang_button()
         if self._rembg_missing:
-            self.chk_bg_ai.setToolTip(self._t("chk_bg_ai_unavailable_tooltip"))
+            self.chk_bg_ai.setToolTip(self._t("chk_bg_ai_download_tooltip"))
         if self._cur_display_name:
             self.setWindowTitle(f"{self._t('app_name')} — {self._cur_display_name}")
         else:
@@ -1698,8 +1733,68 @@ class MainWindow(QMainWindow):
             self._update_plan_label()
 
     def _guard_bg_ai(self, on: bool):
-        if on and not self._require_pro(FEAT_BG_AI):
+        if not on:
+            return
+        if not self._require_pro(FEAT_BG_AI):
             self.chk_bg_ai.setChecked(False)
+            return
+        if self._rembg_missing:
+            self.chk_bg_ai.setChecked(False)   # decoche : attend le succes du telechargement
+            self._start_ai_download()
+
+    def _start_ai_download(self):
+        if self._ai_worker is not None:
+            return  # deja en cours
+        confirm = QMessageBox.question(
+            self, self._t("ai_dl_confirm_title"), self._t("ai_dl_confirm_body"))
+        if confirm != QMessageBox.StandardButton.Yes:
+            return
+        self._ai_progress = QProgressDialog(
+            self._t("ai_dl_progress_label_indeterminate"), self._t("ai_dl_cancel"), 0, 0, self)
+        self._ai_progress.setWindowTitle(self._t("ai_dl_progress_title"))
+        self._ai_progress.setWindowModality(Qt.WindowModal)
+        self._ai_progress.setMinimumDuration(0)
+        self._ai_worker = AIDownloadWorker()
+        self._ai_worker.progress.connect(self._on_ai_download_progress)
+        self._ai_worker.done.connect(self._on_ai_download_done)
+        self._ai_worker.failed.connect(self._on_ai_download_failed)
+        self._ai_progress.canceled.connect(self._ai_worker.cancel)
+        self._ai_progress.show()
+        self._ai_worker.start()
+
+    def _on_ai_download_progress(self, done: int, total: int):
+        if self._ai_progress is None:
+            return
+        if total > 0:
+            self._ai_progress.setRange(0, total)
+            self._ai_progress.setValue(done)
+            self._ai_progress.setLabelText(
+                self._t("ai_dl_progress_label", pct=int(done * 100 / total)))
+        else:
+            self._ai_progress.setLabelText(self._t("ai_dl_progress_label_indeterminate"))
+
+    def _on_ai_download_done(self):
+        self._finish_ai_download()
+        self._rembg_missing = False
+        self.chk_bg_ai.setToolTip(self._t("chk_bg_ai_tooltip"))
+        self.chk_bg_ai.setChecked(True)   # redeclenche _guard_bg_ai, sans effet (plus manquant)
+        self.statusBar().showMessage(self._t("ai_dl_done"), 5000)
+
+    def _on_ai_download_failed(self, msg: str):
+        self._finish_ai_download()
+        if msg == "cancelled":
+            self.statusBar().showMessage(self._t("ai_dl_cancelled"), 4000)
+            return
+        QMessageBox.warning(
+            self, self._t("ai_dl_failed_title"), self._t("ai_dl_failed_body", msg=msg[:200]))
+
+    def _finish_ai_download(self):
+        if self._ai_progress is not None:
+            self._ai_progress.close()
+            self._ai_progress = None
+        if self._ai_worker is not None:
+            self._ai_worker.deleteLater()
+            self._ai_worker = None
 
     def _ask_png_size(self) -> int | None:
         """Demande la resolution PNG (cote long) : presets + valeur libre.
