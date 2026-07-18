@@ -48,3 +48,11 @@ Non inclus dans l'exe par defaut (trop lourd). Pour l'activer depuis les sources
 - [ ] Fusion de couleurs proches / nettoyage paths avance
 - [ ] Packaging Microsoft Store (.msix)
 - [ ] (premium) generation de concept par IA -> vectorisation auto
+
+## Un avis ou un retour ?
+
+VectorPop est un jeune projet solo — vos retours m'aident enormement a l'ameliorer.
+
+- 📩 Ecrivez-moi directement : **contact@vectorpop.fr**
+
+Merci !
