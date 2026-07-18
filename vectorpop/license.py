@@ -46,7 +46,7 @@ WEBSITE_URL  = "https://vectorpop.fr"
 UPGRADE_URL  = f"{WEBSITE_URL}/#pricing"
 # Checkout Lemon Squeezy — a remplir apres creation du produit (cf. LS_STORE_ID).
 # Tant qu'il est vide, les boutons d'achat renvoient vers UPGRADE_URL.
-CHECKOUT_URL = ""
+CHECKOUT_URL = "https://voxcut-pro.lemonsqueezy.com/checkout/buy/6ea17f0e-5d89-4994-a83e-84060447bf67?checkout[discount_code]=LANCEMENT30"
 
 
 def buy_url() -> str:
@@ -59,8 +59,8 @@ _LICENSE_SECRET = b"VectorPop-2026-Kv3mRt-Secret"
 # Lemon Squeezy — a remplir apres creation du produit VectorPop sur
 # lemonsqueezy.com. Tant que LS_STORE_ID est vide, l'app est en mode dev :
 # les cles HMAC generees par generate_license_key.py sont acceptees hors ligne.
-LS_STORE_ID   = ""
-LS_PRODUCT_ID = ""
+LS_STORE_ID   = "399927"
+LS_PRODUCT_ID = "1229563"
 
 _LS_API        = "https://api.lemonsqueezy.com/v1/licenses"
 _GRACE_SECONDS = 14 * 86400   # grace offline : 14 jours depuis la derniere

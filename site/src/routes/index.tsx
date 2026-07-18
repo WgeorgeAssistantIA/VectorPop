@@ -24,12 +24,13 @@ import {
 declare function gtag(...args: unknown[]): void;
 
 // --- Liens (a mettre a jour le jour du domaine / de la mise en vente) --------
-// Le domaine vectorpop.fr n'est pas encore depose et le produit Lemon Squeezy
-// n'est pas cree : tant que CHECKOUT_URL est vide, la carte Pro affiche
-// « bientot disponible » et renvoie vers la newsletter, plutot qu'un lien mort.
+// Le domaine vectorpop.fr n'est pas encore depose : robots.txt/canonical restent
+// en mode "avant-domaine" (voir src/server.ts) jusqu'au depot. Le produit Lemon
+// Squeezy est cree (id 1229563, cf. vectorpop/license.py) : CHECKOUT_URL est donc
+// renseigne, la carte Pro pointe vers le vrai checkout.
 const GITHUB_REPO = "https://github.com/WgeorgeAssistantIA/VectorPop";
 const DOWNLOAD_EXE = `${GITHUB_REPO}/releases/latest/download/VectorPop.exe`;
-const CHECKOUT_URL = "";
+const CHECKOUT_URL = "https://voxcut-pro.lemonsqueezy.com/checkout/buy/6ea17f0e-5d89-4994-a83e-84060447bf67?checkout[discount_code]=LANCEMENT30";
 const CONTACT_EMAIL = "contact@vectorpop.fr";
 
 function trackDownload(e: MouseEvent<HTMLAnchorElement>) {
