@@ -38,3 +38,5 @@ dist-ssr
 
 # Vercel build output
 .vercel/
+.vercel
+.env*
