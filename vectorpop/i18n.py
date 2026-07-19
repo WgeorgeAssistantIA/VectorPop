@@ -91,6 +91,19 @@ STRINGS = {
         "ai_dl_failed_body": "Le module IA n'a pas pu être installé : {msg}",
         "ai_dl_cancelled": "Téléchargement du module IA annulé.",
         "ai_dl_done": "Module IA installé — détourage IA activé.",
+        "chk_upscale": "Finition IA (×4)",
+        "chk_upscale_tooltip": (
+            "Redessine la source ×4 par IA (Real-ESRGAN) avant vectorisation :\n"
+            "bords francs, courbes lisses. Idéal petites images et JPEG compressés.\n"
+            "Plus lent — exclu de l'aperçu auto, lance « Vectoriser » toi-même."),
+        "up_dl_confirm_title": "Finition IA",
+        "up_dl_confirm_body": (
+            "Télécharger le modèle de finition IA (~5 Mo) ?\n"
+            "Un seul téléchargement, ensuite tout se fait hors-ligne."),
+        "up_dl_progress_title": "Téléchargement du modèle…",
+        "up_dl_done": "Modèle installé — finition IA activée.",
+        "busy_ai_up": "⏳ Finition IA + vectorisation…  (image ×4, patiente quelques instants)",
+        "feat_ai_upscale": "la finition IA (×4)",
         "chk_merge": "Fusion couleurs",
         "chk_merge_tooltip": "Fusionne les teintes proches : aplats plus francs, SVG plus léger.",
         "chk_edges": "Contours nets",
@@ -348,6 +361,19 @@ STRINGS = {
         "ai_dl_failed_body": "The AI module could not be installed: {msg}",
         "ai_dl_cancelled": "AI module download cancelled.",
         "ai_dl_done": "AI module installed — AI background removal enabled.",
+        "chk_upscale": "AI finishing (×4)",
+        "chk_upscale_tooltip": (
+            "Redraws the source ×4 with AI (Real-ESRGAN) before vectorizing:\n"
+            "crisp edges, smooth curves. Great for small images and compressed JPEGs.\n"
+            "Slower — excluded from live preview, hit 'Vectorize' yourself."),
+        "up_dl_confirm_title": "AI finishing",
+        "up_dl_confirm_body": (
+            "Download the AI finishing model (~5 MB)?\n"
+            "One-time download, everything runs offline afterwards."),
+        "up_dl_progress_title": "Downloading model…",
+        "up_dl_done": "Model installed — AI finishing enabled.",
+        "busy_ai_up": "⏳ AI finishing + vectorizing…  (image ×4, this takes a moment)",
+        "feat_ai_upscale": "AI finishing (×4)",
         "chk_merge": "Merge colors",
         "chk_merge_tooltip": "Merges nearby shades: cleaner flats, lighter SVG.",
         "chk_edges": "Clean edges",

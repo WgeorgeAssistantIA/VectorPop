@@ -37,6 +37,7 @@ class VectorParams:
     merge_colors: bool = True         # fusionne les teintes proches (aplats plus francs)
     merge_threshold: int = 24         # distance RGB max pour fusionner (0-100)
     clean_edges: bool = True          # supprime les liseres d'anti-aliasing (mode aplats)
+    ai_upscale: bool = False          # finition IA : upscale x4 (Real-ESRGAN) avant trace
     contrast: int = 0                 # renforce/adoucit le contraste avant trace (-50..50)
     sharpen: int = 0                  # nettete (unsharp mask) avant trace (0..100)
 
@@ -267,6 +268,36 @@ def _suppress_aa_fringes_once(rgb: Image.Image, opaque: np.ndarray,
     return Image.fromarray(out.reshape(h, w, 3), "RGB")
 
 
+def _project_on_source_palette(rgb: Image.Image, source: Image.Image,
+                               params: VectorParams) -> Image.Image:
+    """Projette `rgb` (image agrandie par IA) sur la palette de `source`.
+
+    Le modele de super-resolution fournit la GEOMETRIE (bords lisses) mais
+    invente des rampes de couleur le long des bords (overshoot GAN) qui
+    polluent la quantification. La verite couleur, c'est la source : on
+    quantifie SA palette, puis chaque pixel agrandi est rabattu sur la couleur
+    source la plus proche. Toute teinte hallucinee disparait par construction.
+    """
+    n = max(2, min(256, 2 ** params.color_precision))
+    pal_img = source.convert("RGB").quantize(colors=n, method=Image.MEDIANCUT).convert("RGB")
+    pal_img = _merge_near_colors(pal_img, params.merge_threshold)
+    palette = np.unique(np.asarray(pal_img, np.uint8).reshape(-1, 3), axis=0).astype(np.float32)
+
+    # Projection directe pixel -> couleur la plus proche, par blocs pour rester
+    # sobre en memoire (PAS de quantize() intermediaire : son tramage
+    # Floyd-Steinberg pulverise les rampes du modele en damier de bruit).
+    arr = np.asarray(rgb, np.uint8)
+    h, w = arr.shape[:2]
+    flat = arr.reshape(-1, 3)
+    out = np.empty_like(flat)
+    step = 500_000
+    for i in range(0, len(flat), step):
+        block = flat[i:i + step].astype(np.float32)
+        d = ((block[:, None, :] - palette[None, :, :]) ** 2).sum(axis=2)
+        out[i:i + step] = palette[np.argmin(d, axis=1)].astype(np.uint8)
+    return Image.fromarray(out.reshape(h, w, 3), "RGB")
+
+
 def _preprocess(src: Path, params: VectorParams, reduce_colors: bool) -> Path:
     """Nettoie l'image avant vectorisation. Renvoie un PNG temporaire.
 
@@ -275,6 +306,15 @@ def _preprocess(src: Path, params: VectorParams, reduce_colors: bool) -> Path:
     halo d'anti-aliasing, qui sinon se transforment en milliers de paths gris.
     """
     img = Image.open(src).convert("RGBA")
+
+    source_ref: Image.Image | None = None
+    if params.ai_upscale:
+        # Finition IA : la source est redessinee x4 par Real-ESRGAN avant tout
+        # traitement -> bords francs et sans bruit, courbes lisses au trace.
+        # On garde la source comme reference couleur (cf. projection palette).
+        from .ai_upscale import upscale_x4  # noqa: PLC0415 - import paresseux volontaire
+        source_ref = img
+        img = upscale_x4(img)
 
     if params.remove_background_ai:
         # Detourage IA : prioritaire, gere les fonds non unis.
@@ -314,17 +354,22 @@ def _preprocess(src: Path, params: VectorParams, reduce_colors: bool) -> Path:
             # Sinon chaque pixel de bruit devient sa propre fine couche vtracer
             # (effet "contour en dents de scie" sur les bords ronds).
             rgb = rgb.filter(ImageFilter.ModeFilter(size=3))
-        # Quantification : reduit le bruit de couleur avant vtracer = moins de paths.
-        n = max(2, min(256, 2 ** params.color_precision))
-        rgb = rgb.quantize(colors=n, method=Image.MEDIANCUT).convert("RGB")
-        if params.merge_colors:
-            # Fusion des teintes proches : aplats plus francs, moins de calques.
-            rgb = _merge_near_colors(rgb, params.merge_threshold)
-            if params.clean_edges:
-                # Contours nets : supprime les liseres d'anti-aliasing restants.
-                # Reserve au mode aplats : en mode degrades, les fines bandes
-                # SONT le degrade voulu.
-                rgb = _suppress_aa_fringes(rgb, np.asarray(a) > 0)
+        if source_ref is not None and params.merge_colors:
+            # Image agrandie par IA : les couleurs de verite sont celles de la
+            # source, pas celles (hallucinees sur les bords) du modele.
+            rgb = _project_on_source_palette(rgb, source_ref, params)
+        else:
+            # Quantification : reduit le bruit de couleur avant vtracer = moins de paths.
+            n = max(2, min(256, 2 ** params.color_precision))
+            rgb = rgb.quantize(colors=n, method=Image.MEDIANCUT).convert("RGB")
+            if params.merge_colors:
+                # Fusion des teintes proches : aplats plus francs, moins de calques.
+                rgb = _merge_near_colors(rgb, params.merge_threshold)
+        if params.merge_colors and params.clean_edges:
+            # Contours nets : supprime les liseres d'anti-aliasing restants.
+            # Reserve au mode aplats : en mode degrades, les fines bandes
+            # SONT le degrade voulu.
+            rgb = _suppress_aa_fringes(rgb, np.asarray(a) > 0)
 
     # On recompose en RGBA : vtracer ignore les zones totalement transparentes.
     out = Image.merge("RGBA", (*rgb.split(), a))

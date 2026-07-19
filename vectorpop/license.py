@@ -76,6 +76,7 @@ _GRACE_SECONDS = 14 * 86400   # grace offline : 14 jours depuis la derniere
 FEAT_EXPORT_PDF   = "export_pdf"     # export PDF vectoriel
 FEAT_EXPORT_PNG   = "export_png"     # export PNG haute definition
 FEAT_BG_AI        = "bg_ai"          # detourage IA (rembg)
+FEAT_AI_UPSCALE   = "ai_upscale"     # finition IA (upscale x4 avant trace)
 FEAT_AUTOTUNE     = "autotune"       # bouton "Optimiser" (recherche auto)
 FEAT_DELETE_SHAPE = "delete_shape"   # suppression d'aplats au clic
 FEAT_BATCH        = "batch"          # traitement par lot
