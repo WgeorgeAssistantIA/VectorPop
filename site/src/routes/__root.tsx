@@ -109,11 +109,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     scripts: [
       {
-        src: "https://www.googletagmanager.com/gtag/js?id=G-MHVPJ1EJJF",
+        src: "https://www.googletagmanager.com/gtag/js?id=G-W564WTCTLV",
         async: true,
       },
       {
-        children: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-MHVPJ1EJJF');`,
+        children: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-W564WTCTLV');`,
       },
     ],
   }),
