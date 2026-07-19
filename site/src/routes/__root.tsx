@@ -86,6 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Vectorize a pixelated logo into a clean, editable SVG. Free Windows app — 100% local and private.",
       },
       { name: "author", content: "VectorPop" },
+      { name: "google-site-verification", content: "zqPYuFyXyTypjuQKQXYtYf0C79VqH3IML2jXzqz-038" },
       { property: "og:title", content: "VectorPop — Turn your PNG and JPEG logos into clean SVG" },
       {
         property: "og:description",
