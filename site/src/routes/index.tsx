@@ -29,7 +29,7 @@ declare function gtag(...args: unknown[]): void;
 // Squeezy est cree (id 1229563, cf. vectorpop/license.py) : CHECKOUT_URL est donc
 // renseigne, la carte Pro pointe vers le vrai checkout.
 const GITHUB_REPO = "https://github.com/WgeorgeAssistantIA/VectorPop";
-const DOWNLOAD_EXE = `${GITHUB_REPO}/releases/download/v1.1.0/VectorPop-1.1.0-win_amd64.zip`;
+const DOWNLOAD_EXE = `${GITHUB_REPO}/releases/download/v1.1.0/VectorPop-Setup-1.1.0.exe`;
 const CHECKOUT_URL = "https://voxcut-pro.lemonsqueezy.com/checkout/buy/6ea17f0e-5d89-4994-a83e-84060447bf67?checkout[discount_code]=LANCEMENT30";
 const CONTACT_EMAIL = "contact@vectorpop.fr";
 
@@ -61,7 +61,7 @@ const t = {
       subtitle:
         "A logo that falls apart the moment you enlarge it? VectorPop retraces it into clean, editable vector — on your own machine. No cloud, no subscription.",
       btnPrimary: "Download free for Windows",
-      subText: "Windows .zip — no credit card required",
+      subText: "Windows installer — no credit card required",
       badges: [
         "Your images never leave your computer",
         "One-time purchase — no subscription",
@@ -257,7 +257,7 @@ const t = {
       subtitle:
         "Un logo qui s'effondre dès que vous l'agrandissez ? VectorPop le retrace en vectoriel propre et éditable, sur votre machine. Pas de cloud, pas d'abonnement.",
       btnPrimary: "Télécharger gratuitement pour Windows",
-      subText: ".zip Windows — pas de carte bancaire requise",
+      subText: "Installeur Windows — pas de carte bancaire requise",
       badges: [
         "Vos images ne quittent jamais votre ordinateur",
         "Achat unique — aucun abonnement",
