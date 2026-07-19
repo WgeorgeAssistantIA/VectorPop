@@ -93,6 +93,10 @@ STRINGS = {
         "ai_dl_done": "Module IA installé — détourage IA activé.",
         "chk_merge": "Fusion couleurs",
         "chk_merge_tooltip": "Fusionne les teintes proches : aplats plus francs, SVG plus léger.",
+        "chk_edges": "Contours nets",
+        "chk_edges_tooltip": (
+            "Supprime les liserés d'anti-aliasing le long des bords : contours propres\n"
+            "même en zoomant fort, SVG plus léger. Agit avec « Fusion couleurs »."),
         "chk_grad": "Dégradés (lisse)",
         "chk_grad_tooltip": (
             "Reconstruit de vrais dégradés au lieu de bandes. Idéal images glossy/3D.\n"
@@ -346,6 +350,10 @@ STRINGS = {
         "ai_dl_done": "AI module installed — AI background removal enabled.",
         "chk_merge": "Merge colors",
         "chk_merge_tooltip": "Merges nearby shades: cleaner flats, lighter SVG.",
+        "chk_edges": "Clean edges",
+        "chk_edges_tooltip": (
+            "Removes anti-aliasing fringes along edges: crisp outlines even when\n"
+            "zooming in hard, lighter SVG. Works together with 'Merge colors'."),
         "chk_grad": "Gradients (smooth)",
         "chk_grad_tooltip": (
             "Rebuilds real gradients instead of banding. Great for glossy/3D images.\n"

@@ -73,7 +73,7 @@ ACCEPTED = {".png", ".jpg", ".jpeg", ".bmp", ".webp"}
 # "preset" reference un identifiant stable de vectorizer.PRESETS (pas un libelle affiche).
 RECIPES = [
     ("recipe_flat_title", "recipe_flat_desc",
-     dict(preset="flat", colors=6, merge_on=True, merge=24,
+     dict(preset="flat", colors=6, merge_on=True, merge=24, edges=True,
           grad=False, refine=True, bg=False, contrast=0, sharpen=0)),
     ("recipe_glossy_title", "recipe_glossy_desc",
      dict(preset="detailed", colors=8, merge_on=False, corner=40, speckle=6,
@@ -894,6 +894,8 @@ class MainWindow(QMainWindow):
         self.chk_bg_ai = self._tr_widget(QCheckBox(), "chk_bg_ai", "chk_bg_ai_tooltip")
         self.chk_merge = self._tr_widget(QCheckBox(), "chk_merge", "chk_merge_tooltip")
         self.chk_merge.setChecked(True)
+        self.chk_edges = self._tr_widget(QCheckBox(), "chk_edges", "chk_edges_tooltip")
+        self.chk_edges.setChecked(True)
         self.chk_grad = self._tr_widget(QCheckBox(), "chk_grad", "chk_grad_tooltip")
         self.chk_refine = self._tr_widget(QCheckBox(), "chk_refine", "chk_refine_tooltip")
 
@@ -901,6 +903,7 @@ class MainWindow(QMainWindow):
         bg_box.addWidget(self.chk_bg)
         bg_box.addWidget(self.chk_bg_ai)
         bg_box.addWidget(self.chk_merge)
+        bg_box.addWidget(self.chk_edges)
         bg_box.addWidget(self.chk_grad)
         bg_box.addWidget(self.chk_refine)
         bg_w = QWidget()
@@ -935,6 +938,7 @@ class MainWindow(QMainWindow):
         self.chk_bg.toggled.connect(self._schedule_live)
         self.chk_bg_ai.toggled.connect(self._schedule_live)
         self.chk_merge.toggled.connect(self._schedule_live)
+        self.chk_edges.toggled.connect(self._schedule_live)
         self.chk_grad.toggled.connect(self._schedule_live)
         self.chk_refine.toggled.connect(self._schedule_live)
         self.preset.currentIndexChanged.connect(self._schedule_live)
@@ -1146,6 +1150,7 @@ class MainWindow(QMainWindow):
         p.remove_background_ai = self.chk_bg_ai.isChecked()
         p.merge_colors = self.chk_merge.isChecked()
         p.merge_threshold = self.s_merge.value()
+        p.clean_edges = self.chk_edges.isChecked()
         p.contrast = self.s_contrast.value()
         p.sharpen = self.s_sharpen.value()
         return p
@@ -1300,7 +1305,8 @@ class MainWindow(QMainWindow):
             if key in cfg:
                 widget.setValue(cfg[key])
         checks = {
-            "merge_on": self.chk_merge, "bg": self.chk_bg, "bg_ai": self.chk_bg_ai,
+            "merge_on": self.chk_merge, "edges": self.chk_edges,
+            "bg": self.chk_bg, "bg_ai": self.chk_bg_ai,
             "grad": self.chk_grad, "refine": self.chk_refine,
         }
         for key, widget in checks.items():
@@ -1952,8 +1958,8 @@ class MainWindow(QMainWindow):
 
     def _chk_map(self):
         return {"chk_bg": self.chk_bg, "chk_bg_ai": self.chk_bg_ai,
-                "chk_merge": self.chk_merge, "chk_grad": self.chk_grad,
-                "chk_refine": self.chk_refine}
+                "chk_merge": self.chk_merge, "chk_edges": self.chk_edges,
+                "chk_grad": self.chk_grad, "chk_refine": self.chk_refine}
 
     def _load_settings(self):
         # Langue + theme sont deja charges tout en haut de __init__ (necessaires
