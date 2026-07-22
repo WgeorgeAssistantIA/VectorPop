@@ -13,8 +13,8 @@ import tempfile
 import webbrowser
 from pathlib import Path
 
-from PySide6.QtCore import Qt, QTimer, QThread, Signal, QRect, QSize, QSettings
-from PySide6.QtGui import QIcon, QKeySequence, QPainter, QPen, QPixmap, QShortcut
+from PySide6.QtCore import Qt, QTimer, QThread, Signal, QRect, QSize, QSettings, QUrl
+from PySide6.QtGui import QDesktopServices, QIcon, QKeySequence, QPainter, QPen, QPixmap, QShortcut
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtSvgWidgets import QGraphicsSvgItem
 from PySide6.QtWidgets import (
@@ -26,11 +26,11 @@ from PySide6.QtWidgets import (
 )
 from PIL import Image, ImageDraw
 
-from . import ai_module
+from . import ai_module, ai_upscale
 from .export import resize_svg, svg_to_pdf, svg_to_png
 from .gradients import gradientize_svg, refine_colors, remove_shape_at
 from .license import (
-    FEAT_AUTOTUNE, FEAT_BATCH, FEAT_BG_AI, FEAT_DELETE_SHAPE, FEAT_EXPORT_PDF,
+    FEAT_AI_UPSCALE, FEAT_AUTOTUNE, FEAT_BATCH, FEAT_BG_AI, FEAT_DELETE_SHAPE, FEAT_EXPORT_PDF,
     FEAT_EXPORT_PNG, FREE_DAILY_MAX, PRO_PRICE_EUR, LicenseManager, UsageTracker,
     buy_url,
 )
@@ -73,7 +73,7 @@ ACCEPTED = {".png", ".jpg", ".jpeg", ".bmp", ".webp"}
 # "preset" reference un identifiant stable de vectorizer.PRESETS (pas un libelle affiche).
 RECIPES = [
     ("recipe_flat_title", "recipe_flat_desc",
-     dict(preset="flat", colors=6, merge_on=True, merge=24,
+     dict(preset="flat", colors=6, merge_on=True, merge=24, edges=True,
           grad=False, refine=True, bg=False, contrast=0, sharpen=0)),
     ("recipe_glossy_title", "recipe_glossy_desc",
      dict(preset="detailed", colors=8, merge_on=False, corner=40, speckle=6,
@@ -681,6 +681,32 @@ class AIDownloadWorker(QThread):
             self.failed.emit(str(e))
 
 
+class WeightsDownloadWorker(QThread):
+    """Telecharge les poids de la finition IA (~5 Mo) hors du thread UI."""
+
+    progress = Signal(int, int)   # (octets recus, total ; total vaut 0 si inconnu)
+    done = Signal()
+    failed = Signal(str)          # "cancelled" si annule par l'utilisateur
+
+    def __init__(self):
+        super().__init__()
+        self._cancel = False
+
+    def cancel(self):
+        self._cancel = True
+
+    def run(self):
+        try:
+            ai_upscale.download_weights(
+                progress=lambda d, t: self.progress.emit(d, t),
+                should_cancel=lambda: self._cancel)
+            self.done.emit()
+        except ai_module.DownloadCancelled:
+            self.failed.emit("cancelled")
+        except Exception as e:  # noqa: BLE001
+            self.failed.emit(str(e))
+
+
 class LicenseDialog(QDialog):
     """Saisie email + cle de licence, ou gestion de la licence deja active."""
 
@@ -784,6 +810,9 @@ class MainWindow(QMainWindow):
         self._progress: QProgressDialog | None = None
         self._ai_worker: AIDownloadWorker | None = None
         self._ai_progress: QProgressDialog | None = None
+        self._up_worker: WeightsDownloadWorker | None = None
+        self._up_progress: QProgressDialog | None = None
+        self._pending_upscale = False   # re-enclenche la finition apres le module IA
         self._last_dir = ""                      # dernier dossier d'export (memorise)
         self._last_png_size = 2048               # derniere resolution PNG choisie (memorisee)
         self._last_svg_size = 0                  # derniere taille SVG choisie (0 = origine)
@@ -892,15 +921,20 @@ class MainWindow(QMainWindow):
 
         self.chk_bg = self._tr_widget(QCheckBox(), "chk_bg", "chk_bg_tooltip")
         self.chk_bg_ai = self._tr_widget(QCheckBox(), "chk_bg_ai", "chk_bg_ai_tooltip")
+        self.chk_upscale = self._tr_widget(QCheckBox(), "chk_upscale", "chk_upscale_tooltip")
         self.chk_merge = self._tr_widget(QCheckBox(), "chk_merge", "chk_merge_tooltip")
         self.chk_merge.setChecked(True)
+        self.chk_edges = self._tr_widget(QCheckBox(), "chk_edges", "chk_edges_tooltip")
+        self.chk_edges.setChecked(True)
         self.chk_grad = self._tr_widget(QCheckBox(), "chk_grad", "chk_grad_tooltip")
         self.chk_refine = self._tr_widget(QCheckBox(), "chk_refine", "chk_refine_tooltip")
 
         bg_box = QVBoxLayout()
         bg_box.addWidget(self.chk_bg)
         bg_box.addWidget(self.chk_bg_ai)
+        bg_box.addWidget(self.chk_upscale)
         bg_box.addWidget(self.chk_merge)
+        bg_box.addWidget(self.chk_edges)
         bg_box.addWidget(self.chk_grad)
         bg_box.addWidget(self.chk_refine)
         bg_w = QWidget()
@@ -934,7 +968,9 @@ class MainWindow(QMainWindow):
             s.valueChanged.connect(self._schedule_live)
         self.chk_bg.toggled.connect(self._schedule_live)
         self.chk_bg_ai.toggled.connect(self._schedule_live)
+        self.chk_upscale.toggled.connect(self._schedule_live)
         self.chk_merge.toggled.connect(self._schedule_live)
+        self.chk_edges.toggled.connect(self._schedule_live)
         self.chk_grad.toggled.connect(self._schedule_live)
         self.chk_refine.toggled.connect(self._schedule_live)
         self.preset.currentIndexChanged.connect(self._schedule_live)
@@ -996,6 +1032,16 @@ class MainWindow(QMainWindow):
         self.lbl_plan = QLabel()
         self.statusBar().addPermanentWidget(self.lbl_plan)
 
+        # Lien permanent pour signaler un resultat IA incorrect/inapproprie
+        # (detourage / finition IA) - exige par les politiques des stores (ex.
+        # Microsoft Store 11.16 "Live Generative AI Content").
+        self.btn_report_issue = self._tr_widget(
+            QPushButton(), "btn_report_issue", "btn_report_issue_tooltip")
+        self.btn_report_issue.setFlat(True)
+        self.btn_report_issue.setCursor(Qt.PointingHandCursor)
+        self.btn_report_issue.clicked.connect(self.report_issue)
+        self.statusBar().addPermanentWidget(self.btn_report_issue)
+
         # Voile « en cours » PAR-DESSUS l'apercu SVG : impossible a rater.
         # (texte generique fixe ; le message specifique va dans la barre de statut).
         self.busy_overlay = self._tr_widget(QLabel(self.preview), "busy_overlay_generic")
@@ -1015,12 +1061,18 @@ class MainWindow(QMainWindow):
         # echec silencieux a chaque apercu).
         if self._rembg_missing:
             self.chk_bg_ai.setChecked(False)
+        # Meme logique pour la finition IA : cliquable, mais pas restauree
+        # cochee tant que le moteur (module IA) ou les poids manquent.
+        if not ai_upscale.is_available():
+            self.chk_upscale.setChecked(False)
 
         # Verrou Pro sur le detourage IA. Branche APRES _load_settings pour que
         # la restauration des reglages ne declenche pas l'upsell au demarrage.
         self.chk_bg_ai.toggled.connect(self._guard_bg_ai)
+        self.chk_upscale.toggled.connect(self._guard_upscale)
         if not self.lic.is_pro():
             self.chk_bg_ai.setChecked(False)
+            self.chk_upscale.setChecked(False)
 
         # Revalidation de la licence en ligne, en tache de fond (jamais bloquante).
         if self.lic.has_key():
@@ -1146,6 +1198,8 @@ class MainWindow(QMainWindow):
         p.remove_background_ai = self.chk_bg_ai.isChecked()
         p.merge_colors = self.chk_merge.isChecked()
         p.merge_threshold = self.s_merge.value()
+        p.clean_edges = self.chk_edges.isChecked()
+        p.ai_upscale = self.chk_upscale.isChecked()
         p.contrast = self.s_contrast.value()
         p.sharpen = self.s_sharpen.value()
         return p
@@ -1229,6 +1283,20 @@ class MainWindow(QMainWindow):
         dlg.showMaximized()
         dlg.exec()
 
+    def report_issue(self):
+        """Ouvre le client mail par defaut pour signaler un resultat IA problematique."""
+        from . import __version__ as app_version
+        subject = f"VectorPop {app_version} - Signalement resultat IA"
+        body = (
+            "Decris ici le probleme rencontre avec le detourage / la finition IA "
+            "(joins si possible l'image d'origine et le SVG produit) :\n\n"
+        )
+        url = QUrl("mailto:george.william@hotmail.fr")
+        query = f"subject={QUrl.toPercentEncoding(subject).data().decode()}" \
+                f"&body={QUrl.toPercentEncoding(body).data().decode()}"
+        url.setQuery(query)
+        QDesktopServices.openUrl(url)
+
     # --- suppression d'aplats (clic sur le SVG) ---
     def _toggle_delete_mode(self, on: bool):
         if on and not self._require_pro(FEAT_DELETE_SHAPE):
@@ -1300,7 +1368,8 @@ class MainWindow(QMainWindow):
             if key in cfg:
                 widget.setValue(cfg[key])
         checks = {
-            "merge_on": self.chk_merge, "bg": self.chk_bg, "bg_ai": self.chk_bg_ai,
+            "merge_on": self.chk_merge, "edges": self.chk_edges,
+            "bg": self.chk_bg, "bg_ai": self.chk_bg_ai,
             "grad": self.chk_grad, "refine": self.chk_refine,
         }
         for key, widget in checks.items():
@@ -1316,8 +1385,8 @@ class MainWindow(QMainWindow):
             self._live.start()
 
     def _live_run(self):
-        # Le detourage IA est trop lent pour l'auto-apercu : on l'exclut.
-        if self.chk_bg_ai.isChecked():
+        # Detourage IA et finition IA trop lents pour l'auto-apercu : exclus.
+        if self.chk_bg_ai.isChecked() or self.chk_upscale.isChecked():
             return
         self.run_vectorize(silent=True)
 
@@ -1419,6 +1488,8 @@ class MainWindow(QMainWindow):
         """Message d'activité adapté aux options actives (l'IA est la plus lente)."""
         if self.chk_bg_ai.isChecked():
             return self._t("busy_ai_bg")
+        if self.chk_upscale.isChecked():
+            return self._t("busy_ai_up")
         extra = self._t("busy_extra_grad") if self.chk_grad.isChecked() else ""
         return self._t("busy_vec", extra=extra)
 
@@ -1777,7 +1848,13 @@ class MainWindow(QMainWindow):
         self._finish_ai_download()
         self._rembg_missing = False
         self.chk_bg_ai.setToolTip(self._t("chk_bg_ai_tooltip"))
-        self.chk_bg_ai.setChecked(True)   # redeclenche _guard_bg_ai, sans effet (plus manquant)
+        if self._pending_upscale:
+            # Le module etait telecharge pour la finition IA : enchaine sur
+            # les poids sans recocher le detourage.
+            self._pending_upscale = False
+            self._start_weights_download()
+        else:
+            self.chk_bg_ai.setChecked(True)   # redeclenche _guard_bg_ai, sans effet (plus manquant)
         self.statusBar().showMessage(self._t("ai_dl_done"), 5000)
 
     def _on_ai_download_failed(self, msg: str):
@@ -1795,6 +1872,74 @@ class MainWindow(QMainWindow):
         if self._ai_worker is not None:
             self._ai_worker.deleteLater()
             self._ai_worker = None
+
+    # --- finition IA (upscale x4 avant trace) ---
+    def _guard_upscale(self, on: bool):
+        if not on:
+            return
+        if not self._require_pro(FEAT_AI_UPSCALE):
+            self.chk_upscale.setChecked(False)
+            return
+        if ai_upscale.is_available():
+            return
+        self.chk_upscale.setChecked(False)   # decoche : attend le succes des telechargements
+        if self._rembg_missing:
+            # onnxruntime vit dans le module IA : on le telecharge d'abord,
+            # puis _on_ai_download_done enchaine sur les poids.
+            self._pending_upscale = True
+            self._start_ai_download()
+        else:
+            self._start_weights_download()
+
+    def _start_weights_download(self):
+        if self._up_worker is not None:
+            return  # deja en cours
+        confirm = QMessageBox.question(
+            self, self._t("up_dl_confirm_title"), self._t("up_dl_confirm_body"))
+        if confirm != QMessageBox.StandardButton.Yes:
+            return
+        self._up_progress = QProgressDialog(
+            self._t("ai_dl_progress_label_indeterminate"), self._t("ai_dl_cancel"), 0, 0, self)
+        self._up_progress.setWindowTitle(self._t("up_dl_progress_title"))
+        self._up_progress.setWindowModality(Qt.WindowModal)
+        self._up_progress.setMinimumDuration(0)
+        self._up_worker = WeightsDownloadWorker()
+        self._up_worker.progress.connect(self._on_weights_progress)
+        self._up_worker.done.connect(self._on_weights_done)
+        self._up_worker.failed.connect(self._on_weights_failed)
+        self._up_progress.canceled.connect(self._up_worker.cancel)
+        self._up_progress.show()
+        self._up_worker.start()
+
+    def _on_weights_progress(self, done: int, total: int):
+        if self._up_progress is None:
+            return
+        if total > 0:
+            self._up_progress.setRange(0, total)
+            self._up_progress.setValue(done)
+            self._up_progress.setLabelText(
+                self._t("ai_dl_progress_label", pct=int(done * 100 / total)))
+
+    def _on_weights_done(self):
+        self._finish_weights_download()
+        self.chk_upscale.setChecked(True)   # redeclenche _guard_upscale, sans effet (dispo)
+        self.statusBar().showMessage(self._t("up_dl_done"), 5000)
+
+    def _on_weights_failed(self, msg: str):
+        self._finish_weights_download()
+        if msg == "cancelled":
+            self.statusBar().showMessage(self._t("ai_dl_cancelled"), 4000)
+            return
+        QMessageBox.warning(
+            self, self._t("ai_dl_failed_title"), self._t("ai_dl_failed_body", msg=msg[:200]))
+
+    def _finish_weights_download(self):
+        if self._up_progress is not None:
+            self._up_progress.close()
+            self._up_progress = None
+        if self._up_worker is not None:
+            self._up_worker.deleteLater()
+            self._up_worker = None
 
     def _ask_png_size(self) -> int | None:
         """Demande la resolution PNG (cote long) : presets + valeur libre.
@@ -1952,8 +2097,9 @@ class MainWindow(QMainWindow):
 
     def _chk_map(self):
         return {"chk_bg": self.chk_bg, "chk_bg_ai": self.chk_bg_ai,
-                "chk_merge": self.chk_merge, "chk_grad": self.chk_grad,
-                "chk_refine": self.chk_refine}
+                "chk_upscale": self.chk_upscale,
+                "chk_merge": self.chk_merge, "chk_edges": self.chk_edges,
+                "chk_grad": self.chk_grad, "chk_refine": self.chk_refine}
 
     def _load_settings(self):
         # Langue + theme sont deja charges tout en haut de __init__ (necessaires

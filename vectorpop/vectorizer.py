@@ -36,6 +36,8 @@ class VectorParams:
     remove_background_ai: bool = False  # detourage IA (rembg) pour fond complexe
     merge_colors: bool = True         # fusionne les teintes proches (aplats plus francs)
     merge_threshold: int = 24         # distance RGB max pour fusionner (0-100)
+    clean_edges: bool = True          # supprime les liseres d'anti-aliasing (mode aplats)
+    ai_upscale: bool = False          # finition IA : upscale x4 (Real-ESRGAN) avant trace
     contrast: int = 0                 # renforce/adoucit le contraste avant trace (-50..50)
     sharpen: int = 0                  # nettete (unsharp mask) avant trace (0..100)
 
@@ -136,6 +138,166 @@ def _merge_near_colors(rgb: Image.Image, threshold: int) -> Image.Image:
     return Image.fromarray(out.reshape(np.asarray(rgb).shape), "RGB")
 
 
+def _suppress_aa_fringes(rgb: Image.Image, opaque: np.ndarray,
+                         mix_tol: int = 40, dup_tol: int = 48,
+                         max_frac: float = 0.10, max_pass: int = 3) -> Image.Image:
+    """Nettoie les couches « ruban » creees par l'anti-aliasing de la source.
+
+    Apres quantification, les pixels de bord (mi-forme, mi-fond) deviennent de
+    fines couches a part entiere que vtracer trace en liseres disgracieux,
+    tres visibles au zoom. On les pele passe par passe (un bord AA fait
+    souvent plusieurs bandes superposees).
+    """
+    for _ in range(max_pass):
+        out = _suppress_aa_fringes_once(rgb, opaque, mix_tol, dup_tol, max_frac)
+        if out is rgb:
+            break
+        rgb = out
+    return rgb
+
+
+def _suppress_aa_fringes_once(rgb: Image.Image, opaque: np.ndarray,
+                              mix_tol: int, dup_tol: int,
+                              max_frac: float) -> Image.Image:
+    """Une passe de nettoyage. Renvoie `rgb` inchange (meme objet) si rien a faire.
+
+    Cible : les couches SANS corps (videes par une double erosion = rubans de
+    1 a 4 px de large). Deux cas, jamais confondus :
+    - Lisere AA : sa couleur est un melange STRICTEMENT intermediaire des deux
+      couleurs qu'il separe (projection t dans [0.15, 0.85] sur le segment RGB
+      [voisin A, voisin B], a moins de `mix_tol`). Supprime, puis reabsorbe
+      symetriquement par ses deux cotes : le vrai bord tombe au milieu du ruban.
+    - Bande de nuance : quasi-doublon d'UN voisin (distance <= `dup_tol`),
+      typiquement du bruit de quantification accroche aux bords d'une forme.
+      Recoloree dans ce voisin SANS toucher a la geometrie (preserve lettres
+      et traits fins).
+    Un trait fin de couleur franche (etoile, contour voulu) ne remplit aucun
+    des deux criteres et reste intact.
+    """
+    arr = np.asarray(rgb, dtype=np.uint8)
+    h, w = arr.shape[:2]
+    colors, inverse = np.unique(arr.reshape(-1, 3), axis=0, return_inverse=True)
+    labels = inverse.reshape(h, w).astype(np.int32)
+    labels[~opaque] = -1
+    n_opaque = int(opaque.sum())
+    if n_opaque == 0 or len(colors) < 3:
+        return rgb
+    areas = np.bincount(labels[labels >= 0].ravel(), minlength=len(colors))
+
+    def _shift(m: np.ndarray, dy: int, dx: int, fill=False):
+        out = np.full_like(m, fill)
+        hs, ws = m.shape
+        ys, xs = slice(max(dy, 0), hs + min(dy, 0)), slice(max(dx, 0), ws + min(dx, 0))
+        yd, xd = slice(max(-dy, 0), hs + min(-dy, 0)), slice(max(-dx, 0), ws + min(-dx, 0))
+        out[yd, xd] = m[ys, xs]
+        return out
+
+    def _erode(m):
+        return (m & _shift(m, 1, 0) & _shift(m, -1, 0)
+                  & _shift(m, 0, 1) & _shift(m, 0, -1))
+
+    fringe = np.zeros((h, w), bool)
+    recolor: dict[int, int] = {}          # label ruban -> label voisin adoptif
+    for ci in range(len(colors)):
+        area = int(areas[ci])
+        if area == 0 or area > max_frac * n_opaque:
+            continue
+        mask = labels == ci
+        ys, xs = np.nonzero(mask)
+        y0, y1 = max(0, int(ys.min()) - 3), min(h, int(ys.max()) + 4)
+        x0, x1 = max(0, int(xs.min()) - 3), min(w, int(xs.max()) + 4)
+        sub = mask[y0:y1, x0:x1]
+        core = _erode(_erode(sub))
+        if core.sum() > max(2, 0.02 * area):
+            continue                      # la couche a un corps : pas un ruban
+        ring = (_shift(sub, 1, 0) | _shift(sub, -1, 0)
+                | _shift(sub, 0, 1) | _shift(sub, 0, -1)) & ~sub
+        neigh = labels[y0:y1, x0:x1][ring]
+        neigh = neigh[(neigh >= 0) & (neigh != ci)]
+        if neigh.size == 0:
+            continue
+        counts = np.bincount(neigh, minlength=len(colors))
+        order = np.argsort(-counts)
+        la = int(order[0])
+        lb = int(order[1]) if len(order) > 1 and counts[order[1]] > 0 else la
+        ca, cb = colors[la].astype(np.float64), colors[lb].astype(np.float64)
+        c = colors[ci].astype(np.float64)
+        ab = cb - ca
+        denom = float((ab * ab).sum())
+        t = 0.0 if denom == 0 else float(np.clip(((c - ca) * ab).sum() / denom, 0.0, 1.0))
+        dist = float(np.sqrt(((c - (ca + t * ab)) ** 2).sum()))
+        d_a = float(np.sqrt(((c - ca) ** 2).sum()))
+        d_b = float(np.sqrt(((c - cb) ** 2).sum()))
+        if la != lb and 0.15 <= t <= 0.85 and dist <= mix_tol:
+            fringe[y0:y1, x0:x1] |= sub          # vrai lisere AA
+        elif min(d_a, d_b) <= dup_tol:
+            recolor[ci] = la if d_a <= d_b else lb  # bande de nuance
+
+    if not fringe.any() and not recolor:
+        return rgb
+
+    out_labels = labels.copy()
+    for ci, target in recolor.items():
+        out_labels[labels == ci] = target
+
+    if fringe.any():
+        out_labels[fringe] = -2                  # a remplir depuis les 2 cotes
+        dirs = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        row_idx = np.arange(h)[:, None]
+        col_idx = np.arange(w)[None, :]
+        for _ in range(8):
+            todo = out_labels == -2
+            if not todo.any():
+                break
+            # Vote majoritaire symetrique sur les 4 voisins deja resolus.
+            cand = np.stack([_shift(out_labels, dy, dx, fill=-1) for dy, dx in dirs])
+            valid = cand >= 0
+            score = np.zeros(cand.shape, np.int8)
+            for i in range(4):
+                for j in range(4):
+                    score[i] += (valid[i] & valid[j] & (cand[i] == cand[j]))
+            score[~valid] = 0
+            best = np.argmax(score, axis=0)
+            got = todo & valid[best, row_idx, col_idx]
+            pick = cand[best, row_idx, col_idx]
+            out_labels[got] = pick[got]
+
+    out = arr.reshape(-1, 3).copy()
+    changed = (out_labels != labels) & (out_labels >= 0)
+    out[changed.ravel()] = colors[out_labels[changed]]
+    return Image.fromarray(out.reshape(h, w, 3), "RGB")
+
+
+def _project_on_source_palette(rgb: Image.Image, source: Image.Image,
+                               params: VectorParams) -> Image.Image:
+    """Projette `rgb` (image agrandie par IA) sur la palette de `source`.
+
+    Le modele de super-resolution fournit la GEOMETRIE (bords lisses) mais
+    invente des rampes de couleur le long des bords (overshoot GAN) qui
+    polluent la quantification. La verite couleur, c'est la source : on
+    quantifie SA palette, puis chaque pixel agrandi est rabattu sur la couleur
+    source la plus proche. Toute teinte hallucinee disparait par construction.
+    """
+    n = max(2, min(256, 2 ** params.color_precision))
+    pal_img = source.convert("RGB").quantize(colors=n, method=Image.MEDIANCUT).convert("RGB")
+    pal_img = _merge_near_colors(pal_img, params.merge_threshold)
+    palette = np.unique(np.asarray(pal_img, np.uint8).reshape(-1, 3), axis=0).astype(np.float32)
+
+    # Projection directe pixel -> couleur la plus proche, par blocs pour rester
+    # sobre en memoire (PAS de quantize() intermediaire : son tramage
+    # Floyd-Steinberg pulverise les rampes du modele en damier de bruit).
+    arr = np.asarray(rgb, np.uint8)
+    h, w = arr.shape[:2]
+    flat = arr.reshape(-1, 3)
+    out = np.empty_like(flat)
+    step = 500_000
+    for i in range(0, len(flat), step):
+        block = flat[i:i + step].astype(np.float32)
+        d = ((block[:, None, :] - palette[None, :, :]) ** 2).sum(axis=2)
+        out[i:i + step] = palette[np.argmin(d, axis=1)].astype(np.uint8)
+    return Image.fromarray(out.reshape(h, w, 3), "RGB")
+
+
 def _preprocess(src: Path, params: VectorParams, reduce_colors: bool) -> Path:
     """Nettoie l'image avant vectorisation. Renvoie un PNG temporaire.
 
@@ -144,6 +306,15 @@ def _preprocess(src: Path, params: VectorParams, reduce_colors: bool) -> Path:
     halo d'anti-aliasing, qui sinon se transforment en milliers de paths gris.
     """
     img = Image.open(src).convert("RGBA")
+
+    source_ref: Image.Image | None = None
+    if params.ai_upscale:
+        # Finition IA : la source est redessinee x4 par Real-ESRGAN avant tout
+        # traitement -> bords francs et sans bruit, courbes lisses au trace.
+        # On garde la source comme reference couleur (cf. projection palette).
+        from .ai_upscale import upscale_x4  # noqa: PLC0415 - import paresseux volontaire
+        source_ref = img
+        img = upscale_x4(img)
 
     if params.remove_background_ai:
         # Detourage IA : prioritaire, gere les fonds non unis.
@@ -183,12 +354,22 @@ def _preprocess(src: Path, params: VectorParams, reduce_colors: bool) -> Path:
             # Sinon chaque pixel de bruit devient sa propre fine couche vtracer
             # (effet "contour en dents de scie" sur les bords ronds).
             rgb = rgb.filter(ImageFilter.ModeFilter(size=3))
-        # Quantification : reduit le bruit de couleur avant vtracer = moins de paths.
-        n = max(2, min(256, 2 ** params.color_precision))
-        rgb = rgb.quantize(colors=n, method=Image.MEDIANCUT).convert("RGB")
-        if params.merge_colors:
-            # Fusion des teintes proches : aplats plus francs, moins de calques.
-            rgb = _merge_near_colors(rgb, params.merge_threshold)
+        if source_ref is not None and params.merge_colors:
+            # Image agrandie par IA : les couleurs de verite sont celles de la
+            # source, pas celles (hallucinees sur les bords) du modele.
+            rgb = _project_on_source_palette(rgb, source_ref, params)
+        else:
+            # Quantification : reduit le bruit de couleur avant vtracer = moins de paths.
+            n = max(2, min(256, 2 ** params.color_precision))
+            rgb = rgb.quantize(colors=n, method=Image.MEDIANCUT).convert("RGB")
+            if params.merge_colors:
+                # Fusion des teintes proches : aplats plus francs, moins de calques.
+                rgb = _merge_near_colors(rgb, params.merge_threshold)
+        if params.merge_colors and params.clean_edges:
+            # Contours nets : supprime les liseres d'anti-aliasing restants.
+            # Reserve au mode aplats : en mode degrades, les fines bandes
+            # SONT le degrade voulu.
+            rgb = _suppress_aa_fringes(rgb, np.asarray(a) > 0)
 
     # On recompose en RGBA : vtracer ignore les zones totalement transparentes.
     out = Image.merge("RGBA", (*rgb.split(), a))

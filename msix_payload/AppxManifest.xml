@@ -3,7 +3,7 @@
   <!-- Identity/Name DOIT correspondre exactement à la réservation Partner Center de VectorPop.
        Publisher = CN du compte La Fabrik Numérique (le même que VoxCut/InOneShot,
        il est lié au compte développeur, pas à l'app, pas besoin de le changer). -->
-  <Identity Name="LaFabrikNumrique.VectorPop" Publisher="CN=F3244EFD-B8A8-419F-94D8-19480490309B" Version="1.0.0.0" ProcessorArchitecture="x64" />
+  <Identity Name="LaFabrikNumrique.VectorPop" Publisher="CN=F3244EFD-B8A8-419F-94D8-19480490309B" Version="1.1.0.0" ProcessorArchitecture="x64" />
   <Properties>
     <DisplayName>VectorPop</DisplayName>
     <PublisherDisplayName>La Fabrik Numérique</PublisherDisplayName>
