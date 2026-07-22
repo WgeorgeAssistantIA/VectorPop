@@ -1,0 +1,67 @@
+name: vectorpop
+title: VectorPop
+base: core24
+version: '1.1.0'
+license: Proprietary
+contact: contact@vectorpop.fr
+website: https://www.vectorpop.fr
+summary: Vectorize PNG/JPEG images into clean SVG in one click
+description: |
+  VectorPop turns your PNG or JPEG images into clean, editable SVG
+  vector files in one click. Drag & drop, tune the presets, preview
+  before/after, and export - all processed locally on your machine.
+
+  100% local: your images never leave your computer. No cloud, no
+  subscription. Free tier available, Pro unlocks unlimited exports.
+
+grade: stable
+confinement: strict
+compression: lzo
+
+platforms:
+  amd64:
+    build-on: amd64
+    build-for: amd64
+
+apps:
+  vectorpop:
+    command: bin/vectorpop
+    extensions: [gnome]
+    plugs:
+      - home
+      - removable-media
+      - network
+    environment:
+      XDG_DATA_DIRS: $SNAP/usr/share:$XDG_DATA_DIRS
+
+parts:
+  # Bundle PyInstaller (onedir) compile sur Ubuntu 24.04 (glibc 2.39, compatible core24)
+  vectorpop:
+    plugin: dump
+    source: /root/vectorpop-build/dist
+    organize:
+      VectorPop/: opt/vectorpop/
+    stage-packages:
+      # Libs Qt/xcb dont PySide6 a besoin et que PyInstaller n'embarque pas toujours
+      - libxkbcommon-x11-0
+      - libxcb-cursor0
+      - libxcb-icccm4
+      - libxcb-image0
+      - libxcb-keysyms1
+      - libxcb-randr0
+      - libxcb-render-util0
+      - libxcb-shape0
+      - libxcb-xinerama0
+      - libxcb-xfixes0
+      - libegl1
+      - libopengl0
+      - libgl1
+      - libfontconfig1
+      - libdbus-1-3
+
+  # Lanceur : pointe vers l'executable decompresse
+  launcher:
+    plugin: dump
+    source: launcher
+    organize:
+      vectorpop.sh: bin/vectorpop

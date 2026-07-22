@@ -1,11 +1,25 @@
 .venv/
 .venv-ai/
+.venv-linux/
 __pycache__/
 *.pyc
 build/
 dist/
 *.svg
 !assets/**/*.svg
+
+# Build Linux (gros binaires, regenerables via build_linux.sh) ; le script et le
+# spec restent versionnes.
+*.AppImage
+appimagetool-x86_64.AppImage
+VectorPop.AppDir/
+VectorPop_*_linux_x86_64.tar.gz
+AppRun
+vectorpop.desktop
+
+# Snap (gros binaires + build dir, regenerables via snap-build/pack_snap.sh)
+snap-build/*.snap
+snap-build/dist/
 
 # Packs d'assets generes (reproductibles via make_iconset.py / make_msix_assets.py)
 icons/

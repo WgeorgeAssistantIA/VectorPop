@@ -30,6 +30,9 @@ declare function gtag(...args: unknown[]): void;
 // renseigne, la carte Pro pointe vers le vrai checkout.
 const GITHUB_REPO = "https://github.com/WgeorgeAssistantIA/VectorPop";
 const DOWNLOAD_EXE = `${GITHUB_REPO}/releases/download/v1.1.0/VectorPop-Setup-1.1.0.exe`;
+const LINUX_URL = `${GITHUB_REPO}/releases/download/v1.1.0/VectorPop-x86_64.AppImage`;
+const LINUX_TAR_URL = `${GITHUB_REPO}/releases/download/v1.1.0/VectorPop_1.1.0_linux_x86_64.tar.gz`;
+const SNAP_URL = "https://snapcraft.io/vectorpop";
 const CHECKOUT_URL = "https://voxcut-pro.lemonsqueezy.com/checkout/buy/6ea17f0e-5d89-4994-a83e-84060447bf67?checkout[discount_code]=LANCEMENT30";
 const CONTACT_EMAIL = "contact@vectorpop.fr";
 
@@ -39,6 +42,18 @@ function trackDownload(e: MouseEvent<HTMLAnchorElement>) {
   track("download", { platform });
   if (typeof gtag !== "undefined")
     gtag("event", "download", { event_category: "engagement", platform });
+}
+function trackLinuxDownload() {
+  track("linux_download");
+  if (typeof gtag !== "undefined") gtag("event", "file_download", { event_category: "engagement", event_label: "linux_appimage" });
+}
+function trackLinuxTarDownload() {
+  track("linux_tar_download");
+  if (typeof gtag !== "undefined") gtag("event", "file_download", { event_category: "engagement", event_label: "linux_tar_gz" });
+}
+function trackSnapDownload() {
+  track("snap_download");
+  if (typeof gtag !== "undefined") gtag("event", "file_download", { event_category: "engagement", event_label: "linux_snap" });
 }
 function trackCrossLink(target: string) {
   track("cross_link_click", { target });
@@ -61,6 +76,8 @@ const t = {
       subtitle:
         "A logo that falls apart the moment you enlarge it? VectorPop retraces it into clean, editable vector — on your own machine. No cloud, no subscription.",
       btnPrimary: "Download free for Windows",
+      btnLinux: "Linux (.AppImage)",
+      btnLinuxTar: "Linux (.tar.gz)",
       subText: "Windows installer — no credit card required",
       badges: [
         "Your images never leave your computer",
@@ -257,6 +274,8 @@ const t = {
       subtitle:
         "Un logo qui s'effondre dès que vous l'agrandissez ? VectorPop le retrace en vectoriel propre et éditable, sur votre machine. Pas de cloud, pas d'abonnement.",
       btnPrimary: "Télécharger gratuitement pour Windows",
+      btnLinux: "Linux (.AppImage)",
+      btnLinuxTar: "Linux (.tar.gz)",
       subText: "Installeur Windows — pas de carte bancaire requise",
       badges: [
         "Vos images ne quittent jamais votre ordinateur",
@@ -805,7 +824,7 @@ function Index() {
             </p>
           </Reveal>
           <Reveal delay={160}>
-            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <a
                 href={DOWNLOAD_EXE}
                 onClick={trackDownload}
@@ -813,6 +832,38 @@ function Index() {
               >
                 <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
                 {c.hero.btnPrimary}
+              </a>
+              <a
+                href={LINUX_URL}
+                onClick={trackLinuxDownload}
+                className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border px-6 py-3.5 text-sm font-semibold text-foreground transition hover:border-brand hover:text-brand-deep"
+              >
+                <Download className="h-4 w-4" />
+                {c.hero.btnLinux}
+              </a>
+              <a
+                href={LINUX_TAR_URL}
+                onClick={trackLinuxTarDownload}
+                className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border px-6 py-3.5 text-sm font-semibold text-foreground transition hover:border-brand hover:text-brand-deep"
+              >
+                <Download className="h-4 w-4" />
+                {c.hero.btnLinuxTar}
+              </a>
+              <a
+                href={SNAP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={trackSnapDownload}
+                aria-label={lang === "fr" ? "Télécharger VectorPop sur le Snap Store" : "Get VectorPop from the Snap Store"}
+                className="inline-flex items-center transition-opacity hover:opacity-90"
+              >
+                <img
+                  src="https://snapcraft.io/en/light/install.svg"
+                  width={204}
+                  height={60}
+                  alt={lang === "fr" ? "Disponible sur le Snap Store" : "Get it from the Snap Store"}
+                  className="h-[52px] w-auto"
+                />
               </a>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">{c.hero.subText}</p>
