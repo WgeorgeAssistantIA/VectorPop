@@ -1,0 +1,6 @@
+# Force les fins de ligne LF pour les scripts executes sous WSL/Linux,
+# meme avec core.autocrlf=true cote Windows (sinon "set -euo pipefail"
+# echoue avec "invalid option name" une fois checkout sur ce poste).
+*.sh text eol=lf
+*.spec text eol=lf
+snapcraft.yaml text eol=lf
