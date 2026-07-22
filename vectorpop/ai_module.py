@@ -49,12 +49,24 @@ def _module_dir() -> Path:
 
 
 def is_installed() -> bool:
-    """True si le module IA est deja telecharge et a jour."""
+    """True si le module IA est deja telecharge et a jour.
+
+    Egalement vrai si rembg est deja importable dans l'interpreteur courant
+    (cas du venv de dev `.venv-ai`, qui l'installe directement via pip) :
+    inutile de retelecharger une archive dediee au build PyInstaller dans
+    ce cas.
+    """
     marker = _module_dir() / _MARKER_NAME
     try:
-        return marker.read_text(encoding="utf-8").strip() == AI_MODULE_VERSION
+        if marker.read_text(encoding="utf-8").strip() == AI_MODULE_VERSION:
+            return True
     except OSError:
+        pass
+    try:
+        import rembg  # noqa: F401, PLC0415 - test de presence volontaire
+    except ImportError:
         return False
+    return True
 
 
 def ensure_on_path() -> None:

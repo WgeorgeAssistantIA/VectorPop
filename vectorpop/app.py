@@ -13,8 +13,8 @@ import tempfile
 import webbrowser
 from pathlib import Path
 
-from PySide6.QtCore import Qt, QTimer, QThread, Signal, QRect, QSize, QSettings
-from PySide6.QtGui import QIcon, QKeySequence, QPainter, QPen, QPixmap, QShortcut
+from PySide6.QtCore import Qt, QTimer, QThread, Signal, QRect, QSize, QSettings, QUrl
+from PySide6.QtGui import QDesktopServices, QIcon, QKeySequence, QPainter, QPen, QPixmap, QShortcut
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtSvgWidgets import QGraphicsSvgItem
 from PySide6.QtWidgets import (
@@ -1032,6 +1032,16 @@ class MainWindow(QMainWindow):
         self.lbl_plan = QLabel()
         self.statusBar().addPermanentWidget(self.lbl_plan)
 
+        # Lien permanent pour signaler un resultat IA incorrect/inapproprie
+        # (detourage / finition IA) - exige par les politiques des stores (ex.
+        # Microsoft Store 11.16 "Live Generative AI Content").
+        self.btn_report_issue = self._tr_widget(
+            QPushButton(), "btn_report_issue", "btn_report_issue_tooltip")
+        self.btn_report_issue.setFlat(True)
+        self.btn_report_issue.setCursor(Qt.PointingHandCursor)
+        self.btn_report_issue.clicked.connect(self.report_issue)
+        self.statusBar().addPermanentWidget(self.btn_report_issue)
+
         # Voile « en cours » PAR-DESSUS l'apercu SVG : impossible a rater.
         # (texte generique fixe ; le message specifique va dans la barre de statut).
         self.busy_overlay = self._tr_widget(QLabel(self.preview), "busy_overlay_generic")
@@ -1272,6 +1282,20 @@ class MainWindow(QMainWindow):
         dlg.resize(1100, 800)
         dlg.showMaximized()
         dlg.exec()
+
+    def report_issue(self):
+        """Ouvre le client mail par defaut pour signaler un resultat IA problematique."""
+        from . import __version__ as app_version
+        subject = f"VectorPop {app_version} - Signalement resultat IA"
+        body = (
+            "Decris ici le probleme rencontre avec le detourage / la finition IA "
+            "(joins si possible l'image d'origine et le SVG produit) :\n\n"
+        )
+        url = QUrl("mailto:george.william@hotmail.fr")
+        query = f"subject={QUrl.toPercentEncoding(subject).data().decode()}" \
+                f"&body={QUrl.toPercentEncoding(body).data().decode()}"
+        url.setQuery(query)
+        QDesktopServices.openUrl(url)
 
     # --- suppression d'aplats (clic sur le SVG) ---
     def _toggle_delete_mode(self, on: bool):

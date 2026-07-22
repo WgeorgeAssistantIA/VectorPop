@@ -128,6 +128,9 @@ STRINGS = {
         "btn_batch_tooltip": "Vectorise toutes les images d'un dossier avec les réglages actuels.",
         "btn_compare": " Comparer",
         "btn_compare_tooltip": "Ouvre une comparaison avant/après à glissière (original vs SVG).",
+
+        "btn_report_issue": "Signaler un problème",
+        "btn_report_issue_tooltip": "Signaler un résultat incorrect ou inapproprié généré par l'IA (détourage / finition IA).",
         "btn_autotune": "Optimiser (plus long)",
         "btn_autotune_running": "Optimisation…",
         "btn_autotune_tooltip": (
@@ -398,6 +401,9 @@ STRINGS = {
         "btn_batch_tooltip": "Vectorizes every image in a folder with the current settings.",
         "btn_compare": " Compare",
         "btn_compare_tooltip": "Opens a before/after slider comparison (original vs SVG).",
+
+        "btn_report_issue": "Report an issue",
+        "btn_report_issue_tooltip": "Report an incorrect or inappropriate AI-generated result (background removal / AI finishing).",
         "btn_autotune": "Optimize (slower)",
         "btn_autotune_running": "Optimizing…",
         "btn_autotune_tooltip": (
