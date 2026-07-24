@@ -33,6 +33,7 @@ const DOWNLOAD_EXE = `${GITHUB_REPO}/releases/download/v1.1.0/VectorPop-Setup-1.
 const LINUX_URL = `${GITHUB_REPO}/releases/download/v1.1.0/VectorPop-x86_64.AppImage`;
 const LINUX_TAR_URL = `${GITHUB_REPO}/releases/download/v1.1.0/VectorPop_1.1.0_linux_x86_64.tar.gz`;
 const SNAP_URL = "https://snapcraft.io/vectorpop";
+const MS_STORE_URL = "https://get.microsoft.com/installer/download/9MT2XVDXX7DG?referrer=appbadge";
 const CHECKOUT_URL = "https://voxcut-pro.lemonsqueezy.com/checkout/buy/6ea17f0e-5d89-4994-a83e-84060447bf67?checkout[discount_code]=LANCEMENT30";
 const CONTACT_EMAIL = "contact@vectorpop.fr";
 
@@ -54,6 +55,10 @@ function trackLinuxTarDownload() {
 function trackSnapDownload() {
   track("snap_download");
   if (typeof gtag !== "undefined") gtag("event", "file_download", { event_category: "engagement", event_label: "linux_snap" });
+}
+function trackStoreDownload() {
+  track("store_download");
+  if (typeof gtag !== "undefined") gtag("event", "file_download", { event_category: "engagement", event_label: "microsoft_store" });
 }
 function trackCrossLink(target: string) {
   track("cross_link_click", { target });
@@ -233,7 +238,7 @@ const t = {
     },
     email: {
       title: "Stay in the loop",
-      desc: "Be the first to know when Pro and the Microsoft Store version land.",
+      desc: "Be the first to know about new features and updates.",
       placeholder: "your@email.com",
       cta: "Notify me",
       sending: "Sending…",
@@ -258,6 +263,10 @@ const t = {
       before: "PNG — enlarged",
       after: "SVG — vector",
       hint: "Drag the handle to compare",
+    },
+    video: {
+      title: "See VectorPop in action",
+      subtitle: "A 40-second walkthrough of the whole workflow, from PNG to clean SVG.",
     },
   },
   fr: {
@@ -431,7 +440,7 @@ const t = {
     },
     email: {
       title: "Restez informé",
-      desc: "Soyez le premier prévenu de la sortie du Pro et de la version Microsoft Store.",
+      desc: "Soyez le premier prévenu des nouvelles fonctionnalités et mises à jour.",
       placeholder: "votre@email.com",
       cta: "Me prévenir",
       sending: "Envoi…",
@@ -456,6 +465,10 @@ const t = {
       before: "PNG — agrandi",
       after: "SVG — vectoriel",
       hint: "Glissez la poignée pour comparer",
+    },
+    video: {
+      title: "VectorPop en action",
+      subtitle: "Une démo de 40 secondes qui montre tout le flux, du PNG au SVG propre.",
     },
   },
 } as const;
@@ -865,6 +878,22 @@ function Index() {
                   className="h-[52px] w-auto"
                 />
               </a>
+              <a
+                href={MS_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={trackStoreDownload}
+                aria-label={lang === "fr" ? "Télécharger VectorPop sur le Microsoft Store" : "Get VectorPop from the Microsoft Store"}
+                className="inline-flex items-center transition-opacity hover:opacity-90"
+              >
+                <img
+                  src="https://get.microsoft.com/images/en-US%20dark.svg"
+                  width={200}
+                  height={52}
+                  alt={lang === "fr" ? "Disponible sur le Microsoft Store" : "Get it from Microsoft Store"}
+                  className="h-[52px] w-auto"
+                />
+              </a>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">{c.hero.subText}</p>
             <div className="mt-5 flex justify-center">
@@ -888,6 +917,30 @@ function Index() {
 
           <Reveal delay={320}>
             <TraceDemo lang={lang} />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* VIDEO DEMO */}
+      <section className="border-t border-border/50 py-24">
+        <div className="mx-auto max-w-4xl px-6">
+          <Reveal>
+            <div className="mb-10 text-center">
+              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{c.video.title}</h2>
+              <p className="mt-3 text-muted-foreground">{c.video.subtitle}</p>
+            </div>
+          </Reveal>
+          <Reveal delay={80}>
+            <div className="overflow-hidden rounded-2xl border border-border bg-card/50 shadow-xl">
+              <video
+                controls
+                preload="metadata"
+                poster="/vectorpop-demo-poster.jpg"
+                className="aspect-video w-full"
+              >
+                <source src="/vectorpop-demo.mp4" type="video/mp4" />
+              </video>
+            </div>
           </Reveal>
         </div>
       </section>
