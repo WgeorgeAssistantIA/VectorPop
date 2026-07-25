@@ -265,8 +265,8 @@ const t = {
       hint: "Drag the handle to compare",
     },
     video: {
-      title: "See VectorPop in action",
-      subtitle: "A 40-second walkthrough of the whole workflow, from PNG to clean SVG.",
+      title: "Introducing VectorPop",
+      subtitle: "A short presentation of the idea behind VectorPop and what it does for you.",
     },
   },
   fr: {
@@ -467,8 +467,8 @@ const t = {
       hint: "Glissez la poignée pour comparer",
     },
     video: {
-      title: "VectorPop en action",
-      subtitle: "Une démo de 40 secondes qui montre tout le flux, du PNG au SVG propre.",
+      title: "Présentation de VectorPop",
+      subtitle: "Une courte présentation de l'idée derrière VectorPop et de ce qu'il fait pour vous.",
     },
   },
 } as const;
@@ -933,12 +933,13 @@ function Index() {
           <Reveal delay={80}>
             <div className="overflow-hidden rounded-2xl border border-border bg-card/50 shadow-xl">
               <video
+                key={lang}
                 controls
                 preload="metadata"
                 poster="/vectorpop-demo-poster.jpg"
                 className="aspect-video w-full"
               >
-                <source src="/vectorpop-demo.mp4" type="video/mp4" />
+                <source src={lang === "fr" ? "/vectorpop-demo-fr.mp4" : "/vectorpop-demo.mp4"} type="video/mp4" />
               </video>
             </div>
           </Reveal>
