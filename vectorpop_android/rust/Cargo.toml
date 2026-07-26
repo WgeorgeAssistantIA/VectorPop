@@ -1,0 +1,15 @@
+[package]
+name = "vectorpop_core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "vectorpop_core"
+crate-type = ["cdylib"]
+
+[dependencies]
+vtracer = "1.0.0-alpha.1"
+
+[profile.release]
+lto = true
+opt-level = 3
