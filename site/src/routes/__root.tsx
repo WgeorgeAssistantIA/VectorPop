@@ -87,6 +87,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { name: "author", content: "VectorPop" },
       { name: "google-site-verification", content: "zqPYuFyXyTypjuQKQXYtYf0C79VqH3IML2jXzqz-038" },
+      { name: "msvalidate.01", content: "30AA85A37A0A951F897562FF150D3525" },
       { property: "og:title", content: "VectorPop — Turn your PNG and JPEG logos into clean SVG" },
       {
         property: "og:description",
