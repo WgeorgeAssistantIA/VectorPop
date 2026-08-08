@@ -33,6 +33,7 @@ export const Route = createFileRoute("/blog/$slug")({
             description: post.description,
             datePublished: post.date,
             dateModified: post.date,
+            inLanguage: post.lang === "fr" ? "fr-FR" : "en-US",
             author: { "@type": "Organization", name: post.author },
             publisher: {
               "@type": "Organization",
@@ -77,6 +78,7 @@ export const Route = createFileRoute("/blog/$slug")({
 
 function BlogPost() {
   const { post } = Route.useLoaderData() as { post: BlogPostType };
+  const fr = post.lang === "fr";
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -85,18 +87,18 @@ function BlogPost() {
           to="/blog"
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" /> All articles
+          <ArrowLeft className="h-4 w-4" /> {fr ? "Tous les articles" : "All articles"}
         </Link>
 
         <header className="mt-8 mb-10">
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <time>{new Date(post.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</time>
+            <time>{new Date(post.date).toLocaleDateString(fr ? "fr-FR" : "en-US", { year: "numeric", month: "long", day: "numeric" })}</time>
             <span>•</span>
             <span className="inline-flex items-center gap-1">
-              <Clock className="h-3.5 w-3.5" /> {post.readingTime} min read
+              <Clock className="h-3.5 w-3.5" /> {post.readingTime} {fr ? "min de lecture" : "min read"}
             </span>
             <span>•</span>
-            <span>By {post.author}</span>
+            <span>{fr ? "Par" : "By"} {post.author}</span>
           </div>
           <h1 className="mt-4 text-3xl md:text-5xl font-bold tracking-tight leading-tight">
             {post.title}
@@ -129,22 +131,26 @@ function BlogPost() {
         </div>
 
         <div className="mt-16 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-transparent p-8 text-center">
-          <h3 className="text-2xl font-bold">Got a logo stuck in a PNG?</h3>
+          <h3 className="text-2xl font-bold">
+            {fr ? "Un logo coincé dans un PNG ?" : "Got a logo stuck in a PNG?"}
+          </h3>
           <p className="mt-2 text-muted-foreground">
-            Try VectorPop free and turn it into a clean, editable SVG — on your own machine.
+            {fr
+              ? "Essayez VectorPop gratuitement et transformez-le en SVG propre et éditable — sur votre propre machine."
+              : "Try VectorPop free and turn it into a clean, editable SVG — on your own machine."}
           </p>
           <Link
             to="/"
             className="mt-6 inline-flex items-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
           >
-            <Download className="h-4 w-4" /> Get VectorPop
+            <Download className="h-4 w-4" /> {fr ? "Découvrir VectorPop" : "Get VectorPop"}
           </Link>
         </div>
 
         {posts.length > 1 && (
           <div className="mt-16 border-t border-border/60 pt-8">
             <Link to="/blog" className="text-sm text-primary hover:underline">
-              ← Read more articles
+              {fr ? "← Lire d'autres articles" : "← Read more articles"}
             </Link>
           </div>
         )}

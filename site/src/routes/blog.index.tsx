@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, ArrowRight, ArrowLeft } from "lucide-react";
-import { posts } from "@/lib/blog-posts";
+import { posts, type BlogPost } from "@/lib/blog-posts";
 
 export const Route = createFileRoute("/blog/")({
   head: () => ({
@@ -25,7 +25,44 @@ export const Route = createFileRoute("/blog/")({
   component: BlogIndex,
 });
 
+const byDateDesc = (a: BlogPost, b: BlogPost) => b.date.localeCompare(a.date);
+
+function PostCard({ post }: { post: BlogPost }) {
+  const fr = post.lang === "fr";
+  return (
+    <li>
+      <Link
+        to="/blog/$slug"
+        params={{ slug: post.slug }}
+        className="block rounded-xl border border-border/60 bg-card p-6 transition hover:border-primary/60 hover:bg-card/80"
+      >
+        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <time>
+            {new Date(post.date).toLocaleDateString(fr ? "fr-FR" : "en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </time>
+          <span>•</span>
+          <span className="inline-flex items-center gap-1">
+            <Clock className="h-3.5 w-3.5" /> {post.readingTime} {fr ? "min de lecture" : "min read"}
+          </span>
+        </div>
+        <h2 className="mt-3 text-2xl font-semibold tracking-tight">{post.title}</h2>
+        <p className="mt-2 text-muted-foreground">{post.description}</p>
+        <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
+          {fr ? "Lire l'article" : "Read article"} <ArrowRight className="h-4 w-4" />
+        </span>
+      </Link>
+    </li>
+  );
+}
+
 function BlogIndex() {
+  const frPosts = [...posts].filter((p) => p.lang === "fr").sort(byDateDesc);
+  const enPosts = [...posts].filter((p) => p.lang === "en").sort(byDateDesc);
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-3xl px-6 py-16 md:py-24">
@@ -43,32 +80,27 @@ function BlogIndex() {
           </p>
         </header>
 
-        <ul className="space-y-6">
-          {[...posts]
-            .sort((a, b) => +new Date(b.date) - +new Date(a.date))
-            .map((p) => (
-            <li key={p.slug}>
-              <Link
-                to="/blog/$slug"
-                params={{ slug: p.slug }}
-                className="block rounded-xl border border-border/60 bg-card p-6 transition hover:border-primary/60 hover:bg-card/80"
-              >
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <time>{new Date(p.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</time>
-                  <span>•</span>
-                  <span className="inline-flex items-center gap-1">
-                    <Clock className="h-3.5 w-3.5" /> {p.readingTime} min read
-                  </span>
-                </div>
-                <h2 className="mt-3 text-2xl font-semibold tracking-tight">{p.title}</h2>
-                <p className="mt-2 text-muted-foreground">{p.description}</p>
-                <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary">
-                  Read article <ArrowRight className="h-4 w-4" />
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <section>
+          <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+            In English
+          </h2>
+          <ul className="space-y-6">
+            {enPosts.map((p) => (
+              <PostCard key={p.slug} post={p} />
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-16">
+          <h2 className="mb-6 text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+            En français
+          </h2>
+          <ul className="space-y-6">
+            {frPosts.map((p) => (
+              <PostCard key={p.slug} post={p} />
+            ))}
+          </ul>
+        </section>
       </div>
     </main>
   );
