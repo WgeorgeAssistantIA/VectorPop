@@ -34,6 +34,7 @@ const LINUX_URL = `${GITHUB_REPO}/releases/download/v1.2.0/VectorPop-x86_64.AppI
 const LINUX_TAR_URL = `${GITHUB_REPO}/releases/download/v1.2.0/VectorPop_1.2.0_linux_x86_64.tar.gz`;
 const SNAP_URL = "https://snapcraft.io/vectorpop";
 const MS_STORE_URL = "https://get.microsoft.com/installer/download/9MT2XVDXX7DG?referrer=appbadge";
+const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.lafabriknumerique.vectorpop";
 const CHECKOUT_URL = "https://voxcut-pro.lemonsqueezy.com/checkout/buy/6ea17f0e-5d89-4994-a83e-84060447bf67?checkout[discount_code]=LANCEMENT30";
 const CONTACT_EMAIL = "contact@vectorpop.fr";
 
@@ -59,6 +60,10 @@ function trackSnapDownload() {
 function trackStoreDownload() {
   track("store_download");
   if (typeof gtag !== "undefined") gtag("event", "file_download", { event_category: "engagement", event_label: "microsoft_store" });
+}
+function trackPlayStoreDownload() {
+  track("play_store_download");
+  if (typeof gtag !== "undefined") gtag("event", "file_download", { event_category: "engagement", event_label: "play_store" });
 }
 function trackCrossLink(target: string) {
   track("cross_link_click", { target });
@@ -894,6 +899,22 @@ function Index() {
                   className="h-[52px] w-auto"
                 />
               </a>
+              <a
+                href={PLAY_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={trackPlayStoreDownload}
+                aria-label={lang === "fr" ? "Télécharger VectorPop sur Google Play" : "Get VectorPop on Google Play"}
+                className="inline-flex items-center transition-opacity hover:opacity-90"
+              >
+                <img
+                  src={`https://play.google.com/intl/en_us/badges/static/images/badges/${lang === "fr" ? "fr" : "en"}_badge_web_generic.png`}
+                  width={200}
+                  height={60}
+                  alt={lang === "fr" ? "Disponible sur Google Play" : "Get it on Google Play"}
+                  className="h-[52px] w-auto"
+                />
+              </a>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">{c.hero.subText}</p>
             <div className="mt-5 flex justify-center">
@@ -1298,6 +1319,7 @@ function Index() {
           <Logo />
           <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
             <a href={DOWNLOAD_EXE} onClick={trackDownload} className="hover:text-foreground transition-colors">{c.footer.links.download}</a>
+            <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer" onClick={trackPlayStoreDownload} className="hover:text-foreground transition-colors">Android</a>
             <a href="#pricing" className="hover:text-foreground transition-colors">{c.footer.links.pricing}</a>
             <a href="#faq" className="hover:text-foreground transition-colors">{c.footer.links.faq}</a>
             <Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link>

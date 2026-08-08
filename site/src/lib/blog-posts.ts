@@ -173,6 +173,39 @@ export const posts: BlogPost[] = [
       },
     ],
   }),
+  make({
+    slug: "vectorpop-now-available-on-android",
+    title: "VectorPop Is Now Available on Android",
+    description:
+      "VectorPop's PNG/JPEG-to-SVG tracing is now on mobile too: convert your images to vector straight from your phone or tablet, via Google Play.",
+    date: "2026-08-08",
+    author: "VectorPop Team",
+    content: [
+      {
+        type: "p",
+        text: "VectorPop started as a Windows and Linux desktop app. It's now also on Android, available on the Google Play Store — the same PNG/JPEG-to-SVG tracing, now in your pocket.",
+      },
+      { type: "h2", text: "Why an Android version" },
+      {
+        type: "p",
+        text: "A logo often needs vectorizing right when you're away from your computer — a client sends a PNG over chat, or you spot a print job that needs an SVG on the spot. The Android app covers that: drop an image, pick a preset, preview the result, export the SVG, all from your device.",
+      },
+      { type: "h2", text: "What stays the same" },
+      {
+        type: "ul",
+        items: [
+          "Tracing runs on your own device: your images never leave your phone",
+          "The same presets and preview workflow as the desktop version",
+          "Free for a limited number of exports a day, same as on desktop",
+        ],
+      },
+      { type: "h2", text: "Download VectorPop on Android" },
+      {
+        type: "p",
+        text: "The app is available now, for free, on the Google Play Store: search for \"VectorPop\" or follow the direct link from this site's homepage.",
+      },
+    ],
+  }),
 ];
 
 export const getPost = (slug: string) => posts.find((p) => p.slug === slug);
