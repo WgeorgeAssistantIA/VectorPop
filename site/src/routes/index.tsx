@@ -1356,6 +1356,15 @@ function Index() {
               className="underline hover:text-foreground transition-colors"
             >
               {c.footer.alsoInoneshot}
+            </a>{" "}
+            <a
+              href="https://nyctale.fr"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackCrossLink("nyctale")}
+              className="underline hover:text-foreground transition-colors"
+            >
+              Nyctale
             </a>
           </p>
         </div>
