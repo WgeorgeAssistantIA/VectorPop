@@ -130,22 +130,41 @@ function BlogPost() {
           })}
         </div>
 
-        <div className="mt-16 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-transparent p-8 text-center">
-          <h3 className="text-2xl font-bold">
-            {fr ? "Un logo coincé dans un PNG ?" : "Got a logo stuck in a PNG?"}
-          </h3>
-          <p className="mt-2 text-muted-foreground">
-            {fr
-              ? "Essayez VectorPop gratuitement et transformez-le en SVG propre et éditable — sur votre propre machine."
-              : "Try VectorPop free and turn it into a clean, editable SVG — on your own machine."}
-          </p>
-          <Link
-            to="/"
-            className="mt-6 inline-flex items-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-          >
-            <Download className="h-4 w-4" /> {fr ? "Découvrir VectorPop" : "Get VectorPop"}
-          </Link>
-        </div>
+        {post.app === "vectofix" ? (
+          <div className="mt-16 rounded-2xl border border-[#2563eb]/30 bg-gradient-to-br from-[#2563eb]/10 to-transparent p-8 text-center">
+            <h3 className="text-2xl font-bold">
+              {fr ? "Un export vectoriel qui a perdu du détail ?" : "A vector export that lost some detail?"}
+            </h3>
+            <p className="mt-2 text-muted-foreground">
+              {fr
+                ? "VectoFix vous montre exactement où, et le répare d'un coup de pinceau — essai complet, sur votre propre machine."
+                : "VectoFix shows you exactly where, and lets you fix it with a single brush stroke — full trial, on your own machine."}
+            </p>
+            <Link
+              to="/vectofix"
+              className="mt-6 inline-flex items-center gap-2 rounded-md bg-[#2563eb] px-5 py-3 text-sm font-medium text-white transition hover:brightness-110"
+            >
+              <Download className="h-4 w-4" /> {fr ? "Découvrir VectoFix" : "Get VectoFix"}
+            </Link>
+          </div>
+        ) : (
+          <div className="mt-16 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-transparent p-8 text-center">
+            <h3 className="text-2xl font-bold">
+              {fr ? "Un logo coincé dans un PNG ?" : "Got a logo stuck in a PNG?"}
+            </h3>
+            <p className="mt-2 text-muted-foreground">
+              {fr
+                ? "Essayez VectorPop gratuitement et transformez-le en SVG propre et éditable — sur votre propre machine."
+                : "Try VectorPop free and turn it into a clean, editable SVG — on your own machine."}
+            </p>
+            <Link
+              to="/"
+              className="mt-6 inline-flex items-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+            >
+              <Download className="h-4 w-4" /> {fr ? "Découvrir VectorPop" : "Get VectorPop"}
+            </Link>
+          </div>
+        )}
 
         {posts.length > 1 && (
           <div className="mt-16 border-t border-border/60 pt-8">
