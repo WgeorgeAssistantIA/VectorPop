@@ -55,37 +55,43 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://vectorpop.fr/blog/why-your-vectorized-svg-lost-detail</loc>
+    <loc>https://vectorpop.fr/vectofix/blog</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://vectorpop.fr/vectofix/blog/why-your-vectorized-svg-lost-detail</loc>
     <lastmod>2026-08-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://vectorpop.fr/blog/one-slider-cant-fix-a-whole-image</loc>
+    <loc>https://vectorpop.fr/vectofix/blog/one-slider-cant-fix-a-whole-image</loc>
     <lastmod>2026-08-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://vectorpop.fr/blog/introducing-vectofix</loc>
+    <loc>https://vectorpop.fr/vectofix/blog/introducing-vectofix</loc>
     <lastmod>2026-08-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://vectorpop.fr/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail</loc>
+    <loc>https://vectorpop.fr/vectofix/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail</loc>
     <lastmod>2026-08-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://vectorpop.fr/blog/un-seul-curseur-ne-peut-pas-tout-reparer</loc>
+    <loc>https://vectorpop.fr/vectofix/blog/un-seul-curseur-ne-peut-pas-tout-reparer</loc>
     <lastmod>2026-08-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://vectorpop.fr/blog/presentation-vectofix</loc>
+    <loc>https://vectorpop.fr/vectofix/blog/presentation-vectofix</loc>
     <lastmod>2026-08-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
