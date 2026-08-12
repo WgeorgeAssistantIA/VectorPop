@@ -258,7 +258,8 @@ const t = {
       copy: "© 2026 VectorPop — Local and private image vectorization",
       madeBy: "A La Fabrik Numérique product",
       alsoVoxcut: "Also check out VoxCut",
-      alsoInoneshot: "and InOneShot",
+      alsoInoneshot: "InOneShot",
+      alsoVectofix: "and VectoFix",
     },
     feedback: {
       text: "VectorPop is brand new. A review, a suggestion, a bug spotted?",
@@ -460,7 +461,8 @@ const t = {
       copy: "© 2026 VectorPop — Vectorisation d'images locale et privée",
       madeBy: "Un produit La Fabrik Numérique",
       alsoVoxcut: "Découvrez aussi VoxCut",
-      alsoInoneshot: "et InOneShot",
+      alsoInoneshot: "InOneShot",
+      alsoVectofix: "et VectoFix",
     },
     feedback: {
       text: "VectorPop vient de sortir. Un avis, une suggestion, un bug repéré ?",
@@ -1357,6 +1359,13 @@ function Index() {
             >
               {c.footer.alsoInoneshot}
             </a>{" "}
+            <Link
+              to="/vectofix"
+              onClick={() => trackCrossLink("vectofix")}
+              className="underline hover:text-foreground transition-colors"
+            >
+              {c.footer.alsoVectofix}
+            </Link>{" "}
             <a
               href="https://nyctale.fr"
               target="_blank"
