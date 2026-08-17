@@ -12,10 +12,10 @@ export const Route = createFileRoute("/privacy")({
           "How VectorPop handles your data. VectorPop processes your files 100% locally — your images never leave your computer.",
       },
       { property: "og:title", content: "Privacy Policy — VectorPop" },
-      { property: "og:url", content: "https://vectorpop.fr/privacy" },
+      { property: "og:url", content: "https://www.vectorpop.fr/privacy" },
     ],
     links: [
-      { rel: "canonical", href: "https://vectorpop.fr/privacy" },
+      { rel: "canonical", href: "https://www.vectorpop.fr/privacy" },
     ],
   }),
   component: Privacy,
@@ -403,12 +403,18 @@ function Privacy() {
           ))}
         </div>
 
-        <div className="mt-14 border-t border-border/50 pt-8">
+        <div className="mt-14 flex flex-wrap items-center gap-6 border-t border-border/50 pt-8 text-sm">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="h-4 w-4" /> {c.back}
+          </Link>
+          <Link to="/legal" className="text-muted-foreground hover:text-foreground transition-colors">
+            {lang === "fr" ? "Mentions légales" : "Legal notice"}
+          </Link>
+          <Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
+            {lang === "fr" ? "Conditions générales de vente" : "Terms of sale"}
           </Link>
         </div>
       </div>

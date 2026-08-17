@@ -11,10 +11,10 @@ export const Route = createFileRoute("/legal")({
         content: "Legal notice for the vectorpop.fr website: publisher, hosting provider and intellectual property information.",
       },
       { property: "og:title", content: "Legal Notice — VectorPop" },
-      { property: "og:url", content: "https://vectorpop.fr/legal" },
+      { property: "og:url", content: "https://www.vectorpop.fr/legal" },
     ],
     links: [
-      { rel: "canonical", href: "https://vectorpop.fr/legal" },
+      { rel: "canonical", href: "https://www.vectorpop.fr/legal" },
     ],
   }),
   component: Legal,
@@ -193,6 +193,9 @@ function Legal() {
           </Link>
           <Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
             {lang === "fr" ? "Politique de confidentialité" : "Privacy policy"}
+          </Link>
+          <Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
+            {lang === "fr" ? "Conditions générales de vente" : "Terms of sale"}
           </Link>
         </div>
       </div>
