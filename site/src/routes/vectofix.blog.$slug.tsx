@@ -13,7 +13,7 @@ export const Route = createFileRoute("/vectofix/blog/$slug")({
   head: ({ loaderData }) => {
     const post = loaderData?.post;
     if (!post) return { meta: [{ title: "Article — VectoFix" }] };
-    const canonical = `https://vectorpop.fr/vectofix/blog/${post.slug}`;
+    const canonical = `https://www.vectorpop.fr/vectofix/blog/${post.slug}`;
     return {
       meta: [
         { title: `${post.title} — VectoFix Blog` },

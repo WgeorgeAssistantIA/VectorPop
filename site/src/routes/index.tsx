@@ -496,11 +496,11 @@ export const Route = createFileRoute("/")({
           "Vectorize a pixelated logo into a clean, editable SVG. Runs entirely on your computer. Free Windows app, no subscription.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://vectorpop.fr/" },
+      { property: "og:url", content: "https://www.vectorpop.fr/" },
     ],
     links: [
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-      { rel: "canonical", href: "https://vectorpop.fr/" },
+      { rel: "canonical", href: "https://www.vectorpop.fr/" },
     ],
     scripts: [
       {
@@ -513,8 +513,8 @@ export const Route = createFileRoute("/")({
           operatingSystem: "Windows",
           description:
             "Vectorize PNG and JPEG images into clean, editable SVG. 100% local and private.",
-          url: "https://vectorpop.fr/",
-          image: "https://vectorpop.fr/vectorpop_logo.png",
+          url: "https://www.vectorpop.fr/",
+          image: "https://www.vectorpop.fr/vectorpop_logo.png",
           offers: {
             "@type": "Offer",
             price: "0",

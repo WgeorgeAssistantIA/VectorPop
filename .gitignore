@@ -41,3 +41,4 @@ site/.tanstack/
 site/.env
 site/.env.*
 !site/.env.example
+.vercel

@@ -16,10 +16,10 @@ export const Route = createFileRoute("/blog/")({
         property: "og:description",
         content: "Vectorization and SVG tutorials from the VectorPop team.",
       },
-      { property: "og:url", content: "https://vectorpop.fr/blog" },
+      { property: "og:url", content: "https://www.vectorpop.fr/blog" },
     ],
     links: [
-      { rel: "canonical", href: "https://vectorpop.fr/blog" },
+      { rel: "canonical", href: "https://www.vectorpop.fr/blog" },
     ],
   }),
   component: BlogIndex,

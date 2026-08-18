@@ -2,7 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Clock, ArrowRight, ArrowLeft } from "lucide-react";
 import { posts, type BlogPost } from "@/lib/blog-posts";
 
-export const Route = createFileRoute("/vectofix/blog")({
+// Nomme "vectofix.blog.index.tsx" (pas "vectofix.blog.tsx") pour rester un
+// sibling de vectofix.blog.$slug.tsx plutot qu'un layout parent -- sinon
+// TanStack fusionne le head() de cette page index avec celui de chaque
+// article (meme pattern que /blog/ vs /blog/$slug), ce qui produisait deux
+// balises <link rel="canonical"> en conflit sur chaque article VectoFix.
+export const Route = createFileRoute("/vectofix/blog/")({
   head: () => ({
     meta: [
       { title: "Blog — VectoFix" },
@@ -11,9 +16,9 @@ export const Route = createFileRoute("/vectofix/blog")({
         content: "Guides on vector repair, SVG fidelity, and getting a clean vector out of a damaged trace, from the VectoFix team.",
       },
       { property: "og:title", content: "Blog — VectoFix" },
-      { property: "og:url", content: "https://vectorpop.fr/vectofix/blog" },
+      { property: "og:url", content: "https://www.vectorpop.fr/vectofix/blog" },
     ],
-    links: [{ rel: "canonical", href: "https://vectorpop.fr/vectofix/blog" }],
+    links: [{ rel: "canonical", href: "https://www.vectorpop.fr/vectofix/blog" }],
   }),
   component: VectoFixBlogIndex,
 });

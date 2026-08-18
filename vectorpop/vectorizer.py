@@ -89,9 +89,15 @@ def _remove_background_ai(img: Image.Image) -> Image.Image:
     try:
         from rembg import remove  # noqa: PLC0415 - import paresseux volontaire
     except ImportError as e:
+        # Pas de pip dans l'exe distribue (cf. ai_module.py) : "pip install" est une
+        # consigne inapplicable ici. La vraie cause habituelle est un module pas
+        # (encore) telecharge, ou un antivirus qui verrouille encore les DLL
+        # fraichement ecrites juste apres le telechargement (echec transitoire).
         raise RuntimeError(
-            "Le detourage IA necessite 'rembg'.\n"
-            "Installe-le :  pip install rembg onnxruntime"
+            "Le detourage IA necessite le module IA (rembg), pas encore disponible.\n"
+            "Decoche puis recoche « Detourage IA » pour le (re)telecharger.\n"
+            "Si ca vient d'etre telecharge, un antivirus verrouille peut-etre encore "
+            "les fichiers : reessaie, ou redemarre VectorPop."
         ) from e
     return remove(img.convert("RGBA"))
 

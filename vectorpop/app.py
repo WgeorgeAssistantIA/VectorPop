@@ -14,7 +14,7 @@ import webbrowser
 from pathlib import Path
 
 from PySide6.QtCore import Qt, QTimer, QThread, Signal, QRect, QSize, QSettings, QUrl
-from PySide6.QtGui import QDesktopServices, QIcon, QKeySequence, QPainter, QPen, QPixmap, QShortcut
+from PySide6.QtGui import QDesktopServices, QFontMetrics, QIcon, QKeySequence, QPainter, QPen, QPixmap, QShortcut
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtSvgWidgets import QGraphicsSvgItem
 from PySide6.QtWidgets import (
@@ -603,9 +603,11 @@ class SizeDialog(QDialog):
             lay.addWidget(self.chk_original)
 
         presets_box = QHBoxLayout()
+        widest = max(self.PRESETS, key=lambda p: len(str(p)))
         for p in self.PRESETS:
             btn = QPushButton(str(p))
-            btn.setFixedWidth(44)
+            metrics = QFontMetrics(btn.font())
+            btn.setMinimumWidth(metrics.horizontalAdvance(str(widest)) + 28)
             if p == self.RECOMMENDED and recommended_tip:
                 btn.setToolTip(recommended_tip)
             btn.clicked.connect(lambda _=False, v=p: self._pick_preset(v))
@@ -931,8 +933,6 @@ class MainWindow(QMainWindow):
 
         bg_box = QVBoxLayout()
         bg_box.addWidget(self.chk_bg)
-        bg_box.addWidget(self.chk_bg_ai)
-        bg_box.addWidget(self.chk_upscale)
         bg_box.addWidget(self.chk_merge)
         bg_box.addWidget(self.chk_edges)
         bg_box.addWidget(self.chk_grad)
@@ -940,11 +940,24 @@ class MainWindow(QMainWindow):
         bg_w = QWidget()
         bg_w.setLayout(bg_box)
 
+        # Finitions IA : a part, car exclues de l'apercu live (trop lentes) --
+        # contrairement aux autres cases ci-dessus, les cocher ne met rien a
+        # jour tant qu'on ne lance pas "Vectoriser" soi-meme. Regroupees avec
+        # un intitule explicite pour ne pas laisser croire a un bug.
+        self.lbl_ai_finishes = self._tr_widget(QLabel(), "label_ai_finishes")
+        ai_box = QVBoxLayout()
+        ai_box.addWidget(self.lbl_ai_finishes)
+        ai_box.addWidget(self.chk_bg_ai)
+        ai_box.addWidget(self.chk_upscale)
+        ai_w = QWidget()
+        ai_w.setLayout(ai_box)
+
         self.lbl_preset = self._tr_widget(QLabel(), "label_preset")
         controls = QHBoxLayout()
         controls.addWidget(self.lbl_preset)
         controls.addWidget(self.preset)
         controls.addWidget(bg_w)
+        controls.addWidget(ai_w)
         controls.addWidget(self._labeled("lbl_bgtol", self.s_tol, small=True, show_value=True))
         controls.addWidget(self._labeled("lbl_speckle", self.s_speckle, small=True, show_value=True))
         controls.addWidget(self._labeled(

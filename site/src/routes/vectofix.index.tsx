@@ -226,9 +226,9 @@ export const Route = createFileRoute("/vectofix/")({
       },
       { property: "og:title", content: "VectoFix — Vectorize without losing the detail" },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://vectorpop.fr/vectofix" },
+      { property: "og:url", content: "https://www.vectorpop.fr/vectofix" },
     ],
-    links: [{ rel: "canonical", href: "https://vectorpop.fr/vectofix" }],
+    links: [{ rel: "canonical", href: "https://www.vectorpop.fr/vectofix" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -240,7 +240,7 @@ export const Route = createFileRoute("/vectofix/")({
           operatingSystem: "Windows",
           description:
             "Repairs SVG vectorization loss by measuring fidelity against the source image and letting you re-trace damaged zones locally.",
-          url: "https://vectorpop.fr/vectofix",
+          url: "https://www.vectorpop.fr/vectofix",
           offers: { "@type": "Offer", price: "39", priceCurrency: "EUR" },
         }),
       },

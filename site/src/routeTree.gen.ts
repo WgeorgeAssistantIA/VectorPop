@@ -10,19 +10,25 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VectofixRouteImport } from './routes/vectofix'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LegalRouteImport } from './routes/legal'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VectofixIndexRouteImport } from './routes/vectofix.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
-import { Route as VectofixBlogRouteImport } from './routes/vectofix.blog'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ApiSubscribeRouteImport } from './routes/api/subscribe'
+import { Route as VectofixBlogIndexRouteImport } from './routes/vectofix.blog.index'
 import { Route as VectofixBlogSlugRouteImport } from './routes/vectofix.blog.$slug'
 
 const VectofixRoute = VectofixRouteImport.update({
   id: '/vectofix',
   path: '/vectofix',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -50,11 +56,6 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VectofixBlogRoute = VectofixBlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
-  getParentRoute: () => VectofixRoute,
-} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
@@ -65,47 +66,55 @@ const ApiSubscribeRoute = ApiSubscribeRouteImport.update({
   path: '/api/subscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VectofixBlogIndexRoute = VectofixBlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => VectofixRoute,
+} as any)
 const VectofixBlogSlugRoute = VectofixBlogSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => VectofixBlogRoute,
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => VectofixRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/vectofix': typeof VectofixRouteWithChildren
   '/api/subscribe': typeof ApiSubscribeRoute
   '/blog/$slug': typeof BlogSlugRoute
-  '/vectofix/blog': typeof VectofixBlogRouteWithChildren
   '/blog/': typeof BlogIndexRoute
   '/vectofix/': typeof VectofixIndexRoute
   '/vectofix/blog/$slug': typeof VectofixBlogSlugRoute
+  '/vectofix/blog/': typeof VectofixBlogIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/api/subscribe': typeof ApiSubscribeRoute
   '/blog/$slug': typeof BlogSlugRoute
-  '/vectofix/blog': typeof VectofixBlogRouteWithChildren
   '/blog': typeof BlogIndexRoute
   '/vectofix': typeof VectofixIndexRoute
   '/vectofix/blog/$slug': typeof VectofixBlogSlugRoute
+  '/vectofix/blog': typeof VectofixBlogIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/vectofix': typeof VectofixRouteWithChildren
   '/api/subscribe': typeof ApiSubscribeRoute
   '/blog/$slug': typeof BlogSlugRoute
-  '/vectofix/blog': typeof VectofixBlogRouteWithChildren
   '/blog/': typeof BlogIndexRoute
   '/vectofix/': typeof VectofixIndexRoute
   '/vectofix/blog/$slug': typeof VectofixBlogSlugRoute
+  '/vectofix/blog/': typeof VectofixBlogIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -113,42 +122,46 @@ export interface FileRouteTypes {
     | '/'
     | '/legal'
     | '/privacy'
+    | '/terms'
     | '/vectofix'
     | '/api/subscribe'
     | '/blog/$slug'
-    | '/vectofix/blog'
     | '/blog/'
     | '/vectofix/'
     | '/vectofix/blog/$slug'
+    | '/vectofix/blog/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/legal'
     | '/privacy'
+    | '/terms'
     | '/api/subscribe'
     | '/blog/$slug'
-    | '/vectofix/blog'
     | '/blog'
     | '/vectofix'
     | '/vectofix/blog/$slug'
+    | '/vectofix/blog'
   id:
     | '__root__'
     | '/'
     | '/legal'
     | '/privacy'
+    | '/terms'
     | '/vectofix'
     | '/api/subscribe'
     | '/blog/$slug'
-    | '/vectofix/blog'
     | '/blog/'
     | '/vectofix/'
     | '/vectofix/blog/$slug'
+    | '/vectofix/blog/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LegalRoute: typeof LegalRoute
   PrivacyRoute: typeof PrivacyRoute
+  TermsRoute: typeof TermsRoute
   VectofixRoute: typeof VectofixRouteWithChildren
   ApiSubscribeRoute: typeof ApiSubscribeRoute
   BlogSlugRoute: typeof BlogSlugRoute
@@ -162,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/vectofix'
       fullPath: '/vectofix'
       preLoaderRoute: typeof VectofixRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -199,13 +219,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/vectofix/blog': {
-      id: '/vectofix/blog'
-      path: '/blog'
-      fullPath: '/vectofix/blog'
-      preLoaderRoute: typeof VectofixBlogRouteImport
-      parentRoute: typeof VectofixRoute
-    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/blog/$slug'
@@ -220,36 +233,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vectofix/blog/': {
+      id: '/vectofix/blog/'
+      path: '/blog'
+      fullPath: '/vectofix/blog/'
+      preLoaderRoute: typeof VectofixBlogIndexRouteImport
+      parentRoute: typeof VectofixRoute
+    }
     '/vectofix/blog/$slug': {
       id: '/vectofix/blog/$slug'
-      path: '/$slug'
+      path: '/blog/$slug'
       fullPath: '/vectofix/blog/$slug'
       preLoaderRoute: typeof VectofixBlogSlugRouteImport
-      parentRoute: typeof VectofixBlogRoute
+      parentRoute: typeof VectofixRoute
     }
   }
 }
 
-interface VectofixBlogRouteChildren {
-  VectofixBlogSlugRoute: typeof VectofixBlogSlugRoute
-}
-
-const VectofixBlogRouteChildren: VectofixBlogRouteChildren = {
-  VectofixBlogSlugRoute: VectofixBlogSlugRoute,
-}
-
-const VectofixBlogRouteWithChildren = VectofixBlogRoute._addFileChildren(
-  VectofixBlogRouteChildren,
-)
-
 interface VectofixRouteChildren {
-  VectofixBlogRoute: typeof VectofixBlogRouteWithChildren
   VectofixIndexRoute: typeof VectofixIndexRoute
+  VectofixBlogSlugRoute: typeof VectofixBlogSlugRoute
+  VectofixBlogIndexRoute: typeof VectofixBlogIndexRoute
 }
 
 const VectofixRouteChildren: VectofixRouteChildren = {
-  VectofixBlogRoute: VectofixBlogRouteWithChildren,
   VectofixIndexRoute: VectofixIndexRoute,
+  VectofixBlogSlugRoute: VectofixBlogSlugRoute,
+  VectofixBlogIndexRoute: VectofixBlogIndexRoute,
 }
 
 const VectofixRouteWithChildren = VectofixRoute._addFileChildren(
@@ -260,6 +270,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LegalRoute: LegalRoute,
   PrivacyRoute: PrivacyRoute,
+  TermsRoute: TermsRoute,
   VectofixRoute: VectofixRouteWithChildren,
   ApiSubscribeRoute: ApiSubscribeRoute,
   BlogSlugRoute: BlogSlugRoute,

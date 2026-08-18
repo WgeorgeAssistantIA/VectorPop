@@ -39,7 +39,7 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 
 // Redirection *.vercel.app -> domaine canonique, pour ne pas laisser deux
 // adresses servir le meme site.
-const CANONICAL_HOST = "vectorpop.fr";
+const CANONICAL_HOST = "www.vectorpop.fr";
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {

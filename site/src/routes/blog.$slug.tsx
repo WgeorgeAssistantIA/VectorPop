@@ -12,7 +12,7 @@ export const Route = createFileRoute("/blog/$slug")({
   head: ({ loaderData }) => {
     const post = loaderData?.post;
     if (!post) return { meta: [{ title: "Article — VectorPop" }] };
-    const canonical = `https://vectorpop.fr/blog/${post.slug}`;
+    const canonical = `https://www.vectorpop.fr/blog/${post.slug}`;
     return {
       meta: [
         { title: `${post.title} — VectorPop Blog` },
@@ -41,10 +41,10 @@ export const Route = createFileRoute("/blog/$slug")({
               name: "VectorPop",
               logo: {
                 "@type": "ImageObject",
-                url: "https://vectorpop.fr/vectorpop_logo.png",
+                url: "https://www.vectorpop.fr/vectorpop_logo.png",
               },
             },
-            image: "https://vectorpop.fr/og.png",
+            image: "https://www.vectorpop.fr/og.png",
             mainEntityOfPage: canonical,
             url: canonical,
           }),

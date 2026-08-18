@@ -74,8 +74,11 @@ STRINGS = {
 
         "chk_bg": "Enlever le fond",
         "chk_bg_tooltip": "Detecte le fond uni (depuis les coins) et le rend transparent.",
+        "label_ai_finishes": "Finitions IA (pas d'aperçu live) :",
         "chk_bg_ai": "Détourage IA",
-        "chk_bg_ai_tooltip": "Fond complexe (photo, dégradé). Plus lent.",
+        "chk_bg_ai_tooltip": (
+            "Fond complexe (photo, dégradé).\n"
+            "Plus lent — exclu de l'aperçu auto, lance « Vectoriser » toi-même."),
         "chk_bg_ai_download_tooltip": (
             "Fond complexe (photo, dégradé). Cochez pour télécharger le module IA "
             "(~120 Mo, une seule fois)."),
@@ -347,8 +350,11 @@ STRINGS = {
 
         "chk_bg": "Remove background",
         "chk_bg_tooltip": "Detects the flat background (from the corners) and makes it transparent.",
+        "label_ai_finishes": "AI finishes (no live preview):",
         "chk_bg_ai": "AI background removal",
-        "chk_bg_ai_tooltip": "Complex background (photo, gradient). Slower.",
+        "chk_bg_ai_tooltip": (
+            "Complex background (photo, gradient).\n"
+            "Slower — excluded from live preview, hit 'Vectorize' yourself."),
         "chk_bg_ai_download_tooltip": (
             "Complex background (photo, gradient). Check to download the AI "
             "module (~120 MB, one time only)."),
