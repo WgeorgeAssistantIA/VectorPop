@@ -71,6 +71,30 @@ function trackCrossLink(target: string) {
 
 type Lang = "en" | "fr";
 
+function useDownloadCount() {
+  const [total, setTotal] = useState<number | null>(null);
+  useEffect(() => {
+    fetch("/api/downloads")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.ok && typeof d.total === "number") setTotal(d.total);
+      })
+      .catch(() => {});
+  }, []);
+  return total;
+}
+
+function DownloadCounter({ lang }: { lang: Lang }) {
+  const total = useDownloadCount();
+  if (total === null || total < 20) return null; // pas assez de recul, évite un chiffre gênant
+  const formatted = new Intl.NumberFormat(lang === "fr" ? "fr-FR" : "en-US").format(total);
+  return (
+    <p className="mt-3 text-xs text-muted-foreground">
+      {lang === "fr" ? `${formatted} téléchargements au total` : `${formatted} downloads so far`}
+    </p>
+  );
+}
+
 const t = {
   en: {
     metaTitle: "VectorPop — Turn your PNG and JPEG logos into clean SVG",
@@ -919,6 +943,7 @@ function Index() {
               </a>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">{c.hero.subText}</p>
+            <DownloadCounter lang={lang} />
             <div className="mt-5 flex justify-center">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan/40 bg-cyan/10 px-4 py-1.5 text-xs font-medium text-cyan">
                 <Sparkles className="h-3.5 w-3.5" /> {c.hero.floating.bottom}

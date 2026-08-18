@@ -27,6 +27,7 @@ from PySide6.QtWidgets import (
 from PIL import Image, ImageDraw
 
 from . import ai_module, ai_upscale
+from .analytics import track_event
 from .export import resize_svg, svg_to_pdf, svg_to_png
 from .gradients import gradientize_svg, refine_colors, remove_shape_at
 from .license import (
@@ -1775,7 +1776,12 @@ class MainWindow(QMainWindow):
             QMessageBox.information(self, self._t("lic_active_title"),
                                     self._t("lic_deactivated"))
 
-    def _show_upsell(self, title: str, body: str):
+    def _show_upsell(self, title: str, body: str, category: str = "other"):
+        track_event("paywall_shown", category)
+        total = self.usage.total_exports()
+        if total > 0:
+            body = body + "\n\n" + self._t("upsell_total", n=total)
+        body = body + "\n\n" + self._t("upsell_reassurance")
         box = QMessageBox(self)
         box.setWindowTitle(title)
         box.setText(body)
@@ -1787,6 +1793,7 @@ class MainWindow(QMainWindow):
         box.addButton(self._t("upsell_later"), QMessageBox.ButtonRole.RejectRole)
         box.exec()
         if box.clickedButton() is buy:
+            track_event("paywall_buy_click", category)
             webbrowser.open(buy_url())
         elif box.clickedButton() is have:
             self.open_license()
@@ -1798,7 +1805,8 @@ class MainWindow(QMainWindow):
         self._show_upsell(
             self._t("upsell_title"),
             self._t("upsell_body", feat=self._t(f"feat_{feature}"),
-                    n=FREE_DAILY_MAX, price=PRO_PRICE_EUR))
+                    n=FREE_DAILY_MAX, price=PRO_PRICE_EUR),
+            category=feature)
         return False
 
     def _can_export_now(self) -> bool:
@@ -1807,14 +1815,18 @@ class MainWindow(QMainWindow):
             return True
         self._show_upsell(self._t("upsell_quota_title"),
                           self._t("upsell_quota_body", n=FREE_DAILY_MAX,
-                                  price=PRO_PRICE_EUR))
+                                  price=PRO_PRICE_EUR),
+                          category="quota")
         return False
 
     def _record_export(self):
-        """Decompte un export du quota. Sans effet en Pro (illimite)."""
+        """Decompte un export du quota (gratuit) et incremente le compteur
+        cumule total (Free + Pro), utilise comme preuve de valeur."""
         if not self.lic.is_pro():
             self.usage.record_export()
             self._update_plan_label()
+        else:
+            self.usage.record_total_only()
 
     def _guard_bg_ai(self, on: bool):
         if not on:

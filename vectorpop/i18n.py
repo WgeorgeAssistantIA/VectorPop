@@ -277,6 +277,8 @@ STRINGS = {
         "upsell_buy": "Passer Pro — {price} €",
         "upsell_have_key": "J'ai déjà une licence",
         "upsell_later": "Plus tard",
+        "upsell_reassurance": "Paiement unique, aucun abonnement, clé envoyée immédiatement par email.",
+        "upsell_total": "Vous avez déjà vectorisé {n} images avec VectorPop.",
 
         "lic_title": "Activer VectorPop Pro",
         "lic_hint": "Entrez l'email d'achat et la clé de licence reçue par mail.",
@@ -552,6 +554,8 @@ STRINGS = {
         "upsell_buy": "Go Pro — €{price}",
         "upsell_have_key": "I already have a licence",
         "upsell_later": "Later",
+        "upsell_reassurance": "One-time payment, no subscription, key emailed immediately.",
+        "upsell_total": "You've already vectorized {n} images with VectorPop.",
 
         "lic_title": "Activate VectorPop Pro",
         "lic_hint": "Enter your purchase email and the licence key you received.",

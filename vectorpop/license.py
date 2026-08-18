@@ -331,7 +331,8 @@ class UsageTracker:
 
     def _reset_if_new_day(self) -> None:
         if self._data.get("date") != self._today():
-            self._data = {"date": self._today(), "count": 0}
+            self._data = {"date": self._today(), "count": 0,
+                          "total": self._data.get("total", 0)}
             self._save()
 
     def exports_today(self) -> int:
@@ -347,4 +348,17 @@ class UsageTracker:
     def record_export(self) -> None:
         self._reset_if_new_day()
         self._data["count"] = self._data.get("count", 0) + 1
+        self._data["total"] = self._data.get("total", 0) + 1
         self._save()
+
+    def record_total_only(self) -> None:
+        """Incremente le total cumule sans toucher au quota (utilisateurs Pro,
+        deja illimites)."""
+        self._reset_if_new_day()
+        self._data["total"] = self._data.get("total", 0) + 1
+        self._save()
+
+    def total_exports(self) -> int:
+        """Compteur cumulé, jamais remis à zéro. Sert de preuve de valeur
+        affichée dans l'upsell ("X images vectorisées avec VectorPop")."""
+        return self._data.get("total", 0)
