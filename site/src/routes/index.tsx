@@ -29,9 +29,9 @@ declare function gtag(...args: unknown[]): void;
 // Squeezy est cree (id 1229563, cf. vectorpop/license.py) : CHECKOUT_URL est donc
 // renseigne, la carte Pro pointe vers le vrai checkout.
 const GITHUB_REPO = "https://github.com/WgeorgeAssistantIA/VectorPop";
-const DOWNLOAD_EXE = `${GITHUB_REPO}/releases/download/v1.2.0/VectorPop-Setup-1.2.0.exe`;
-const LINUX_URL = `${GITHUB_REPO}/releases/download/v1.2.0/VectorPop-x86_64.AppImage`;
-const LINUX_TAR_URL = `${GITHUB_REPO}/releases/download/v1.2.0/VectorPop_1.2.0_linux_x86_64.tar.gz`;
+const DOWNLOAD_EXE = `${GITHUB_REPO}/releases/download/v1.2.1/VectorPop-Setup-1.2.1.exe`;
+const LINUX_URL = `${GITHUB_REPO}/releases/download/v1.2.1/VectorPop-x86_64.AppImage`;
+const LINUX_TAR_URL = `${GITHUB_REPO}/releases/download/v1.2.1/VectorPop_1.2.1_linux_x86_64.tar.gz`;
 const SNAP_URL = "https://snapcraft.io/vectorpop";
 const MS_STORE_URL = "https://get.microsoft.com/installer/download/9MT2XVDXX7DG?referrer=appbadge";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.lafabriknumerique.vectorpop";

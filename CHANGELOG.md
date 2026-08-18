@@ -4,13 +4,19 @@ Reconstitué le 2026-08-13 à partir des fichiers/versions disponibles dans le r
 
 ## Windows
 
+### 1.2.1 (Inno Setup)
+Ajout du funnel Pro et de la télémétrie GA4.
+
 ### 1.2.0 (Inno Setup)
-Version actuelle.
+Version précédente.
 
 ## Linux
 
+### 1.2.1 (tar.gz)
+Ajout du funnel Pro et de la télémétrie GA4.
+
 ### 1.2.0 (tar.gz)
-Version actuelle, alignée sur Windows.
+Version précédente, alignée sur Windows.
 
 ### 1.1.0 (tar.gz)
 Version précédente.

@@ -1,7 +1,7 @@
 name: vectorpop
 title: VectorPop
 base: core24
-version: '1.2.0'
+version: '1.2.1'
 license: Proprietary
 contact: contact@vectorpop.fr
 website: https://www.vectorpop.fr
@@ -38,7 +38,7 @@ parts:
   # Bundle PyInstaller (onedir) compile sur Ubuntu 24.04 (glibc 2.39, compatible core24)
   vectorpop:
     plugin: dump
-    source: /root/vectorpop-build/dist
+    source: dist
     organize:
       VectorPop/: opt/vectorpop/
     stage-packages:

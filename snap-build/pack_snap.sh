@@ -24,9 +24,9 @@ cp -r "$SRC/snap-build/launcher" "$BUILD/"
 find "$BUILD/snap" "$BUILD/launcher" -type f \( -name '*.yaml' -o -name '*.sh' -o -name '*.desktop' \) -exec sed -i 's/\r$//' {} \;
 chmod +x "$BUILD/launcher/vectorpop.sh" "$BUILD/dist/VectorPop/VectorPop"
 
-echo "==> snapcraft pack --destructive-mode"
+echo "==> snapcraft pack --use-lxd"
 cd "$BUILD"
-snapcraft pack --destructive-mode --verbosity=brief
+snapcraft pack --use-lxd --verbosity=brief
 
 echo ""
 ls -lh "$BUILD"/*.snap
