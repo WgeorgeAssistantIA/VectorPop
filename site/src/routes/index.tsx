@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 import { subscribeNewsletter } from "@/lib/api/newsletter.functions";
+import { getReassuranceVariant, REASSURANCE_COPY, type ReassuranceVariant } from "@/lib/abtest";
 import {
   ArrowRight,
   Check,
@@ -752,10 +753,20 @@ function Index() {
   const [email, setEmail] = useState("");
   const [subscribeStatus, setSubscribeStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [feedbackDismissed, setFeedbackDismissed] = useState(true);
+  const [reassuranceVariant, setReassuranceVariant] = useState<ReassuranceVariant>("a");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     setFeedbackDismissed(localStorage.getItem("vectorpop-feedback-dismissed") === "1");
+  }, []);
+
+  useEffect(() => {
+    const variant = getReassuranceVariant();
+    setReassuranceVariant(variant);
+    if (typeof gtag !== "undefined")
+      gtag("event", `experiment_reassurance_impression_${variant}`, {
+        event_category: "engagement",
+      });
   }, []);
 
   const dismissFeedback = () => {
@@ -1101,7 +1112,7 @@ function Index() {
                   </div>
                   <p className="mt-2 text-sm text-brand">{c.pricing.pro.tagline}</p>
                   <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                    <CheckCircle2 className="h-3 w-3" /> {c.pricing.pro.guarantee}
+                    <CheckCircle2 className="h-3 w-3" /> {REASSURANCE_COPY[lang][reassuranceVariant]}
                   </div>
                 </div>
                 <div className="mt-5 rounded-xl border border-dashed border-brand/60 bg-brand/10 p-4 text-center">
@@ -1129,6 +1140,15 @@ function Index() {
                     href={CHECKOUT_URL}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => {
+                      track("begin_checkout", { variant: reassuranceVariant });
+                      if (typeof gtag !== "undefined")
+                        gtag("event", `begin_checkout_${reassuranceVariant}`, {
+                          event_category: "engagement",
+                          value: 39,
+                          currency: "EUR",
+                        });
+                    }}
                     className="mt-8 inline-flex items-center justify-center gap-2 rounded-lg bg-plume px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:brightness-110"
                   >
                     {c.pricing.pro.cta}
