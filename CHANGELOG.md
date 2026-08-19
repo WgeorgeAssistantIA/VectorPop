@@ -1,34 +1,8 @@
 # Changelog — VectorPop
 
-Reconstitué le 2026-08-13 à partir des fichiers/versions disponibles dans le repo — dates précises non archivées pour la plupart des versions, à compléter au fil de l'eau.
+L'historique détaillé des versions, de leurs nouveautés et de leurs correctifs a été déplacé dans le dossier `release_notes/`.
 
-## Windows
-
-### 1.2.1 (Inno Setup)
-Ajout du funnel Pro et de la télémétrie GA4.
-
-### 1.2.0 (Inno Setup)
-Version précédente.
-
-## Linux
-
-### 1.2.1 (tar.gz)
-Ajout du funnel Pro et de la télémétrie GA4.
-
-### 1.2.0 (tar.gz)
-Version précédente, alignée sur Windows.
-
-### 1.1.0 (tar.gz)
-Version précédente.
-
-## Android
-
-### 1.0.0 (build 2)
-Version actuelle Flutter/Android.
-
-## Microsoft Store
-
-Publication annoncée le 2026-07-24. Roadmap encore active (features en cours).
+👉 **Voir l'historique complet : [history.md](./release_notes/history.md)**
 
 ---
-**Note** : pas de CHANGELOG antérieur trouvé dans le repo. Pas de blog identifié pour ce produit.
+*Note : Le changelog détaillé était précédemment conservé dans ce fichier, mais pour plus de clarté il dispose désormais de son propre dossier de suivi détaillé par release.*

@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap');
+body { margin:0; padding:0; background:#e5e7eb; }
+.wrap { display:flex; flex-direction:column; gap:24px; padding:24px; width:fit-content; }
+.card { border-radius:16px; padding:36px 24px; }
+.light { background:#ffffff; border:1px solid #d1d5db; }
+.dark { background:#0f172a; }
+.word { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:64px; letter-spacing:-0.5px; white-space:nowrap; }
+.fixgroup { display:inline-flex; flex-direction:column; align-items:center; }
+.device { display:flex; align-items:center; width:100%; margin-top:8px; height:18px; }
+.node { width:18px; height:18px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.node-inner { width:6px; height:6px; background:#ffffff; }
+.line { flex:1; height:5px; }
+.icon { width:160px; height:160px; border-radius:32px; background:#0f172a; display:flex; align-items:center; justify-content:center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card light">
+    <div class="word" style="color:#111827">Vecto<span class="fixgroup"><span style="color:#2563eb">Fix</span><span class="device"><span class="node" style="background:#2563eb"><span class="node-inner"></span></span><span class="line" style="background:#2563eb"></span><span class="node" style="background:#2563eb"><span class="node-inner"></span></span></span></span></div>
+  </div>
+  <div class="card dark">
+    <div class="word" style="color:#f8fafc">Vecto<span class="fixgroup"><span style="color:#60a5fa">Fix</span><span class="device"><span class="node" style="background:#60a5fa"><span class="node-inner"></span></span><span class="line" style="background:#60a5fa"></span><span class="node" style="background:#60a5fa"><span class="node-inner"></span></span></span></span></div>
+  </div>
+  <div class="icon">
+    <svg width="96" height="96" viewBox="0 0 96 96">
+      <path d="M22 18 L48 66 L58 66 L74 18 L64 18 L53 54 L42 18 Z" fill="#60a5fa"/>
+      <rect x="66" y="20" width="8" height="34" fill="#60a5fa"/>
+      <rect x="66" y="20" width="24" height="9" fill="#60a5fa"/>
+      <rect x="66" y="36" width="17" height="8" fill="#60a5fa"/>
+      <g>
+        <rect x="30" y="74" width="10" height="10" fill="#60a5fa"/>
+        <rect x="33" y="77" width="4" height="4" fill="#0f172a"/>
+        <rect x="40" y="77.5" width="20" height="3" fill="#60a5fa"/>
+        <rect x="58" y="74" width="10" height="10" fill="#60a5fa"/>
+        <rect x="61" y="77" width="4" height="4" fill="#0f172a"/>
+      </g>
+    </svg>
+  </div>
+</div>
+</body>
+</html>

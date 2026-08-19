@@ -37,17 +37,15 @@ La case **Detourage IA** gere les fonds complexes (photo, degrade) via `rembg`.
 Non inclus dans l'exe par defaut (trop lourd). Pour l'activer depuis les sources :
 `.venv\Scripts\pip install -r requirements-ai.txt`.
 
-## Feuille de route
+## Feuilles de route & Releases
 
-- [x] v0.1 — vectorisation PNG/JPEG -> SVG, presets, export SVG
-- [x] Suppression de fond (uni par couleur + IA optionnelle rembg)
-- [x] Slider tolerance fond
-- [x] Apercu live au deplacement des sliders
-- [x] Export PDF / PNG haute-def
-- [x] Packaging PyInstaller + icone (`build.bat`)
+- [x] v1.2.1 — Ajout du funnel Pro (achat in-app) et intégration de la télémétrie Google Analytics 4 (GA4).
+- [x] v0.1 à v1.2.0 — vectorisation PNG/JPEG -> SVG, presets, export SVG, Détourage IA, AppImage Linux.
 - [ ] Fusion de couleurs proches / nettoyage paths avance
-- [ ] Packaging Microsoft Store (.msix)
+- [ ] Packaging Microsoft Store (.msix) en cours
 - [ ] (premium) generation de concept par IA -> vectorisation auto
+
+> **Historique complet** : Voir le fichier [`release_notes/history.md`](./release_notes/history.md).
 
 ## Un avis ou un retour ?
 

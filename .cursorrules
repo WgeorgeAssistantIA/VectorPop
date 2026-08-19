@@ -1,0 +1,15 @@
+# VectorPop - Agent Memory & Rules
+
+Ces règles doivent être respectées par les agents IA travaillant sur ce dépôt :
+
+## Vercel
+- **Gotcha Vercel** : L'application web est déployée sur le projet `vector-pop` qui est le projet réellement en production (avec le domaine personnalisé).
+- ⚠️ NE JAMAIS utiliser ou interagir avec le projet en double `vectorpop-site`. Ce projet est un résidu obsolète et ne doit pas recevoir de variables d'environnement, ni déclencher de builds de production.
+
+## Build Linux (Snap & WSL)
+- **Gotcha Snapcraft LXD** : La construction du package Snap via LXD sous Windows Subsystem for Linux (WSL) présente un problème connu d'incompatibilité (souvent lié à `mesa-2404` avec l'extension GNOME de la base `core24`). 
+- Si le build Snap échoue en boucle dans cet environnement, privilégier et fournir l'archive `tar.gz` ou l'`AppImage` comme livrable Linux fonctionnel, et ignorer le Snap.
+
+## Python
+- L'environnement virtuel pour Windows se trouve dans `.venv`.
+- L'environnement virtuel pour Linux via WSL se trouve dans `.venv-linux`.
