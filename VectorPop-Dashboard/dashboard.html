@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tableau de bord VectorPop</title>
+<style>
+  :root{--bg:#150d24;--card:#1e1430;--line:#332a4d;--txt:#f0e9fb;--mut:#b19bc7;--accent:#c92bc0;--accent2:#3fd7fb}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 70% -10%,#2a1640 0,var(--bg) 60%);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;padding:32px}
+  header{max-width:1100px;margin:0 auto 24px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
+  h1{margin:0;font-size:26px;letter-spacing:.5px}
+  h1 .v{background:linear-gradient(90deg,#7A52F5,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--mut);font-size:13px;margin-top:6px}
+  .grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 20px 16px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+  .head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .title{display:flex;align-items:center;gap:9px;font-weight:600;font-size:15px;color:var(--txt)}
+  .title svg{color:var(--accent2)}
+  .badge{font-size:11px;padding:3px 9px;border-radius:999px;font-weight:600;white-space:nowrap}
+  .win{display:inline-block;color:var(--mut);font-size:12px;margin:10px 0 4px}
+  .metrics{margin-top:8px}
+  .metric{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-top:1px solid var(--line)}
+  .metric:first-child{border-top:none}
+  .metric .label{color:var(--mut);font-size:13px}
+  .metric .value{font-weight:600;font-size:16px}
+  .metric.big .value{font-size:26px;color:var(--accent2)}
+  .empty{color:var(--mut);font-size:13px;padding:10px 0}
+  .note{color:var(--mut);font-size:11.5px;line-height:1.5;margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
+  .err{color:#fca5a5;font-size:11px;margin-top:8px;word-break:break-word;opacity:.8}
+  footer{max-width:1100px;margin:26px auto 0;color:var(--mut);font-size:12.5px;line-height:1.7;border-top:1px solid var(--line);padding-top:16px}
+  footer b{color:var(--txt)}
+  .warn{color:var(--accent2)}
+  .editbox{max-width:1100px;margin:22px auto 0;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+  .editbox h2{margin:0 0 4px;font-size:15px}
+  .editbox .sub{margin-bottom:14px}
+  .editgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+  .editgrid label{display:block;font-size:12px;color:var(--mut);margin-bottom:4px}
+  .editgrid input{width:100%;background:#10151c;border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:8px 10px;font-size:14px}
+  .editbox button{margin-top:14px;background:var(--accent2);color:#04201c;border:none;border-radius:8px;padding:9px 18px;font-weight:700;cursor:pointer;font-size:13px}
+  .editbox button:hover{opacity:.9}
+  #editStatus{margin-top:10px;font-size:12.5px}
+</style></head>
+<body>
+  <header>
+    <div>
+      <h1>Tableau de bord <span class="v">VectorPop</span></h1>
+      <div class="sub">Genere le 19/08/2026 a 08:43 &nbsp;&bull;&nbsp; fenetre analytics : 2026-07-21 -> 2026-08-17 (28 j)</div>
+    </div>
+  </header>
+  <div class="grid">
+  <div class="card">
+    <div class="head">
+      <div class="title">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v14m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
+        <span>GitHub - telechargements</span>
+      </div>
+      <span class="badge" style="background:#22c55e22;color:#22c55e;border:1px solid #22c55e55">en direct</span>
+    </div>
+    <span class='win'>cumul depuis la sortie</span>
+    <div class="metrics"><div class='metric '><span class='label'>Installeur (avec raccourcis)</span><span class='value'>33</span></div><div class='metric '><span class='label'>Portable (zip / exe seul)</span><span class='value'>6</span></div><div class='metric '><span class='label'>Linux (.AppImage)</span><span class='value'>7</span></div><div class='metric '><span class='label'>Linux (.tar.gz)</span><span class='value'>22</span></div><div class='metric big'><span class='label'>TOTAL app</span><span class='value'>68</span></div></div>
+    <div class="note">Ne compte QUE les releases GitHub (hors Microsoft Store, pas encore publie, et hors Snap Store). Module detourage IA (lazy-install a la demande) telecharge 3 fois separement.</div>
+    
+  </div>  <div class="card">
+    <div class="head">
+      <div class="title">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v14m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
+        <span>Microsoft Store / Snap</span>
+      </div>
+      <span class="badge" style="background:#eab30822;color:#eab308;border:1px solid #eab30855">saisie manuelle</span>
+    </div>
+    <span class='win'>saisie manuelle</span>
+    <div class="metrics"><div class='metric '><span class='label'>Consultations fiche</span><span class='value'>20</span></div><div class='metric '><span class='label'>Installations</span><span class='value'>4</span></div><div class='metric '><span class='label'>Conversion</span><span class='value'>20%</span></div><div class='metric '><span class='label'>Snap Store (Linux)</span><span class='value'>17</span></div></div>
+    <div class="note">Store : soumission encore en brouillon (captures d&#39;ecran manquantes au 19/07/2026). Snap : releve dans snapcraft.io/vectorpop/metrics. A mettre a jour a la main.</div>
+    
+  </div>  <div class="card">
+    <div class="head">
+      <div class="title">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v14m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
+        <span>Google Play Store</span>
+      </div>
+      <span class="badge" style="background:#eab30822;color:#eab308;border:1px solid #eab30855">saisie manuelle</span>
+    </div>
+    <span class='win'>saisie manuelle</span>
+    <div class="metrics"><div class='metric '><span class='label'>Installations totales</span><span class='value'>8</span></div><div class='metric '><span class='label'>Installations actives</span><span class='value'>4</span></div><div class='metric '><span class='label'>Note moyenne</span><span class='value'></span></div><div class='metric '><span class='label'>Nombre d&#39;avis</span><span class='value'></span></div></div>
+    <div class="note">Play Console &gt; Statistiques &gt; Installations. Totales = cumul depuis toujours ; actives = installations actuelles (desinstalls deduites). A mettre a jour a la main (paquet com.lafabriknumerique.vectorpop).</div>
+    
+  </div>  <div class="card">
+    <div class="head">
+      <div class="title">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 100 18 9 9 0 000-18zM3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
+        <span>Vercel Analytics</span>
+      </div>
+      <span class="badge" style="background:#22c55e22;color:#22c55e;border:1px solid #22c55e55">en direct</span>
+    </div>
+    <span class='win'>28 derniers jours</span>
+    <div class="metrics"><div class='metric big'><span class='label'>Visiteurs</span><span class='value'>98</span></div><div class='metric big'><span class='label'>Vues de page</span><span class='value'>180</span></div></div>
+    <div class="note">Trafic total du site (toutes sources). Mesure first-party, peu bloquee. (L&#39;API n&#39;expose pas le taux de rebond.)</div>
+    
+  </div>  <div class="card">
+    <div class="head">
+      <div class="title">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4a7 7 0 105.2 11.7L21 21M11 4a7 7 0 010 14"/></svg>
+        <span>Google Search Console</span>
+      </div>
+      <span class="badge" style="background:#ef444422;color:#ef4444;border:1px solid #ef444455">erreur</span>
+    </div>
+    <span class='win'>28 j</span>
+    <div class="metrics"><div class='empty'>Pas encore de donnees</div></div>
+    <div class="note">Verifie que le site est bien verifie dans Search Console.</div>
+    <div class='err'>Le serveur distant a retourn&#233; une erreur&#160;: (403) Interdit.</div>
+  </div>  <div class="card">
+    <div class="head">
+      <div class="title">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+        <span>GA4 (Analytics)</span>
+      </div>
+      <span class="badge" style="background:#22c55e22;color:#22c55e;border:1px solid #22c55e55">en direct</span>
+    </div>
+    <span class='win'>28 derniers jours</span>
+    <div class="metrics"><div class='metric big'><span class='label'>Utilisateurs</span><span class='value'>71</span></div><div class='metric big'><span class='label'>Vues de page</span><span class='value'>108</span></div><div class='metric big'><span class='label'>Clics download</span><span class='value'>22</span></div></div>
+    <div class="note">Sous-compte le trafic (bloque par adblockers). Utile pour l&#39;engagement, pas les totaux.</div>
+    
+  </div>  <div class="card">
+    <div class="head">
+      <div class="title">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z M3 6h18 M16 10a4 4 0 01-8 0"/></svg>
+        <span>Lemon Squeezy - ventes</span>
+      </div>
+      <span class="badge" style="background:#22c55e22;color:#22c55e;border:1px solid #22c55e55">en direct</span>
+    </div>
+    <span class='win'>cumul + 28 derniers jours</span>
+    <div class="metrics"><div class='metric '><span class='label'>Ventes totales</span><span class='value'>1</span></div><div class='metric '><span class='label'>CA total</span><span class='value'>$0,00</span></div><div class='metric '><span class='label'>Ventes (28 j)</span><span class='value'>0</span></div><div class='metric '><span class='label'>CA (28 j)</span><span class='value'>$0,00</span></div></div>
+    <div class="note">Licences VectorPop Pro payees (statut &#39;paid&#39;, hors commandes test). Montants normalises en USD (total_usd) meme si le client a paye dans une autre devise.</div>
+    
+  </div>
+  </div>
+
+  <div class="editbox">
+    <h2>Saisie manuelle - Store / Play Store</h2>
+    <div class="sub" style="color:var(--mut);font-size:12px">Necessite le serveur d'edition local en cours d'execution (manual-edit-server.ps1, port 8793). Sinon, edite config.json a la main.</div>
+    <div class="editgrid">
+      <div><label>Consultations fiche (MS Store)</label><input id="m_consultations" type="number" step="any" value="20"></div>
+      <div><label>Installations (MS Store)</label><input id="m_installations" type="number" step="any" value="4"></div>
+      <div><label>Conversion % (MS Store)</label><input id="m_conversion" type="number" step="any" value="20"></div>
+      <div><label>Snap Store (Linux)</label><input id="m_snap" type="number" step="any" value="17"></div>
+      <div><label>Installations totales (Google Play)</label><input id="p_installsTotal" type="number" step="any" value="8"></div>
+      <div><label>Installations actives (Google Play)</label><input id="p_installs" type="number" step="any" value="4"></div>
+      <div><label>Note moyenne (Google Play)</label><input id="p_note" type="number" step="any" value=""></div>
+      <div><label>Nombre d'avis (Google Play)</label><input id="p_ratings" type="number" step="any" value=""></div>
+    </div>
+    <button onclick="saveManual()">Enregistrer et regenerer</button>
+    <div id="editStatus"></div>
+  </div>
+
+  <footer>
+    <span class="warn">&#9888; Regle d'or :</span> <b>ne jamais additionner les chiffres entre outils</b> &mdash; ils ne mesurent pas la meme chose.<br>
+    &bull; <b>Search Console</b> = uniquement la recherche Google (tout petit sous-ensemble).
+    &bull; <b>Vercel</b> = trafic total reel du site (le plus fiable).
+    &bull; <b>GA4</b> = comportement/engagement, sous-compte a cause des adblockers.
+    &bull; <b>Microsoft Store</b> = pas encore publie (soumission en brouillon). <b>Snap</b> = saisie manuelle (snapcraft.io/vectorpop/metrics).
+    &bull; <b>GitHub</b> = telechargements reels (installeur + portable + Linux AppImage/tar.gz), hors Store et Snap.
+    &bull; <b>Lemon Squeezy</b> = ventes payees VectorPop Pro (le seul chiffre d'affaires reel).
+  </footer>
+  <script>
+    function val(id) { var v = document.getElementById(id).value; return v === "" ? null : v; }
+    function saveManual() {
+      var status = document.getElementById('editStatus');
+      status.style.color = 'var(--mut)';
+      status.textContent = 'Enregistrement...';
+      fetch('http://localhost:8793/save-manual', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          store: { consultations: val('m_consultations'), installations: val('m_installations'), conversion: val('m_conversion'), snap: val('m_snap') },
+          playstore: { installsTotal: val('p_installsTotal'), installs: val('p_installs'), note: val('p_note'), ratings: val('p_ratings') }
+        })
+      }).then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      }).then(function() {
+        status.style.color = '#22c55e';
+        status.textContent = 'Enregistre, dashboard regenere. Rechargement...';
+        setTimeout(function() { location.reload(); }, 900);
+      }).catch(function(e) {
+        status.style.color = '#ef4444';
+        status.textContent = 'Erreur : serveur d\'edition non demarre ? (manual-edit-server.ps1) - ' + e.message;
+      });
+    }
+  </script>
+</body></html>
