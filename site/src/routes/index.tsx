@@ -1419,6 +1419,15 @@ function Index() {
               className="underline hover:text-foreground transition-colors"
             >
               Nyctale
+            </a>{" "}
+            <a
+              href="https://votreassistantia.fr"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackCrossLink("votreassistantia")}
+              className="underline hover:text-foreground transition-colors"
+            >
+              VotreAssistantIA
             </a>
           </p>
         </div>
