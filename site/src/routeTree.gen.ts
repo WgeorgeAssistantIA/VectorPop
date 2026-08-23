@@ -16,8 +16,11 @@ import { Route as LegalRouteImport } from './routes/legal'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VectofixIndexRouteImport } from './routes/vectofix.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as VectofixPrivacyRouteImport } from './routes/vectofix.privacy'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as ApiTrackRouteImport } from './routes/api/track'
 import { Route as ApiSubscribeRouteImport } from './routes/api/subscribe'
+import { Route as ApiDownloadsRouteImport } from './routes/api/downloads'
 import { Route as VectofixBlogIndexRouteImport } from './routes/vectofix.blog.index'
 import { Route as VectofixBlogSlugRouteImport } from './routes/vectofix.blog.$slug'
 
@@ -56,14 +59,29 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VectofixPrivacyRoute = VectofixPrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => VectofixRoute,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiTrackRoute = ApiTrackRouteImport.update({
+  id: '/api/track',
+  path: '/api/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiSubscribeRoute = ApiSubscribeRouteImport.update({
   id: '/api/subscribe',
   path: '/api/subscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDownloadsRoute = ApiDownloadsRouteImport.update({
+  id: '/api/downloads',
+  path: '/api/downloads',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VectofixBlogIndexRoute = VectofixBlogIndexRouteImport.update({
@@ -83,8 +101,11 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/vectofix': typeof VectofixRouteWithChildren
+  '/api/downloads': typeof ApiDownloadsRoute
   '/api/subscribe': typeof ApiSubscribeRoute
+  '/api/track': typeof ApiTrackRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/vectofix/privacy': typeof VectofixPrivacyRoute
   '/blog/': typeof BlogIndexRoute
   '/vectofix/': typeof VectofixIndexRoute
   '/vectofix/blog/$slug': typeof VectofixBlogSlugRoute
@@ -95,8 +116,11 @@ export interface FileRoutesByTo {
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/api/downloads': typeof ApiDownloadsRoute
   '/api/subscribe': typeof ApiSubscribeRoute
+  '/api/track': typeof ApiTrackRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/vectofix/privacy': typeof VectofixPrivacyRoute
   '/blog': typeof BlogIndexRoute
   '/vectofix': typeof VectofixIndexRoute
   '/vectofix/blog/$slug': typeof VectofixBlogSlugRoute
@@ -109,8 +133,11 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/vectofix': typeof VectofixRouteWithChildren
+  '/api/downloads': typeof ApiDownloadsRoute
   '/api/subscribe': typeof ApiSubscribeRoute
+  '/api/track': typeof ApiTrackRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/vectofix/privacy': typeof VectofixPrivacyRoute
   '/blog/': typeof BlogIndexRoute
   '/vectofix/': typeof VectofixIndexRoute
   '/vectofix/blog/$slug': typeof VectofixBlogSlugRoute
@@ -124,8 +151,11 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/vectofix'
+    | '/api/downloads'
     | '/api/subscribe'
+    | '/api/track'
     | '/blog/$slug'
+    | '/vectofix/privacy'
     | '/blog/'
     | '/vectofix/'
     | '/vectofix/blog/$slug'
@@ -136,8 +166,11 @@ export interface FileRouteTypes {
     | '/legal'
     | '/privacy'
     | '/terms'
+    | '/api/downloads'
     | '/api/subscribe'
+    | '/api/track'
     | '/blog/$slug'
+    | '/vectofix/privacy'
     | '/blog'
     | '/vectofix'
     | '/vectofix/blog/$slug'
@@ -149,8 +182,11 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/vectofix'
+    | '/api/downloads'
     | '/api/subscribe'
+    | '/api/track'
     | '/blog/$slug'
+    | '/vectofix/privacy'
     | '/blog/'
     | '/vectofix/'
     | '/vectofix/blog/$slug'
@@ -163,7 +199,9 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   VectofixRoute: typeof VectofixRouteWithChildren
+  ApiDownloadsRoute: typeof ApiDownloadsRoute
   ApiSubscribeRoute: typeof ApiSubscribeRoute
+  ApiTrackRoute: typeof ApiTrackRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
 }
@@ -219,6 +257,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vectofix/privacy': {
+      id: '/vectofix/privacy'
+      path: '/privacy'
+      fullPath: '/vectofix/privacy'
+      preLoaderRoute: typeof VectofixPrivacyRouteImport
+      parentRoute: typeof VectofixRoute
+    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/blog/$slug'
@@ -226,11 +271,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/track': {
+      id: '/api/track'
+      path: '/api/track'
+      fullPath: '/api/track'
+      preLoaderRoute: typeof ApiTrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/subscribe': {
       id: '/api/subscribe'
       path: '/api/subscribe'
       fullPath: '/api/subscribe'
       preLoaderRoute: typeof ApiSubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/downloads': {
+      id: '/api/downloads'
+      path: '/api/downloads'
+      fullPath: '/api/downloads'
+      preLoaderRoute: typeof ApiDownloadsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/vectofix/blog/': {
@@ -251,12 +310,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface VectofixRouteChildren {
+  VectofixPrivacyRoute: typeof VectofixPrivacyRoute
   VectofixIndexRoute: typeof VectofixIndexRoute
   VectofixBlogSlugRoute: typeof VectofixBlogSlugRoute
   VectofixBlogIndexRoute: typeof VectofixBlogIndexRoute
 }
 
 const VectofixRouteChildren: VectofixRouteChildren = {
+  VectofixPrivacyRoute: VectofixPrivacyRoute,
   VectofixIndexRoute: VectofixIndexRoute,
   VectofixBlogSlugRoute: VectofixBlogSlugRoute,
   VectofixBlogIndexRoute: VectofixBlogIndexRoute,
@@ -272,7 +333,9 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   VectofixRoute: VectofixRouteWithChildren,
+  ApiDownloadsRoute: ApiDownloadsRoute,
   ApiSubscribeRoute: ApiSubscribeRoute,
+  ApiTrackRoute: ApiTrackRoute,
   BlogSlugRoute: BlogSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
 }
