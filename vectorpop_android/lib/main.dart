@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:typed_data' show Uint8List;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show RootIsolateToken, BackgroundIsolateBinaryMessenger;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
@@ -20,6 +23,101 @@ import 'preprocessing.dart';
 import 'vectorizer_ffi.dart';
 
 void main() => runApp(const VectorPopApp());
+
+/// Top-level so the closure captured by [Isolate.run] only closes over its
+/// own parameters -- an inline closure inside a State method can end up
+/// sharing the method's compiler-generated context with sibling closures
+/// (e.g. the surrounding `setState` calls), which drags `this` (and the
+/// whole widget tree behind it) along and makes the isolate message
+/// unsendable at runtime (`flutter analyze` does not catch this).
+Future<img.Image?> _decodeImageBytes(Uint8List bytes) {
+  return Isolate.run(() => img.decodeImage(bytes));
+}
+
+Future<img.Image> _runAiUpscaleIsolate(img.Image source, RootIsolateToken token) {
+  return Isolate.run(() async {
+    BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+    return AiUpscale.upscaleX4(source);
+  });
+}
+
+Future<img.Image> _runAiDetourageIsolate(img.Image source, RootIsolateToken token) {
+  return Isolate.run(() async {
+    BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+    return AiDetourage.removeBackground(source);
+  });
+}
+
+Future<String> _runVectorizePipeline({
+  required img.Image source,
+  required bool aiDetourageRan,
+  required bool removeBg,
+  required int bgTol,
+  required bool keepTrans,
+  required int alphaThresh,
+  required int contrast,
+  required int sharpen,
+  required bool modeBinary,
+  required bool mergeColors,
+  required int precision,
+  required int mergeThresh,
+  required bool cleanEdges,
+  required int filterSpeckle,
+  required int cornerThresh,
+  required int layerDiff,
+}) {
+  return Isolate.run(() {
+    var working = source;
+    if (!aiDetourageRan && removeBg) {
+      working = Preprocessing.removeBackground(working, tolerance: bgTol);
+    }
+    working = keepTrans
+        ? Preprocessing.thresholdAlpha(working, alphaThreshold: alphaThresh)
+        : Preprocessing.flattenOnWhite(working);
+    working = Preprocessing.adjustContrast(working, contrast);
+    working = Preprocessing.sharpen(working, sharpen);
+
+    if (!modeBinary && mergeColors) {
+      final opaque = <bool>[];
+      final withAlpha = working.convert(numChannels: 4);
+      for (var y = 0; y < withAlpha.height; y++) {
+        for (var x = 0; x < withAlpha.width; x++) {
+          opaque.add(withAlpha.getPixel(x, y).a > 0);
+        }
+      }
+      final colorCount = (1 << precision).clamp(2, 256);
+      working = ColorCleanup.quantize(working, colorCount);
+      working = ColorCleanup.mergeNearColors(working, mergeThresh);
+      if (cleanEdges) {
+        working = ColorCleanup.suppressAaFringes(working, opaque: opaque);
+      }
+      final restored = working.convert(numChannels: 4);
+      for (var y = 0; y < restored.height; y++) {
+        for (var x = 0; x < restored.width; x++) {
+          if (!opaque[y * restored.width + x]) {
+            final p = restored.getPixel(x, y);
+            restored.setPixelRgba(x, y, p.r.toInt(), p.g.toInt(), p.b.toInt(), 0);
+          }
+        }
+      }
+      working = restored;
+    }
+
+    final rgba = working.convert(numChannels: 4);
+    return VectorizerFfi.vectorize(
+      rgba: rgba.getBytes(order: img.ChannelOrder.rgba),
+      width: rgba.width,
+      height: rgba.height,
+      params: VectorizeParams(
+        colorModeBinary: modeBinary,
+        colorPrecision: precision,
+        filterSpeckle: filterSpeckle,
+        cornerThreshold: cornerThresh,
+        layerDifference: layerDiff,
+      ),
+    );
+  });
+}
 
 /// Brand palette lifted from the desktop app's theme.py (the "feather"
 /// gradient: violet -> magenta -> cyan).
@@ -217,11 +315,21 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
     if (picked == null) return;
     final file = File(picked.path);
     final bytes = await file.readAsBytes();
-    final decoded = img.decodeImage(bytes);
+    
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    await Future.delayed(const Duration(milliseconds: 50));
+
+    final decoded = await _decodeImageBytes(bytes);
     if (decoded == null) {
-      setState(() => _error = t.lang == AppLang.fr
-          ? 'Format image non reconnu'
-          : 'Unrecognized image format');
+      setState(() {
+        _busy = false;
+        _error = t.lang == AppLang.fr
+            ? 'Format image non reconnu'
+            : 'Unrecognized image format';
+      });
       return;
     }
     setState(() {
@@ -229,9 +337,9 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
       _decoded = decoded;
       _svg = null;
       _error = null;
-      _showAfter = true;
+      _showAfter = false; // Show the original image first
+      _busy = false; // We are done loading the image
     });
-    _scheduleVectorize(immediate: true);
   }
 
   void _scheduleVectorize({bool immediate = false}) {
@@ -251,81 +359,55 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
       _busy = true;
       _error = null;
     });
+    // Let the UI render the loading state
+    await Future.delayed(const Duration(milliseconds: 50));
+
     try {
       var working = decoded;
       // Finition IA en tout premier : elle redessine la source AVANT le
       // reste du pipeline, comme cote desktop (ai_upscale.py) -- les etapes
       // suivantes (fond, seuillage, contraste...) travaillent alors sur une
       // image deja nettoyee/agrandie.
+      //
+      // Chaque appel tourne dans son propre Isolate.run() : les boucles
+      // pixel-par-pixel de conversion NCHW/masque (ai_upscale.dart,
+      // ai_detourage.dart) sont du Dart pur et bloqueraient sinon le thread
+      // UI pendant plusieurs secondes sur une grosse image (ANR). Le plugin
+      // onnxruntime parle par MethodChannel, qui n'existe pas dans un isolate
+      // frais -- BackgroundIsolateBinaryMessenger le reconnecte au moteur
+      // Flutter via le token du isolate racine.
+      final rootIsolateToken = RootIsolateToken.instance!;
       if (_settings.aiUpscale && _aiUpscaleAvailable) {
-        working = await AiUpscale.upscaleX4(working);
+        working = await _runAiUpscaleIsolate(working, rootIsolateToken);
       }
-      if (_settings.aiDetourage && _aiDetourageAvailable) {
-        working = await AiDetourage.removeBackground(working);
-      } else if (_settings.removeBackground) {
-        working = Preprocessing.removeBackground(
-          working,
-          tolerance: _settings.bgTolerance.round(),
-        );
-      }
-      working = _settings.keepTransparency
-          ? Preprocessing.thresholdAlpha(
-              working,
-              alphaThreshold: _settings.alphaThreshold.round(),
-            )
-          : Preprocessing.flattenOnWhite(working);
-      working = Preprocessing.adjustContrast(working, _settings.contrast.round());
-      working = Preprocessing.sharpen(working, _settings.sharpen.round());
-
-      // Pre-quantize + merge + fringe cleanup only when merging is on: the
-      // whole point of pre-quantizing is to give the merge step a stable
-      // palette to collapse into. When merge is off (e.g. "detailed" preset),
-      // pre-quantizing here would just add a lossy octree pass on top of
-      // vtracer's own — and vtracer does color clustering better than us for
-      // rich images. So we pass the raw image straight through in that case,
-      // matching what the pipeline did before we added color cleanup.
-      if (!_settings.colorModeBinary && _settings.mergeColors) {
-        final opaque = <bool>[];
-        final withAlpha = working.convert(numChannels: 4);
-        for (var y = 0; y < withAlpha.height; y++) {
-          for (var x = 0; x < withAlpha.width; x++) {
-            opaque.add(withAlpha.getPixel(x, y).a > 0);
-          }
-        }
-        final colorCount = (1 << _settings.colorPrecision.round()).clamp(2, 256);
-        working = ColorCleanup.quantize(working, colorCount);
-        working = ColorCleanup.mergeNearColors(working, _settings.mergeThreshold.round());
-        if (_settings.cleanEdges) {
-          working = ColorCleanup.suppressAaFringes(working, opaque: opaque);
-        }
-        // Quantization strips alpha; graft the pre-quantize alpha channel back on.
-        final restored = working.convert(numChannels: 4);
-        for (var y = 0; y < restored.height; y++) {
-          for (var x = 0; x < restored.width; x++) {
-            if (!opaque[y * restored.width + x]) {
-              final p = restored.getPixel(x, y);
-              restored.setPixelRgba(x, y, p.r.toInt(), p.g.toInt(), p.b.toInt(), 0);
-            }
-          }
-        }
-        working = restored;
+      final aiDetourageRan = _settings.aiDetourage && _aiDetourageAvailable;
+      if (aiDetourageRan) {
+        working = await _runAiDetourageIsolate(working, rootIsolateToken);
       }
 
-      final rgba = working.convert(numChannels: 4);
-      final svg = await Future(() => VectorizerFfi.vectorize(
-            rgba: rgba.getBytes(order: img.ChannelOrder.rgba),
-            width: rgba.width,
-            height: rgba.height,
-            params: VectorizeParams(
-              colorModeBinary: _settings.colorModeBinary,
-              colorPrecision: _settings.colorPrecision.round(),
-              filterSpeckle: _settings.filterSpeckle.round(),
-              cornerThreshold: _settings.cornerThreshold.round(),
-              layerDifference: _settings.layerDifference.round(),
-            ),
-          ));
+      final svg = await _runVectorizePipeline(
+        source: working,
+        aiDetourageRan: aiDetourageRan,
+        removeBg: _settings.removeBackground,
+        bgTol: _settings.bgTolerance.round(),
+        keepTrans: _settings.keepTransparency,
+        alphaThresh: _settings.alphaThreshold.round(),
+        contrast: _settings.contrast.round(),
+        sharpen: _settings.sharpen.round(),
+        modeBinary: _settings.colorModeBinary,
+        mergeColors: _settings.mergeColors,
+        precision: _settings.colorPrecision.round(),
+        mergeThresh: _settings.mergeThreshold.round(),
+        cleanEdges: _settings.cleanEdges,
+        filterSpeckle: _settings.filterSpeckle.round(),
+        cornerThresh: _settings.cornerThreshold.round(),
+        layerDiff: _settings.layerDifference.round(),
+      );
       if (!mounted) return;
-      setState(() => _svg = svg);
+      setState(() {
+        _svg = svg;
+        _showAfter = true; // Auto-switch to the result view
+      });
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = '$e');
@@ -490,7 +572,6 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
       fn();
       _preset = _Preset.custom;
     });
-    _scheduleVectorize(immediate: immediate);
   }
 
   /// Confirme puis telecharge un modele IA a la demande (progression +
@@ -666,7 +747,6 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
       apply(_settings);
       _preset = _Preset.custom;
     });
-    _scheduleVectorize(immediate: true);
   }
 
   Future<void> _showHelpDialog() async {
@@ -1084,22 +1164,71 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        DecoratedBox(
-          decoration: BoxDecoration(
-            gradient: Brand.gradient,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: FilledButton.icon(
-            onPressed: _pickImage,
-            icon: const Icon(Icons.image_outlined),
-            label: Text(t.pickImage),
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(44),
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
+        if (_sourceFile == null)
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: Brand.gradient,
+              borderRadius: BorderRadius.circular(10),
             ),
+            child: FilledButton.icon(
+              onPressed: _pickImage,
+              icon: const Icon(Icons.image_outlined),
+              label: Text(t.pickImage),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(44),
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+              ),
+            ),
+          )
+        else
+          Row(
+            children: [
+              Expanded(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: Brand.gradient,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: FilledButton.icon(
+                    onPressed: _busy ? null : () => _scheduleVectorize(immediate: true),
+                    icon: _busy
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Icon(Icons.play_arrow),
+                    label: Text(
+                      _busy
+                          ? (t.lang == AppLang.fr
+                              ? 'Traitement en cours...'
+                              : 'Processing...')
+                          : (t.lang == AppLang.fr
+                              ? 'Lancer la vectorisation'
+                              : 'Start vectorization'),
+                    ),
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size.fromHeight(44),
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      disabledBackgroundColor: Colors.transparent,
+                      disabledForegroundColor: Colors.white70,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              IconButton.filledTonal(
+                onPressed: _busy ? null : _pickImage,
+                icon: const Icon(Icons.image_search),
+                tooltip: t.pickImage,
+              ),
+            ],
           ),
-        ),
         const SizedBox(height: 20),
         Text(t.preset, style: Theme.of(context).textTheme.labelLarge),
         const SizedBox(height: 8),
@@ -1317,7 +1446,6 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
             _preset = preset;
             _settings.applyPreset(preset);
           });
-          _scheduleVectorize(immediate: true);
         },
         child: Container(
           padding: const EdgeInsets.all(10),
