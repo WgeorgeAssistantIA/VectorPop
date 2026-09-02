@@ -13,6 +13,12 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
+import {
+  getReassuranceVariant,
+  REASSURANCE_COPY,
+  type ReassuranceVariant,
+} from "@/lib/abtest-vectofix";
+
 declare function gtag(...args: unknown[]): void;
 
 // --- Liens ---------------------------------------------------------------
@@ -21,14 +27,26 @@ const DOWNLOAD_EXE = `${GITHUB_REPO}/releases/download/v1.0.0/VectoFix-Setup-1.0
 const CHECKOUT_URL =
   "https://voxcut-pro.lemonsqueezy.com/checkout/buy/88a6adc5-28e1-43f1-9b15-99093a4dc0d4";
 const CONTACT_EMAIL = "contact@lafabriknumerique.fr";
+const MS_STORE_URL = "https://get.microsoft.com/installer/download/9NR382QJ8SBK?referrer=appbadge";
 
 function trackDownload() {
   track("vectofix_download", { platform: "windows" });
   if (typeof gtag !== "undefined")
     gtag("event", "download", { event_category: "engagement", app: "vectofix" });
 }
-function trackBuy() {
-  track("vectofix_buy_click");
+function trackStoreDownload() {
+  track("vectofix_store_download");
+  if (typeof gtag !== "undefined")
+    gtag("event", "download", { event_category: "engagement", app: "vectofix", platform: "microsoft_store" });
+}
+function trackBuy(variant: ReassuranceVariant) {
+  track("vectofix_buy_click", { variant });
+  if (typeof gtag !== "undefined")
+    gtag("event", `vectofix_buy_click_${variant}`, {
+      event_category: "engagement",
+      value: 39,
+      currency: "EUR",
+    });
 }
 function trackCrossLink(target: string) {
   track("cross_link_click", { source: "vectofix", target });
@@ -330,6 +348,16 @@ function LangToggle({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void 
 
 function VectoFixPage() {
   const [lang, setLangState] = useState<Lang>("en");
+  const [reassuranceVariant, setReassuranceVariant] = useState<ReassuranceVariant>("a");
+
+  useEffect(() => {
+    const variant = getReassuranceVariant();
+    setReassuranceVariant(variant);
+    if (typeof gtag !== "undefined")
+      gtag("event", `vectofix_reassurance_impression_${variant}`, {
+        event_category: "engagement",
+      });
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -406,6 +434,22 @@ function VectoFixPage() {
               >
                 <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
                 {c.hero.btnPrimary}
+              </a>
+              <a
+                href={MS_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={trackStoreDownload}
+                aria-label={lang === "fr" ? "Télécharger VectoFix sur le Microsoft Store" : "Get VectoFix from the Microsoft Store"}
+                className="inline-flex items-center transition-opacity hover:opacity-90"
+              >
+                <img
+                  src="https://get.microsoft.com/images/en-US%20dark.svg"
+                  width={200}
+                  height={52}
+                  alt={lang === "fr" ? "Disponible sur le Microsoft Store" : "Get it from Microsoft Store"}
+                  className="h-[52px] w-auto"
+                />
               </a>
             </div>
             <p className="mt-3 text-xs text-muted-foreground">{c.hero.subText}</p>
@@ -506,7 +550,9 @@ function VectoFixPage() {
                 <span className="text-5xl font-bold tracking-tight">{c.pricing.price}</span>
                 <span className="text-sm text-muted-foreground">{c.pricing.priceNote}</span>
               </div>
-              <p className="mt-2 text-sm text-[#60a5fa]">{c.pricing.tagline}</p>
+              <p className="mt-2 text-sm text-[#60a5fa]">
+                {REASSURANCE_COPY[lang][reassuranceVariant]}
+              </p>
               <ul className="mt-8 space-y-3 text-sm">
                 {c.pricing.features.map((f) => (
                   <li key={f} className="flex items-start gap-3">
@@ -519,7 +565,7 @@ function VectoFixPage() {
                 href={CHECKOUT_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={trackBuy}
+                onClick={() => trackBuy(reassuranceVariant)}
                 className="mt-8 inline-flex items-center justify-center gap-2 rounded-lg bg-[#2563eb] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 transition hover:brightness-110"
               >
                 {c.pricing.cta}
@@ -599,6 +645,19 @@ function VectoFixPage() {
               {c.footer.alsoVectorpop}
             </Link>
           </p>
+          <a
+            href="https://fazier.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Fazier"
+          >
+            <img
+              src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=launched&theme=light"
+              alt="Launched on Fazier"
+              className="h-10 w-auto"
+              loading="lazy"
+            />
+          </a>
         </div>
       </footer>
     </div>
