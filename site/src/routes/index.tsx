@@ -1430,6 +1430,19 @@ function Index() {
               VotreAssistantIA
             </a>
           </p>
+          <a
+            href="https://fazier.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Fazier"
+          >
+            <img
+              src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=launched&theme=light"
+              alt="Launched on Fazier"
+              className="h-10 w-auto"
+              loading="lazy"
+            />
+          </a>
         </div>
       </footer>
 
