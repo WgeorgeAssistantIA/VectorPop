@@ -136,7 +136,7 @@ const t = {
       ],
     },
     how: {
-      title: "How it works",
+      title: "How do you convert a PNG to an SVG?",
       subtitle: "Three steps, no design degree required.",
       steps: [
         { title: "Drop your image", desc: "PNG, JPEG, BMP, WEBP — or paste straight from the clipboard." },
@@ -339,7 +339,7 @@ const t = {
       ],
     },
     how: {
-      title: "Comment ça marche",
+      title: "Comment convertir un PNG en SVG ?",
       subtitle: "Trois étapes, sans diplôme de graphiste.",
       steps: [
         { title: "Déposez votre image", desc: "PNG, JPEG, BMP, WEBP — ou collez directement depuis le presse-papiers." },

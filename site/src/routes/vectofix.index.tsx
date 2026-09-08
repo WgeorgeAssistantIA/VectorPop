@@ -73,7 +73,7 @@ const t = {
       text: "Every image → SVG converter on the market has the same two blind spots: none of them compare their own result back to the original (so none can tell you what got lost), and their settings are global — one slider for the whole image, when a defect is almost always local.",
     },
     how: {
-      title: "How it works",
+      title: "How does VectoFix work?",
       subtitle: "Four steps, and the last one is the only one you actually do.",
       steps: [
         { icon: Gauge, title: "Automatic vectorization", desc: "Traced into SVG the moment you open it — no setting to touch first." },
@@ -83,7 +83,7 @@ const t = {
       ],
     },
     pillars: {
-      title: "Why it's different",
+      title: "How does VectoFix differ from a classic vectorizer?",
       cards: [
         { icon: Gauge, title: "Total transparency", desc: "Fidelity and node count shown together, always — re-tracing a zone makes it more accurate AND heavier, never hidden." },
         { icon: MapPin, title: "Strong where others fail", desc: "Photos, gradients, rich illustrations — where classic image-trace produces banding or a mess of shapes." },
@@ -161,7 +161,7 @@ const t = {
       text: "Tous les convertisseurs image → SVG du marché ont les mêmes deux angles morts : aucun ne compare son propre résultat à l'original (donc aucun ne sait dire ce qu'il a perdu), et leurs réglages sont globaux — un seul curseur pour toute l'image, alors qu'un défaut est presque toujours local.",
     },
     how: {
-      title: "Comment ça marche",
+      title: "Comment fonctionne VectoFix ?",
       subtitle: "Quatre étapes, dont une seule est vraiment à votre charge.",
       steps: [
         { icon: Gauge, title: "Vectorisation automatique", desc: "Tracée en SVG dès l'ouverture, sans réglage à faire." },
@@ -171,7 +171,7 @@ const t = {
       ],
     },
     pillars: {
-      title: "Pourquoi c'est différent",
+      title: "En quoi VectoFix diffère-t-il d'un vectoriseur classique ?",
       cards: [
         { icon: Gauge, title: "Transparence totale", desc: "Fidélité et nombre de nœuds affichés ensemble, en permanence — retracer une zone la rend plus juste ET plus lourde, jamais caché." },
         { icon: MapPin, title: "Fort là où les autres ratent", desc: "Photos, dégradés, illustrations riches — là où l'image-trace classique produit des bandes ou une explosion de formes." },

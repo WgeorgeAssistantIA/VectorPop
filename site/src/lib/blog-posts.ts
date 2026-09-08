@@ -44,9 +44,13 @@ export const posts: BlogPost[] = [
     content: [
       {
         type: "p",
+        text: "Vectorization converts a pixel image (PNG/JPEG) into a vector file (SVG) made of mathematical curves, which can be resized to any dimension without losing sharpness.",
+      },
+      {
+        type: "p",
         text: "It starts the same way every time. You send your logo to a printer, an embroiderer or a sign maker, and the answer comes back: \"Can you send us the vector file?\" You dig through your folders and find a PNG. Maybe a JPEG. The designer who made it three years ago isn't answering emails. So you open the PNG, scale it up to the size of a shop window, and watch it dissolve into a staircase of coloured squares.",
       },
-      { type: "h2", text: "Why a PNG can't be enlarged" },
+      { type: "h2", text: "Why can't a PNG be enlarged without going blurry?" },
       {
         type: "p",
         text: "A PNG is a grid of pixels. Each one has a fixed position and a fixed colour, and there are only so many of them. When you enlarge the image, the software doesn't invent new detail — it just makes each existing pixel bigger, or blurs between them. That's why an enlarged logo looks either blocky or soft, but never sharp.",
@@ -55,7 +59,7 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "A vector file works differently. It doesn't store pixels; it stores instructions — this curve, that colour, this straight line. When you scale it, the instructions are simply redrawn at the new size. The same SVG prints crisp on a business card and on a four-metre banner. That's the whole reason your printer asks for it, and it isn't them being difficult.",
       },
-      { type: "h2", text: "What vectorization actually does" },
+      { type: "h2", text: "What does vectorization actually do?" },
       {
         type: "p",
         text: "Converting a PNG to SVG is called tracing, or vectorization. The software looks at the pixel grid, works out where the colour boundaries are, and redraws those boundaries as curves. It's a reconstruction, not a recovery: the original vector file is gone, and tracing makes an educated guess at what it looked like.",
@@ -69,14 +73,14 @@ export const posts: BlogPost[] = [
         items: [
           "Works beautifully: logos with flat colours, icons, line art, stamps, signatures, simple illustrations",
           "Works reasonably: logos with soft gradients or a few shadows, if you allow more colours",
-          "Works badly: photographs — you'll get a huge file that looks like a poster filter, not a photo",
+          "Works badly: photographs — you'll get a file often 5 to 10 times heavier than the source PNG, that looks like a poster filter, not a photo",
         ],
       },
       {
         type: "p",
         text: "The rule of thumb: the flatter and cleaner the source, the closer the trace gets to the original. A 200-pixel-wide logo screenshotted from a website will trace, but every JPEG artefact around the letters gets traced too. Start from the largest, cleanest version you have.",
       },
-      { type: "h2", text: "The upload problem nobody mentions" },
+      { type: "h2", text: "Why shouldn't you upload your logo to an online converter?" },
       {
         type: "p",
         text: "Search for a converter and you'll find dozens of websites that do this in your browser. They work. But look at what you're doing: you're uploading a client's logo — or your own unreleased brand — to a server you know nothing about, run by a company whose terms you didn't read, in a country you didn't check. For a personal side project, fine. For client work, that's a conversation you don't want to have.",
@@ -85,7 +89,7 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "The alternative is to do it on your own machine. Nothing gets uploaded, nothing gets stored, and it works on a train with no signal.",
       },
-      { type: "h2", text: "Getting a clean result" },
+      { type: "h2", text: "How do you get a clean SVG result?" },
       {
         type: "p",
         text: "Whichever tool you use, the same handful of settings decide whether your SVG is usable or a mess. Understanding them takes five minutes and saves a lot of frustration.",
@@ -103,7 +107,7 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "The single biggest quality gain, though, is being able to see the trace before you commit. A tool that makes you export the file to find out whether the settings were right turns a two-minute job into twenty.",
       },
-      { type: "h2", text: "Where VectorPop fits" },
+      { type: "h2", text: "Where does VectorPop fit in?" },
       {
         type: "p",
         text: "VectorPop is a small Windows app that does exactly this job and nothing else. You drop a PNG or JPEG, pick one of three presets — flat logo, detailed logo, or black-and-white line art — and the preview updates as you move the sliders. When you're happy, you export an SVG. Everything runs on your computer; not a single pixel leaves it.",
@@ -125,9 +129,13 @@ export const posts: BlogPost[] = [
     content: [
       {
         type: "p",
+        text: "An SVG is a vector file: resolution-independent curves that redraw cleanly at any size. A PNG is a fixed grid of pixels, sharp only at the size it was saved for.",
+      },
+      {
+        type: "p",
         text: "SVG and PNG both show images, both support transparency, and both open on every modern device. That's where the similarity ends. Choosing wrong doesn't break anything immediately — it just means your logo looks fuzzy on a banner, or your website takes four seconds to load a photo it didn't need to.",
       },
-      { type: "h2", text: "The one difference that matters" },
+      { type: "h2", text: "What's the one difference that actually matters?" },
       {
         type: "p",
         text: "A PNG stores pixels: a fixed grid of coloured dots. An SVG stores instructions: draw this curve, fill it with that colour. Everything else follows from that.",
@@ -160,14 +168,14 @@ export const posts: BlogPost[] = [
           "Anywhere a platform simply refuses SVG, which is still most social networks and many marketplaces",
         ],
       },
-      { type: "h2", text: "Two things people get wrong" },
+      { type: "h2", text: "What do people get wrong about SVG and PNG?" },
       {
         type: "p",
         text: "The first is assuming that saving a PNG as .svg makes it a vector. It doesn't. Some tools will happily wrap your pixel grid inside an SVG file — the extension changes, the file is still pixels, and it still turns to mush when enlarged. If your \"SVG\" contains a tag starting with <image, that's what happened, and your printer will notice.",
       },
       {
         type: "p",
-        text: "The second is thinking SVG is always lighter. For a logo, an SVG is often a few kilobytes against a PNG's hundreds — a real win. For a photo, tracing it into vector can produce a file many times larger than the PNG, because you've replaced a compact pixel grid with thousands of individual shapes. Lighter isn't a property of the format; it's a property of the match between format and content.",
+        text: "The second is thinking SVG is always lighter. For a logo, an SVG typically weighs 2 to 10 KB against 100 to 500 KB for the equivalent high-resolution PNG — a real win. For a photo, tracing it into vector can easily produce a file several times larger than the PNG, because you've replaced a compact pixel grid with thousands of individual shapes. Lighter isn't a property of the format; it's a property of the match between format and content.",
       },
       { type: "h2", text: "So what if you only have a PNG?" },
       {
@@ -191,14 +199,18 @@ export const posts: BlogPost[] = [
     content: [
       {
         type: "p",
+        text: "VectorPop converts PNG and JPEG images into editable SVG vector files directly on your device, without uploading anything.",
+      },
+      {
+        type: "p",
         text: "VectorPop started as a Windows and Linux desktop app. It's now also on Android, available on the Google Play Store — the same PNG/JPEG-to-SVG tracing, now in your pocket.",
       },
-      { type: "h2", text: "Why an Android version" },
+      { type: "h2", text: "Why build an Android version?" },
       {
         type: "p",
         text: "A logo often needs vectorizing right when you're away from your computer — a client sends a PNG over chat, or you spot a print job that needs an SVG on the spot. The Android app covers that: drop an image, pick a preset, preview the result, export the SVG, all from your device.",
       },
-      { type: "h2", text: "What stays the same" },
+      { type: "h2", text: "What stays the same as on desktop?" },
       {
         type: "ul",
         items: [
@@ -225,9 +237,13 @@ export const posts: BlogPost[] = [
     content: [
       {
         type: "p",
+        text: "La vectorisation convertit une image pixel (PNG/JPEG) en fichier vectoriel (SVG) composé de courbes mathématiques, redimensionnables sans perte de netteté.",
+      },
+      {
+        type: "p",
         text: "Ça commence toujours de la même façon. Vous envoyez votre logo à un imprimeur, un brodeur ou un enseigniste, et la réponse tombe : « Pouvez-vous nous envoyer le fichier vectoriel ? » Vous fouillez vos dossiers et retrouvez un PNG. Peut-être un JPEG. Le graphiste qui l'a créé il y a trois ans ne répond plus aux emails. Vous ouvrez donc le PNG, l'agrandissez à la taille d'une vitrine, et le regardez se dissoudre en un escalier de carrés colorés.",
       },
-      { type: "h2", text: "Pourquoi un PNG ne s'agrandit pas" },
+      { type: "h2", text: "Pourquoi un PNG ne peut-il pas s'agrandir sans devenir flou ?" },
       {
         type: "p",
         text: "Un PNG est une grille de pixels. Chacun a une position et une couleur fixes, et il y en a un nombre limité. Quand vous agrandissez l'image, le logiciel n'invente pas de nouveau détail — il grossit simplement chaque pixel existant, ou floute entre eux. C'est pourquoi un logo agrandi paraît soit pixelisé, soit flou, mais jamais net.",
@@ -236,7 +252,7 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "Un fichier vectoriel fonctionne différemment. Il ne stocke pas des pixels, mais des instructions — cette courbe, cette couleur, cette ligne droite. Quand vous le redimensionnez, les instructions sont simplement redessinées à la nouvelle taille. Le même SVG s'imprime net sur une carte de visite et sur une banderole de quatre mètres. C'est exactement pour ça que votre imprimeur le réclame, et ce n'est pas pour vous compliquer la vie.",
       },
-      { type: "h2", text: "Ce que fait vraiment la vectorisation" },
+      { type: "h2", text: "Que fait vraiment la vectorisation ?" },
       {
         type: "p",
         text: "Convertir un PNG en SVG s'appelle le tracé, ou la vectorisation. Le logiciel analyse la grille de pixels, détermine où se situent les frontières de couleur, et redessine ces frontières sous forme de courbes. C'est une reconstruction, pas une récupération : le fichier vectoriel original a disparu, et le tracé fait une estimation éclairée de ce à quoi il ressemblait.",
@@ -250,14 +266,14 @@ export const posts: BlogPost[] = [
         items: [
           "Fonctionne très bien : logos en aplats de couleur, icônes, dessins au trait, tampons, signatures, illustrations simples",
           "Fonctionne raisonnablement : logos avec dégradés doux ou quelques ombres, si vous autorisez plus de couleurs",
-          "Fonctionne mal : les photographies — vous obtiendrez un fichier énorme qui ressemble à un effet d'affiche, pas à une photo",
+          "Fonctionne mal : les photographies — vous obtiendrez un fichier souvent 5 à 10 fois plus lourd que le PNG source, qui ressemble à un effet d'affiche, pas à une photo",
         ],
       },
       {
         type: "p",
         text: "La règle de base : plus la source est plate et propre, plus le tracé se rapproche de l'original. Un logo de 200 pixels de large capturé depuis un site web se tracera, mais chaque artefact JPEG autour des lettres sera tracé aussi. Partez toujours de la version la plus grande et la plus propre que vous ayez.",
       },
-      { type: "h2", text: "Le problème d'envoi dont personne ne parle" },
+      { type: "h2", text: "Pourquoi ne pas envoyer son logo à un convertisseur en ligne ?" },
       {
         type: "p",
         text: "Cherchez un convertisseur et vous trouverez des dizaines de sites qui font ça dans votre navigateur. Ils fonctionnent. Mais regardez ce que vous faites réellement : vous envoyez le logo d'un client — ou votre propre marque pas encore dévoilée — sur un serveur dont vous ne savez rien, géré par une société dont vous n'avez pas lu les conditions, dans un pays que vous n'avez pas vérifié. Pour un petit projet perso, aucun souci. Pour du travail client, c'est une conversation que vous préférez éviter.",
@@ -266,7 +282,7 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "L'alternative consiste à tout faire sur votre propre machine. Rien n'est envoyé, rien n'est stocké, et ça marche même dans un train sans réseau.",
       },
-      { type: "h2", text: "Obtenir un résultat propre" },
+      { type: "h2", text: "Comment obtenir un résultat SVG propre ?" },
       {
         type: "p",
         text: "Quel que soit l'outil utilisé, quelques réglages décident si votre SVG sera exploitable ou raté. Les comprendre prend cinq minutes et évite beaucoup de frustration.",
@@ -284,7 +300,7 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "Le gain de qualité le plus important reste toutefois de pouvoir voir le tracé avant de valider. Un outil qui vous oblige à exporter le fichier pour savoir si les réglages étaient bons transforme un travail de deux minutes en vingt.",
       },
-      { type: "h2", text: "Où se situe VectorPop" },
+      { type: "h2", text: "Où se situe VectorPop dans tout ça ?" },
       {
         type: "p",
         text: "VectorPop est une petite application Windows qui fait exactement ce travail, et rien d'autre. Vous déposez un PNG ou un JPEG, choisissez l'un des trois presets — logo plat, logo détaillé, ou dessin au trait noir et blanc — et l'aperçu se met à jour pendant que vous déplacez les curseurs. Une fois satisfait, vous exportez un SVG. Tout tourne sur votre ordinateur ; pas un seul pixel n'en sort.",
@@ -306,9 +322,13 @@ export const posts: BlogPost[] = [
     content: [
       {
         type: "p",
+        text: "Un SVG est un fichier vectoriel : des courbes indépendantes de la résolution, redessinées nettement à n'importe quelle taille. Un PNG est une grille de pixels figée, nette seulement à la taille pour laquelle elle a été enregistrée.",
+      },
+      {
+        type: "p",
         text: "Le SVG et le PNG affichent tous deux des images, gèrent tous deux la transparence, et s'ouvrent tous deux sur n'importe quel appareil récent. La ressemblance s'arrête là. Un mauvais choix ne casse rien dans l'immédiat — ça veut juste dire que votre logo paraît flou sur une banderole, ou que votre site met quatre secondes à charger une photo qui n'en avait pas besoin.",
       },
-      { type: "h2", text: "La seule différence qui compte vraiment" },
+      { type: "h2", text: "Quelle est la seule différence qui compte vraiment ?" },
       {
         type: "p",
         text: "Un PNG stocke des pixels : une grille fixe de points colorés. Un SVG stocke des instructions : dessine cette courbe, remplis-la de cette couleur. Tout le reste en découle.",
@@ -341,14 +361,14 @@ export const posts: BlogPost[] = [
           "Partout où une plateforme refuse simplement le SVG, ce qui reste le cas de la plupart des réseaux sociaux et de nombreuses marketplaces",
         ],
       },
-      { type: "h2", text: "Deux erreurs fréquentes" },
+      { type: "h2", text: "Quelles sont les erreurs fréquentes sur SVG et PNG ?" },
       {
         type: "p",
         text: "La première consiste à croire qu'enregistrer un PNG en .svg en fait un vectoriel. Ce n'est pas le cas. Certains outils enveloppent votre grille de pixels dans un fichier SVG sans broncher — l'extension change, le fichier reste des pixels, et il se dégrade toujours à l'agrandissement. Si votre « SVG » contient une balise commençant par <image, c'est exactement ce qui s'est passé, et votre imprimeur le remarquera.",
       },
       {
         type: "p",
-        text: "La seconde consiste à croire que le SVG est toujours plus léger. Pour un logo, un SVG pèse souvent quelques kilo-octets contre plusieurs centaines pour un PNG — un vrai gain. Pour une photo, la vectoriser peut produire un fichier bien plus lourd que le PNG, car vous remplacez une grille de pixels compacte par des milliers de formes individuelles. La légèreté n'est pas une propriété du format ; c'est une propriété de l'adéquation entre le format et le contenu.",
+        text: "La seconde consiste à croire que le SVG est toujours plus léger. Pour un logo, un SVG pèse en général 2 à 10 Ko contre 100 à 500 Ko pour l'équivalent PNG haute résolution — un vrai gain. Pour une photo, la vectoriser peut facilement produire un fichier plusieurs fois plus lourd que le PNG, car vous remplacez une grille de pixels compacte par des milliers de formes individuelles. La légèreté n'est pas une propriété du format ; c'est une propriété de l'adéquation entre le format et le contenu.",
       },
       { type: "h2", text: "Et si vous n'avez qu'un PNG ?" },
       {
@@ -372,14 +392,18 @@ export const posts: BlogPost[] = [
     content: [
       {
         type: "p",
+        text: "VectorPop convertit vos images PNG et JPEG en fichiers vectoriels SVG éditables, directement sur votre appareil, sans rien envoyer sur internet.",
+      },
+      {
+        type: "p",
         text: "VectorPop était jusqu'ici une application de bureau, pour Windows et Linux. C'est maintenant aussi une application Android, disponible sur le Google Play Store — la même vectorisation PNG/JPEG vers SVG, désormais dans votre poche.",
       },
-      { type: "h2", text: "Pourquoi une version Android" },
+      { type: "h2", text: "Pourquoi une version Android ?" },
       {
         type: "p",
         text: "Un logo a souvent besoin d'être vectorisé au moment précis où vous n'êtes pas devant votre ordinateur — un client envoie un PNG par message, ou vous repérez un travail d'impression qui nécessite un SVG sur-le-champ. L'application Android répond à ce besoin : déposez une image, choisissez un preset, prévisualisez le résultat, exportez le SVG, le tout depuis votre appareil.",
       },
-      { type: "h2", text: "Ce qui ne change pas" },
+      { type: "h2", text: "Qu'est-ce qui ne change pas par rapport au bureau ?" },
       {
         type: "ul",
         items: [
@@ -410,13 +434,17 @@ export const posts: BlogPost[] = [
     content: [
       {
         type: "p",
+        text: "Vector repair means comparing a traced SVG back to its source image, pixel by pixel, to locate exactly where detail was lost during vectorization — and fixing only that zone instead of the whole file.",
+      },
+      {
+        type: "p",
         text: "You traced a logo, or a client sent you an SVG someone else traced, and something's off. A curve that should be smooth has a slight wobble. A gradient that was clean in the original photo turned into visible bands. You can't quite point to it, but next to the source image, it reads as slightly wrong.",
       },
       {
         type: "p",
         text: "That feeling is correct, and it isn't your eyes. Vectorization is a simplification: pixels become curves, and curves are an approximation. Some approximation is unavoidable. What's avoidable is not knowing where it happened.",
       },
-      { type: "h2", text: "No converter checks its own work" },
+      { type: "h2", text: "Why doesn't any converter check its own work?" },
       {
         type: "p",
         text: "Here's the part that's genuinely strange once you notice it: not a single image-to-SVG tool on the market — free or paid, online or desktop — renders its own SVG back to pixels and compares it against your original image. They trace, they hand you a file, and that's it. Whether the result actually looks like your source is left entirely to you, squinting at two windows side by side.",
@@ -425,7 +453,7 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "That's not a minor gap. It means the tool has no idea whether it did a good job. It can't, because it never looks back at what it produced.",
       },
-      { type: "h2", text: "Settings are global, defects are local" },
+      { type: "h2", text: "Why are settings global when defects are local?" },
       {
         type: "p",
         text: "The second blind spot compounds the first. Every vectorizer's controls — colour count, corner threshold, denoise — apply to the whole image at once. But a defect is almost never everywhere. It's usually one gradient, one shaded fold, one busy corner where detail collapsed while the rest of the image traced fine.",
@@ -434,7 +462,7 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "Faced with that, you have exactly one lever: turn a global setting up or down and re-trace the entire image, hoping the one bad zone improves without wrecking the parts that were already fine. It's a blunt instrument for a precise problem.",
       },
-      { type: "h2", text: "What \"measuring the loss\" actually means" },
+      { type: "h2", text: "What does \"measuring the loss\" actually mean?" },
       {
         type: "p",
         text: "The fix isn't a smarter global algorithm. It's comparing the trace to the source, pixel by pixel, so the tool can tell you exactly where the SVG drifted the furthest — not \"the vectorization might not be perfect,\" but a map: this 40×40 zone is where the detail got lost, everything else is fine.",
@@ -443,7 +471,7 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "Once you know where, the fix stops being a whole-image gamble. You paint over that one zone, it gets re-traced at higher fidelity, and it's stitched back into the SVG you already had. The rest of the file — everything that was already correct — never moves.",
       },
-      { type: "h2", text: "This isn't a vectorizer" },
+      { type: "h2", text: "Is VectoFix a vectorizer?" },
       {
         type: "p",
         text: "VectoFix does exactly this, and only this. It's not built to be your first stop for turning a raw photo into vector — it's built for the moment right after: you have an SVG (yours, or exported by another tool) that's mostly right, and you need to fix the part that isn't. It opens your image, traces it automatically, measures the fidelity against the source, shows you a damage map of where it drifted, and lets you repair those zones with a brush. Everything runs on your machine — nothing is uploaded.",
@@ -466,13 +494,17 @@ export const posts: BlogPost[] = [
     content: [
       {
         type: "p",
+        text: "Local vector repair means fixing only the specific zone of an SVG where detail was lost, instead of moving a single global setting that redraws the entire image.",
+      },
+      {
+        type: "p",
         text: "Open any vectorizer's settings panel and you'll find the same handful of sliders: colour precision, corner threshold, speckle filter, smoothing. Every one of them is global. Move it, and it changes the whole image — not the part you're unhappy with.",
       },
       {
         type: "p",
         text: "That would be fine if defects were global too. They almost never are.",
       },
-      { type: "h2", text: "A trace fails in patches, not everywhere" },
+      { type: "h2", text: "Does a trace fail everywhere, or only in patches?" },
       {
         type: "p",
         text: "Look closely at a mediocre vector trace and the bad parts cluster: a shaded fold in a logo's ribbon, a soft gradient behind text, a busy corner with fine detail. The rest of the image — the flat background, the clean outer outline — is usually traced perfectly well by the exact same pass.",
@@ -481,17 +513,17 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "So the honest fix for \"this one corner is wrong\" is not \"change a setting that touches every corner.\" It's fixing that corner.",
       },
-      { type: "h2", text: "What raising a global setting actually costs you" },
+      { type: "h2", text: "What does raising a global setting actually cost you?" },
       {
         type: "p",
         text: "Say the fold in your logo lost its shading. You raise colour precision to capture it. It works — the fold looks better. It also adds nodes to the flat background that didn't need them, because the same setting now applies there too. Your file is heavier everywhere to fix a problem that existed in one place. Do this a few times chasing different defects and you end up with an SVG that's both imprecise in places and bloated overall — the worst of both.",
       },
-      { type: "h2", text: "The two numbers that matter, together" },
+      { type: "h2", text: "Which two numbers matter, and why together?" },
       {
         type: "p",
         text: "Any repair — local or global — trades fidelity for node count. Retracing a zone more finely makes it more accurate and adds points to describe that accuracy. That trade-off is unavoidable. What's avoidable is not seeing it: a tool that shows you fidelity without node count (or the reverse) lets you optimise blind, usually toward a file that looks good in the preview and opens like a nightmare in Illustrator.",
       },
-      { type: "h2", text: "Local repair, done right" },
+      { type: "h2", text: "What does local repair done right look like?" },
       {
         type: "p",
         text: "VectoFix's damage map points at the zones that actually drifted from the source, measured pixel by pixel — not guessed at. Painting over one of those zones re-traces only that area and stitches it back into the existing SVG; nothing else in the file moves. Fidelity and node count are shown together after every stroke, so \"is this worth it\" is a number, not a hunch.",
@@ -518,9 +550,13 @@ export const posts: BlogPost[] = [
     content: [
       {
         type: "p",
+        text: "VectoFix is a Windows app that measures, pixel by pixel, where a vectorized SVG lost detail compared to its source image, and lets you repair just that zone with a brush stroke.",
+      },
+      {
+        type: "p",
         text: "VectoFix is a new Windows app built around one idea: a vectorizer that doesn't compare its own result to the source image can't tell you what it got wrong — so it never does. VectoFix does, and lets you fix it.",
       },
-      { type: "h2", text: "How it works" },
+      { type: "h2", text: "How does VectoFix work?" },
       {
         type: "ul",
         items: [
@@ -530,17 +566,17 @@ export const posts: BlogPost[] = [
           "Paint over a damaged zone and it re-traces itself, stitched back into the SVG — 60 to 80% less error, in under a second",
         ],
       },
-      { type: "h2", text: "Built for what other tools give up on" },
+      { type: "h2", text: "What is VectoFix built for?" },
       {
         type: "p",
         text: "Classic image-trace tools are built for flat logos and struggle with photos, gradients and rich illustrations — the trace turns to banding or an explosion of shapes. That's exactly the territory VectoFix targets: not replacing a general vectorizer, but repairing the specific zones where any vectorizer — including a good one — loses ground.",
       },
-      { type: "h2", text: "Nothing hidden" },
+      { type: "h2", text: "Is anything hidden?" },
       {
         type: "p",
         text: "Fidelity and node count are shown together, always, because they trade against each other — retracing a zone makes it more accurate and heavier, never one without the other. Two treatment modes, Faithful and Light, are available per stroke, so a face and a flat background in the same image can each get the right amount of detail.",
       },
-      { type: "h2", text: "Pricing and availability" },
+      { type: "h2", text: "How much does VectoFix cost?" },
       {
         type: "p",
         text: "VectoFix is a one-time purchase, €39, no subscription. The trial is fully functional — vectorization, damage map, magic brush, both modes, all unlimited — only the export is locked (lower resolution, watermark) until a license is activated. Windows, 100% local: no image is ever uploaded, at any point.",
@@ -560,13 +596,17 @@ export const posts: BlogPost[] = [
     content: [
       {
         type: "p",
+        text: "La réparation vectorielle consiste à comparer un tracé SVG à son image source, pixel par pixel, pour localiser exactement où le détail a été perdu lors de la vectorisation — et à ne corriger que cette zone plutôt que tout le fichier.",
+      },
+      {
+        type: "p",
         text: "Vous avez tracé un logo, ou un client vous a envoyé un SVG tracé par quelqu'un d'autre, et quelque chose cloche. Une courbe qui devrait être lisse a un léger flottement. Un dégradé propre sur la photo d'origine s'est transformé en bandes visibles. Vous ne sauriez pas dire précisément quoi, mais à côté de l'image source, ça sonne légèrement faux.",
       },
       {
         type: "p",
         text: "Cette impression est juste, et ce n'est pas vos yeux. La vectorisation est une simplification : les pixels deviennent des courbes, et les courbes sont une approximation. Une part d'approximation est inévitable. Ce qui est évitable, c'est de ne pas savoir où elle s'est produite.",
       },
-      { type: "h2", text: "Aucun convertisseur ne vérifie son propre travail" },
+      { type: "h2", text: "Pourquoi aucun convertisseur ne vérifie-t-il son propre travail ?" },
       {
         type: "p",
         text: "Voici la partie vraiment étrange une fois qu'on y prête attention : pas un seul outil image-vers-SVG du marché — gratuit ou payant, en ligne ou de bureau — ne rend son propre SVG en pixels pour le comparer à votre image d'origine. Ils tracent, vous remettent un fichier, et c'est tout. Que le résultat ressemble vraiment à votre source vous est entièrement laissé, à comparer deux fenêtres en plissant les yeux.",
@@ -575,7 +615,7 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "Ce n'est pas un détail. Ça veut dire que l'outil n'a aucune idée s'il a bien fait son travail. Il ne peut pas le savoir, puisqu'il ne regarde jamais ce qu'il a produit.",
       },
-      { type: "h2", text: "Les réglages sont globaux, les défauts sont locaux" },
+      { type: "h2", text: "Pourquoi les réglages sont-ils globaux quand les défauts sont locaux ?" },
       {
         type: "p",
         text: "Le second angle mort aggrave le premier. Les réglages de tout vectoriseur — nombre de couleurs, seuil d'angle, débruitage — s'appliquent à toute l'image en même temps. Mais un défaut n'est presque jamais partout. C'est en général un dégradé, un pli ombré, un coin chargé où le détail s'est effondré pendant que le reste se traçait très bien.",
@@ -584,7 +624,7 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "Face à ça, vous n'avez qu'un seul levier : monter ou baisser un réglage global et retracer toute l'image, en espérant que la zone à problème s'améliore sans abîmer ce qui allait déjà bien. Un outil grossier pour un problème précis.",
       },
-      { type: "h2", text: "Ce que « mesurer la perte » veut vraiment dire" },
+      { type: "h2", text: "Que veut vraiment dire « mesurer la perte » ?" },
       {
         type: "p",
         text: "La solution n'est pas un algorithme global plus malin. C'est comparer le tracé à la source, pixel par pixel, pour que l'outil puisse dire exactement où le SVG s'est le plus écarté — pas « la vectorisation n'est peut-être pas parfaite », mais une carte : cette zone de 40×40 est celle où le détail s'est perdu, tout le reste va bien.",
@@ -593,7 +633,7 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "Une fois qu'on sait où, la correction cesse d'être un pari sur toute l'image. Vous peignez sur cette seule zone, elle est retracée avec plus de finesse, et recollée dans le SVG que vous aviez déjà. Le reste du fichier — tout ce qui était déjà correct — ne bouge jamais.",
       },
-      { type: "h2", text: "Ce n'est pas un vectoriseur" },
+      { type: "h2", text: "VectoFix est-il un vectoriseur ?" },
       {
         type: "p",
         text: "VectoFix fait exactement ça, et rien d'autre. Il n'est pas conçu pour être votre premier réflexe pour transformer une photo brute en vectoriel — il sert pour le moment juste après : vous avez un SVG (le vôtre, ou exporté par un autre outil) globalement correct, et vous devez réparer la partie qui ne l'est pas. Il ouvre votre image, la trace automatiquement, mesure la fidélité par rapport à la source, vous montre une carte des dégâts, et vous laisse réparer ces zones au pinceau. Tout tourne sur votre machine — rien n'est envoyé.",
@@ -616,13 +656,17 @@ export const posts: BlogPost[] = [
     content: [
       {
         type: "p",
+        text: "La réparation vectorielle locale consiste à corriger uniquement la zone précise d'un SVG où le détail a été perdu, plutôt que de déplacer un réglage global unique qui redessine toute l'image.",
+      },
+      {
+        type: "p",
         text: "Ouvrez le panneau de réglages de n'importe quel vectoriseur et vous trouverez les mêmes quelques curseurs : précision des couleurs, seuil d'angle, filtre parasites, lissage. Chacun est global. Le déplacer change toute l'image — pas seulement la partie qui vous gêne.",
       },
       {
         type: "p",
         text: "Ce serait sans conséquence si les défauts étaient globaux eux aussi. Ils ne le sont presque jamais.",
       },
-      { type: "h2", text: "Un tracé rate par zones, pas partout" },
+      { type: "h2", text: "Un tracé rate-t-il partout, ou seulement par zones ?" },
       {
         type: "p",
         text: "Regardez de près un tracé vectoriel médiocre et les défauts se regroupent : un pli ombré dans le ruban d'un logo, un dégradé doux derrière un texte, un coin chargé de détail fin. Le reste de l'image — le fond plat, le contour extérieur net — est en général très bien tracé par cette même passe.",
@@ -631,17 +675,17 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "La correction honnête pour « ce coin-là est raté » n'est donc pas « changer un réglage qui touche tous les coins ». C'est réparer ce coin.",
       },
-      { type: "h2", text: "Ce que monter un réglage global vous coûte vraiment" },
+      { type: "h2", text: "Que coûte vraiment le fait de monter un réglage global ?" },
       {
         type: "p",
         text: "Disons que le pli de votre logo a perdu son ombrage. Vous montez la précision des couleurs pour le récupérer. Ça marche — le pli est meilleur. Mais ça ajoute aussi des nœuds au fond plat qui n'en avait pas besoin, puisque le même réglage s'y applique désormais aussi. Votre fichier s'alourdit partout pour corriger un problème qui n'existait qu'à un seul endroit. Répétez ça plusieurs fois en chassant différents défauts, et vous obtenez un SVG à la fois imprécis par endroits et globalement trop lourd — le pire des deux mondes.",
       },
-      { type: "h2", text: "Les deux chiffres qui comptent, ensemble" },
+      { type: "h2", text: "Quels sont les deux chiffres qui comptent, et pourquoi ensemble ?" },
       {
         type: "p",
         text: "Toute réparation — locale ou globale — échange de la fidélité contre des nœuds. Retracer une zone plus finement la rend plus juste et ajoute des points pour décrire cette justesse. Ce compromis est inévitable. Ce qui est évitable, c'est de ne pas le voir : un outil qui affiche la fidélité sans le nombre de nœuds (ou l'inverse) vous laisse optimiser à l'aveugle, en général vers un fichier qui a l'air bien dans l'aperçu et s'ouvre comme un cauchemar dans Illustrator.",
       },
-      { type: "h2", text: "La réparation locale, bien faite" },
+      { type: "h2", text: "À quoi ressemble une réparation locale bien faite ?" },
       {
         type: "p",
         text: "La carte des dégâts de VectoFix pointe les zones qui se sont réellement écartées de la source, mesurées pixel par pixel — pas devinées. Peindre sur l'une de ces zones ne retrace que cette zone et la recolle dans le SVG existant ; rien d'autre dans le fichier ne bouge. Fidélité et nombre de nœuds sont affichés ensemble après chaque coup de pinceau, pour que « est-ce que ça en valait la peine » soit un chiffre, pas une impression.",
@@ -668,9 +712,13 @@ export const posts: BlogPost[] = [
     content: [
       {
         type: "p",
+        text: "VectoFix est une application Windows qui mesure, pixel par pixel, où un SVG vectorisé a perdu du détail par rapport à son image source, et vous laisse réparer cette seule zone d'un coup de pinceau.",
+      },
+      {
+        type: "p",
         text: "VectoFix est une nouvelle application Windows construite autour d'une idée : un vectoriseur qui ne compare jamais son propre résultat à l'image source ne peut pas vous dire ce qu'il a raté — donc il ne le fait jamais. VectoFix le fait, et vous laisse le corriger.",
       },
-      { type: "h2", text: "Comment ça marche" },
+      { type: "h2", text: "Comment fonctionne VectoFix ?" },
       {
         type: "ul",
         items: [
@@ -680,17 +728,17 @@ export const posts: BlogPost[] = [
           "Peignez sur une zone abîmée et elle se retrace elle-même, recollée dans le SVG — 60 à 80% d'écart en moins, en moins d'une seconde",
         ],
       },
-      { type: "h2", text: "Pensé pour ce que les autres outils abandonnent" },
+      { type: "h2", text: "Pour quoi VectoFix est-il pensé ?" },
       {
         type: "p",
         text: "Les outils d'image-trace classiques sont conçus pour les logos plats et peinent sur les photos, les dégradés et les illustrations riches — le tracé se transforme en bandes ou en explosion de formes. C'est exactement le terrain que vise VectoFix : pas remplacer un vectoriseur généraliste, mais réparer les zones précises où n'importe quel vectoriseur — même un bon — perd du terrain.",
       },
-      { type: "h2", text: "Rien de caché" },
+      { type: "h2", text: "Y a-t-il quelque chose de caché ?" },
       {
         type: "p",
         text: "Fidélité et nombre de nœuds sont affichés ensemble, en permanence, parce qu'ils s'opposent — retracer une zone la rend plus juste et plus lourde, jamais l'un sans l'autre. Deux modes de traitement, Fidèle et Léger, sont disponibles par coup de pinceau, pour qu'un visage et un fond plat dans la même image reçoivent chacun le bon niveau de détail.",
       },
-      { type: "h2", text: "Tarif et disponibilité" },
+      { type: "h2", text: "Combien coûte VectoFix ?" },
       {
         type: "p",
         text: "VectoFix est en achat unique, 39 €, sans abonnement. L'essai est entièrement fonctionnel — vectorisation, carte des dégâts, pinceau magique, les deux modes, tout illimité — seul l'export est verrouillé (résolution réduite, filigrane) tant qu'une licence n'est pas activée. Windows, 100% local : aucune image n'est jamais envoyée, à aucun moment.",
