@@ -547,6 +547,35 @@ export const Route = createFileRoute("/")({
           },
         }),
       },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "La Fabrik Numérique",
+          url: "https://www.lafabriknumerique.fr",
+          logo: "https://www.vectorpop.fr/vectorpop_logo.png",
+          sameAs: [
+            "https://play.google.com/store/apps/details?id=com.lafabriknumerique.vectorpop",
+            "https://snapcraft.io/vectorpop",
+          ],
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: t.en.faq.items.map((item) => ({
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: item.a,
+            },
+          })),
+        }),
+      },
     ],
   }),
   component: Index,

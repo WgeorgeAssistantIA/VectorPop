@@ -262,6 +262,21 @@ export const Route = createFileRoute("/vectofix/")({
           offers: { "@type": "Offer", price: "39", priceCurrency: "EUR" },
         }),
       },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: t.en.faq.items.map((item) => ({
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: item.a,
+            },
+          })),
+        }),
+      },
     ],
   }),
   component: VectoFixPage,
