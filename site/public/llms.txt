@@ -1,0 +1,17 @@
+# VectorPop
+
+> VectorPop converts PNG and JPEG raster images into clean, scalable SVG vector files. Available on Windows, Android, and web. Also home to VectoFix, a companion tool for spot-fixing vectorization errors by hand.
+
+## Main pages
+- [Home](https://www.vectorpop.fr/): Product overview, features, pricing, download.
+- [VectoFix](https://www.vectorpop.fr/vectofix): Manual correction brush for fixing vectorization artifacts.
+- [Blog](https://www.vectorpop.fr/blog): Guides on PNG-to-SVG conversion, SVG vs PNG use cases.
+
+## Key facts
+- Platforms: Windows (desktop), Android (Google Play), web.
+- Converts raster logos and images to editable SVG vectors.
+- Free tier available; Pro license unlocks batch conversion and higher-resolution output.
+- Built and maintained by La Fabrik Numérique.
+
+## Contact
+- Website: https://www.vectorpop.fr
