@@ -111,6 +111,8 @@ const t = {
       subtitle:
         "A logo that falls apart the moment you enlarge it? VectorPop retraces it into clean, editable vector — on your own machine. No cloud, no subscription.",
       btnPrimary: "Download free for Windows",
+      smartscreenNote:
+        "Windows may show a SmartScreen warning since the app is still new. Click “More info” then “Run anyway” to continue — the installer is safe.",
       btnLinux: "Linux (.AppImage)",
       btnLinuxTar: "Linux (.tar.gz)",
       subText: "Windows installer — no credit card required",
@@ -314,6 +316,8 @@ const t = {
       subtitle:
         "Un logo qui s'effondre dès que vous l'agrandissez ? VectorPop le retrace en vectoriel propre et éditable, sur votre machine. Pas de cloud, pas d'abonnement.",
       btnPrimary: "Télécharger gratuitement pour Windows",
+      smartscreenNote:
+        "Windows peut afficher un avertissement SmartScreen car l'appli est encore peu téléchargée. Cliquez sur « Informations complémentaires » puis « Exécuter quand même » pour continuer — l'installeur est sûr.",
       btnLinux: "Linux (.AppImage)",
       btnLinuxTar: "Linux (.tar.gz)",
       subText: "Installeur Windows — pas de carte bancaire requise",
@@ -877,13 +881,18 @@ function Index() {
           </nav>
           <div className="flex items-center gap-3">
             <LangToggle lang={lang} setLang={setLang} />
-            <a
-              href={DOWNLOAD_EXE}
-              onClick={trackDownload}
-              className="hidden items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 sm:inline-flex"
-            >
-              <Download className="h-4 w-4" /> {c.nav.cta}
-            </a>
+            <div className="group/win relative hidden sm:inline-flex">
+              <a
+                href={DOWNLOAD_EXE}
+                onClick={trackDownload}
+                className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+              >
+                <Download className="h-4 w-4" /> {c.nav.cta}
+              </a>
+              <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 hidden w-72 -translate-x-1/2 rounded-lg border border-border bg-popover px-3 py-2 text-xs leading-relaxed text-popover-foreground opacity-0 shadow-lg transition-opacity duration-150 sm:block sm:group-hover/win:opacity-100">
+                {c.hero.smartscreenNote}
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -909,14 +918,19 @@ function Index() {
           </Reveal>
           <Reveal delay={160}>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <a
-                href={DOWNLOAD_EXE}
-                onClick={trackDownload}
-                className="group inline-flex items-center gap-2 rounded-lg bg-plume px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:shadow-primary/40 hover:brightness-110"
-              >
-                <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
-                {c.hero.btnPrimary}
-              </a>
+              <div className="group/win relative inline-flex">
+                <a
+                  href={DOWNLOAD_EXE}
+                  onClick={trackDownload}
+                  className="group inline-flex items-center gap-2 rounded-lg bg-plume px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:shadow-primary/40 hover:brightness-110"
+                >
+                  <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
+                  {c.hero.btnPrimary}
+                </a>
+                <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 hidden w-72 -translate-x-1/2 rounded-lg border border-border bg-popover px-3 py-2 text-xs leading-relaxed text-popover-foreground opacity-0 shadow-lg transition-opacity duration-150 sm:block sm:group-hover/win:opacity-100">
+                  {c.hero.smartscreenNote}
+                </div>
+              </div>
               <a
                 href={LINUX_URL}
                 onClick={trackLinuxDownload}
@@ -1120,13 +1134,18 @@ function Index() {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href={DOWNLOAD_EXE}
-                  onClick={trackDownload}
-                  className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-transparent px-6 py-3 text-sm font-semibold transition hover:border-primary/40 hover:bg-card mt-8"
-                >
-                  <Download className="h-4 w-4" /> {c.pricing.free.cta}
-                </a>
+                <div className="group/win relative mt-auto inline-flex mt-8">
+                  <a
+                    href={DOWNLOAD_EXE}
+                    onClick={trackDownload}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-transparent px-6 py-3 text-sm font-semibold transition hover:border-primary/40 hover:bg-card"
+                  >
+                    <Download className="h-4 w-4" /> {c.pricing.free.cta}
+                  </a>
+                  <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 hidden w-72 -translate-x-1/2 rounded-lg border border-border bg-popover px-3 py-2 text-xs leading-relaxed text-popover-foreground opacity-0 shadow-lg transition-opacity duration-150 sm:block sm:group-hover/win:opacity-100">
+                    {c.hero.smartscreenNote}
+                  </div>
+                </div>
               </div>
             </Reveal>
 
@@ -1308,13 +1327,18 @@ function Index() {
                 <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{c.big.title}</h2>
                 <p className="mt-4 max-w-xl text-muted-foreground">{c.big.desc}</p>
               </div>
-              <a
-                href={DOWNLOAD_EXE}
-                onClick={trackDownload}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-plume px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:brightness-110"
-              >
-                <Download className="h-4 w-4" /> {c.big.cta}
-              </a>
+              <div className="group/win relative inline-flex">
+                <a
+                  href={DOWNLOAD_EXE}
+                  onClick={trackDownload}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-plume px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:brightness-110"
+                >
+                  <Download className="h-4 w-4" /> {c.big.cta}
+                </a>
+                <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 hidden w-72 -translate-x-1/2 rounded-lg border border-border bg-popover px-3 py-2 text-xs leading-relaxed text-popover-foreground opacity-0 shadow-lg transition-opacity duration-150 sm:block sm:group-hover/win:opacity-100">
+                  {c.hero.smartscreenNote}
+                </div>
+              </div>
             </div>
           </div>
         </Reveal>

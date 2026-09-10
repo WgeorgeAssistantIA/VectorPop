@@ -65,6 +65,8 @@ const t = {
       subtitle:
         "Every vectorizer simplifies your image — and simplifying always breaks something. VectoFix is the only one that measures exactly what it got wrong, and lets you repair it with a single brush stroke.",
       btnPrimary: "Download free for Windows",
+      smartscreenNote:
+        "Windows may show a SmartScreen warning since the app is still new. Click “More info” then “Run anyway” to continue — the installer is safe.",
       subText: "Full trial, no credit card — export locks only when you're ready to buy",
       badges: ["100% local — nothing uploaded", "One-time purchase, no subscription", "PNG / JPG / SVG in, SVG / PNG out"],
     },
@@ -153,6 +155,8 @@ const t = {
       subtitle:
         "Tout vectoriseur simplifie votre image — et la simplification abîme toujours quelque chose. VectoFix est le seul à mesurer précisément ce qu'il a raté, et à vous laisser le réparer d'un coup de pinceau.",
       btnPrimary: "Télécharger gratuitement pour Windows",
+      smartscreenNote:
+        "Windows peut afficher un avertissement SmartScreen car l'appli est encore peu téléchargée. Cliquez sur « Informations complémentaires » puis « Exécuter quand même » pour continuer — l'installeur est sûr.",
       subText: "Essai complet, sans carte bancaire — seul l'export se verrouille tant que vous n'avez pas acheté",
       badges: ["100% local — rien n'est envoyé", "Achat unique, sans abonnement", "PNG / JPG / SVG en entrée, SVG / PNG en sortie"],
     },
@@ -416,13 +420,18 @@ function VectoFixPage() {
           </nav>
           <div className="flex items-center gap-3">
             <LangToggle lang={lang} setLang={setLang} />
-            <a
-              href={DOWNLOAD_EXE}
-              onClick={trackDownload}
-              className="hidden items-center gap-2 rounded-md bg-[#2563eb] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#3b76f0] sm:inline-flex"
-            >
-              <Download className="h-4 w-4" /> {c.nav.cta}
-            </a>
+            <div className="group/win relative hidden sm:inline-flex">
+              <a
+                href={DOWNLOAD_EXE}
+                onClick={trackDownload}
+                className="inline-flex items-center gap-2 rounded-md bg-[#2563eb] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#3b76f0]"
+              >
+                <Download className="h-4 w-4" /> {c.nav.cta}
+              </a>
+              <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 hidden w-72 -translate-x-1/2 rounded-lg border border-border bg-popover px-3 py-2 text-xs leading-relaxed text-popover-foreground opacity-0 shadow-lg transition-opacity duration-150 sm:block sm:group-hover/win:opacity-100">
+                {c.hero.smartscreenNote}
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -442,14 +451,19 @@ function VectoFixPage() {
           </Reveal>
           <Reveal delay={160}>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <a
-                href={DOWNLOAD_EXE}
-                onClick={trackDownload}
-                className="group inline-flex items-center gap-2 rounded-lg bg-[#2563eb] px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 transition hover:brightness-110"
-              >
-                <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
-                {c.hero.btnPrimary}
-              </a>
+              <div className="group/win relative inline-flex">
+                <a
+                  href={DOWNLOAD_EXE}
+                  onClick={trackDownload}
+                  className="group inline-flex items-center gap-2 rounded-lg bg-[#2563eb] px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 transition hover:brightness-110"
+                >
+                  <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
+                  {c.hero.btnPrimary}
+                </a>
+                <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 hidden w-72 -translate-x-1/2 rounded-lg border border-border bg-popover px-3 py-2 text-xs leading-relaxed text-popover-foreground opacity-0 shadow-lg transition-opacity duration-150 sm:block sm:group-hover/win:opacity-100">
+                  {c.hero.smartscreenNote}
+                </div>
+              </div>
               <a
                 href={MS_STORE_URL}
                 target="_blank"
@@ -597,13 +611,18 @@ function VectoFixPage() {
           <Reveal>
             <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{c.big.title}</h2>
             <p className="mx-auto mt-4 max-w-xl text-muted-foreground">{c.big.desc}</p>
-            <a
-              href={DOWNLOAD_EXE}
-              onClick={trackDownload}
-              className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#2563eb] px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 transition hover:brightness-110"
-            >
-              <Download className="h-4 w-4" /> {c.big.cta}
-            </a>
+            <div className="group/win relative mt-8 inline-flex">
+              <a
+                href={DOWNLOAD_EXE}
+                onClick={trackDownload}
+                className="inline-flex items-center gap-2 rounded-lg bg-[#2563eb] px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 transition hover:brightness-110"
+              >
+                <Download className="h-4 w-4" /> {c.big.cta}
+              </a>
+              <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 hidden w-72 -translate-x-1/2 rounded-lg border border-border bg-popover px-3 py-2 text-xs leading-relaxed text-popover-foreground opacity-0 shadow-lg transition-opacity duration-150 sm:block sm:group-hover/win:opacity-100">
+                {c.hero.smartscreenNote}
+              </div>
+            </div>
           </Reveal>
         </div>
       </section>
