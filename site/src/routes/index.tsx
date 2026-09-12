@@ -1496,6 +1496,19 @@ function Index() {
               loading="lazy"
             />
           </a>
+          <a
+            href="https://turbo0.com/item/vectorpop"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Listed on Turbo0"
+          >
+            <img
+              src="https://img.turbo0.com/badge-listed-light.svg"
+              alt="Listed on Turbo0"
+              style={{ height: 54, width: "auto" }}
+              loading="lazy"
+            />
+          </a>
         </div>
       </footer>
 
