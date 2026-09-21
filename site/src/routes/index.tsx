@@ -1481,6 +1481,15 @@ function Index() {
               className="underline hover:text-foreground transition-colors"
             >
               VotreAssistantIA
+            </a>{" "}
+            <a
+              href="https://www.vidscope.fr"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackCrossLink("vidscope")}
+              className="underline hover:text-foreground transition-colors"
+            >
+              VidScope
             </a>
           </p>
           <a
