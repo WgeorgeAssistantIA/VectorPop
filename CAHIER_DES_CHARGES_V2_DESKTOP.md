@@ -22,7 +22,7 @@ Rédigé le 23/09/2026. Objectif : reprendre sur la version desktop (Windows/Lin
 ### Points d'attention avant de commencer
 1. **Rien de la refonte Android n'est commité.** `onboarding_screen.dart`, `paywall_sheet.dart`, `demo_models.dart`, `export_celebration_sheet.dart`, `services/` (analytics, review, update), `assets/samples/` et 4 fichiers de test sont encore non suivis dans git. Le dernier commit Android date du 31/08 (1.0.1+3). Il faut les commiter **avant** d'en faire la source de référence du desktop.
 2. **Le desktop contient ~1 000 lignes modifiées non commitées.** Ce n'est que du reformatage `black` (vérifié avec `git diff -w`). Il faut le commiter à part pour garder un diff V2 lisible.
-3. **Le push GitHub est bloqué** par des vidéos de plus de 100 Mo dans l'historique (`Marketing/0803.mp4`, commits du refactor du 19/08). Il faut régler ça, sinon aucune release 2.0.0 ne pourra partir (voir §6).
+3. ~~Push GitHub bloqué par les vidéos >100 Mo~~ : **déjà réglé** (nettoyage fait, branche `backup-before-video-cleanup` conservée). Push vérifié le 23/09.
 4. La 1.2.1 a été buildée **avant** le découpage `app.py` → `core/` + `ui/` du 19/08. Comme pour InOneShot, la V2 sera le premier build de la nouvelle structure : il faudra tester le parcours complet sur le build packagé.
 
 ## 1. Périmètre V2 — P1 (conversion, indispensable)
@@ -67,10 +67,33 @@ Rédigé le 23/09/2026. Objectif : reprendre sur la version desktop (Windows/Lin
 - **Dernier export gratuit** : message dans la barre d'état ou petit bandeau « Dernier export gratuit utilisé » + bouton Pro. Pas de popup bloquante.
 - **Demande d'avis** : pas d'API d'avis native sur desktop (sauf Store). Reprendre le principe VoxCut PC : 👍 / 👎 après 3 exports **et** au moins un fichier ouvert, demandé une seule fois. 👍 mène à la fiche Microsoft Store (ou au site pour les autres canaux), 👎 ouvre un mailto de retour.
 
-### 1.6 Décision à prendre : quota gratuit
-Android est passé à **3 exports au total** pour les nouveaux utilisateurs. Le desktop reste à **3 par jour**.
-- **Recommandation : garder 3 par jour en 2.0.0** et décider en 2.1 avec les données PostHog (combien d'utilisateurs touchent le quota, et à quel export ils partent). Le desktop n'a aujourd'hui que 2 events : changer le quota sans données, c'est agir à l'aveugle. Si on bascule plus tard, garder les utilisateurs existants sur l'ancien quota, comme Android avec `isEarlyUser`.
-- Le prix reste de **39 €** (Android : 12,99 €). L'écart se justifie par le lot, le PDF et l'usage pro sur PC. Pas de bundle en V2.
+### 1.6 Refonte du freemium (demandée par William le 23/09)
+
+**Modèle actuel (depuis le 17/07)**
+- Gratuit : vectorisation illimitée, 3 presets, tous les réglages, suppression de fond par couleur, **3 exports SVG par jour** (la copie presse-papiers compte aussi).
+- Pro (39 €) : exports illimités, PDF et PNG HD, détourage IA, finition IA ×4, Optimiser, suppression d'aplats, traitement par lot.
+
+**Le problème**
+VectorPop sert de façon ponctuelle : on vectorise 1 à 3 logos, puis on revient des semaines plus tard. Avec 3 exports par jour, la plupart des utilisateurs gratuits **ne touchent jamais le mur**. Le gratuit couvre donc tout le besoin, et c'est cohérent avec les chiffres : 185 téléchargements tous canaux au 23/09, aucune vente desktop connue en dehors de l'achat test du 19/07 (à confirmer dans Lemon Squeezy). Android a fait le même constat et est passé à 3 exports au total.
+Autre problème : les fonctions Pro ne sont pas visibles avant l'achat. Le détourage IA, Optimiser et la suppression d'aplats sont bloqués dès le clic, donc l'utilisateur ne voit jamais ce qu'il paierait.
+
+**Proposition (recommandée)**
+1. **Quota à vie pour les nouvelles installations : 5 exports gratuits au total** (SVG ou copie presse-papiers).
+   - Pourquoi 5 et pas 3 comme Android : sur PC, on teste souvent 2 ou 3 réglages sur la même image avant de garder le bon.
+   - Les exports lancés depuis un modèle démo ne comptent pas.
+2. **Utilisateurs existants conservés sur 3 par jour** (équivalent de `isEarlyUser`). Pour les détecter : `UsageTracker` a déjà un fichier avec un historique d'exports, ou `total_exports() > 0` au premier lancement de la 2.0.0. Pas de mauvaise surprise pour eux.
+3. **Pro visible avant l'achat (principe testé sur VoxCut PC)** : le détourage IA, Optimiser, la suppression d'aplats et la finition IA sont **utilisables dans l'aperçu** en gratuit. Le verrou n'intervient qu'à l'export : « Ce rendu utilise *Détourage IA* (Pro) ». Il reste possible d'exporter la version sans les fonctions Pro. Le traitement par lot, le PDF et le PNG HD restent verrouillés d'emblée, car ils n'ont pas d'aperçu à montrer.
+   - Attention au coût : la finition IA prend plusieurs secondes à quelques minutes en CPU. En gratuit, le premier usage déclenche aussi le téléchargement du modèle (~120 Mo pour rembg). C'est acceptable, mais il faut l'annoncer clairement.
+4. Compteur toujours visible dans la barre : « 3/5 exports gratuits restants », et « 2 restants aujourd'hui » pour les utilisateurs existants.
+5. Le prix reste à **39 €** (Android : 12,99 €). L'écart se justifie par le lot, le PDF, l'IA sur PC et la licence sur 3 postes. Pas de bundle en V2. Le code `LANCEMENT30` est à vérifier : s'il est épuisé, le retirer du lien de checkout.
+
+**Alternatives écartées**
+- Filigrane sur l'export gratuit : un SVG avec filigrane est inutilisable et facile à retirer à la main. C'est contraire au positionnement « propre et éditable ».
+- Export gratuit en qualité réduite (moins de couleurs, lissage) : l'utilisateur jugerait le produit sur un résultat volontairement dégradé.
+- Passage à l'abonnement : contraire à l'argument n°1 contre Canva, Vectorizer.AI et Adobe.
+
+**Mesure (grâce au §1.1)**
+Suivre `quota_reached`, `paywall_viewed` par source, `pro_buy_clicked` et l'export auquel les utilisateurs partent. Il faut aussi comparer les nouveaux utilisateurs (quota à vie) aux anciens (quota par jour). Point de décision à 30 jours après la release, avec 100 nouveaux utilisateurs minimum.
 
 ## 2. Périmètre V2 — P2 (important, pas bloquant)
 
@@ -119,8 +142,8 @@ Android est passé à **3 exports au total** pour les nouveaux utilisateurs. Le 
 - [ ] Non-régression sur le build packagé : glisser, coller, rognage, les 3 presets, suppression de fond (couleur + IA), dégradés, Optimiser, suppression d'aplat, exports SVG/PNG/PDF, lot sur un dossier, activation et désactivation de licence.
 
 ## 6. Ordre de réalisation proposé
-1. Commiter le travail Android en attente (1.0.2 → 1.0.5), puis le reformatage `black` du desktop, en **2 commits séparés**.
-2. Débloquer le push GitHub (sortir les vidéos de plus de 100 Mo de l'historique ou passer par Git LFS). À valider avec William : cela réécrit l'historique.
+1. ✅ Fait le 23/09 : Android commité (`fff1a7b`, `ce0564d`), black desktop (`3918820`), correctif vectorizer (`6aa6451`), poussé.
+2. ✅ Push OK, rien à réécrire.
 3. Analytics PostHog (1.1).
 4. `ProDialog` (1.2).
 5. Modèles démo (1.3), puis l'onboarding (1.4), qui s'appuie dessus.
