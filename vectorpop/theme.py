@@ -117,6 +117,30 @@ def build_qss(dark: bool) -> str:
             stop:0 {ACCENT1}, stop:1 {ACCENT3});
     }}
 
+    QPushButton#dlgSecondary {{
+        background: transparent; color: {text}; border: 1px solid {border};
+        border-radius: 8px; padding: 7px 14px; font-weight: 600;
+    }}
+    QPushButton#dlgSecondary:hover {{ background: {input_bg}; }}
+    QPushButton#dlgLink {{
+        background: transparent; color: {subtle}; border: none;
+        font-weight: 500; padding: 6px 8px; text-decoration: underline;
+    }}
+    QPushButton#dlgLink:hover {{ color: {text}; }}
+    QLabel#dlgBadge {{
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+            stop:0 {ACCENT1}, stop:0.55 {ACCENT2}, stop:1 {ACCENT3});
+        color: white; font-weight: 700; font-size: 11px;
+        border-radius: 10px; padding: 4px 10px;
+    }}
+    QLabel#dlgRoiBanner {{
+        background: rgba(16, 185, 129, 0.14); color: #10B981;
+        border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 10px;
+        padding: 8px 10px; font-weight: 700; font-size: 12px;
+    }}
+    QLabel#dlgFeature {{ font-size: 13px; }}
+    QLabel#dlgFeature[used="true"] {{ font-weight: 700; color: {ACCENT1}; }}
+
     QLabel#dropImage {{
         border: 2px dashed {drop_border}; border-radius: 14px;
         background: {drop_bg}; color: {subtle}; font-size: 15px;

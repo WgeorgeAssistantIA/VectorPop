@@ -4,7 +4,6 @@ import importlib.util
 import os
 import tempfile
 import time
-import webbrowser
 from pathlib import Path
 
 from PySide6.QtCore import Qt, QTimer, QSize, QSettings, QUrl
@@ -56,7 +55,6 @@ from ..license import (
     PRO_PRICE_EUR,
     LicenseManager,
     UsageTracker,
-    buy_url,
 )
 from ..i18n import PRESET_LABELS, STRINGS, detect_system_lang
 from ..theme import (
@@ -88,7 +86,7 @@ from ..core.workers import (
 )
 from ..core.recipes import RECIPES
 from .widgets import DropImage, SvgView, CompareView
-from .dialogs import SettingsHelpDialog, SizeDialog, LicenseDialog
+from .dialogs import ProDialog, SettingsHelpDialog, SizeDialog, LicenseDialog
 
 
 class MainWindow(QMainWindow):
@@ -1068,42 +1066,15 @@ class MainWindow(QMainWindow):
         `action` est rejouee apres le recalcul sans Pro. True = on peut exporter."""
         if self.lic.is_pro() or self._is_demo or not self._pro_used:
             return True
-        feats = sorted(self._pro_used)
-        track_event("paywall_shown", "pro_features")
-        analytics.capture(
-            "paywall_viewed",
-            {
-                "source": "pro_features",
-                "features": feats,
-                "total_exports": self.usage.total_exports(),
-            },
+        dlg = ProDialog(
+            self,
+            self._t("teaser_title"),
+            self._t("teaser_body", feats=self._pro_feats_label(self._pro_used)),
+            category="pro_features",
+            secondary="without",
+            highlight=self._pro_used,
         )
-        box = QMessageBox(self)
-        box.setWindowTitle(self._t("teaser_title"))
-        box.setText(
-            self._t("teaser_body", feats=self._pro_feats_label(self._pro_used))
-            + "\n\n"
-            + self._t("upsell_reassurance")
-        )
-        box.setIcon(QMessageBox.Icon.Information)
-        buy = box.addButton(
-            self._t("upsell_buy", price=PRO_PRICE_EUR),
-            QMessageBox.ButtonRole.AcceptRole,
-        )
-        without = box.addButton(
-            self._t("teaser_without"), QMessageBox.ButtonRole.ActionRole
-        )
-        box.addButton(self._t("upsell_later"), QMessageBox.ButtonRole.RejectRole)
-        box.exec()
-        clicked = box.clickedButton()
-        if clicked is buy:
-            track_event("paywall_buy_click", "pro_features")
-            analytics.capture_sync(
-                "pro_buy_clicked", {"source": "pro_features", "features": feats}
-            )
-            webbrowser.open(buy_url())
-        elif clicked is without:
-            analytics.capture("export_without_pro_chosen", {"features": feats})
+        if dlg.exec() == ProDialog.WithoutPro:
             self._rerender_without_pro(action)
         return False
 
@@ -1407,35 +1378,15 @@ class MainWindow(QMainWindow):
                 self, self._t("lic_active_title"), self._t("lic_deactivated")
             )
 
-    def _show_upsell(self, title: str, body: str, category: str = "other"):
-        track_event("paywall_shown", category)
-        analytics.capture(
-            "paywall_viewed",
-            {"source": category, "total_exports": self.usage.total_exports()},
+    def _show_upsell(
+        self, title: str, body: str, category: str = "other", highlight=None
+    ):
+        """Ouvre le ProDialog et gère le suivi (« J'ai une clé »). Les autres
+        codes (Acheter, Plus tard) sont déjà entièrement gérés par le dialogue."""
+        dlg = ProDialog(
+            self, title, body, category=category, secondary="have", highlight=highlight
         )
-        total = self.usage.total_exports()
-        if total > 0:
-            body = body + "\n\n" + self._t("upsell_total", n=total)
-        body = body + "\n\n" + self._t("upsell_reassurance")
-        box = QMessageBox(self)
-        box.setWindowTitle(title)
-        box.setText(body)
-        box.setIcon(QMessageBox.Icon.Information)
-        buy = box.addButton(
-            self._t("upsell_buy", price=PRO_PRICE_EUR),
-            QMessageBox.ButtonRole.AcceptRole,
-        )
-        have = box.addButton(
-            self._t("upsell_have_key"), QMessageBox.ButtonRole.ActionRole
-        )
-        box.addButton(self._t("upsell_later"), QMessageBox.ButtonRole.RejectRole)
-        box.exec()
-        if box.clickedButton() is buy:
-            track_event("paywall_buy_click", category)
-            analytics.capture_sync("pro_buy_clicked", {"source": category})
-            webbrowser.open(buy_url())
-        elif box.clickedButton() is have:
-            analytics.capture("paywall_have_key_clicked", {"source": category})
+        if dlg.exec() == ProDialog.HaveKey:
             self.open_license()
 
     def _require_pro(self, feature: str) -> bool:
@@ -1451,6 +1402,7 @@ class MainWindow(QMainWindow):
                 price=PRO_PRICE_EUR,
             ),
             category=feature,
+            highlight={feature},
         )
         return False
 

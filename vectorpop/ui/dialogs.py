@@ -1,4 +1,5 @@
 import webbrowser
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QFontMetrics
 from PySide6.QtWidgets import (
     QDialog,
@@ -17,7 +18,18 @@ from PySide6.QtWidgets import (
 )
 
 from .. import analytics
-from ..license import buy_url
+from ..analytics import track_event
+from ..license import (
+    FEAT_AI_UPSCALE,
+    FEAT_AUTOTUNE,
+    FEAT_BATCH,
+    FEAT_BG_AI,
+    FEAT_DELETE_SHAPE,
+    FEAT_EXPORT_PDF,
+    FEAT_EXPORT_PNG,
+    PRO_PRICE_EUR,
+    buy_url,
+)
 from ..core.recipes import RECIPES, TIPS
 
 
@@ -137,6 +149,145 @@ class SizeDialog(QDialog):
         if self.chk_original is not None and self.chk_original.isChecked():
             return 0
         return self.spin.value()
+
+
+class ProDialog(QDialog):
+    """Écran Pro unique (remplace les QMessageBox d'upsell) : badge « à vie »,
+    preuve de valeur, liste des avantages (les fonctions déjà essayées dans
+    l'aperçu sont mises en avant), CTA d'achat, et un second bouton adapté au
+    contexte (« J'ai une clé » ou « Exporter sans les fonctions Pro »).
+
+    Retourne un code via exec() : Buy / HaveKey / WithoutPro / Later (rejeté).
+    Les actions (tracking, ouverture du navigateur) sont faites ICI, pas par
+    l'appelant -- comme l'ancien _show_upsell/_pro_features_gate.
+    """
+
+    Later = QDialog.DialogCode.Rejected  # 0
+    Buy = 1
+    HaveKey = 2
+    WithoutPro = 3
+
+    # Liste fixe affichée dans le dialogue : (clé i18n, clé FEAT associée ou None).
+    _FEATURES = (
+        ("pro_dialog_feat_unlimited", ()),
+        ("pro_dialog_feat_hd", (FEAT_EXPORT_PDF, FEAT_EXPORT_PNG)),
+        ("pro_dialog_feat_batch", (FEAT_BATCH,)),
+        ("pro_dialog_feat_ai", (FEAT_BG_AI, FEAT_AI_UPSCALE)),
+        ("pro_dialog_feat_autotune", (FEAT_AUTOTUNE,)),
+        ("pro_dialog_feat_delete", (FEAT_DELETE_SHAPE,)),
+    )
+
+    def __init__(
+        self,
+        win: "MainWindow",
+        title: str,
+        body: str,
+        category: str,
+        secondary: str | None = "have",  # "have" | "without" | None
+        highlight: set | None = None,
+    ):
+        super().__init__(win)
+        self._win = win
+        self._category = category
+        self._highlight = highlight or set()
+        self.setWindowTitle(title)
+        self.setMinimumWidth(460)
+
+        track_event("paywall_shown", category)
+        analytics.capture(
+            "paywall_viewed",
+            {
+                "source": category,
+                "features": sorted(self._highlight) or None,
+                "total_exports": win.usage.total_exports(),
+            },
+        )
+
+        lay = QVBoxLayout(self)
+        lay.setSpacing(12)
+
+        header = QHBoxLayout()
+        badge = QLabel(win._t("pro_dialog_badge"))
+        badge.setObjectName("dlgBadge")
+        header.addWidget(badge)
+        header.addStretch(1)
+        close_btn = QPushButton("✕")
+        close_btn.setObjectName("dlgLink")
+        close_btn.setFixedWidth(28)
+        close_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        close_btn.clicked.connect(self.reject)
+        header.addWidget(close_btn)
+        lay.addLayout(header)
+
+        total = win.usage.total_exports()
+        if total > 0:
+            roi = QLabel(win._t("upsell_total", n=total))
+            roi.setObjectName("dlgRoiBanner")
+            roi.setWordWrap(True)
+            lay.addWidget(roi)
+
+        title_lbl = QLabel(title)
+        title_lbl.setStyleSheet("font-size: 16px; font-weight: 700;")
+        title_lbl.setWordWrap(True)
+        lay.addWidget(title_lbl)
+
+        body_lbl = QLabel(body)
+        body_lbl.setWordWrap(True)
+        lay.addWidget(body_lbl)
+
+        feat_box = QVBoxLayout()
+        feat_box.setSpacing(4)
+        for key, feats in self._FEATURES:
+            used = any(f in self._highlight for f in feats)
+            lbl = QLabel(f"✓ {win._t(key)}")
+            lbl.setObjectName("dlgFeature")
+            lbl.setProperty("used", "true" if used else "false")
+            feat_box.addWidget(lbl)
+        lay.addLayout(feat_box)
+
+        buy_btn = QPushButton(win._t("upsell_buy", price=PRO_PRICE_EUR))
+        buy_btn.setDefault(True)
+        buy_btn.clicked.connect(self._on_buy)
+        lay.addWidget(buy_btn)
+
+        btns = QHBoxLayout()
+        if secondary == "have":
+            have_btn = QPushButton(win._t("upsell_have_key"))
+            have_btn.setObjectName("dlgSecondary")
+            have_btn.clicked.connect(self._on_have_key)
+            btns.addWidget(have_btn)
+        elif secondary == "without":
+            without_btn = QPushButton(win._t("teaser_without"))
+            without_btn.setObjectName("dlgSecondary")
+            without_btn.clicked.connect(self._on_without_pro)
+            btns.addWidget(without_btn)
+        btns.addStretch(1)
+        later_btn = QPushButton(win._t("upsell_later"))
+        later_btn.setObjectName("dlgLink")
+        later_btn.clicked.connect(self.reject)
+        btns.addWidget(later_btn)
+        lay.addLayout(btns)
+
+        reassurance = QLabel(win._t("upsell_reassurance"))
+        reassurance.setWordWrap(True)
+        reassurance.setStyleSheet("color: palette(mid); font-size: 11px;")
+        lay.addWidget(reassurance)
+
+    def _on_buy(self):
+        track_event("paywall_buy_click", self._category)
+        analytics.capture_sync("pro_buy_clicked", {"source": self._category})
+        webbrowser.open(buy_url())
+        self.done(self.Buy)
+
+    def _on_have_key(self):
+        analytics.capture("paywall_have_key_clicked", {"source": self._category})
+        self.done(self.HaveKey)
+
+    def _on_without_pro(self):
+        analytics.capture(
+            "export_without_pro_chosen", {"features": sorted(self._highlight)}
+        )
+        self.done(self.WithoutPro)
 
 
 class LicenseDialog(QDialog):

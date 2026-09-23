@@ -205,8 +205,36 @@ class FakeBox(QMessageBox):
 
 main_window.QMessageBox = FakeBox
 dialogs.QMessageBox = FakeBox
+
+
+LAST_PRODIALOG: list = [None]
+
+
+class FakeProDialog(dialogs.ProDialog):
+    """Construit le vrai ProDialog (widgets réels, offscreen) mais saute exec() :
+    appelle directement le handler du bouton choisi par CHOICE["upsell"]."""
+
+    def __init__(self, *a, **k):
+        super().__init__(*a, **k)
+        LAST_PRODIALOG[0] = self
+
+    def exec(self):
+        DIALOGS.append("prodialog")
+        choice = CHOICE["upsell"]
+        if choice == "buy":
+            self._on_buy()
+        elif choice == "have":
+            self._on_have_key()
+        elif choice == "without":
+            self._on_without_pro()
+        else:
+            self.reject()
+        return self.result()
+
+
+main_window.ProDialog = FakeProDialog
 BROWSER: list[str] = []
-main_window.webbrowser.open = lambda url, *a, **k: (BROWSER.append(url), ORDER.append("BROWSER"))
+dialogs.webbrowser.open = lambda url, *a, **k: (BROWSER.append(url), ORDER.append("BROWSER"))
 
 app = QApplication.instance() or QApplication(sys.argv)
 
@@ -406,6 +434,26 @@ check("F4", (out_dir / "demo.svg").exists() and "quota_reached" not in since(m)
 win.usage._data["trial_used"] = 2
 win.load_image(src)
 wait_idle(win)
+
+# P1 : contenu du ProDialog (le vrai widget, pas juste la plomberie) pour
+# une fonction verrouillée d'emblée (lot, ici via _require_pro).
+from PySide6.QtWidgets import QLabel  # noqa: E402
+
+CHOICE["upsell"] = "later"
+win.run_batch()
+dlg = LAST_PRODIALOG[0]
+badges = dlg.findChildren(QLabel, "dlgBadge") if dlg else []
+feats = dlg.findChildren(QLabel, "dlgFeature") if dlg else []
+used_feats = [f for f in feats if f.property("used") == "true"]
+check(
+    "P1",
+    dlg is not None
+    and badges and badges[0].text() == win._t("pro_dialog_badge")
+    and len(feats) == 6
+    and [f.text() for f in used_feats] == [f"✓ {win._t('pro_dialog_feat_batch')}"]
+    and dlg.findChildren(QLabel, "dlgRoiBanner"),  # total_exports > 0 à ce stade
+    f"badges={[b.text() for b in badges]} highlighted={[f.text() for f in used_feats]}",
+)
 
 # F5 : suppression d'aplats utilisable en gratuit, verrou à l'export
 m = mark()

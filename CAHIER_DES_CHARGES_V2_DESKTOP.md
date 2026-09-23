@@ -35,7 +35,7 @@ Rédigé le 23/09/2026. Objectif : reprendre sur la version desktop (Windows/Lin
 - Garder l'endpoint GA4 `vectorpop.fr/api/track` en parallèle pendant une version, puis le retirer une fois PostHog validé.
 - Respecter la case « statistiques anonymes » si elle existe. Sinon, l'ajouter dans les réglages (le Store et le RGPD s'y attendent).
 
-### 1.2 Vrai écran Pro (remplace le `QMessageBox`)
+### 1.2 Vrai écran Pro (remplace le `QMessageBox`) ✅ FAIT le 23/09
 - Nouveau `ProDialog` (`ui/dialogs.py`) inspiré de `paywall_sheet.dart` :
   - badge « Accès à vie — sans abonnement » ;
   - bannière de preuve de valeur : « Vous avez déjà vectorisé N images » (`UsageTracker.total_exports()` existe déjà) ;
