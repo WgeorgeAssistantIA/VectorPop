@@ -77,6 +77,8 @@ Rédigé le 23/09/2026. Objectif : reprendre sur la version desktop (Windows/Lin
 VectorPop sert de façon ponctuelle : on vectorise 1 à 3 logos, puis on revient des semaines plus tard. Avec 3 exports par jour, la plupart des utilisateurs gratuits **ne touchent jamais le mur**. Le gratuit couvre donc tout le besoin, et c'est cohérent avec les chiffres : 185 téléchargements tous canaux au 23/09, aucune vente desktop connue en dehors de l'achat test du 19/07 (à confirmer dans Lemon Squeezy). Android a fait le même constat et est passé à 3 exports au total.
 Autre problème : les fonctions Pro ne sont pas visibles avant l'achat. Le détourage IA, Optimiser et la suppression d'aplats sont bloqués dès le clic, donc l'utilisateur ne voit jamais ce qu'il paierait.
 
+**✅ Validé par William le 23/09 (5 exports + Pro visible dans l'aperçu), implémenté le 23/09** (lot 2 du plan de vérification).
+
 **Proposition (recommandée)**
 1. **Quota à vie pour les nouvelles installations : 5 exports gratuits au total** (SVG ou copie presse-papiers).
    - Pourquoi 5 et pas 3 comme Android : sur PC, on teste souvent 2 ou 3 réglages sur la même image avant de garder le bon.
@@ -157,6 +159,7 @@ Le but est de renforcer ce que Pro apporte sur PC, là où le mobile ne peut pas
 ## 4. Release
 - Version **2.0.0** partout : `vectorpop/__init__.py`, `installer.iss`, manifeste MSIX, `snapcraft.yaml`, `build_linux.sh`.
 - Canaux : installeur Inno Setup, MSIX Store, zip portable, AppImage + tar.gz Linux, Snap, via `/release VectorPop 2.0.0`.
+- ⚠️ **Site à aligner sur le nouveau freemium le jour de la release, pas avant** (la 1.2.1 en ligne est encore à 3 par jour) : `site/src/routes/index.tsx` (« 3 SVG exports per day » l.157, « 3 exports SVG par jour » l.362, et la FAQ « ce n'est pas une version d'essai » l.247/452, qui devient fausse), `site/src/lib/blog-posts.ts` (l.117, 219, 412), la fiche Microsoft Store et les pages annuaires.
 - Mettre à jour les **liens de téléchargement du site** (codés en dur par version, piège déjà rencontré), `CHANGELOG.md`, `release_notes/history.md` (il ne contient pour l'instant que la 1.0.2 Android et s'arrête là), les notes Store, et les captures du Store avec l'onboarding et les modèles démo.
 - Ajouter `version.json` sur le site si le §2.3 est fait.
 

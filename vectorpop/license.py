@@ -38,7 +38,10 @@ except Exception:  # noqa: BLE001
 # ── Configuration ─────────────────────────────────────────────────────────────
 
 APP_NAME = "VectorPop"
-FREE_DAILY_MAX = 3  # exports/jour en gratuit (SVG uniquement)
+FREE_DAILY_MAX = 3  # exports/jour : utilisateurs installes avant la 2.0.0
+FREE_TRIAL_MAX = 5  # exports gratuits AU TOTAL : installations 2.0.0+
+PLAN_DAILY = "daily"
+PLAN_TRIAL = "trial"
 PRO_PRICE_EUR = 39
 
 # Site. Le nom de domaine n'est pas encore depose : le site part d'abord sur
@@ -73,7 +76,9 @@ _GRACE_SECONDS = 14 * 86400  # grace offline : 14 jours depuis la derniere
 # Cles stables, utilisees par l'UI pour savoir quoi verrouiller et quoi
 # afficher dans le message d'upsell. Le gratuit garde : vectorisation
 # illimitee, les 3 presets, les sliders, la suppression de fond par couleur,
-# l'apercu live, et 3 exports SVG par jour.
+# l'apercu live, et un quota d'exports SVG (cf. UsageTracker). BG_AI, AI_UPSCALE,
+# AUTOTUNE et DELETE_SHAPE s'essaient librement dans l'apercu (freemium 2.0.0) :
+# le verrou ne tombe qu'a l'export d'un rendu qui les utilise.
 
 FEAT_EXPORT_PDF = "export_pdf"  # export PDF vectoriel
 FEAT_EXPORT_PNG = "export_png"  # export PNG haute definition
@@ -321,21 +326,36 @@ class LicenseManager:
 
 
 class UsageTracker:
-    """Compteur d'exports du jour, persiste dans <data_dir>/usage.json.
+    """Quota d'exports du mode gratuit, persiste dans <data_dir>/usage.json.
+
+    Deux regimes (freemium 2.0.0, valide le 23/09/2026) :
+      - PLAN_TRIAL : nouvelles installations, FREE_TRIAL_MAX exports AU TOTAL.
+        VectorPop sert ponctuellement (quelques logos de temps en temps) : un
+        quota journalier n'etait quasiment jamais atteint.
+      - PLAN_DAILY : utilisateurs deja installes avant la 2.0.0 (un usage.json
+        existait), qui gardent FREE_DAILY_MAX exports par jour -- pas de
+        mauvaise surprise a la mise a jour.
 
     Un export = un fichier ecrit OU une copie du SVG dans le presse-papier
-    (sans quoi la limite se contournerait par Ctrl+C).
+    (sans quoi la limite se contournerait par Ctrl+C). Le compteur cumule
+    `total` (Free + Pro + exemples) sert de preuve de valeur dans l'upsell.
     """
 
     def __init__(self):
         self._path = _get_data_dir() / "usage.json"
+        existed = self._path.exists()
         self._data = self._load()
+        if self._data.get("plan") not in (PLAN_DAILY, PLAN_TRIAL):
+            self._data["plan"] = PLAN_DAILY if existed else PLAN_TRIAL
+            self._data.setdefault("trial_used", 0)
+            self._save()
         self._reset_if_new_day()
 
     def _load(self) -> dict:
         try:
             with open(self._path, encoding="utf-8") as f:
-                return json.load(f)
+                data = json.load(f)
+            return data if isinstance(data, dict) else {}
         except Exception:  # noqa: BLE001
             return {}
 
@@ -351,33 +371,51 @@ class UsageTracker:
         return datetime.date.today().isoformat()
 
     def _reset_if_new_day(self) -> None:
+        # Ne remet a zero QUE le compteur du jour : plan, essai et total restent.
         if self._data.get("date") != self._today():
-            self._data = {
-                "date": self._today(),
-                "count": 0,
-                "total": self._data.get("total", 0),
-            }
+            self._data["date"] = self._today()
+            self._data["count"] = 0
             self._save()
+
+    @property
+    def plan(self) -> str:
+        return self._data.get("plan", PLAN_TRIAL)
+
+    @property
+    def is_trial(self) -> bool:
+        return self.plan == PLAN_TRIAL
+
+    @property
+    def max_quota(self) -> int:
+        return FREE_TRIAL_MAX if self.is_trial else FREE_DAILY_MAX
 
     def exports_today(self) -> int:
         self._reset_if_new_day()
         return self._data.get("count", 0)
 
+    def used(self) -> int:
+        """Exports decomptes du quota (au total en essai, du jour sinon)."""
+        return (
+            self._data.get("trial_used", 0) if self.is_trial else self.exports_today()
+        )
+
     def remaining(self) -> int:
-        return max(0, FREE_DAILY_MAX - self.exports_today())
+        return max(0, self.max_quota - self.used())
 
     def can_export(self) -> bool:
-        return self.exports_today() < FREE_DAILY_MAX
+        return self.used() < self.max_quota
 
     def record_export(self) -> None:
         self._reset_if_new_day()
         self._data["count"] = self._data.get("count", 0) + 1
+        if self.is_trial:
+            self._data["trial_used"] = self._data.get("trial_used", 0) + 1
         self._data["total"] = self._data.get("total", 0) + 1
         self._save()
 
     def record_total_only(self) -> None:
         """Incremente le total cumule sans toucher au quota (utilisateurs Pro,
-        deja illimites)."""
+        deja illimites, et exports d'une image d'exemple)."""
         self._reset_if_new_day()
         self._data["total"] = self._data.get("total", 0) + 1
         self._save()

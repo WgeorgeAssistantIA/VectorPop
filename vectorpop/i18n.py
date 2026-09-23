@@ -251,6 +251,29 @@ STRINGS = {
         "status_free": "Gratuit — {n} export(s) SVG restant(s) aujourd'hui",
         "status_free_none": "Gratuit — limite du jour atteinte",
         "status_pro": "Pro — exports illimités",
+        "status_free_trial": "Gratuit — {n}/{max} exports gratuits restants",
+        "status_free_trial_none": "Gratuit — exports d'essai utilisés",
+        "upsell_trial_title": "Exports gratuits utilisés",
+        "upsell_trial_body": (
+            "Vous avez utilisé vos {n} exports gratuits.\n\n"
+            "VectorPop Pro : exports illimités, PDF et PNG haute définition, "
+            "détourage et finition IA, réglage automatique et traitement par lot.\n\n"
+            "{price} €, une seule fois, à vie."
+        ),
+        "teaser_title": "Ce rendu utilise des fonctions Pro",
+        "teaser_body": (
+            "Ce rendu utilise : {feats}.\n\n"
+            "Vous avez pu les essayer dans l'aperçu. Passez Pro pour exporter ce "
+            "rendu, ou exportez une version sans ces fonctions (l'aperçu est "
+            "recalculé avant l'export)."
+        ),
+        "teaser_without": "Exporter sans les fonctions Pro",
+        "status_pro_preview": "Aperçu Pro ({feats}) — l'export de ce rendu nécessite VectorPop Pro.",
+        "status_without_pro": "Recalcul de l'aperçu sans les fonctions Pro…",
+        "pro_feat_bg_ai": "détourage IA",
+        "pro_feat_ai_upscale": "finition IA ×4",
+        "pro_feat_autotune": "réglage automatique",
+        "pro_feat_delete_shape": "suppression d'aplats",
         "feat_export_pdf": "L'export PDF vectoriel",
         "feat_export_png": "L'export PNG haute définition",
         "feat_bg_ai": "Le détourage IA",
@@ -260,8 +283,9 @@ STRINGS = {
         "upsell_title": "Réservé à VectorPop Pro",
         "upsell_body": (
             "{feat} fait partie de VectorPop Pro.\n\n"
-            "Le mode gratuit garde la vectorisation illimitée, les presets, tous "
-            "les réglages et {n} exports SVG par jour.\n\n"
+            "Le mode gratuit garde la vectorisation illimitée, les presets et tous "
+            "les réglages. Le détourage IA, la finition IA, le réglage automatique "
+            "et la suppression d'aplats s'essaient gratuitement dans l'aperçu.\n\n"
             "Pro : {price} €, une seule fois, à vie."
         ),
         "upsell_quota_title": "Limite du jour atteinte",
@@ -528,6 +552,29 @@ STRINGS = {
         "status_free": "Free — {n} SVG export(s) left today",
         "status_free_none": "Free — daily limit reached",
         "status_pro": "Pro — unlimited exports",
+        "status_free_trial": "Free — {n}/{max} free exports left",
+        "status_free_trial_none": "Free — trial exports used",
+        "upsell_trial_title": "Free exports used",
+        "upsell_trial_body": (
+            "You've used your {n} free exports.\n\n"
+            "VectorPop Pro: unlimited exports, vector PDF and high-resolution PNG, "
+            "AI background removal and finishing, auto-tune and batch processing.\n\n"
+            "€{price}, once, forever."
+        ),
+        "teaser_title": "This result uses Pro features",
+        "teaser_body": (
+            "This result uses: {feats}.\n\n"
+            "You could try them in the preview. Go Pro to export this result, or "
+            "export a version without these features (the preview is recomputed "
+            "before exporting)."
+        ),
+        "teaser_without": "Export without Pro features",
+        "status_pro_preview": "Pro preview ({feats}) — exporting this result requires VectorPop Pro.",
+        "status_without_pro": "Recomputing the preview without Pro features…",
+        "pro_feat_bg_ai": "AI background removal",
+        "pro_feat_ai_upscale": "AI finishing ×4",
+        "pro_feat_autotune": "auto-tune",
+        "pro_feat_delete_shape": "shape removal",
         "feat_export_pdf": "Vector PDF export",
         "feat_export_png": "High-resolution PNG export",
         "feat_bg_ai": "AI background removal",
@@ -537,8 +584,9 @@ STRINGS = {
         "upsell_title": "VectorPop Pro only",
         "upsell_body": (
             "{feat} is part of VectorPop Pro.\n\n"
-            "The free mode keeps unlimited vectorization, the presets, every "
-            "setting, and {n} SVG exports a day.\n\n"
+            "The free mode keeps unlimited vectorization, the presets and every "
+            "setting. AI background removal, AI finishing, auto-tune and shape "
+            "removal can be tried for free in the preview.\n\n"
             "Pro: €{price}, once, forever."
         ),
         "upsell_quota_title": "Daily limit reached",

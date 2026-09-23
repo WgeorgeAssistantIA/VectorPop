@@ -47,6 +47,7 @@ from vectorpop import analytics  # noqa: E402
 from vectorpop.ui import dialogs, main_window  # noqa: E402
 
 RESULTS: list[tuple[str, bool, str]] = []
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 
 def check(cid: str, ok: bool, detail: str = "") -> None:
@@ -174,7 +175,7 @@ class FakeBox(QMessageBox):
 
     def exec(self):
         DIALOGS.append("upsell")
-        idx = {"buy": 0, "have": 1, "later": 2}[CHOICE["upsell"]]
+        idx = {"buy": 0, "have": 1, "without": 1, "later": 2}[CHOICE["upsell"]]
         self._clicked = self._added[idx] if len(self._added) > idx else None
         return 0
 
@@ -219,6 +220,7 @@ def wait_idle(win, timeout=60.0):
             or win._live.isActive()
             or getattr(win, "_autotune_worker", None) is not None
             or getattr(win, "_batch", None) is not None
+            or getattr(win, "_del_worker", None) is not None
         )
         if not busy:
             for _ in range(5):
@@ -307,11 +309,20 @@ def export_to(name: str, flt: str):
     win.export_any()
 
 
+# F1 : nouvelle installation -> essai de 5 exports au total, libellé explicite
+check("F1", win.usage.plan == "trial" and win.usage.max_quota == 5
+      and win.usage.remaining() == 5 and "5/5" in win.lbl_plan.text(),
+      f"plan={win.usage.plan} max={win.usage.max_quota} label={win.lbl_plan.text()!r}")
+
+# L'image courante est l'exemple (A9) : on recharge une vraie image.
+win.load_image(src)
+wait_idle(win)
 m = mark()
-export_to("a.svg", "SVG vectoriel (*.svg)")
-export_to("b.svg", "SVG vectoriel (*.svg)")
-check("A10", since(m).count("export_svg") == 2 and (out_dir / "a.svg").exists()
-      and win.usage.remaining() == 1, f"events={since(m)} restant={win.usage.remaining()}")
+for n in "abcd":
+    export_to(f"{n}.svg", "SVG vectoriel (*.svg)")
+check("A10", since(m).count("export_svg") == 4 and (out_dir / "a.svg").exists()
+      and win.usage.remaining() == 1 and "1/5" in win.lbl_plan.text(),
+      f"events={since(m)} restant={win.usage.remaining()} label={win.lbl_plan.text()!r}")
 
 m = mark()
 win.copy_svg()
@@ -321,15 +332,15 @@ check("A15", "copy_clipboard" in since(m) and win.usage.remaining() == 0
 # A11 : 4e export -> quota
 m = mark()
 CHOICE["upsell"] = "later"
-export_to("c.svg", "SVG vectoriel (*.svg)")
+export_to("q1.svg", "SVG vectoriel (*.svg)")
 pv = last("paywall_viewed")
 check("A11", since(m) == ["quota_reached", "paywall_viewed"] and pv.get("source") == "quota"
-      and not (out_dir / "c.svg").exists(), f"events={since(m)} paywall={pv}")
+      and not (out_dir / "q1.svg").exists(), f"events={since(m)} paywall={pv}")
 
 # A12 : clic Acheter -> event synchrone AVANT le navigateur
 ORDER.clear()
 CHOICE["upsell"] = "buy"
-export_to("d.svg", "SVG vectoriel (*.svg)")
+export_to("q2.svg", "SVG vectoriel (*.svg)")
 i_buy = ORDER.index("pro_buy_clicked") if "pro_buy_clicked" in ORDER else -1
 i_br = ORDER.index("BROWSER") if "BROWSER" in ORDER else -1
 check("A12", 0 <= i_buy < i_br and BROWSER and "lemonsqueezy" in BROWSER[-1],
@@ -340,7 +351,7 @@ opened = []
 main_window.LicenseDialog = lambda w: type("D", (), {"exec": lambda s: opened.append(1)})()
 m = mark()
 CHOICE["upsell"] = "have"
-export_to("e.svg", "SVG vectoriel (*.svg)")
+export_to("q3.svg", "SVG vectoriel (*.svg)")
 check("A13", "paywall_have_key_clicked" in since(m) and opened, f"events={since(m)}")
 
 # A14 : PNG en gratuit -> paywall
@@ -350,6 +361,121 @@ export_to("f.png", "PNG haute-def (*.png)")
 pv = last("paywall_viewed")
 check("A14", "paywall_viewed" in since(m) and pv.get("source") == "export_png"
       and not (out_dir / "f.png").exists(), f"events={since(m)} source={pv.get('source')}")
+
+# ── Lot 2 : freemium ─────────────────────────────────────────────────────────
+from vectorpop import license as lic_mod  # noqa: E402
+
+# F2 : utilisateur d'avant la 2.0.0 (usage.json existant) -> 3/jour conservés
+legacy_dir = TMP / "legacy_appdata"
+(legacy_dir / "VectorPop").mkdir(parents=True)
+(legacy_dir / "VectorPop" / "usage.json").write_text(
+    '{"date": "2000-01-01", "count": 2, "total": 7}', encoding="utf-8"
+)
+saved_appdata = os.environ["APPDATA"]
+os.environ["APPDATA"] = str(legacy_dir)
+try:
+    legacy = lic_mod.UsageTracker()
+    ok_f2 = (legacy.plan == "daily" and legacy.max_quota == 3 and legacy.remaining() == 3
+             and legacy.total_exports() == 7)
+    legacy.record_export()
+    legacy._data["date"] = "2000-01-02"  # lendemain
+    ok_f2 = ok_f2 and legacy.remaining() == 3 and legacy.plan == "daily" and legacy.total_exports() == 8
+    reloaded = lic_mod.UsageTracker()  # le plan survit au rechargement
+    ok_f2 = ok_f2 and reloaded.plan == "daily"
+finally:
+    os.environ["APPDATA"] = saved_appdata
+check("F2", ok_f2, f"plan={legacy.plan} restant={legacy.remaining()} total={legacy.total_exports()}")
+
+# F3 : l'essai ne repart PAS le lendemain
+win.usage._data["date"] = "2000-01-01"
+check("F3", not win.usage.can_export() and win.usage.remaining() == 0
+      and "exports d'essai utilisés" in (win._update_plan_label() or win.lbl_plan.text()),
+      f"restant={win.usage.remaining()} label={win.lbl_plan.text()!r}")
+
+# F4 : exports d'une image d'exemple hors quota (même quota épuisé)
+win.load_demo_image()
+wait_idle(win)
+total_before = win.usage.total_exports()
+m = mark()
+export_to("demo.svg", "SVG vectoriel (*.svg)")
+check("F4", (out_dir / "demo.svg").exists() and "quota_reached" not in since(m)
+      and win.usage.remaining() == 0 and win.usage.total_exports() == total_before + 1,
+      f"events={since(m)} total={total_before}->{win.usage.total_exports()}")
+
+# Pour la suite : un peu de quota et une vraie image
+win.usage._data["trial_used"] = 2
+win.load_image(src)
+wait_idle(win)
+
+# F5 : suppression d'aplats utilisable en gratuit, verrou à l'export
+m = mark()
+n_dialogs = DIALOGS.count("upsell")
+win.btn_del.setChecked(True)
+ok_mode = win.btn_del.isChecked() and DIALOGS.count("upsell") == n_dialogs
+for pt in [(40, 120), (120, 40), (200, 120), (120, 120)]:
+    win.delete_shape_at(*pt)
+    wait_idle(win)
+    if "delete_shape" in win._pro_used:
+        break
+win.btn_del.setChecked(False)
+tried = last("pro_feature_tried")
+ok_used = "delete_shape" in win._pro_used and "Aperçu Pro" in win.statusBar().currentMessage()
+check("F5a", ok_mode and ok_used and tried and tried.get("feature") == "delete_shape",
+      f"mode={ok_mode} pro_used={win._pro_used} msg={win.statusBar().currentMessage()!r}")
+
+m = mark()
+used_before = win.usage.used()
+CHOICE["upsell"] = "later"
+export_to("t1.svg", "SVG vectoriel (*.svg)")
+pv = last("paywall_viewed")
+check("F5b", not (out_dir / "t1.svg").exists() and pv.get("source") == "pro_features"
+      and pv.get("features") == ["delete_shape"] and win.usage.used() == used_before,
+      f"events={since(m)} paywall={pv and pv.get('source')}")
+
+m = mark()
+CHOICE["upsell"] = "without"
+export_to("t2.svg", "SVG vectoriel (*.svg)")
+wait_idle(win)
+check("F5c", (out_dir / "t2.svg").exists() and "export_without_pro_chosen" in since(m)
+      and "export_svg" in since(m) and not win._pro_used and win.usage.used() == used_before + 1,
+      f"events={since(m)} pro_used={win._pro_used}")
+
+# F6 : Optimiser utilisable en gratuit, copie bloquée tant que le rendu l'utilise
+m = mark()
+n_dialogs = DIALOGS.count("upsell")
+clip_before = QApplication.clipboard().text()
+QApplication.clipboard().setText("CLIP-SENTINEL")
+win.run_autotune()
+wait_idle(win, 180)
+ok_run = DIALOGS.count("upsell") == n_dialogs and win._pro_used == {"autotune"}
+CHOICE["upsell"] = "later"
+win.copy_svg()
+pv = last("paywall_viewed")
+check("F6", ok_run and QApplication.clipboard().text() == "CLIP-SENTINEL"
+      and pv.get("features") == ["autotune"] and "autotune_used" in since(m),
+      f"events={since(m)} pro_used={win._pro_used}")
+
+# F7 : case IA en gratuit -> pas de paywall (seulement la confirmation de téléchargement)
+m = mark()
+n_dialogs = DIALOGS.count("upsell")
+win.chk_bg_ai.setChecked(True)
+tried = last("pro_feature_tried")
+check("F7", DIALOGS.count("upsell") == n_dialogs and tried.get("feature") == "bg_ai",
+      f"events={since(m)} rembg_absent={win._rembg_missing} coché={win.chk_bg_ai.isChecked()}")
+win.chk_bg_ai.blockSignals(True)
+win.chk_bg_ai.setChecked(False)
+win.chk_bg_ai.blockSignals(False)
+
+# F8 : lot, PNG, PDF restent verrouillés d'emblée en gratuit (rendu sans fonction Pro)
+win.btn_vec.click()
+wait_idle(win)
+m = mark()
+CHOICE["upsell"] = "later"
+win.run_batch()
+export_to("lock.pdf", "PDF vectoriel (*.pdf)")
+srcs = [p["properties"].get("source") for p in ph_events()[m:] if p["event"] == "paywall_viewed"]
+check("F8", "batch" in srcs and "export_pdf" in srcs and not (out_dir / "lock.pdf").exists(),
+      f"sources={srcs}")
 
 # A17 : activation échouée
 dlg = dialogs.LicenseDialog(win)
@@ -388,6 +514,15 @@ ok16 = (
     and last("export_pdf").get("is_pro") is True
 )
 check("A16", ok16, f"events={since(m)} batch={bs}/{bc} svg_out={len(list(batch_out.glob('*.svg')))}")
+
+# F9 : en Pro, un rendu Optimiser s'exporte sans aucun verrou
+win.run_autotune()
+wait_idle(win, 180)
+m = mark()
+n_dialogs = DIALOGS.count("upsell")
+export_to("pro_autotune.svg", "SVG vectoriel (*.svg)")
+check("F9", (out_dir / "pro_autotune.svg").exists() and DIALOGS.count("upsell") == n_dialogs,
+      f"events={since(m)}")
 
 # A18 : langue
 m = mark()

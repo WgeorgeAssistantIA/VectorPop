@@ -36,7 +36,23 @@ Accompagne [CAHIER_DES_CHARGES_V2_DESKTOP.md](CAHIER_DES_CHARGES_V2_DESKTOP.md).
 | M1 | Build packagé (exe, MSIX, AppImage) | Events visibles dans PostHog filtrés sur `app = vectorpop_desktop`, `channel` correct | Manuel, au moment de la release |
 
 ## Lots suivants (à compléter au fil de la V2)
-- Lot 2 — Freemium (§1.6) : 5 exports à vie pour une nouvelle installation, anciens utilisateurs à 3 par jour, exports démo non comptés, fonctions Pro utilisables dans l'aperçu et verrouillées à l'export, export « sans les fonctions Pro » possible.
+## Lot 2 — Freemium (§1.6)
+
+| ID | Vérification | Attendu | Auto |
+|---|---|---|---|
+| F1 | Nouvelle installation (aucun `usage.json`) | Plan `trial`, 5 exports au total, libellé « 5/5 exports gratuits restants » | ✅ |
+| F2 | Utilisateur d'avant la 2.0.0 (`usage.json` existant) | Plan `daily`, 3 par jour, total conservé, plan conservé le lendemain et au rechargement | ✅ |
+| F3 | Essai épuisé, lendemain | Toujours 0 restant (l'essai ne repart pas), libellé « exports d'essai utilisés » | ✅ |
+| F4 | Export d'une image d'exemple, quota épuisé | Export OK, quota inchangé, total +1 | ✅ |
+| F5a | Suppression d'aplats en gratuit | Mode activable sans paywall, `pro_feature_tried`, barre d'état « Aperçu Pro » | ✅ |
+| F5b | Export de ce rendu, « Plus tard » | Aucun fichier, `paywall_viewed` source=pro_features, quota intact | ✅ |
+| F5c | Export, « Exporter sans les fonctions Pro » | Aperçu recalculé, puis export relancé automatiquement, fichier écrit, 1 export décompté | ✅ |
+| F6 | Optimiser en gratuit puis copie | Optimiser tourne sans paywall ; la copie est bloquée (presse-papiers inchangé) | ✅ |
+| F7 | Case Détourage IA en gratuit | Pas de paywall (seulement la confirmation de téléchargement), `pro_feature_tried` | ✅ |
+| F8 | Lot, PDF (et PNG, A14) en gratuit | Verrouillés d'emblée | ✅ |
+| F9 | Pro : rendu Optimiser exporté | Aucun verrou | ✅ |
+| M2 | Détourage IA / finition IA réellement calculés en gratuit (modèles téléchargés) puis export | Avertissement Pro avec la bonne fonction ; « sans » décoche l'IA et exporte | Manuel (téléchargement ~120 Mo) |
+
 - Lot 3 — ProDialog (§1.2)
 - Lot 4 — Modèles démo (§1.3), dont le piège `QSettings`
 - Lot 5 — Onboarding (§1.4)
@@ -47,3 +63,4 @@ Accompagne [CAHIER_DES_CHARGES_V2_DESKTOP.md](CAHIER_DES_CHARGES_V2_DESKTOP.md).
 | Date | Lot | Résultat |
 |---|---|---|
 | 23/09/2026 | Lot 1 (PostHog) | 1er passage : **échec**, 8 imports perdus lors du refactor du 19/08 (`optimize_svg`, `QDialog`, `QSvgRenderer`, `QPainter`, `QFontMetrics`) cassaient la vectorisation, les exports, le plein écran et la comparaison. Corrigé (jamais livré : la 1.2.1 a été buildée avant le refactor), puis 20/20 PASS + R1, V-NET HTTP 200. |
+| 23/09/2026 | Lot 2 (Freemium) | 32/32 PASS (lot 1 adapté à l'essai de 5 + F1 à F9 + R1 + V-NET). Corrigé en cours de route : le message « N tracé(s) supprimé(s) » écrasait l'avertissement « Aperçu Pro » (les deux sont maintenant affichés). |

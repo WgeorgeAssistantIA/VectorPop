@@ -210,6 +210,12 @@ class MainWindow(QMainWindow):
         self.btn_undo.setEnabled(False)
         self.preview.pathClicked.connect(self.delete_shape_at)
         self._del_history: list[str] = []
+        # Freemium 2.0.0 : fonctions Pro utilisees dans le rendu affiche
+        # (essai libre dans l'apercu, verrou seulement a l'export).
+        self._pro_used: set[str] = set()
+        self._vec_pro: set[str] = set()
+        self._after_vec = None  # action rejouee apres un recalcul sans Pro
+        self._is_demo = False  # image d'exemple : exports hors quota
         self._del_worker: DeleteWorker | None = None
         self._del_pending_txt: str | None = None
 
@@ -732,9 +738,8 @@ class MainWindow(QMainWindow):
 
     # --- suppression d'aplats (clic sur le SVG) ---
     def _toggle_delete_mode(self, on: bool):
-        if on and not self._require_pro(FEAT_DELETE_SHAPE):
-            self.btn_del.setChecked(False)  # re-entre ici avec on=False
-            return
+        if on:
+            self._track_pro_tried(FEAT_DELETE_SHAPE)
         self.preview.set_delete_mode(on)
         if on:
             self.statusBar().showMessage(self._t("status_delete_mode"), 5000)
@@ -766,7 +771,9 @@ class MainWindow(QMainWindow):
         self.preview.load(str(self.svg_path))
         self._show_stats(self.svg_path)
         self.btn_undo.setEnabled(True)
-        self.statusBar().showMessage(self._t("status_delete_done", n=removed), 4000)
+        done_msg = self._t("status_delete_done", n=removed)
+        self.statusBar().showMessage(done_msg, 4000)
+        self._set_pro_used(self._pro_used | {FEAT_DELETE_SHAPE}, prefix=done_msg)
 
     def _on_delete_failed(self, msg: str):
         self._finish_delete()
@@ -788,6 +795,8 @@ class MainWindow(QMainWindow):
         self.preview.load(str(self.svg_path))
         self._show_stats(self.svg_path)
         self.btn_undo.setEnabled(bool(self._del_history))
+        if not self._del_history:
+            self._pro_used.discard(FEAT_DELETE_SHAPE)
         self.statusBar().showMessage(self._t("status_undo_done"), 3000)
 
     # --- aide aux reglages ---
@@ -881,6 +890,7 @@ class MainWindow(QMainWindow):
     ):
         if not is_crop:
             self._track_image_picked(path, source)
+            self._is_demo = source == "demo"
             # Nouvelle image source : on oublie tout rognage precedent.
             self._cleanup_crop_tmp()
             self.orig_src = path
@@ -943,6 +953,7 @@ class MainWindow(QMainWindow):
         # trop bavard. Seuls le 1er rendu d'une image et le bouton comptent.
         self._vec_trigger = trigger or ("live" if silent else "button")
         self._vec_t0 = time.monotonic()
+        self._vec_pro = self._active_ai_features()
         fd, out = tempfile.mkstemp(suffix=".svg")
         os.close(fd)
         self._cur_out = Path(out)
@@ -1005,6 +1016,7 @@ class MainWindow(QMainWindow):
         self._del_history.clear()
         self.btn_undo.setEnabled(False)
         self._show_stats(out)
+        self._set_pro_used(set(self._vec_pro))
         if getattr(self, "_vec_trigger", "live") != "live":
             try:
                 svg_kb = round(out.stat().st_size / 1024)
@@ -1020,6 +1032,92 @@ class MainWindow(QMainWindow):
                 },
             )
         self._finish_vec()
+        if self._after_vec is not None and self._worker is None:
+            action, self._after_vec = self._after_vec, None
+            QTimer.singleShot(0, action)
+
+    def _active_ai_features(self) -> set[str]:
+        feats = set()
+        if self.chk_bg_ai.isChecked():
+            feats.add(FEAT_BG_AI)
+        if self.chk_upscale.isChecked():
+            feats.add(FEAT_AI_UPSCALE)
+        return feats
+
+    def _set_pro_used(self, feats: set[str], prefix: str = ""):
+        """Fonctions Pro presentes dans le rendu affiche. En gratuit, le
+        signale dans la barre d'etat (l'export de ce rendu demandera Pro)."""
+        self._pro_used = feats
+        if feats and not self.lic.is_pro() and not self._is_demo:
+            msg = self._t("status_pro_preview", feats=self._pro_feats_label(feats))
+            self.statusBar().showMessage(
+                f"{prefix}  |  {msg}" if prefix else msg, 10000
+            )
+
+    def _pro_feats_label(self, feats) -> str:
+        order = (FEAT_BG_AI, FEAT_AI_UPSCALE, FEAT_AUTOTUNE, FEAT_DELETE_SHAPE)
+        return ", ".join(self._t(f"pro_feat_{f}") for f in order if f in feats)
+
+    def _track_pro_tried(self, feature: str):
+        if not self.lic.is_pro():
+            analytics.capture("pro_feature_tried", {"feature": feature})
+
+    def _pro_features_gate(self, action) -> bool:
+        """Avant un export/copie en gratuit : si le rendu utilise des fonctions
+        Pro (essayees dans l'apercu), propose Pro OU un export sans elles.
+        `action` est rejouee apres le recalcul sans Pro. True = on peut exporter."""
+        if self.lic.is_pro() or self._is_demo or not self._pro_used:
+            return True
+        feats = sorted(self._pro_used)
+        track_event("paywall_shown", "pro_features")
+        analytics.capture(
+            "paywall_viewed",
+            {
+                "source": "pro_features",
+                "features": feats,
+                "total_exports": self.usage.total_exports(),
+            },
+        )
+        box = QMessageBox(self)
+        box.setWindowTitle(self._t("teaser_title"))
+        box.setText(
+            self._t("teaser_body", feats=self._pro_feats_label(self._pro_used))
+            + "\n\n"
+            + self._t("upsell_reassurance")
+        )
+        box.setIcon(QMessageBox.Icon.Information)
+        buy = box.addButton(
+            self._t("upsell_buy", price=PRO_PRICE_EUR),
+            QMessageBox.ButtonRole.AcceptRole,
+        )
+        without = box.addButton(
+            self._t("teaser_without"), QMessageBox.ButtonRole.ActionRole
+        )
+        box.addButton(self._t("upsell_later"), QMessageBox.ButtonRole.RejectRole)
+        box.exec()
+        clicked = box.clickedButton()
+        if clicked is buy:
+            track_event("paywall_buy_click", "pro_features")
+            analytics.capture_sync(
+                "pro_buy_clicked", {"source": "pro_features", "features": feats}
+            )
+            webbrowser.open(buy_url())
+        elif clicked is without:
+            analytics.capture("export_without_pro_chosen", {"features": feats})
+            self._rerender_without_pro(action)
+        return False
+
+    def _rerender_without_pro(self, action):
+        """Recalcule l'apercu avec les reglages courants, sans IA ni resultat
+        d'Optimiser ni suppressions d'aplats, puis rejoue `action` (l'export)."""
+        for chk in (self.chk_bg_ai, self.chk_upscale):
+            chk.blockSignals(True)
+            chk.setChecked(False)
+            chk.blockSignals(False)
+        self._pro_used = set()
+        self._after_vec = action
+        self.statusBar().showMessage(self._t("status_without_pro"))
+        self.run_vectorize(silent=False, trigger="without_pro")
 
     def _vec_props(self) -> dict:
         return {
@@ -1053,6 +1151,7 @@ class MainWindow(QMainWindow):
             )
         if self._cur_out:
             self._cur_out.unlink(missing_ok=True)  # temp cree mais non retenu
+        self._after_vec = None  # pas d'export sur un rendu en echec
         self._finish_vec()
 
     def _finish_vec(self):
@@ -1077,9 +1176,9 @@ class MainWindow(QMainWindow):
         """
         if not self.src_path or self._autotune_worker is not None:
             return
-        if not self._require_pro(FEAT_AUTOTUNE):
-            return
+        self._track_pro_tried(FEAT_AUTOTUNE)
         analytics.capture("autotune_used", self._vec_props())
+        self._autotune_pro = self._active_ai_features() | {FEAT_AUTOTUNE}
         fd, out = tempfile.mkstemp(suffix=".svg")
         os.close(fd)
         self._autotune_out = Path(out)
@@ -1114,6 +1213,7 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(
             self._t("status_autotune_done", score=round(score, 1)), 6000
         )
+        self._set_pro_used(set(self._autotune_pro))
         self._finish_autotune()
 
     def _on_autotune_failed(self, msg: str):
@@ -1200,6 +1300,8 @@ class MainWindow(QMainWindow):
             return
         if not self._can_export_now():
             return
+        if not self._pro_features_gate(self.copy_svg):
+            return
         try:
             txt = self.svg_path.read_text(encoding="utf-8")
         except OSError:
@@ -1270,6 +1372,13 @@ class MainWindow(QMainWindow):
             self.lbl_plan.setText(self._t("status_pro"))
             return
         left = self.usage.remaining()
+        if self.usage.is_trial:
+            self.lbl_plan.setText(
+                self._t("status_free_trial", n=left, max=self.usage.max_quota)
+                if left
+                else self._t("status_free_trial_none")
+            )
+            return
         self.lbl_plan.setText(
             self._t("status_free", n=left) if left else self._t("status_free_none")
         )
@@ -1346,15 +1455,21 @@ class MainWindow(QMainWindow):
         return False
 
     def _can_export_now(self) -> bool:
-        """Quota du jour (gratuit). Affiche l'upsell une fois epuise."""
-        if self.lic.is_pro() or self.usage.can_export():
+        """Quota gratuit (essai au total, ou par jour pour les anciens
+        utilisateurs). Les images d'exemple sont hors quota."""
+        if self.lic.is_pro() or self._is_demo or self.usage.can_export():
             return True
         analytics.capture(
-            "quota_reached", {"total_exports": self.usage.total_exports()}
+            "quota_reached",
+            {"total_exports": self.usage.total_exports(), "plan": self.usage.plan},
         )
+        if self.usage.is_trial:
+            title, body = "upsell_trial_title", "upsell_trial_body"
+        else:
+            title, body = "upsell_quota_title", "upsell_quota_body"
         self._show_upsell(
-            self._t("upsell_quota_title"),
-            self._t("upsell_quota_body", n=FREE_DAILY_MAX, price=PRO_PRICE_EUR),
+            self._t(title),
+            self._t(body, n=self.usage.max_quota, price=PRO_PRICE_EUR),
             category="quota",
         )
         return False
@@ -1362,7 +1477,7 @@ class MainWindow(QMainWindow):
     def _record_export(self):
         """Decompte un export du quota (gratuit) et incremente le compteur
         cumule total (Free + Pro), utilise comme preuve de valeur."""
-        if not self.lic.is_pro():
+        if not self.lic.is_pro() and not self._is_demo:
             self.usage.record_export()
             self._update_plan_label()
         else:
@@ -1371,9 +1486,7 @@ class MainWindow(QMainWindow):
     def _guard_bg_ai(self, on: bool):
         if not on:
             return
-        if not self._require_pro(FEAT_BG_AI):
-            self.chk_bg_ai.setChecked(False)
-            return
+        self._track_pro_tried(FEAT_BG_AI)
         if self._rembg_missing:
             self.chk_bg_ai.setChecked(
                 False
@@ -1458,9 +1571,7 @@ class MainWindow(QMainWindow):
     def _guard_upscale(self, on: bool):
         if not on:
             return
-        if not self._require_pro(FEAT_AI_UPSCALE):
-            self.chk_upscale.setChecked(False)
-            return
+        self._track_pro_tried(FEAT_AI_UPSCALE)
         if ai_upscale.is_available():
             return
         self.chk_upscale.setChecked(
@@ -1575,6 +1686,8 @@ class MainWindow(QMainWindow):
 
     def export_any(self):
         if not self.svg_path:
+            return
+        if not self._pro_features_gate(self.export_any):
             return
         stem = self.src_path.stem if self.src_path else "logo"
         start = os.path.join(self._last_dir, stem) if self._last_dir else stem
