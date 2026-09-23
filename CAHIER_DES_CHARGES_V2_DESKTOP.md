@@ -124,7 +124,7 @@ Suivre `quota_reached`, `paywall_viewed` par source, `pro_buy_clicked` et l'expo
 ### 2.6 Nouvelles évolutions proposées (23/09, à valider par William)
 Le but est de renforcer ce que Pro apporte sur PC, là où le mobile ne peut pas suivre (volume, fichiers de production).
 
-**A. Traitement par lot 2.0** (existe déjà en Pro, mais en version minimale : choix d'un dossier, un format, les réglages courants, un bilan en `QMessageBox`)
+**A. Traitement par lot 2.0** ✅ FAIT le 24/09 (existe déjà en Pro, mais en version minimale : choix d'un dossier, un format, les réglages courants, un bilan en `QMessageBox`)
 - Glisser-déposer **plusieurs fichiers ou un dossier** sur la fenêtre, en plus du sélecteur de dossier. Option « inclure les sous-dossiers ».
 - Liste des fichiers avec vignette et statut (en attente / OK / avertissement / erreur), « Relancer les échecs », « Ouvrir le dossier de sortie » à la fin.
 - **Plusieurs formats en une passe** (SVG + PNG + PDF cochables) et modèle de nom (`{nom}_vector`, sous-dossier par format).
@@ -145,7 +145,7 @@ Le but est de renforcer ce que Pro apporte sur PC, là où le mobile ne peut pas
 **D. Petits gains rapides**
 - « Copier pour le web » : SVG inline, data URI, composant React.
 - **Pack logo** : SVG + PNG 16 à 1024 px + `favicon.ico` en un clic. C'est un export à partir du vecteur, à ne pas confondre avec l'impasse « miniaturisation de logo par IA ».
-- Choix du fond à l'export (transparent / blanc).
+- Choix du fond à l'export (transparent / blanc). ✅ FAIT le 24/09 (case « Fond blanc à l'export » + bouton « Ouvrir le dossier » après un export)
 - Menu clic droit de l'Explorateur « Vectoriser avec VectorPop » (installeur Inno Setup uniquement, pas MSIX).
 - Mode ligne de commande (`VectorPop.exe --batch in/ out/ --format svg`) pour les utilisateurs avancés.
 

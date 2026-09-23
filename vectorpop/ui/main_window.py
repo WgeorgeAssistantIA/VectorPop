@@ -22,7 +22,6 @@ from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
     QHBoxLayout,
-    QInputDialog,
     QLabel,
     QMainWindow,
     QMenu,
@@ -42,7 +41,7 @@ from PIL import Image
 from .. import ai_module, ai_upscale
 from .. import analytics, onboarding
 from ..analytics import track_event
-from ..export import resize_svg, svg_to_pdf, svg_to_png
+from ..export import add_svg_background, resize_svg, svg_to_pdf, svg_to_png
 from ..optimize import optimize_svg
 from ..license import (
     FEAT_AI_UPSCALE,
@@ -97,6 +96,7 @@ from .dialogs import (
     SizeDialog,
 )
 from .onboarding_dialog import OnboardingDialog
+from .batch_dialog import BatchDialog, collect_images
 
 
 class MainWindow(QMainWindow):
@@ -147,7 +147,6 @@ class MainWindow(QMainWindow):
         self._pending = False  # une relance est demandee
         self._pending_silent = True
         self._batch: BatchWorker | None = None
-        self._progress: QProgressDialog | None = None
         self._ai_worker: AIDownloadWorker | None = None
         self._ai_progress: QProgressDialog | None = None
         self._up_worker: WeightsDownloadWorker | None = None
@@ -166,7 +165,10 @@ class MainWindow(QMainWindow):
 
         # --- Apercus ---
         self.original = DropImage(
-            self.load_image, on_demo=self.load_demo_model, tr=self._t
+            self.load_image,
+            on_demo=self.load_demo_model,
+            tr=self._t,
+            on_files=self.drop_many,
         )
         self.preview = SvgView(tr=self._t)
         self._retranslators.append(self.original.retranslate)
@@ -302,6 +304,10 @@ class MainWindow(QMainWindow):
         self.chk_refine = self._tr_widget(
             QCheckBox(), "chk_refine", "chk_refine_tooltip"
         )
+        # Fond blanc a l'export (SVG/PNG/PDF, et copie) : sans effet sur l'apercu.
+        self.chk_white_bg = self._tr_widget(
+            QCheckBox(), "chk_white_bg", "chk_white_bg_tooltip"
+        )
 
         bg_box = QVBoxLayout()
         bg_box.addWidget(self.chk_bg)
@@ -309,6 +315,7 @@ class MainWindow(QMainWindow):
         bg_box.addWidget(self.chk_edges)
         bg_box.addWidget(self.chk_grad)
         bg_box.addWidget(self.chk_refine)
+        bg_box.addWidget(self.chk_white_bg)
         bg_w = QWidget()
         bg_w.setLayout(bg_box)
 
@@ -399,7 +406,13 @@ class MainWindow(QMainWindow):
         )
         self.btn_batch.setIcon(icon(ICON_LAYERS))
         self.btn_batch.setIconSize(QSize(18, 18))
-        self.btn_batch.clicked.connect(self.run_batch)
+        self.btn_batch.clicked.connect(lambda: self.run_batch())
+        self.btn_open_dir = self._tr_widget(
+            QPushButton(), "btn_open_dir", "btn_open_dir_tooltip"
+        )
+        self.btn_open_dir.clicked.connect(self.open_export_dir)
+        self.btn_open_dir.setEnabled(False)  # actif apres un 1er export
+        self._last_export: Path | None = None
         self.btn_compare = self._tr_widget(
             QPushButton(), "btn_compare", "btn_compare_tooltip"
         )
@@ -427,6 +440,7 @@ class MainWindow(QMainWindow):
         actions.addWidget(self.btn_autotune)
         actions.addWidget(self.btn_exp)
         actions.addWidget(self.btn_copy)
+        actions.addWidget(self.btn_open_dir)
         actions.addWidget(self.btn_compare)
         actions.addWidget(self.btn_batch)
 
@@ -1308,7 +1322,7 @@ class MainWindow(QMainWindow):
         if not self._pro_features_gate(self.copy_svg):
             return
         try:
-            txt = self.svg_path.read_text(encoding="utf-8")
+            txt = self._svg_text_for_export()
         except OSError:
             return
         QApplication.clipboard().setText(txt)
@@ -1697,32 +1711,38 @@ class MainWindow(QMainWindow):
         if not (is_png or is_pdf) and not self._can_export_now():
             return
         try:
+            bg = self._export_background()
             if is_png:
                 out = out.with_suffix(".png")
                 size = self._ask_png_size()
                 if size is None:
                     return
-                svg_to_png(self.svg_path, out, max_px=size)
+                svg_to_png(self.svg_path, out, max_px=size, background=bg)
             elif is_pdf:
                 out = out.with_suffix(".pdf")
-                svg_to_pdf(self.svg_path, out)
+                svg_to_pdf(self.svg_path, out, background=bg)
             else:
                 out = out.with_suffix(".svg")
                 target = self._ask_svg_size()
                 if target is None:
                     return
-                txt = self.svg_path.read_text(encoding="utf-8")
+                txt = self._svg_text_for_export()
                 if target:
                     txt = resize_svg(txt, target)
                 out.write_text(txt, encoding="utf-8")
             self._last_dir = str(out.parent)
+            self._last_export = out
+            self.btn_open_dir.setEnabled(True)
             self._record_export()
+            bg_prop = {"background": "white" if bg else "transparent"}
             if is_png:
-                analytics.capture("export_png", {"resolution_px": size})
+                analytics.capture("export_png", {"resolution_px": size, **bg_prop})
             elif is_pdf:
-                analytics.capture("export_pdf")
+                analytics.capture("export_pdf", bg_prop)
             else:
-                analytics.capture("export_svg", {"target_px": target or None})
+                analytics.capture(
+                    "export_svg", {"target_px": target or None, **bg_prop}
+                )
         except Exception as e:  # noqa: BLE001
             analytics.capture("export_failed", {"error": str(e)[:200]})
             QMessageBox.critical(
@@ -1761,100 +1781,45 @@ class MainWindow(QMainWindow):
         )
 
     # --- traitement par lot ---
-    def run_batch(self):
+    def run_batch(self, paths=None, source: str = "button"):
+        """Ouvre l'ecran de traitement par lot (Pro), eventuellement pre-rempli
+        par un depot de fichiers/dossiers sur la fenetre."""
         if self._batch is not None:
             return  # un lot tourne deja
         if not self._require_pro(FEAT_BATCH):
             return
-        in_dir = QFileDialog.getExistingDirectory(
-            self, self._t("batch_dialog_title"), self._last_dir
-        )
-        if not in_dir:
-            return
-        files = sorted(
-            p for p in Path(in_dir).iterdir() if p.suffix.lower() in ACCEPTED
-        )
-        if not files:
-            QMessageBox.information(
-                self, self._t("title_batch"), self._t("warn_batch_empty")
-            )
-            return
-        fmt, ok = QInputDialog.getItem(
-            self,
-            self._t("batch_format_title"),
-            self._t("batch_format_label"),
-            ["SVG", "PNG", "PDF"],
-            0,
-            False,
-        )
-        if not ok:
-            return
-        png_size = 2048
-        svg_size = 0
-        if fmt == "PNG":
-            size = self._ask_png_size()
-            if size is None:
-                return
-            png_size = size
-        elif fmt == "SVG":
-            size = self._ask_svg_size()
-            if size is None:
-                return
-            svg_size = size
-        out_dir = QFileDialog.getExistingDirectory(
-            self, self._t("batch_out_dialog_title"), in_dir
-        )
-        if not out_dir:
-            return
-        self._last_dir = out_dir
-        self._start_batch(files, Path(out_dir), fmt.lower(), png_size, svg_size)
+        BatchDialog(self, paths, source=source).exec()
 
-    def _start_batch(self, files, out_dir, fmt, png_size=2048, svg_size=0):
-        self._progress = QProgressDialog(
-            self._t("batch_preparing"), self._t("batch_cancel"), 0, len(files), self
-        )
-        self._progress.setWindowTitle(self._t("title_batch"))
-        self._progress.setWindowModality(Qt.WindowModal)
-        self._progress.setMinimumDuration(0)
-        self._batch = BatchWorker(
-            files,
-            out_dir,
-            fmt,
-            self.current_params(),
-            self.chk_grad.isChecked(),
-            self.chk_refine.isChecked(),
-            png_size,
-            svg_size,
-        )
-        self._batch.progress.connect(self._on_batch_progress)
-        self._batch.done.connect(self._on_batch_done)
-        self._progress.canceled.connect(self._batch.cancel)
-        self._progress.show()
-        analytics.capture("batch_started", {"count": len(files), "format": fmt})
-        self._batch.start()
+    def drop_many(self, paths):
+        """Plusieurs fichiers, ou un dossier, deposes sur la zone d'image. En Pro :
+        traitement par lot pre-rempli. En gratuit : ecran Pro (lot) ; si
+        l'utilisateur n'est toujours pas Pro ensuite, la 1re image est chargee
+        quand meme (le depot n'est jamais perdu)."""
+        paths = [Path(p) for p in paths]
+        if self.lic.is_pro():
+            self.run_batch(paths, source="drop")
+            return
+        self._require_pro(FEAT_BATCH)
+        if self.lic.is_pro():  # cle activee depuis l'ecran Pro
+            self.run_batch(paths, source="drop")
+            return
+        files = collect_images(paths)
+        if files:
+            self.load_image(files[0])
 
-    def _on_batch_progress(self, i, name):
-        if self._progress is not None:
-            self._progress.setValue(i - 1)
-            self._progress.setLabelText(f"({i}) {name}")
+    def _export_background(self) -> str | None:
+        return "#FFFFFF" if self.chk_white_bg.isChecked() else None
 
-    def _on_batch_done(self, done_n, errors, warnings):
-        if self._progress is not None:
-            self._progress.setValue(self._progress.maximum())
-            self._progress = None
-        if self._batch is not None:
-            self._batch.deleteLater()
-            self._batch = None
-        analytics.capture(
-            "batch_completed",
-            {"done": done_n, "errors": errors, "warnings": warnings},
-        )
-        msg = self._t("batch_done_msg", n=done_n)
-        if warnings:
-            msg += "\n" + self._t("batch_warn_msg", n=warnings)
-        if errors:
-            msg += "\n" + self._t("batch_err_msg", n=errors)
-        QMessageBox.information(self, self._t("title_batch_done"), msg)
+    def _svg_text_for_export(self) -> str:
+        txt = self.svg_path.read_text(encoding="utf-8")
+        bg = self._export_background()
+        return add_svg_background(txt, bg) if bg else txt
+
+    def open_export_dir(self):
+        if self._last_export is None:
+            return
+        analytics.capture("open_export_dir_clicked")
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(self._last_export.parent)))
 
     # --- reglages persistants (QSettings) ---
     def _slider_map(self):
@@ -1877,6 +1842,7 @@ class MainWindow(QMainWindow):
             "chk_edges": self.chk_edges,
             "chk_grad": self.chk_grad,
             "chk_refine": self.chk_refine,
+            "chk_white_bg": self.chk_white_bg,
         }
 
     def _load_settings(self):

@@ -306,6 +306,33 @@ class FakeReview(dialogs.ReviewPromptDialog):
 
 main_window.ExportCelebrationDialog = FakeCelebration
 main_window.ReviewPromptDialog = FakeReview
+
+# Lot 7 : ouverture de dossier (lot, export simple) interceptée aussi.
+from vectorpop.ui import batch_dialog  # noqa: E402
+
+batch_dialog.QDesktopServices = FakeDesktop
+main_window.QDesktopServices = FakeDesktop
+
+LAST_BATCH: list = [None]
+BATCH_DRIVER: list = [None]  # callable(dlg) : remplit/lance le lot comme un utilisateur
+
+
+class FakeBatchDialog(batch_dialog.BatchDialog):
+    """Vrai BatchDialog (widgets, worker, statuts) ; exec() joue BATCH_DRIVER
+    puis attend la fin du lot au lieu d'une boucle modale."""
+
+    def __init__(self, *a, **k):
+        super().__init__(*a, **k)
+        LAST_BATCH[0] = self
+
+    def exec(self):
+        DIALOGS.append("batch")
+        if BATCH_DRIVER[0] is not None:
+            BATCH_DRIVER[0](self)
+        return 0
+
+
+main_window.BatchDialog = FakeBatchDialog
 from vectorpop import onboarding  # noqa: E402
 
 onboarding.mark_seen()  # l'onboarding auto-déclenché (singleShot) ne doit pas
@@ -824,23 +851,239 @@ batch_in.mkdir()
 for i, c in enumerate([(122, 82, 245, 255), (201, 43, 192, 255), (63, 215, 251, 255)]):
     make_png(batch_in / f"img{i}.png", c, 160)
 batch_out = TMP / "batch_out"
-batch_out.mkdir()
-dirs = iter([str(batch_in), str(batch_out)])
-main_window.QFileDialog.getExistingDirectory = staticmethod(lambda *a, **k: next(dirs))
-main_window.QInputDialog.getItem = staticmethod(lambda *a, **k: ("SVG", True))
-win.run_batch()
-wait_idle(win, 120)
+
+
+def run_lot(paths, out, **opts):
+    """Ouvre l'écran de lot via le vrai bouton, le remplit et le lance."""
+
+    def driver(d):
+        d.add_paths(paths, via="test")
+        d.set_output(out)
+        for name, value in opts.items():
+            w = getattr(d, name)
+            if hasattr(w, "setChecked"):
+                w.setChecked(value)
+            elif hasattr(w, "setValue"):
+                w.setValue(value)
+            elif hasattr(w, "setCurrentIndex"):
+                w.setCurrentIndex(value)
+            else:
+                w.setText(value)
+        d.start()
+        wait_idle(win, 300)
+
+    BATCH_DRIVER[0] = driver
+    win.btn_batch.click()
+    return LAST_BATCH[0]
+
+
+dlg = run_lot([batch_in], batch_out)
 bs, bc = last("batch_started"), last("batch_completed")
 png_ev = last("export_png")
 ok16 = (
     (out_dir / "g.png").exists() and (out_dir / "h.pdf").exists()
     and png_ev and png_ev.get("resolution_px") == 1024 and "export_pdf" in since(m)
-    and bs and bs.get("count") == 3 and bs.get("format") == "svg"
+    and bs and bs.get("count") == 3 and bs.get("formats") == ["svg"]
     and bc and bc.get("done") == 3 and bc.get("errors") == 0
-    and len(list(batch_out.glob("*.svg"))) == 3
+    and sorted(x.name for x in batch_out.glob("*.svg"))
+    == ["img0_vector.svg", "img1_vector.svg", "img2_vector.svg"]
+    and all(it["status"] == "ok" for it in dlg._items)
     and last("export_pdf").get("is_pro") is True
 )
-check("A16", ok16, f"events={since(m)} batch={bs}/{bc} svg_out={len(list(batch_out.glob('*.svg')))}")
+check("A16", ok16, f"batch={bs}/{bc} sortie={sorted(x.name for x in batch_out.glob('*'))}")
+
+# ── Lot 7 : traitement par lot 2.0 ───────────────────────────────────────────
+from PySide6.QtGui import QImage as _QImage  # noqa: E402
+
+# B1 : plusieurs formats en une passe + un sous-dossier par format + taille PNG
+out_b1 = TMP / "b1"
+dlg = run_lot([batch_in], out_b1, chk_png=True, chk_pdf=True, chk_subdir=True, spin_png=512)
+pngs = sorted((out_b1 / "png").glob("*.png"))
+png_w = max(_QImage(str(pngs[0])).width(), _QImage(str(pngs[0])).height()) if pngs else 0
+check(
+    "B1",
+    len(list((out_b1 / "svg").glob("*.svg"))) == 3
+    and len(pngs) == 3
+    and len(list((out_b1 / "pdf").glob("*.pdf"))) == 3
+    and png_w == 512
+    and last("batch_started").get("formats") == ["svg", "png", "pdf"],
+    f"svg/png/pdf={[len(list((out_b1 / f).glob('*'))) for f in ('svg', 'png', 'pdf')]} png={png_w}px",
+)
+
+# B2 : sous-dossiers + doublons + homonymes (jamais d'écrasement dans un même lot)
+tree = TMP / "tree"
+(tree / "sub").mkdir(parents=True)
+make_png(tree / "logo.png", (122, 82, 245, 255), 120)
+make_png(tree / "sub" / "logo.png", (201, 43, 192, 255), 120)
+(tree / "notes.txt").write_text("pas une image", encoding="utf-8")
+out_b2 = TMP / "b2"
+
+
+def _b2(d):
+    d.chk_recursive.setChecked(True)
+    d.add_paths([tree], via="test")
+    d.add_paths([tree], via="test")  # même dossier deux fois : aucun doublon
+    d.add_paths([tree / "logo.png"], via="test")
+    d.set_output(out_b2)
+    d.start()
+    wait_idle(win, 120)
+
+
+BATCH_DRIVER[0] = _b2
+win.btn_batch.click()
+dlg = LAST_BATCH[0]
+check(
+    "B2",
+    len(dlg._items) == 2
+    and sorted(x.name for x in out_b2.glob("*.svg")) == ["logo_vector.svg", "logo_vector_2.svg"],
+    f"items={[str(it['path'].relative_to(tree)) for it in dlg._items]} sortie={sorted(x.name for x in out_b2.glob('*'))}",
+)
+
+# B3 : fichier illisible -> erreur isolée (le reste passe), puis « Relancer les échecs »
+bad_dir = TMP / "bad"
+bad_dir.mkdir()
+make_png(bad_dir / "a.png", (122, 82, 245, 255), 120)
+(bad_dir / "b.png").write_bytes(b"ceci n'est pas un PNG")
+out_b3 = TMP / "b3"
+dlg = run_lot([bad_dir], out_b3)
+statuses = [it["status"] for it in dlg._items]
+retry_visible = not dlg.btn_retry.isHidden()
+make_png(bad_dir / "b.png", (63, 215, 251, 255), 120)  # on "répare" le fichier
+m = mark()
+dlg.retry_failed()
+wait_idle(win, 120)
+retried = last("batch_started")
+check(
+    "B3",
+    statuses == ["ok", "error"]
+    and retry_visible
+    and "batch_retry_failed" in since(m)
+    and retried.get("count") == 1
+    and [it["status"] for it in dlg._items] == ["ok", "ok"]
+    and dlg.btn_retry.isHidden()
+    and len(list(out_b3.glob("*.svg"))) == 2,
+    f"avant={statuses} après={[it['status'] for it in dlg._items]}",
+)
+
+# B4 : fond blanc (coin du PNG opaque blanc, rect dans le SVG) vs transparent
+out_b4w, out_b4t = TMP / "b4w", TMP / "b4t"
+run_lot([batch_in / "img0.png"], out_b4w, chk_png=True, cmb_bg=1)
+run_lot([batch_in / "img0.png"], out_b4t, chk_png=True, cmb_bg=0)
+cw = _QImage(str(out_b4w / "img0_vector.png")).pixelColor(0, 0)
+ct = _QImage(str(out_b4t / "img0_vector.png")).pixelColor(0, 0)
+svg_w = (out_b4w / "img0_vector.svg").read_text(encoding="utf-8")
+check(
+    "B4",
+    (cw.red(), cw.green(), cw.blue(), cw.alpha()) == (255, 255, 255, 255)
+    and ct.alpha() == 0
+    and 'fill="#FFFFFF"' in svg_w
+    and 'fill="#FFFFFF"' not in (out_b4t / "img0_vector.svg").read_text(encoding="utf-8"),
+    f"coin blanc={cw.getRgb()} coin transparent={ct.getRgb()}",
+)
+
+# B5 : optimisation par image (auto_refine) -- une image pour rester rapide
+out_b5 = TMP / "b5"
+dlg = run_lot([batch_in / "img1.png"], out_b5, chk_autotune=True)
+check(
+    "B5",
+    (out_b5 / "img1_vector.svg").exists()
+    and last("batch_started").get("autotune") is True
+    and dlg._items[0]["status"] == "ok",
+    f"statut={dlg._items[0]['status']}",
+)
+
+# B6 : annulation en cours de lot -> arrêt propre, rien n'est laissé "en cours"
+many = TMP / "many"
+many.mkdir()
+for i in range(25):
+    make_png(many / f"m{i:02d}.png", (122, 82, 245, 255), 200)
+
+
+def _b6(d):
+    d.add_paths([many], via="test")
+    d.set_output(TMP / "b6")
+    d.chk_autotune.setChecked(True)  # lent : laisse le temps d'annuler
+    d.start()
+    for _ in range(50):
+        app.processEvents()
+        if any(it["status"] in ("ok", "warning") for it in d._items):
+            break
+        time.sleep(0.05)
+    d.cancel()
+    wait_idle(win, 300)
+
+
+BATCH_DRIVER[0] = _b6
+win.btn_batch.click()
+dlg = LAST_BATCH[0]
+bc = last("batch_completed")
+check(
+    "B6",
+    bc.get("cancelled") is True
+    and 0 < bc.get("done") < 25
+    and not any(it["status"] == "running" for it in dlg._items)
+    and win._batch is None
+    and dlg.btn_start.isEnabled(),  # le reste peut être relancé
+    f"done={bc.get('done')} statuts={sorted(set(it['status'] for it in dlg._items))}",
+)
+
+# B7 : « Ouvrir le dossier de sortie » (intercepté)
+n_opened = len(OPENED)
+dlg.open_output()
+check(
+    "B7",
+    len(OPENED) == n_opened + 1 and OPENED[-1].rstrip("/").endswith("b6"),
+    f"ouvert={OPENED[-1] if OPENED else None}",
+)
+
+# B8 : dépôt de plusieurs fichiers / d'un dossier sur la zone d'image
+BATCH_DRIVER[0] = None
+LAST_BATCH[0] = None
+win.original.handle_dropped_paths([batch_in / "img0.png", batch_in / "img1.png"])
+pro_drop = LAST_BATCH[0]
+win.lic.is_pro = lambda: False
+CHOICE["upsell"] = "later"
+LAST_BATCH[0] = None
+m = mark()
+win.original.handle_dropped_paths([batch_in])
+wait_idle(win)
+free_ev = since(m)
+free_src = (last("paywall_viewed") or {}).get("source")
+win.lic.is_pro = lambda: True
+LAST_BATCH[0] = None
+win.original.handle_dropped_paths([batch_in / "img2.png"])  # une seule image
+wait_idle(win)
+check(
+    "B8",
+    pro_drop is not None
+    and len(pro_drop._items) == 2
+    and last("batch_files_added").get("via") == "drop"
+    and free_src == "batch"
+    and "image_picked" in free_ev  # gratuit : la 1re image est chargée quand même
+    and LAST_BATCH[0] is None  # une seule image : pas de lot
+    and win.src_path.name == "img2.png",
+    f"pro={pro_drop and len(pro_drop._items)} gratuit={free_ev} src={win.src_path}",
+)
+
+# B9 : export simple -- fond blanc + bouton « Ouvrir le dossier »
+win.chk_white_bg.setChecked(True)
+export_to("white.svg", "SVG vectoriel (*.svg)")
+export_to("white.png", "PNG haute-def (*.png)")
+win.chk_white_bg.setChecked(False)
+cw = _QImage(str(out_dir / "white.png")).pixelColor(0, 0)
+n_opened = len(OPENED)
+win.btn_open_dir.click()
+check(
+    "B9",
+    'fill="#FFFFFF"' in (out_dir / "white.svg").read_text(encoding="utf-8")
+    and cw.alpha() == 255 and cw.red() == 255
+    and win.btn_open_dir.isEnabled()
+    and len(OPENED) == n_opened + 1
+    and OPENED[-1].rstrip("/").endswith("out")
+    and last("export_png").get("background") == "white",
+    f"coin={cw.getRgb()} ouvert={OPENED[-1] if OPENED else None}",
+)
+BATCH_DRIVER[0] = None
 
 # F9 : en Pro, un rendu Optimiser s'exporte sans aucun verrou
 win.run_autotune()

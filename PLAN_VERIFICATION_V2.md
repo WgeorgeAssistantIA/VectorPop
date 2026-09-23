@@ -93,6 +93,22 @@ Accompagne [CAHIER_DES_CHARGES_V2_DESKTOP.md](CAHIER_DES_CHARGES_V2_DESKTOP.md).
 
 Tout ce qui ouvrirait un fichier, un dossier, le Store ou un mail sur le PC est intercepté par le script (`FakeDesktop`).
 
+## Lot 7 — Traitement par lot 2.0 (§2.6 A) + fond blanc et « Ouvrir le dossier » (§2.6 D)
+
+| ID | Vérification | Attendu | Auto |
+|---|---|---|---|
+| A16 | Lot simple lancé depuis le bouton (Pro) | 3 SVG nommés `<nom>_vector.svg`, toutes les lignes « OK » | ✅ |
+| B1 | SVG + PNG + PDF en une passe, un sous-dossier par format, PNG 512 px | 3 fichiers par format dans `svg/`, `png/`, `pdf/` ; côté long du PNG = 512 | ✅ |
+| B2 | Sous-dossiers inclus, même dossier ajouté deux fois, deux images homonymes | Aucun doublon dans la liste ; aucun écrasement (`logo_vector.svg` + `logo_vector_2.svg`) ; fichiers non-images ignorés | ✅ |
+| B3 | Une image illisible dans le lot, puis « Relancer les échecs » après correction | Seule cette ligne est en erreur, les autres passent ; la relance ne retraite que l'échec | ✅ |
+| B4 | Fond blanc vs transparent | Coin du PNG blanc opaque vs transparent ; rectangle blanc dans le SVG seulement en blanc | ✅ |
+| B5 | « Optimiser chaque image » | Le lot passe par l'optimisation automatique et aboutit | ✅ |
+| B6 | Annulation en cours de lot | Arrêt propre, aucune ligne bloquée « en cours », le reste peut être relancé | ✅ |
+| B7 | « Ouvrir le dossier de sortie » | Ouvre le bon dossier (intercepté) | ✅ |
+| B8 | Dépôt de plusieurs images / d'un dossier sur la zone d'image | Pro : écran de lot pré-rempli ; gratuit : écran Pro, puis la 1re image est chargée quand même ; une seule image : ouverture normale | ✅ |
+| B9 | Export simple avec « Fond blanc à l'export » + bouton « Ouvrir le dossier » | Fond blanc dans le SVG et le PNG ; le bouton ouvre le dossier du dernier export (intercepté) | ✅ |
+| M4 | Lot de 100+ vraies photos sur le build packagé | Interface fluide (vignettes réduites au décodage), pas de gel | Manuel |
+
 - Final — Non-régression complète sur le build packagé (voir §5 du cahier des charges).
 
 ## Journal d'exécution
@@ -104,3 +120,4 @@ Tout ce qui ouvrirait un fichier, un dossier, le Store ou un mail sur le PC est 
 | 23/09/2026 | Lot 4 (Modèles démo) | 38/38 PASS. Les 4 échantillons Android copiés dans `assets/samples/`, ajoutés aux 3 `.spec` PyInstaller (l'installeur/MSIX/Snap/AppImage en héritent automatiquement, pas de changement séparé nécessaire). Écran vide : 4 tuiles cliquables (icône + titre) remplacent l'unique logo généré ; menu « Exemples » ajouté pour y revenir. `apply_recipe()` (déjà existant, déjà testé pour le bouton d'aide) réutilisé pour forcer preset+réglages, ce qui règle le piège QSettings gratuitement. |
 | 23/09/2026 | Lot 5 (Onboarding) | 43/43 PASS. 4 écrans (aligné sur Android, qui combine en réalité vie privée+quota sur un même écran, pas 5 séparés comme décrit trop vite dans le §1.4 initial) : promesse, bitmap vs vectoriel (vrai SVG vtracer rendu, pas une approximation), usage principal (ouvre le modèle démo assorti), local+quota. Bouton « Passer » gardé, complète quand même (charge un 1er résultat par défaut). Versionné (`onboarding.py`, `ONBOARDING_VERSION=1`). |
 | 23/09/2026 | Lot 6 (Moments après export) | 49/49 PASS. Corrigé en cours de route : après une copie, le message « Code SVG copié » écrasait le bandeau « Dernier export gratuit » (invisible). Choix : la célébration ne se déclenche jamais sur une image d'exemple (drapeau `celebrated` dédié, sinon un essai de démo avant la vraie image l'aurait fait sauter). 👍 → Store (et non un mail comme sur VoxCut PC), pour faire monter les notes Store de VectorPop. |
+| 24/09/2026 | Lot 7 (Traitement par lot 2.0) | 57/57 PASS (hors V-NET, déjà validé). Nouvel écran de lot (fichiers + dossiers, glisser-déposer, statut par image, plusieurs formats, optimisation par image, fond, suffixe, sous-dossiers, relance des échecs, ouverture du dossier). Choix : deux images homonymes d'un même lot ne s'écrasent jamais (`_2`) ; un dépôt multiple en gratuit n'est jamais perdu (la 1re image est chargée après l'écran Pro). |

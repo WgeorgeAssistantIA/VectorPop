@@ -1,6 +1,6 @@
 """Export du SVG vectorise vers d'autres formats, via Qt (aucune dep externe).
 
-- PNG : rendu raster haute-def, fond transparent.
+- PNG : rendu raster haute-def, fond transparent (ou uni, cf. `background`).
 - PDF : rendu **vectoriel** (QPdfWriter peint les chemins, pas un PNG colle).
 - SVG : redimensionnement du "canvas" (width/height) sans perte (cf. resize_svg).
 """
@@ -11,7 +11,14 @@ import re
 from pathlib import Path
 
 from PySide6.QtCore import Qt, QMarginsF, QSizeF
-from PySide6.QtGui import QImage, QPageLayout, QPageSize, QPainter, QPdfWriter
+from PySide6.QtGui import (
+    QColor,
+    QImage,
+    QPageLayout,
+    QPageSize,
+    QPainter,
+    QPdfWriter,
+)
 from PySide6.QtSvg import QSvgRenderer
 
 _SVG_TAG = re.compile(r"<svg\b[^>]*>", re.S)
@@ -27,12 +34,18 @@ def _renderer(svg_path: str | Path) -> tuple[QSvgRenderer, float, float]:
     return r, w, h
 
 
-def svg_to_png(svg_path: str | Path, out: str | Path, max_px: int = 2048) -> Path:
-    """Rastérise le SVG : cote le plus long = `max_px`, fond transparent."""
+def svg_to_png(
+    svg_path: str | Path,
+    out: str | Path,
+    max_px: int = 2048,
+    background: str | None = None,
+) -> Path:
+    """Rastérise le SVG : cote le plus long = `max_px`. Fond transparent, ou
+    uni si `background` (ex. "#FFFFFF") est donne."""
     r, w, h = _renderer(svg_path)
     scale = max_px / max(w, h)
     img = QImage(round(w * scale), round(h * scale), QImage.Format_ARGB32)
-    img.fill(Qt.transparent)
+    img.fill(QColor(background) if background else Qt.transparent)
     p = QPainter(img)
     r.render(p)
     p.end()
@@ -77,7 +90,9 @@ def resize_svg(svg_text: str, target_px: int) -> str:
     return svg_text[: m.start()] + new_tag + svg_text[m.end() :]
 
 
-def svg_to_pdf(svg_path: str | Path, out: str | Path) -> Path:
+def svg_to_pdf(
+    svg_path: str | Path, out: str | Path, background: str | None = None
+) -> Path:
     """Ecrit un PDF vectoriel a la taille intrinseque du SVG (en points)."""
     r, w, h = _renderer(svg_path)
     writer = QPdfWriter(str(out))
@@ -85,6 +100,31 @@ def svg_to_pdf(svg_path: str | Path, out: str | Path) -> Path:
     writer.setPageSize(QPageSize(QSizeF(w, h), QPageSize.Point))
     writer.setPageMargins(QMarginsF(0, 0, 0, 0), QPageLayout.Point)
     p = QPainter(writer)
+    if background:
+        p.fillRect(0, 0, round(w) + 1, round(h) + 1, QColor(background))
     r.render(p)
     p.end()
     return Path(out)
+
+
+def add_svg_background(svg_text: str, color: str) -> str:
+    """Ajoute un fond uni (premier element, donc sous tous les traces). Dimensions
+    explicites (viewBox, sinon width/height) plutot que 100 % : plus fiable selon
+    les lecteurs. A appeler AVANT resize_svg (qui fige les dimensions d'origine
+    dans le viewBox, que le rectangle couvre donc toujours)."""
+    m = _SVG_TAG.search(svg_text)
+    if not m:
+        return svg_text
+    tag = m.group(0)
+    vb = re.search(
+        r'viewBox="\s*([-0-9.]+)[ ,]+([-0-9.]+)[ ,]+([0-9.]+)[ ,]+([0-9.]+)', tag
+    )
+    if vb:
+        x, y, w, h = vb.groups()
+    else:
+        dims = dict(_WH.findall(tag))
+        if "width" not in dims or "height" not in dims:
+            return svg_text
+        x, y, w, h = "0", "0", dims["width"], dims["height"]
+    rect = f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="{color}"/>'
+    return svg_text[: m.end()] + rect + svg_text[m.end() :]

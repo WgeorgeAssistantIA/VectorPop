@@ -5,7 +5,7 @@ from pathlib import Path
 from PySide6.QtCore import QThread, Signal
 
 from .. import ai_module, ai_upscale
-from ..export import resize_svg, svg_to_pdf, svg_to_png
+from ..export import add_svg_background, resize_svg, svg_to_pdf, svg_to_png
 from ..gradients import remove_shape_at
 from ..license import LicenseManager
 from ..optimize import optimize_svg
@@ -74,52 +74,80 @@ class AutoTuneWorker(QThread):
 
 
 class BatchWorker(QThread):
-    """Vectorise tout un dossier d'images en tache de fond, format au choix."""
+    """Traitement par lot 2.0 (cahier des charges V2 §2.6 A) : liste de fichiers
+    quelconque (plus seulement un dossier), plusieurs formats en une passe,
+    optimisation par image (auto_refine), fond uni optionnel, nommage avec
+    suffixe et sous-dossier par format. Statut remonte image par image pour
+    l'affichage et le « Relancer les echecs »."""
 
-    progress = Signal(int, str)  # numero (1-based), nom du fichier en cours
-    done = Signal(
-        int, int, int
-    )  # nb traites, nb echecs, nb avertissements post-traitement
+    item_started = Signal(int)  # index dans la liste du dialogue
+    item_done = Signal(int, str, str)  # index, "ok" | "warning" | "error", message
+    finished_all = Signal(int, int, int, bool)  # ok, erreurs, avertissements, annule
 
     def __init__(
         self,
-        files: list[Path],
+        items: list[tuple[int, Path]],
         out_dir: Path,
-        fmt: str,
+        formats: tuple[str, ...],
         params: VectorParams,
         gradients: bool = False,
         refine: bool = False,
         png_size: int = 2048,
         svg_size: int = 0,
+        autotune: bool = False,
+        background: str | None = None,
+        suffix: str = "",
+        subdir_per_format: bool = False,
     ):
         super().__init__()
-        self._files, self._out_dir, self._fmt, self._params = (
-            files,
-            out_dir,
-            fmt,
-            params,
-        )
+        self._items = items
+        self._out_dir = Path(out_dir)
+        self._formats = tuple(formats)
+        self._params = params
         self._gradients, self._refine = gradients, refine
         self._png_size = png_size
         self._svg_size = svg_size  # 0 = taille d'origine (cf. export.resize_svg)
+        self._autotune = autotune
+        self._background = background
+        self._suffix = suffix
+        self._subdir = subdir_per_format
+        self._used: set[Path] = set()
         self._cancel = False
 
     def cancel(self):
         self._cancel = True
 
     def run(self):
-        done_n = errors = warns = 0
-        for i, f in enumerate(self._files, 1):
+        ok = errors = warns = 0
+        for idx, f in self._items:
             if self._cancel:
                 break
-            self.progress.emit(i, f.name)
+            self.item_started.emit(idx)
             try:
                 if self._process_one(f):
                     warns += 1
-                done_n += 1
-            except Exception:  # noqa: BLE001 - on continue le lot malgre un raté
+                    self.item_done.emit(idx, "warning", "")
+                else:
+                    self.item_done.emit(idx, "ok", "")
+                ok += 1
+            except Exception as e:  # noqa: BLE001 - on continue le lot malgre un raté
                 errors += 1
-        self.done.emit(done_n, errors, warns)
+                self.item_done.emit(idx, "error", str(e)[:200])
+        self.finished_all.emit(ok, errors, warns, self._cancel)
+
+    def out_path(self, src: Path, fmt: str) -> Path:
+        """Chemin de sortie, sans jamais ecraser un autre fichier du MEME lot
+        (deux images homonymes venant de sous-dossiers differents)."""
+        folder = self._out_dir / fmt if self._subdir else self._out_dir
+        folder.mkdir(parents=True, exist_ok=True)
+        base = f"{src.stem}{self._suffix}"
+        out = folder / f"{base}.{fmt}"
+        n = 2
+        while out in self._used:
+            out = folder / f"{base}_{n}.{fmt}"
+            n += 1
+        self._used.add(out)
+        return out
 
     def _process_one(self, f: Path) -> bool:
         """Traite une image. Renvoie True si un post-traitement a échoué (SVG brut gardé)."""
@@ -127,19 +155,28 @@ class BatchWorker(QThread):
         os.close(fd)
         tmp = Path(tmp)
         try:
-            vectorize(f, tmp, self._params)
+            if self._autotune:
+                auto_refine(f, tmp, self._params)
+            else:
+                vectorize(f, tmp, self._params)
             warn = _postprocess_svg(tmp, f, self._gradients, self._refine)
             txt = optimize_svg(tmp.read_text(encoding="utf-8"))
             tmp.write_text(txt, encoding="utf-8")
-            out = self._out_dir / f"{f.stem}.{self._fmt}"
-            if self._fmt == "svg":
-                if self._svg_size:
-                    txt = resize_svg(txt, self._svg_size)
-                out.write_text(txt, encoding="utf-8")
-            elif self._fmt == "png":
-                svg_to_png(tmp, out, max_px=self._png_size)
-            else:
-                svg_to_pdf(tmp, out)
+            for fmt in self._formats:
+                out = self.out_path(f, fmt)
+                if fmt == "svg":
+                    svg = txt
+                    if self._background:
+                        svg = add_svg_background(svg, self._background)
+                    if self._svg_size:
+                        svg = resize_svg(svg, self._svg_size)
+                    out.write_text(svg, encoding="utf-8")
+                elif fmt == "png":
+                    svg_to_png(
+                        tmp, out, max_px=self._png_size, background=self._background
+                    )
+                else:
+                    svg_to_pdf(tmp, out, background=self._background)
             return warn is not None
         finally:
             tmp.unlink(missing_ok=True)

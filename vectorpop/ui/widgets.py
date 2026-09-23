@@ -30,8 +30,9 @@ class DropImage(QLabel):
     de l'image d'origine par `selection_in_image_px()`.
     """
 
-    def __init__(self, on_file, on_demo=None, tr=None):
+    def __init__(self, on_file, on_demo=None, tr=None, on_files=None):
         super().__init__()
+        self._on_files = on_files  # depot multiple / dossier -> traitement par lot
         self._tr = tr or (lambda k, **kw: k)
         self.setText(self._tr("drop_placeholder"))
         self._on_file = on_file
@@ -124,11 +125,19 @@ class DropImage(QLabel):
             e.acceptProposedAction()
 
     def dropEvent(self, e):
-        for url in e.mimeData().urls():
-            p = Path(url.toLocalFile())
-            if p.suffix.lower() in ACCEPTED:
-                self._on_file(p)
-                return
+        self.handle_dropped_paths(
+            [Path(u.toLocalFile()) for u in e.mimeData().urls() if u.isLocalFile()]
+        )
+
+    def handle_dropped_paths(self, paths: list[Path]):
+        """Une seule image : on l'ouvre. Plusieurs images, ou un dossier : lot
+        (si le callback existe), sinon la 1re image acceptee."""
+        images = [p for p in paths if p.is_file() and p.suffix.lower() in ACCEPTED]
+        has_dir = any(p.is_dir() for p in paths)
+        if self._on_files is not None and (has_dir or len(images) > 1):
+            self._on_files(paths)
+        elif images:
+            self._on_file(images[0])
 
     # --- affichage ---
     def show_image(self, path: Path):
