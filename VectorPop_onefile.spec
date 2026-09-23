@@ -6,7 +6,7 @@
 
 from PyInstaller.utils.hooks import collect_all
 
-datas = [('assets\\icon.ico', 'assets'), ('assets\\icon.png', 'assets')]
+datas = [('assets\\icon.ico', 'assets'), ('assets\\icon.png', 'assets'), ('assets\\samples', 'assets\\samples')]
 binaries = []
 hiddenimports = []
 tmp_ret = collect_all('vtracer')

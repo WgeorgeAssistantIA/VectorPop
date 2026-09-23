@@ -9,13 +9,17 @@ from PySide6.QtWidgets import (
     QFileDialog,
     QGraphicsView,
     QGraphicsScene,
+    QHBoxLayout,
+    QVBoxLayout,
+    QToolButton,
 )
 from PySide6.QtSvgWidgets import QGraphicsSvgItem
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import QWidget, QPushButton
 
 from ..theme import checker_brush
-from ..app_utils import ACCEPTED
+from ..app_utils import ACCEPTED, sample_asset
+from ..core.demo_models import DEMO_MODELS
 
 
 class DropImage(QLabel):
@@ -44,13 +48,53 @@ class DropImage(QLabel):
             "dropImage"
         )  # style pris en charge par la QSS globale (theme.py)
 
-        # Etat vide plus engageant : un essai en un clic, sans avoir a chercher un fichier.
-        self._demo_btn: QPushButton | None = None
+        # Etat vide plus engageant : 4 modeles cliquables, un essai en un clic sans
+        # avoir a chercher un fichier (remplace l'unique logo genere de la 1.2.x).
+        self._demo_panel: QWidget | None = None
+        self._demo_intro: QLabel | None = None
+        self._demo_tiles: list[QToolButton] = []
         if on_demo is not None:
-            self._demo_btn = QPushButton(self._tr("demo_btn"), self)
-            self._demo_btn.setCursor(Qt.PointingHandCursor)
-            self._demo_btn.clicked.connect(on_demo)
+            self._demo_panel = QWidget(self)
+            outer = QVBoxLayout(self._demo_panel)
+            outer.setContentsMargins(0, 0, 0, 0)
+            outer.setSpacing(6)
+            self._demo_intro = QLabel(self._tr("demo_intro"))
+            self._demo_intro.setAlignment(Qt.AlignCenter)
+            self._demo_intro.setStyleSheet(
+                "color: palette(mid); font-size: 11px; background: transparent;"
+            )
+            outer.addWidget(self._demo_intro)
+            row = QHBoxLayout()
+            row.setSpacing(10)
+            for model in DEMO_MODELS:
+                btn = QToolButton(self._demo_panel)
+                btn.setText(self._tr(model.title_key))
+                btn.setToolTip(self._tr(model.tooltip_key))
+                btn.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+                btn.setIconSize(QSize(40, 40))
+                btn.setIcon(self._demo_icon(model.filename))
+                btn.setCursor(Qt.PointingHandCursor)
+                btn.setAutoRaise(True)
+                btn.clicked.connect(lambda _=False, mid=model.id: on_demo(mid))
+                row.addWidget(btn)
+                self._demo_tiles.append(btn)
+            outer.addLayout(row)
             self._position_demo_btn()
+
+    @staticmethod
+    def _demo_icon(filename: str) -> QIcon:
+        """Miniature carrée (recadrage centre) d'un echantillon demo, pour la
+        tuile -- les images source sont deja carrees mais on ne le suppose pas."""
+        pix = QPixmap(sample_asset(filename))
+        if pix.isNull():
+            return QIcon()
+        side = min(pix.width(), pix.height())
+        x, y = (pix.width() - side) // 2, (pix.height() - side) // 2
+        return QIcon(
+            pix.copy(x, y, side, side).scaled(
+                80, 80, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
+        )
 
     def retranslate(self):
         """Reapplique les textes dans la langue courante (bascule FR/EN)."""
@@ -58,19 +102,22 @@ class DropImage(QLabel):
             self.setText(self._tr("drop_placeholder"))
         else:
             self.setToolTip(self._tr("drop_tooltip"))
-        if self._demo_btn is not None:
-            self._demo_btn.setText(self._tr("demo_btn"))
+        if self._demo_panel is not None:
+            self._demo_intro.setText(self._tr("demo_intro"))
+            for btn, model in zip(self._demo_tiles, DEMO_MODELS):
+                btn.setText(self._tr(model.title_key))
+                btn.setToolTip(self._tr(model.tooltip_key))
             self._position_demo_btn()
 
     def _position_demo_btn(self):
-        if self._demo_btn is None:
+        if self._demo_panel is None:
             return
-        self._demo_btn.adjustSize()
+        self._demo_panel.adjustSize()
         # En bas de la zone (pas au centre) : le centre doit rester cliquable pour
-        # ouvrir directement le selecteur de fichier, sans que ce bouton l'intercepte.
-        x = (self.width() - self._demo_btn.width()) // 2
-        y = self.height() - self._demo_btn.height() - 20
-        self._demo_btn.move(x, y)
+        # ouvrir directement le selecteur de fichier, sans que ce panneau l'intercepte.
+        x = (self.width() - self._demo_panel.width()) // 2
+        y = self.height() - self._demo_panel.height() - 16
+        self._demo_panel.move(max(0, x), max(0, y))
 
     def dragEnterEvent(self, e):
         if e.mimeData().hasUrls():
@@ -89,8 +136,8 @@ class DropImage(QLabel):
         self.clear_selection()
         self._render()
         self.setToolTip(self._tr("drop_tooltip"))
-        if self._demo_btn is not None:
-            self._demo_btn.hide()  # une vraie image est chargee : plus besoin de l'exemple
+        if self._demo_panel is not None:
+            self._demo_panel.hide()  # une vraie image est chargee : plus besoin des exemples
 
     def _render(self):
         if self._src_pix is None:

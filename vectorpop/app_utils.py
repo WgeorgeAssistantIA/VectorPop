@@ -15,3 +15,10 @@ def app_icon() -> QIcon:
     """Icône VectorPop (la plume). .ico multi-résolutions, fallback .png."""
     ico = _asset("icon.ico")
     return QIcon(ico if os.path.exists(ico) else _asset("icon.png"))
+
+
+def sample_asset(filename: str) -> str:
+    """Chemin d'un échantillon (assets/samples/<filename>), même résolution que
+    `_asset` (dev comme empaqueté). Utilisé par les modèles démo (core/demo_models.py).
+    """
+    return _asset(os.path.join("samples", filename))

@@ -316,12 +316,94 @@ QApplication.clipboard().setImage(qimg)
 win.paste_image()
 wait_idle(win)
 ip_paste = last("image_picked")
-win.load_demo_image()
+win.load_demo_model("logo")
 wait_idle(win)
 ip_demo = last("image_picked")
 ev = since(m)
 check("A9", ip_paste and ip_paste.get("source") == "paste" and ip_demo.get("source") == "demo"
       and "sample_model_selected" in ev, f"events={ev}")
+
+# ── Lot 4 : modèles démo ─────────────────────────────────────────────────────
+from vectorpop.core.demo_models import DEMO_MODELS  # noqa: E402
+from vectorpop.app_utils import sample_asset  # noqa: E402
+
+# D1 : les 4 échantillons packagés existent bien là où sample_asset() les cherche
+missing = [m.id for m in DEMO_MODELS if not Path(sample_asset(m.filename)).exists()]
+check("D1", not missing and len(DEMO_MODELS) == 4, f"manquants={missing}")
+
+# D5 : les 4 tuiles existent avec une icône réelle sur l'écran vide, et le
+# panneau se cache une fois une vraie image chargée (déjà le cas ici via A6-A9).
+tiles = win.original._demo_tiles
+null_icons = [i for i, b in enumerate(tiles) if b.icon().isNull()]
+check(
+    "D5",
+    len(tiles) == 4 and not null_icons and win.original._demo_panel.isHidden(),
+    f"tuiles={len(tiles)} icônes_nulles={null_icons} panneau_caché={win.original._demo_panel.isHidden()}",
+)
+
+# D2 : piège QSettings -- des réglages "sauvegardés" volontairement faux sont
+# bien ÉCRASÉS par le preset du modèle démo (pas juste rechargés par-dessus).
+win.s_colors.setValue(2)
+win.s_corner.setValue(150)
+win.s_speckle.setValue(10)
+win.s_merge.setValue(5)
+win.chk_merge.setChecked(False)
+win.chk_edges.setChecked(False)
+m = mark()
+win.load_demo_model("logo")
+wait_idle(win)
+logo_cfg = next(mo.cfg for mo in DEMO_MODELS if mo.id == "logo")
+check(
+    "D2",
+    win.preset.currentData() == "flat"
+    and win.s_colors.value() == logo_cfg["colors"] == 4
+    and win.s_corner.value() == logo_cfg["corner"] == 20
+    and win.s_speckle.value() == logo_cfg["speckle"] == 0
+    and win.s_merge.value() == logo_cfg["merge"] == 24
+    and win.chk_merge.isChecked() is True
+    and win.chk_edges.isChecked() is True
+    and win.svg_path is not None
+    and (last("sample_model_selected") or {}).get("model_id") == "logo",
+    f"preset={win.preset.currentData()} colors={win.s_colors.value()} "
+    f"corner={win.s_corner.value()} speckle={win.s_speckle.value()} "
+    f"merge={win.s_merge.value()} merge_on={win.chk_merge.isChecked()} edges={win.chk_edges.isChecked()}",
+)
+
+# D3 : les 4 modèles se chargent, chacun applique bien SON preset et se trace
+d3_bad = []
+for mo in DEMO_MODELS:
+    win.load_demo_model(mo.id)
+    wait_idle(win)
+    picked = last("sample_model_selected")
+    if not (
+        win.preset.currentData() == mo.cfg["preset"]
+        and win.svg_path is not None
+        and picked
+        and picked.get("model_id") == mo.id
+    ):
+        d3_bad.append(mo.id)
+check("D3", not d3_bad, f"échecs={d3_bad}" if d3_bad else f"{len(DEMO_MODELS)} modèles OK")
+
+# D4 : menu « Exemples » -- 4 entrées, dans la langue courante, chacune
+# reproduit le même chargement qu'un clic sur la tuile.
+win.toggle_lang()  # -> en, pour vérifier la retraduction du menu au passage
+actions = win._examples_menu.actions()
+expected_titles = [win._t(mo.title_key) for mo in DEMO_MODELS]
+ok_titles = [a.text() for a in actions] == expected_titles
+win.load_demo_model("icon")  # remet une image connue avant le test du menu
+wait_idle(win)
+mascot_action = next(a for a, mo in zip(actions, DEMO_MODELS) if mo.id == "mascot")
+mascot_action.trigger()
+wait_idle(win)
+check(
+    "D4",
+    len(actions) == 4
+    and ok_titles
+    and win.preset.currentData() == "detailed"
+    and last("sample_model_selected").get("model_id") == "mascot",
+    f"titres={[a.text() for a in actions]} attendus={expected_titles} preset={win.preset.currentData()}",
+)
+win.toggle_lang()  # retour fr pour la suite du script
 
 # Exports gratuits : 2 SVG + 1 copie = quota de 3/jour épuisé
 win._ask_svg_size = lambda: 0
@@ -421,7 +503,7 @@ check("F3", not win.usage.can_export() and win.usage.remaining() == 0
       f"restant={win.usage.remaining()} label={win.lbl_plan.text()!r}")
 
 # F4 : exports d'une image d'exemple hors quota (même quota épuisé)
-win.load_demo_image()
+win.load_demo_model("logo")
 wait_idle(win)
 total_before = win.usage.total_exports()
 m = mark()

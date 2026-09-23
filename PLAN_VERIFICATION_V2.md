@@ -60,7 +60,17 @@ Accompagne [CAHIER_DES_CHARGES_V2_DESKTOP.md](CAHIER_DES_CHARGES_V2_DESKTOP.md).
 | P1 | Contenu réel du ProDialog (fonction verrouillée d'emblée, ex. lot) | Badge « accès à vie », les 6 avantages listés, la fonction concernée mise en avant, bannière de preuve de valeur si total>0 | ✅ |
 | (couvre aussi) | Tous les chemins A11-A14, F5b/F5c, F6, F8 passent maintenant par le vrai `ProDialog` (plus de `QMessageBox`) | Mêmes comportements qu'avant (achat synchrone, « J'ai une clé », « sans les fonctions Pro », quota) | ✅ |
 
-- Lot 4 — Modèles démo (§1.3), dont le piège `QSettings`
+## Lot 4 — Modèles démo (§1.3)
+
+| ID | Vérification | Attendu | Auto |
+|---|---|---|---|
+| D1 | Les 4 échantillons packagés existent (`sample_asset()`) | 4 fichiers trouvés | ✅ |
+| D2 | Piège `QSettings` : sliders/cases mis à des valeurs volontairement fausses avant de charger le modèle « logo » | Le preset ET tous les réglages du modèle écrasent les anciennes valeurs (pas juste rechargés par-dessus) | ✅ |
+| D3 | Les 4 modèles se chargent chacun | Bon preset appliqué, SVG produit, `sample_model_selected` avec le bon `model_id` | ✅ |
+| D4 | Menu « Exemples » (retraduit en EN au passage) | 4 entrées, titres traduits, déclencher une entrée reproduit le même chargement qu'un clic sur la tuile | ✅ |
+| D5 | Tuiles de l'écran vide | 4 tuiles avec icône réelle (non nulle) ; le panneau se cache une fois une vraie image chargée | ✅ |
+| M3 | Packaging (exe, MSIX, AppImage, Snap) | Les 4 images sont bien dans `assets/samples/` du build packagé (vérifié via `VectorPop.spec`/`VectorPop_onefile.spec`/`build_linux.spec`, pas encore testé sur un vrai build) | Manuel, au moment de la release |
+
 - Lot 5 — Onboarding (§1.4)
 - Lot 6 — Moments après export (§1.5)
 - Final — Non-régression complète sur le build packagé (voir §5 du cahier des charges).
@@ -71,3 +81,4 @@ Accompagne [CAHIER_DES_CHARGES_V2_DESKTOP.md](CAHIER_DES_CHARGES_V2_DESKTOP.md).
 | 23/09/2026 | Lot 1 (PostHog) | 1er passage : **échec**, 8 imports perdus lors du refactor du 19/08 (`optimize_svg`, `QDialog`, `QSvgRenderer`, `QPainter`, `QFontMetrics`) cassaient la vectorisation, les exports, le plein écran et la comparaison. Corrigé (jamais livré : la 1.2.1 a été buildée avant le refactor), puis 20/20 PASS + R1, V-NET HTTP 200. |
 | 23/09/2026 | Lot 2 (Freemium) | 32/32 PASS (lot 1 adapté à l'essai de 5 + F1 à F9 + R1 + V-NET). Corrigé en cours de route : le message « N tracé(s) supprimé(s) » écrasait l'avertissement « Aperçu Pro » (les deux sont maintenant affichés). |
 | 23/09/2026 | Lot 3 (ProDialog) | 33/33 PASS. Les 3 boîtes QMessageBox d'upsell (fonction verrouillée, quota, teaser) remplacées par un seul `ProDialog` réel (badge, preuve de valeur, 6 avantages avec la fonction concernée mise en avant, CTA dégradé). Vérifié via le vrai widget (P1), pas seulement les events. |
+| 23/09/2026 | Lot 4 (Modèles démo) | 38/38 PASS. Les 4 échantillons Android copiés dans `assets/samples/`, ajoutés aux 3 `.spec` PyInstaller (l'installeur/MSIX/Snap/AppImage en héritent automatiquement, pas de changement séparé nécessaire). Écran vide : 4 tuiles cliquables (icône + titre) remplacent l'unique logo généré ; menu « Exemples » ajouté pour y revenir. `apply_recipe()` (déjà existant, déjà testé pour le bouton d'aide) réutilisé pour forcer preset+réglages, ce qui règle le piège QSettings gratuitement. |

@@ -46,7 +46,7 @@ Rédigé le 23/09/2026. Objectif : reprendre sur la version desktop (Windows/Lin
 - ⚠️ Ne pas reprendre « licence commerciale à vie » ni « zéro filigrane » d'Android sans vérifier que les CGV (`/terms`) le disent bien. On a déjà retiré un argument non tenu sur InOneShot.
 - Remplacer tous les appels à `_show_upsell` (`_require_pro`, `_can_export_now`) par ce dialogue, avec la source passée pour `paywall_viewed`.
 
-### 1.3 Modèles démo
+### 1.3 Modèles démo ✅ FAIT le 23/09
 - Remplacer le logo généré de `load_demo_image` par les **4 modèles d'Android** (copier `vectorpop_android/assets/samples/*.png` dans `vectorpop/assets/samples/`, et les ajouter au `.spec` PyInstaller, à l'installeur, au payload MSIX et à l'AppImage).
 - Sur l'écran vide (`DropImage`) : 4 vignettes cliquables avec titre FR/EN, à la place du simple lien « essayer un exemple ». Chaque modèle applique son preset (`flat` / `detailed` / `bw` → presets desktop équivalents dans `core/recipes.py`).
 - Ajouter aussi une entrée de menu « Ouvrir un exemple » pour y revenir plus tard.

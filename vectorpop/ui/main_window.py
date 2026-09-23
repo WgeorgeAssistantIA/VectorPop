@@ -25,6 +25,7 @@ from PySide6.QtWidgets import (
     QInputDialog,
     QLabel,
     QMainWindow,
+    QMenu,
     QMessageBox,
     QProgressBar,
     QProgressDialog,
@@ -36,7 +37,7 @@ from PySide6.QtWidgets import (
     QWidget,
     QFileDialog,
 )
-from PIL import Image, ImageDraw
+from PIL import Image
 
 from .. import ai_module, ai_upscale
 from .. import analytics
@@ -73,7 +74,7 @@ from ..theme import (
     icon,
 )
 from ..vectorizer import PRESETS, VectorParams
-from ..app_utils import app_icon, ACCEPTED
+from ..app_utils import app_icon, sample_asset, ACCEPTED
 
 from ..core.workers import (
     VectorizeWorker,
@@ -85,6 +86,7 @@ from ..core.workers import (
     WeightsDownloadWorker,
 )
 from ..core.recipes import RECIPES
+from ..core.demo_models import DEMO_MODELS, DEMO_MODELS_BY_ID
 from .widgets import DropImage, SvgView, CompareView
 from .dialogs import ProDialog, SettingsHelpDialog, SizeDialog, LicenseDialog
 
@@ -129,7 +131,6 @@ class MainWindow(QMainWindow):
         self._paste_tmp: Path | None = (
             None  # PNG temporaire de la derniere image collee
         )
-        self._demo_tmp: Path | None = None  # PNG temporaire de l'image d'exemple
         self._worker: VectorizeWorker | None = None
         self._cur_out: Path | None = None  # SVG temp du worker en cours
         self._autotune_worker: AutoTuneWorker | None = None
@@ -157,7 +158,7 @@ class MainWindow(QMainWindow):
 
         # --- Apercus ---
         self.original = DropImage(
-            self.load_image, on_demo=self.load_demo_image, tr=self._t
+            self.load_image, on_demo=self.load_demo_model, tr=self._t
         )
         self.preview = SvgView(tr=self._t)
         self._retranslators.append(self.original.retranslate)
@@ -222,6 +223,15 @@ class MainWindow(QMainWindow):
         self.btn_help.setIconSize(icon_sz)
         self.btn_help.clicked.connect(self.open_help)
 
+        # Reprendre un modele demo depuis le menu (une fois une vraie image
+        # chargee, les tuiles de l'ecran vide ne sont plus visibles).
+        self.btn_examples = self._tr_widget(
+            QPushButton(), "btn_examples", "btn_examples_tooltip"
+        )
+        self._examples_menu = QMenu(self.btn_examples)
+        self.btn_examples.setMenu(self._examples_menu)
+        self._repopulate_examples_menu()
+
         self.btn_theme = self._tr_widget(QPushButton(), tooltip_key="btn_theme_tooltip")
         self.btn_theme.setCheckable(True)
         self.btn_theme.setIconSize(icon_sz)
@@ -251,6 +261,7 @@ class MainWindow(QMainWindow):
         prep.addWidget(self.btn_undo)
         prep.addStretch(1)
         prep.addWidget(self.btn_pro)
+        prep.addWidget(self.btn_examples)
         prep.addWidget(self.btn_help)
         prep.addWidget(self.btn_theme)
         prep.addWidget(self.btn_lang)
@@ -512,31 +523,35 @@ class MainWindow(QMainWindow):
             source="paste",
         )
 
-    def load_demo_image(self):
-        """Genere un logo d'exemple (aucun asset a livrer) pour un premier essai sans fichier."""
-        if self._demo_tmp:
-            self._demo_tmp.unlink(missing_ok=True)
-        img = Image.new("RGBA", (480, 480), (255, 255, 255, 0))
-        d = ImageDraw.Draw(img)
-        d.ellipse((40, 40, 440, 440), fill=(122, 82, 245, 255))  # violet
-        d.pieslice(
-            (40, 40, 440, 440), 210, 330, fill=(201, 43, 192, 255)
-        )  # quartier magenta
-        d.ellipse((175, 175, 305, 305), fill=(63, 215, 251, 255))  # centre cyan
-        d.polygon(
-            [(240, 95), (263, 190), (325, 150)], fill=(255, 255, 255, 255)
-        )  # eclat
-        fd, tmp = tempfile.mkstemp(suffix=".png")
-        os.close(fd)
-        img.save(tmp)
-        self._demo_tmp = Path(tmp)
-        self.statusBar().showMessage(self._t("status_demo_loaded"), 5000)
+    def load_demo_model(self, model_id: str):
+        """Charge l'un des 4 modeles demo (assets/samples/) et force son preset
+        (§1.3 du cahier des charges V2 : contourne le piege QSettings, qui sinon
+        recharge par-dessus les reglages persistes de l'utilisateur)."""
+        model = DEMO_MODELS_BY_ID.get(model_id)
+        if model is None:
+            return
+        path = Path(sample_asset(model.filename))
+        if not path.exists():
+            return
+        self.statusBar().showMessage(self._t(model.tooltip_key), 5000)
         self.load_image(
-            self._demo_tmp,
+            path,
             is_crop=False,
-            display_name=self._t("display_name_demo"),
+            display_name=self._t(model.title_key),
             source="demo",
+            model_id=model.id,
+            auto_vectorize=False,  # apply_recipe() vectorise avec les BONS reglages
         )
+        self.apply_recipe(model.cfg)
+
+    def _repopulate_examples_menu(self):
+        """(Re)peuple le menu « Exemples » dans la langue courante."""
+        self._examples_menu.clear()
+        for model in DEMO_MODELS:
+            act = self._examples_menu.addAction(self._t(model.title_key))
+            act.triggered.connect(
+                lambda _=False, mid=model.id: self.load_demo_model(mid)
+            )
 
     # --- helpers UI ---
     def _labeled(
@@ -885,9 +900,11 @@ class MainWindow(QMainWindow):
         is_crop: bool = False,
         display_name: str | None = None,
         source: str = "file",
+        model_id: str | None = None,
+        auto_vectorize: bool = True,
     ):
         if not is_crop:
-            self._track_image_picked(path, source)
+            self._track_image_picked(path, source, model_id)
             self._is_demo = source == "demo"
             # Nouvelle image source : on oublie tout rognage precedent.
             self._cleanup_crop_tmp()
@@ -917,12 +934,13 @@ class MainWindow(QMainWindow):
         self.btn_del.setEnabled(False)
         self.btn_undo.setEnabled(False)
         self._del_history.clear()
-        self.run_vectorize(
-            silent=True, trigger=None if is_crop else "load"
-        )  # premier apercu immediat
+        if auto_vectorize:
+            self.run_vectorize(
+                silent=True, trigger=None if is_crop else "load"
+            )  # premier apercu immediat
 
     @staticmethod
-    def _track_image_picked(path: Path, source: str):
+    def _track_image_picked(path: Path, source: str, model_id: str | None = None):
         props = {"source": source}
         try:
             props["size_kb"] = round(path.stat().st_size / 1024)
@@ -936,7 +954,7 @@ class MainWindow(QMainWindow):
         except Exception:  # noqa: BLE001
             pass
         if source == "demo":
-            analytics.capture("sample_model_selected", {"model_id": "logo"})
+            analytics.capture("sample_model_selected", {"model_id": model_id})
         analytics.capture("image_picked", props)
 
     def run_vectorize(self, silent: bool = False, trigger: str | None = None):
@@ -1229,8 +1247,6 @@ class MainWindow(QMainWindow):
         self._cleanup_crop_tmp()
         if self._paste_tmp:
             self._paste_tmp.unlink(missing_ok=True)
-        if self._demo_tmp:
-            self._demo_tmp.unlink(missing_ok=True)
         super().closeEvent(e)
 
     def _show_stats(self, svg: Path):
@@ -1312,6 +1328,7 @@ class MainWindow(QMainWindow):
         for fn in self._retranslators:
             fn()
         self._repopulate_preset_combo()
+        self._repopulate_examples_menu()
         self._update_lang_button()
         if self._rembg_missing:
             self.chk_bg_ai.setToolTip(self._t("chk_bg_ai_download_tooltip"))
