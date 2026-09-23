@@ -2,8 +2,10 @@ from pathlib import Path
 from PIL import Image
 from ..gradients import gradientize_svg, refine_colors
 
-def _postprocess_svg(svg_path: Path, src_path: Path,
-                     gradients: bool, refine: bool) -> str | None:
+
+def _postprocess_svg(
+    svg_path: Path, src_path: Path, gradients: bool, refine: bool
+) -> str | None:
     """Post-traitements optionnels du SVG à partir de l'image source (best-effort).
 
     Dégradés d'abord (zones lisses), puis affinage des couleurs (aplats restants).
@@ -24,6 +26,7 @@ def _postprocess_svg(svg_path: Path, src_path: Path,
     except Exception as e:  # noqa: BLE001
         return str(e)
 
+
 ACCEPTED = {".png", ".jpg", ".jpeg", ".bmp", ".webp"}
 
 
@@ -31,19 +34,58 @@ ACCEPTED = {".png", ".jpg", ".jpeg", ".bmp", ".webp"}
 # Les clés de config correspondent aux réglages ; seules celles présentes sont posées.
 # "preset" reference un identifiant stable de vectorizer.PRESETS (pas un libelle affiche).
 RECIPES = [
-    ("recipe_flat_title", "recipe_flat_desc",
-     dict(preset="flat", colors=6, merge_on=True, merge=24, edges=True,
-          grad=False, refine=True, bg=False, contrast=0, sharpen=0)),
-    ("recipe_glossy_title", "recipe_glossy_desc",
-     dict(preset="detailed", colors=8, merge_on=False, corner=40, speckle=6,
-          grad=True, refine=True, bg=False)),
-    ("recipe_bw_title", "recipe_bw_desc",
-     dict(preset="bw", grad=False, refine=False, bg=False)),
-    ("recipe_photo_title", "recipe_photo_desc",
-     dict(preset="detailed", colors=8, merge_on=False, speckle=6,
-          grad=True, refine=True)),
-    ("recipe_bg_title", "recipe_bg_desc",
-     dict(preset="flat", bg=True, tol=32, refine=True)),
+    (
+        "recipe_flat_title",
+        "recipe_flat_desc",
+        dict(
+            preset="flat",
+            colors=6,
+            merge_on=True,
+            merge=24,
+            edges=True,
+            grad=False,
+            refine=True,
+            bg=False,
+            contrast=0,
+            sharpen=0,
+        ),
+    ),
+    (
+        "recipe_glossy_title",
+        "recipe_glossy_desc",
+        dict(
+            preset="detailed",
+            colors=8,
+            merge_on=False,
+            corner=40,
+            speckle=6,
+            grad=True,
+            refine=True,
+            bg=False,
+        ),
+    ),
+    (
+        "recipe_bw_title",
+        "recipe_bw_desc",
+        dict(preset="bw", grad=False, refine=False, bg=False),
+    ),
+    (
+        "recipe_photo_title",
+        "recipe_photo_desc",
+        dict(
+            preset="detailed",
+            colors=8,
+            merge_on=False,
+            speckle=6,
+            grad=True,
+            refine=True,
+        ),
+    ),
+    (
+        "recipe_bg_title",
+        "recipe_bg_desc",
+        dict(preset="flat", bg=True, tol=32, refine=True),
+    ),
 ]
 
 # Dépannage : (cle symptôme, cle remède).

@@ -29,6 +29,7 @@ from pathlib import Path
 try:
     import urllib.request as _urllib
     import urllib.error as _urlerr
+
     _NET_OK = True
 except Exception:  # noqa: BLE001
     _NET_OK = False
@@ -36,14 +37,14 @@ except Exception:  # noqa: BLE001
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
-APP_NAME       = "VectorPop"
-FREE_DAILY_MAX = 3          # exports/jour en gratuit (SVG uniquement)
-PRO_PRICE_EUR  = 39
+APP_NAME = "VectorPop"
+FREE_DAILY_MAX = 3  # exports/jour en gratuit (SVG uniquement)
+PRO_PRICE_EUR = 39
 
 # Site. Le nom de domaine n'est pas encore depose : le site part d'abord sur
 # une URL Vercel. Mettre a jour ces 3 constantes le jour du domaine.
-WEBSITE_URL  = "https://vectorpop.fr"
-UPGRADE_URL  = f"{WEBSITE_URL}/#pricing"
+WEBSITE_URL = "https://vectorpop.fr"
+UPGRADE_URL = f"{WEBSITE_URL}/#pricing"
 # Checkout Lemon Squeezy — a remplir apres creation du produit (cf. LS_STORE_ID).
 # Tant qu'il est vide, les boutons d'achat renvoient vers UPGRADE_URL.
 CHECKOUT_URL = "https://voxcut-pro.lemonsqueezy.com/checkout/buy/6ea17f0e-5d89-4994-a83e-84060447bf67?checkout[discount_code]=LANCEMENT30"
@@ -53,18 +54,19 @@ def buy_url() -> str:
     """Ou envoyer l'utilisateur qui veut acheter (checkout direct si connu)."""
     return CHECKOUT_URL or UPGRADE_URL
 
+
 # Secret de signature des cles HMAC (mode dev / hors Lemon Squeezy).
 _LICENSE_SECRET = b"VectorPop-2026-Kv3mRt-Secret"
 
 # Lemon Squeezy — a remplir apres creation du produit VectorPop sur
 # lemonsqueezy.com. Tant que LS_STORE_ID est vide, l'app est en mode dev :
 # les cles HMAC generees par generate_license_key.py sont acceptees hors ligne.
-LS_STORE_ID   = "399927"
+LS_STORE_ID = "399927"
 LS_PRODUCT_ID = "1229563"
 
-_LS_API        = "https://api.lemonsqueezy.com/v1/licenses"
-_GRACE_SECONDS = 14 * 86400   # grace offline : 14 jours depuis la derniere
-                              # validation en ligne reussie
+_LS_API = "https://api.lemonsqueezy.com/v1/licenses"
+_GRACE_SECONDS = 14 * 86400  # grace offline : 14 jours depuis la derniere
+# validation en ligne reussie
 
 
 # ── Fonctionnalites reservees au Pro ──────────────────────────────────────────
@@ -73,13 +75,13 @@ _GRACE_SECONDS = 14 * 86400   # grace offline : 14 jours depuis la derniere
 # illimitee, les 3 presets, les sliders, la suppression de fond par couleur,
 # l'apercu live, et 3 exports SVG par jour.
 
-FEAT_EXPORT_PDF   = "export_pdf"     # export PDF vectoriel
-FEAT_EXPORT_PNG   = "export_png"     # export PNG haute definition
-FEAT_BG_AI        = "bg_ai"          # detourage IA (rembg)
-FEAT_AI_UPSCALE   = "ai_upscale"     # finition IA (upscale x4 avant trace)
-FEAT_AUTOTUNE     = "autotune"       # bouton "Optimiser" (recherche auto)
-FEAT_DELETE_SHAPE = "delete_shape"   # suppression d'aplats au clic
-FEAT_BATCH        = "batch"          # traitement par lot
+FEAT_EXPORT_PDF = "export_pdf"  # export PDF vectoriel
+FEAT_EXPORT_PNG = "export_png"  # export PNG haute definition
+FEAT_BG_AI = "bg_ai"  # detourage IA (rembg)
+FEAT_AI_UPSCALE = "ai_upscale"  # finition IA (upscale x4 avant trace)
+FEAT_AUTOTUNE = "autotune"  # bouton "Optimiser" (recherche auto)
+FEAT_DELETE_SHAPE = "delete_shape"  # suppression d'aplats au clic
+FEAT_BATCH = "batch"  # traitement par lot
 
 
 def _get_data_dir() -> Path:
@@ -102,12 +104,14 @@ def data_dir() -> Path:
 
 # ── Cles HMAC (mode dev, hors Lemon Squeezy) ──────────────────────────────────
 
+
 def generate_key(email: str) -> str:
     """Cle deterministe derivee de l'email. Meme algo que VoxCut."""
-    digest = hmac.new(_LICENSE_SECRET, email.strip().lower().encode(),
-                      hashlib.sha256).digest()
+    digest = hmac.new(
+        _LICENSE_SECRET, email.strip().lower().encode(), hashlib.sha256
+    ).digest()
     b32 = base64.b32encode(digest[:15]).decode().rstrip("=")
-    return "-".join(b32[i:i + 6] for i in range(0, 24, 6))
+    return "-".join(b32[i : i + 6] for i in range(0, 24, 6))
 
 
 def _hmac_validate(email: str, key: str) -> bool:
@@ -118,6 +122,7 @@ def _hmac_validate(email: str, key: str) -> bool:
 
 # ── API Lemon Squeezy ─────────────────────────────────────────────────────────
 
+
 def _ls_post(endpoint: str, payload: dict, timeout: int) -> dict | None:
     """POST JSON vers /licenses/<endpoint>.
 
@@ -127,9 +132,11 @@ def _ls_post(endpoint: str, payload: dict, timeout: int) -> dict | None:
     est injoignable (etat AMBIGU, a ne pas confondre avec un refus).
     """
     data = json.dumps(payload).encode()
-    req = _urllib.Request(f"{_LS_API}/{endpoint}", data=data,
-                          headers={"Content-Type": "application/json",
-                                   "Accept": "application/json"})
+    req = _urllib.Request(
+        f"{_LS_API}/{endpoint}",
+        data=data,
+        headers={"Content-Type": "application/json", "Accept": "application/json"},
+    )
     try:
         with _urllib.urlopen(req, timeout=timeout) as r:
             return json.loads(r.read())
@@ -155,10 +162,14 @@ def _ls_activate(license_key: str) -> tuple[str, str]:
     Lemon Squeezy. Si on abandonne trop tot, le client croit avoir echoue,
     reessaie, et brule un siege a chaque tentative -> cle morte au bout de 3.
     """
-    result = _ls_post("activate", {
-        "license_key":   license_key.strip().upper(),
-        "instance_name": _instance_name(),
-    }, timeout=20)
+    result = _ls_post(
+        "activate",
+        {
+            "license_key": license_key.strip().upper(),
+            "instance_name": _instance_name(),
+        },
+        timeout=20,
+    )
     if result is None:
         return "", "timeout"
     if result.get("activated"):
@@ -168,15 +179,19 @@ def _ls_activate(license_key: str) -> tuple[str, str]:
 
 def _ls_validate_instance(license_key: str, instance_id: str) -> bool | None:
     """Valide cle + instance. Tri-etat :
-       True  = Lemon Squeezy confirme ;
-       False = refus explicite (cle revoquee, remboursee, instance supprimee) ;
-       None  = injoignable -> l'appelant applique la grace offline plutot que
-               de retirer le Pro pour un simple coup de reseau.
+    True  = Lemon Squeezy confirme ;
+    False = refus explicite (cle revoquee, remboursee, instance supprimee) ;
+    None  = injoignable -> l'appelant applique la grace offline plutot que
+            de retirer le Pro pour un simple coup de reseau.
     """
-    result = _ls_post("validate", {
-        "license_key": license_key.strip().upper(),
-        "instance_id": instance_id,
-    }, timeout=10)
+    result = _ls_post(
+        "validate",
+        {
+            "license_key": license_key.strip().upper(),
+            "instance_id": instance_id,
+        },
+        timeout=10,
+    )
     if result is None:
         return None
     return bool(result.get("valid", False))
@@ -184,13 +199,18 @@ def _ls_validate_instance(license_key: str, instance_id: str) -> bool | None:
 
 def _ls_deactivate(license_key: str, instance_id: str) -> None:
     """Libere un siege d'activation (best-effort, l'echec est sans consequence)."""
-    _ls_post("deactivate", {
-        "license_key": license_key.strip().upper(),
-        "instance_id": instance_id,
-    }, timeout=5)
+    _ls_post(
+        "deactivate",
+        {
+            "license_key": license_key.strip().upper(),
+            "instance_id": instance_id,
+        },
+        timeout=5,
+    )
 
 
 # ── Licence ───────────────────────────────────────────────────────────────────
+
 
 class LicenseManager:
     """Etat Pro de l'installation, persiste dans <data_dir>/license.json."""
@@ -252,7 +272,7 @@ class LicenseManager:
         """
         if not LS_STORE_ID or not _NET_OK:
             return
-        key         = self._data.get("key", "")
+        key = self._data.get("key", "")
         instance_id = self._data.get("instance_id", "")
         if not key or not instance_id:
             return
@@ -278,8 +298,8 @@ class LicenseManager:
         instance_id, error = _ls_activate(key)
         if instance_id:
             self._data = {
-                "email":       email.strip(),
-                "key":         key.strip().upper(),
+                "email": email.strip(),
+                "key": key.strip().upper(),
                 "instance_id": instance_id,
                 "last_online": time.time(),
             }
@@ -289,7 +309,7 @@ class LicenseManager:
 
     def deactivate(self) -> None:
         """Rend le siege d'activation et repasse en gratuit."""
-        key         = self._data.get("key", "")
+        key = self._data.get("key", "")
         instance_id = self._data.get("instance_id", "")
         if LS_STORE_ID and key and instance_id:
             _ls_deactivate(key, instance_id)
@@ -298,6 +318,7 @@ class LicenseManager:
 
 
 # ── Quota du mode gratuit ─────────────────────────────────────────────────────
+
 
 class UsageTracker:
     """Compteur d'exports du jour, persiste dans <data_dir>/usage.json.
@@ -331,8 +352,11 @@ class UsageTracker:
 
     def _reset_if_new_day(self) -> None:
         if self._data.get("date") != self._today():
-            self._data = {"date": self._today(), "count": 0,
-                          "total": self._data.get("total", 0)}
+            self._data = {
+                "date": self._today(),
+                "count": 0,
+                "total": self._data.get("total", 0),
+            }
             self._save()
 
     def exports_today(self) -> int:

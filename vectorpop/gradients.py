@@ -25,7 +25,7 @@ _PATH = re.compile(r"<path\b[^>]*?/>", re.S)
 _FILL = re.compile(r'fill="(#[0-9a-fA-F]{6})"')
 _SVG_OPEN = re.compile(r"<svg\b[^>]*>", re.S)
 _WH = re.compile(r'\b(width|height)="([0-9.]+)')
-_FILL_ANY = re.compile(r'fill="([^"]+)"')       # n'importe quel remplissage (hex ou url)
+_FILL_ANY = re.compile(r'fill="([^"]+)"')  # n'importe quel remplissage (hex ou url)
 _D = re.compile(r'\bd="([^"]*)"')
 _TRANSLATE = re.compile(r'transform="translate\(\s*(-?[\d.]+)[ ,]+(-?[\d.]+)\s*\)"')
 _TRANSLATE_ATTR = re.compile(r'\s*transform="translate\([^)]*\)"')
@@ -62,7 +62,7 @@ def _flatten_translate(path: str) -> str:
     tx, ty = float(tm.group(1)), float(tm.group(2))
     dm = _D.search(path)
     if dm:
-        path = path[:dm.start(1)] + _offset_d(dm.group(1), tx, ty) + path[dm.end(1):]
+        path = path[: dm.start(1)] + _offset_d(dm.group(1), tx, ty) + path[dm.end(1) :]
     return _TRANSLATE_ATTR.sub("", path)
 
 
@@ -139,9 +139,9 @@ def _fit_linear_gradient(xs, ys, cols, stops):
     for ch in range(3):
         coef, *_ = np.linalg.lstsq(A, cols[:, ch], rcond=None)
         vecs.append(coef[:2])
-    vecs = np.array(vecs)                       # (3, 2)
+    vecs = np.array(vecs)  # (3, 2)
     norms = np.linalg.norm(vecs, axis=1)
-    direction = (vecs * norms[:, None]).sum(axis=0)   # somme pondérée par l'amplitude
+    direction = (vecs * norms[:, None]).sum(axis=0)  # somme pondérée par l'amplitude
     dn = np.linalg.norm(direction)
     if dn < 1e-6:
         return None
@@ -150,7 +150,7 @@ def _fit_linear_gradient(xs, ys, cols, stops):
     pos = np.column_stack([xs, ys]).astype(np.float64)
     t = pos @ d
     tmin, tmax = t.min(), t.max()
-    if tmax - tmin < 3:                          # variation spatiale négligeable
+    if tmax - tmin < 3:  # variation spatiale négligeable
         return None
     mean_pos = pos.mean(axis=0)
     tmean = t.mean()
@@ -165,7 +165,7 @@ def _fit_linear_gradient(xs, ys, cols, stops):
     for q in np.linspace(0.0, 1.0, stops):
         tq = tmin + q * span
         sel = np.abs(t - tq) <= max(win, 1.0)
-        if sel.sum() < 3:                        # tranche vide : plus proches voisins
+        if sel.sum() < 3:  # tranche vide : plus proches voisins
             near = np.argsort(np.abs(t - tq))[:20]
             med = np.median(cols[near], axis=0)
         else:
@@ -181,9 +181,13 @@ def _fit_linear_gradient(xs, ys, cols, stops):
     return p1, p2, stop_list
 
 
-def gradientize_svg(svg_text: str, source: Image.Image,
-                    color_merge: int = 40, stops: int = 5,
-                    max_samples: int = 5000) -> str:
+def gradientize_svg(
+    svg_text: str,
+    source: Image.Image,
+    color_merge: int = 40,
+    stops: int = 5,
+    max_samples: int = 5000,
+) -> str:
     """Remplace les groupes de bandes par de vrais dégradés linéaires.
 
     `source` = image d'origine (RGB) alignée sur les coordonnées du SVG vtracer
@@ -240,7 +244,7 @@ def gradientize_svg(svg_text: str, source: Image.Image,
 
     for members in groups.values():
         if len(members) < 2:
-            continue                              # une bande seule : pas un dégradé
+            continue  # une bande seule : pas un dégradé
         member_set = set(members)
         mask = np.isin(labels, list(member_set))
         cnt = int(mask.sum())
@@ -253,7 +257,9 @@ def gradientize_svg(svg_text: str, source: Image.Image,
             idx = np.random.default_rng(0).choice(cnt, max_samples, replace=False)
             xs, ys = xs[idx], ys[idx]
         cols = src[ys, xs].astype(np.float64)
-        fit = _fit_linear_gradient(xs.astype(np.float64), ys.astype(np.float64), cols, stops)
+        fit = _fit_linear_gradient(
+            xs.astype(np.float64), ys.astype(np.float64), cols, stops
+        )
         if fit is None:
             continue
         p1, p2, stop_list = fit
@@ -292,8 +298,9 @@ def _fill_of(path: str):
     return m.group(1) if m else None
 
 
-def remove_shape_at(svg_text: str, x: float, y: float,
-                    group: bool = True, color_merge: int = 40):
+def remove_shape_at(
+    svg_text: str, x: float, y: float, group: bool = True, color_merge: int = 40
+):
     """Supprime le tracé situé sous (x, y). Si group=True, retire tout le groupe
     contigu de même remplissage (ex. un disque de fond entier en un clic).
 
@@ -321,8 +328,10 @@ def remove_shape_at(svg_text: str, x: float, y: float,
     if group:
         fills = [_fill_of(p) for p in paths]
         uf = _UnionFind(len(paths))
-        for base, other in ((labels[:, :-1], labels[:, 1:]),
-                            (labels[:-1, :], labels[1:, :])):
+        for base, other in (
+            (labels[:, :-1], labels[:, 1:]),
+            (labels[:-1, :], labels[1:, :]),
+        ):
             mask = (base != other) & (base >= 0) & (other >= 0)
             pairs = np.unique(np.stack([base[mask], other[mask]], axis=1), axis=0)
             for i, j in pairs:
@@ -332,8 +341,10 @@ def remove_shape_at(svg_text: str, x: float, y: float,
                     continue
                 same = fi == fj
                 if not same and fi.startswith("#") and fj.startswith("#"):
-                    same = np.linalg.norm(
-                        np.subtract(_hex_to_rgb(fi), _hex_to_rgb(fj))) <= color_merge
+                    same = (
+                        np.linalg.norm(np.subtract(_hex_to_rgb(fi), _hex_to_rgb(fj)))
+                        <= color_merge
+                    )
                 if same:
                     uf.union(i, j)
         root = uf.find(lab)
@@ -377,14 +388,16 @@ def refine_colors(svg_text: str, source: Image.Image, min_pixels: int = 30) -> s
     cols_v = src[valid]
     n = len(paths)
     counts = np.bincount(lab_v, minlength=n)
-    sums = np.stack([np.bincount(lab_v, weights=cols_v[:, c], minlength=n)
-                     for c in range(3)], axis=1)
+    sums = np.stack(
+        [np.bincount(lab_v, weights=cols_v[:, c], minlength=n) for c in range(3)],
+        axis=1,
+    )
     means = sums / np.maximum(counts, 1)[:, None]
 
     out = svg_text
     for i, p in enumerate(paths):
         if counts[i] < min_pixels or not _FILL.search(p):
-            continue                              # trop petit, ou déjà un dégradé
+            continue  # trop petit, ou déjà un dégradé
         new_hex = _rgb_to_hex(*means[i])
         new_p = _FILL.sub(f'fill="{new_hex}"', p, count=1)
         out = out.replace(p, new_p, 1)

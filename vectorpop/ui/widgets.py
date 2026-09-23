@@ -1,13 +1,22 @@
 from pathlib import Path
 from PySide6.QtCore import Qt, QRect, QSize, Signal
 from PySide6.QtGui import QPainter, QPen, QPixmap, QIcon
-from PySide6.QtWidgets import QLabel, QFrame, QSizePolicy, QRubberBand, QFileDialog, QGraphicsView, QGraphicsScene
+from PySide6.QtWidgets import (
+    QLabel,
+    QFrame,
+    QSizePolicy,
+    QRubberBand,
+    QFileDialog,
+    QGraphicsView,
+    QGraphicsScene,
+)
 from PySide6.QtSvgWidgets import QGraphicsSvgItem
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import QWidget, QPushButton
 
 from ..theme import checker_brush
 from ..app_utils import ACCEPTED
+
 
 class DropImage(QLabel):
     """Zone gauche : image par drag & drop / clic, + sélection pour rogner.
@@ -22,16 +31,18 @@ class DropImage(QLabel):
         self._tr = tr or (lambda k, **kw: k)
         self.setText(self._tr("drop_placeholder"))
         self._on_file = on_file
-        self._src_pix: QPixmap | None = None      # pixmap original (non redimensionne)
-        self._draw_rect = QRect()                 # ou le pixmap est dessine (coords widget)
-        self._origin = None                       # debut de la selection
+        self._src_pix: QPixmap | None = None  # pixmap original (non redimensionne)
+        self._draw_rect = QRect()  # ou le pixmap est dessine (coords widget)
+        self._origin = None  # debut de la selection
         self._rubber: QRubberBand | None = None
         self.setAlignment(Qt.AlignCenter)
         self.setAcceptDrops(True)
         self.setMinimumSize(360, 360)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setFrameShape(QFrame.StyledPanel)
-        self.setObjectName("dropImage")   # style pris en charge par la QSS globale (theme.py)
+        self.setObjectName(
+            "dropImage"
+        )  # style pris en charge par la QSS globale (theme.py)
 
         # Etat vide plus engageant : un essai en un clic, sans avoir a chercher un fichier.
         self._demo_btn: QPushButton | None = None
@@ -79,13 +90,14 @@ class DropImage(QLabel):
         self._render()
         self.setToolTip(self._tr("drop_tooltip"))
         if self._demo_btn is not None:
-            self._demo_btn.hide()   # une vraie image est chargee : plus besoin de l'exemple
+            self._demo_btn.hide()  # une vraie image est chargee : plus besoin de l'exemple
 
     def _render(self):
         if self._src_pix is None:
             return
         scaled = self._src_pix.scaled(
-            self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
+        )
         x = (self.width() - scaled.width()) // 2
         y = (self.height() - scaled.height()) // 2
         self._draw_rect = QRect(x, y, scaled.width(), scaled.height())
@@ -93,7 +105,7 @@ class DropImage(QLabel):
 
     def resizeEvent(self, e):
         super().resizeEvent(e)
-        self.clear_selection()   # la selection n'est plus valable apres redimensionnement
+        self.clear_selection()  # la selection n'est plus valable apres redimensionnement
         self._render()
         self._position_demo_btn()
 
@@ -128,7 +140,8 @@ class DropImage(QLabel):
 
     def _open_dialog(self):
         f, _ = QFileDialog.getOpenFileName(
-            self, self._tr("open_dialog_title"), "", self._tr("img_filter"))
+            self, self._tr("open_dialog_title"), "", self._tr("img_filter")
+        )
         if f:
             self._on_file(Path(f))
 
@@ -139,8 +152,12 @@ class DropImage(QLabel):
 
     def selection_in_image_px(self):
         """Rectangle sélectionné en pixels de l'image d'origine, ou None."""
-        if (self._rubber is None or not self._rubber.isVisible()
-                or self._src_pix is None or self._draw_rect.isEmpty()):
+        if (
+            self._rubber is None
+            or not self._rubber.isVisible()
+            or self._src_pix is None
+            or self._draw_rect.isEmpty()
+        ):
             return None
         sel = self._rubber.geometry().intersected(self._draw_rect)
         if sel.width() < 3 or sel.height() < 3:
@@ -176,12 +193,16 @@ class SvgView(QGraphicsView):
         self._item: QGraphicsSvgItem | None = None
         self._delete_mode = False
         self._zoom = 0  # 0 = ajuste a la fenetre ; borne pour eviter les extremes
-        self.setDragMode(QGraphicsView.ScrollHandDrag)          # glisser pour deplacer
-        self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)  # zoom sous le curseur
+        self.setDragMode(QGraphicsView.ScrollHandDrag)  # glisser pour deplacer
+        self.setTransformationAnchor(
+            QGraphicsView.AnchorUnderMouse
+        )  # zoom sous le curseur
         self.setRenderHints(QPainter.Antialiasing | QPainter.SmoothPixmapTransform)
         self.setBackgroundBrush(checker_brush())
         self.setMinimumSize(360, 360)
-        self.setObjectName("svgView")   # style pris en charge par la QSS globale (theme.py)
+        self.setObjectName(
+            "svgView"
+        )  # style pris en charge par la QSS globale (theme.py)
         self.setToolTip(self._tr("svg_view_tooltip"))
 
     def retranslate(self):
@@ -213,16 +234,16 @@ class SvgView(QGraphicsView):
         if self._item is None:
             return
         up = e.angleDelta().y() > 0
-        if not up and self._zoom <= -8:   # ne pas dezoomer a l'infini
+        if not up and self._zoom <= -8:  # ne pas dezoomer a l'infini
             return
-        if up and self._zoom >= 20:        # ni zoomer a l'infini
+        if up and self._zoom >= 20:  # ni zoomer a l'infini
             return
         self._zoom += 1 if up else -1
         self.scale(1.25 if up else 0.8, 1.25 if up else 0.8)
 
     def resizeEvent(self, e):
         super().resizeEvent(e)
-        if self._zoom == 0:   # tant que l'utilisateur n'a pas zoome, on reste ajuste
+        if self._zoom == 0:  # tant que l'utilisateur n'a pas zoome, on reste ajuste
             self._fit()
 
     def mouseDoubleClickEvent(self, e):
@@ -236,11 +257,10 @@ class SvgView(QGraphicsView):
 
     def mousePressEvent(self, e):
         if self._delete_mode and self._item is not None:
-            sp = self.mapToScene(e.position().toPoint())   # coords SVG (= px image)
+            sp = self.mapToScene(e.position().toPoint())  # coords SVG (= px image)
             self.pathClicked.emit(sp.x(), sp.y())
             return
         super().mousePressEvent(e)
-
 
 
 class CompareView(QWidget):
@@ -255,7 +275,7 @@ class CompareView(QWidget):
         super().__init__()
         self._before: QPixmap | None = None
         self._after: QPixmap | None = None
-        self._pos = 0.5   # 0..1, position du curseur
+        self._pos = 0.5  # 0..1, position du curseur
         self.setMinimumSize(300, 300)
 
     def set_images(self, before: QPixmap, after: QPixmap):
@@ -269,8 +289,9 @@ class CompareView(QWidget):
     def _fit_rect(self) -> QRect:
         if self._before is None or self._before.width() == 0:
             return self.rect()
-        scale = min(self.width() / self._before.width(),
-                    self.height() / self._before.height())
+        scale = min(
+            self.width() / self._before.width(), self.height() / self._before.height()
+        )
         w, h = round(self._before.width() * scale), round(self._before.height() * scale)
         return QRect((self.width() - w) // 2, (self.height() - h) // 2, w, h)
 
@@ -282,9 +303,10 @@ class CompareView(QWidget):
         p.setRenderHint(QPainter.SmoothPixmapTransform)
         p.drawPixmap(target, self._before, self._before.rect())
         split_x = target.left() + round(target.width() * self._pos)
-        p.setClipRect(QRect(split_x, target.top(), target.right() - split_x + 1, target.height()))
+        p.setClipRect(
+            QRect(split_x, target.top(), target.right() - split_x + 1, target.height())
+        )
         p.drawPixmap(target, self._after, self._after.rect())
         p.setClipping(False)
         p.setPen(QPen(Qt.white, 2))
         p.drawLine(split_x, target.top(), split_x, target.bottom())
-

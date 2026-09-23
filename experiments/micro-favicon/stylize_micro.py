@@ -8,6 +8,7 @@ lisibles. Un accent n'est garde QUE s'il survit comme bloc plein a la
 taille cible (sinon il serait de toute facon illisible -> on le supprime
 plutot que de le laisser baver).
 """
+
 from __future__ import annotations
 import numpy as np
 from PIL import Image
@@ -15,10 +16,12 @@ from pathlib import Path
 from colorsys import rgb_to_hsv
 
 SRC = r"C:\Users\William\Downloads\Copilot_20260716_072241.png"
-OUT_DIR = Path(r"C:\Users\William\AppData\Local\Temp\claude\C--Users-William-Documents-Entreprenariat\f6243753-b159-4e23-9823-8c693bbcb16a\scratchpad")
+OUT_DIR = Path(
+    r"C:\Users\William\AppData\Local\Temp\claude\C--Users-William-Documents-Entreprenariat\f6243753-b159-4e23-9823-8c693bbcb16a\scratchpad"
+)
 
-SILHOUETTE_COLOR = (10, 25, 45)      # navy fonce, quasi-noir
-ACCENT_COLOR = (240, 145, 30)        # orange (couleur des yeux dans le logo source)
+SILHOUETTE_COLOR = (10, 25, 45)  # navy fonce, quasi-noir
+ACCENT_COLOR = (240, 145, 30)  # orange (couleur des yeux dans le logo source)
 
 
 def load():
@@ -27,10 +30,14 @@ def load():
 
 
 def bg_color(arr):
-    corners = np.concatenate([
-        arr[:8, :8].reshape(-1, 3), arr[:8, -8:].reshape(-1, 3),
-        arr[-8:, :8].reshape(-1, 3), arr[-8:, -8:].reshape(-1, 3),
-    ])
+    corners = np.concatenate(
+        [
+            arr[:8, :8].reshape(-1, 3),
+            arr[:8, -8:].reshape(-1, 3),
+            arr[-8:, :8].reshape(-1, 3),
+            arr[-8:, -8:].reshape(-1, 3),
+        ]
+    )
     return corners.mean(axis=0)
 
 
@@ -63,7 +70,7 @@ def pool_bool_to_grid(mask: np.ndarray, grid: int, keep_frac: float) -> np.ndarr
     out = np.zeros((grid, grid), dtype=bool)
     for i in range(grid):
         for j in range(grid):
-            block = mask[ys[i]:ys[i + 1], xs[j]:xs[j + 1]]
+            block = mask[ys[i] : ys[i + 1], xs[j] : xs[j + 1]]
             if block.size == 0:
                 continue
             out[i, j] = block.mean() >= keep_frac
@@ -93,11 +100,16 @@ def upscale_nn(img: Image.Image, factor: int) -> Image.Image:
     return img.resize((img.width * factor, img.height * factor), Image.NEAREST)
 
 
-def contact_sheet(cells: list[tuple[str, Image.Image]], cell_px: int = 220) -> Image.Image:
+def contact_sheet(
+    cells: list[tuple[str, Image.Image]], cell_px: int = 220
+) -> Image.Image:
     pad = 14
     cols = len(cells)
-    sheet = Image.new("RGB", (cols * (cell_px + pad) + pad, cell_px + pad * 2 + 30), (235, 235, 232))
+    sheet = Image.new(
+        "RGB", (cols * (cell_px + pad) + pad, cell_px + pad * 2 + 30), (235, 235, 232)
+    )
     from PIL import ImageDraw
+
     d = ImageDraw.Draw(sheet)
     for i, (label, im) in enumerate(cells):
         thumb = im.resize((cell_px, cell_px), Image.NEAREST)

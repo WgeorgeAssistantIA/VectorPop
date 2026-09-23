@@ -1,12 +1,23 @@
 import webbrowser
 from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QLabel, QScrollArea, QWidget, QGroupBox,
-    QPushButton, QDialogButtonBox, QSpinBox, QCheckBox, QHBoxLayout,
-    QLineEdit, QMessageBox
+    QDialog,
+    QVBoxLayout,
+    QLabel,
+    QScrollArea,
+    QWidget,
+    QGroupBox,
+    QPushButton,
+    QDialogButtonBox,
+    QSpinBox,
+    QCheckBox,
+    QHBoxLayout,
+    QLineEdit,
+    QMessageBox,
 )
 
 from ..license import buy_url
 from ..core.recipes import RECIPES, TIPS
+
 
 class SettingsHelpDialog(QDialog):
     """Aide aux réglages : recettes par situation (appliquables) + dépannage."""
@@ -33,7 +44,9 @@ class SettingsHelpDialog(QDialog):
             lbl.setWordWrap(True)
             gl.addWidget(lbl)
             btn = QPushButton(t("recipe_apply_btn"))
-            btn.clicked.connect(lambda _=False, c=cfg: (win.apply_recipe(c), self.accept()))
+            btn.clicked.connect(
+                lambda _=False, c=cfg: (win.apply_recipe(c), self.accept())
+            )
             gl.addWidget(btn)
             vb.addWidget(gb)
 
@@ -64,8 +77,15 @@ class SizeDialog(QDialog):
     PRESETS = (16, 32, 48, 64, 128, 256, 512, 1024, 2048, 4096)
     RECOMMENDED = 2048
 
-    def __init__(self, parent, title: str, label: str, default: int,
-                 offer_original: bool = False, recommended_tip: str = ""):
+    def __init__(
+        self,
+        parent,
+        title: str,
+        label: str,
+        default: int,
+        offer_original: bool = False,
+        recommended_tip: str = "",
+    ):
         super().__init__(parent)
         self.setWindowTitle(title)
         lay = QVBoxLayout(self)
@@ -135,7 +155,10 @@ class LicenseDialog(QDialog):
         self.ed_email.setPlaceholderText(win._t("lic_email"))
         self.ed_key = QLineEdit()
         self.ed_key.setPlaceholderText(win._t("lic_key"))
-        for label_key, field in (("lic_email", self.ed_email), ("lic_key", self.ed_key)):
+        for label_key, field in (
+            ("lic_email", self.ed_email),
+            ("lic_key", self.ed_key),
+        ):
             row = QHBoxLayout()
             lbl = QLabel(win._t(label_key))
             lbl.setMinimumWidth(110)
@@ -158,19 +181,24 @@ class LicenseDialog(QDialog):
         email = self.ed_email.text().strip()
         key = self.ed_key.text().strip()
         if not email or not key:
-            QMessageBox.warning(self, self._win._t("lic_title"), self._win._t("lic_empty"))
+            QMessageBox.warning(
+                self, self._win._t("lic_title"), self._win._t("lic_empty")
+            )
             return
         ok, err = self._win.lic.activate(email, key)
         if ok:
-            QMessageBox.information(self, self._win._t("lic_ok_title"), self._win._t("lic_ok"))
+            QMessageBox.information(
+                self, self._win._t("lic_ok_title"), self._win._t("lic_ok")
+            )
             self._win.refresh_pro_ui()
             self.accept()
             return
         # Messages traduits pour les cas connus ; sinon on remonte le texte brut
         # de Lemon Squeezy, qui est deja explicite ("license key has reached
         # its activation limit", "license key has been disabled"...).
-        msg = {"invalid": self._win._t("lic_invalid"),
-               "nonet":   self._win._t("lic_nonet"),
-               "timeout": self._win._t("lic_timeout")}.get(err, err)
+        msg = {
+            "invalid": self._win._t("lic_invalid"),
+            "nonet": self._win._t("lic_nonet"),
+            "timeout": self._win._t("lic_timeout"),
+        }.get(err, err)
         QMessageBox.warning(self, self._win._t("lic_title"), msg)
-

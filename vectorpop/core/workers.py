@@ -12,6 +12,7 @@ from ..optimize import optimize_svg
 from ..vectorizer import VectorParams, auto_refine, vectorize
 from .recipes import _postprocess_svg
 
+
 class VectorizeWorker(QThread):
     """Vectorise hors du thread UI : l'interface reste fluide pendant le calcul.
 
@@ -19,12 +20,18 @@ class VectorizeWorker(QThread):
     contente de produire le fichier SVG et signale le resultat par un signal.
     """
 
-    done = Signal(str)      # chemin du SVG produit
-    warning = Signal(str)   # post-traitement (dégradés/affinage) échoué, SVG brut gardé
-    failed = Signal(str)    # message d'erreur
+    done = Signal(str)  # chemin du SVG produit
+    warning = Signal(str)  # post-traitement (dégradés/affinage) échoué, SVG brut gardé
+    failed = Signal(str)  # message d'erreur
 
-    def __init__(self, src: Path, out: Path, params: VectorParams,
-                 gradients: bool = False, refine: bool = False):
+    def __init__(
+        self,
+        src: Path,
+        out: Path,
+        params: VectorParams,
+        gradients: bool = False,
+        refine: bool = False,
+    ):
         super().__init__()
         self._src, self._out, self._params = src, out, params
         self._gradients, self._refine = gradients, refine
@@ -45,8 +52,8 @@ class AutoTuneWorker(QThread):
     plusieurs passes de vectorisation), au lieu de laisser l'utilisateur tatonner.
     """
 
-    progress = Signal(int, int)   # (candidat en cours, total)
-    done = Signal(str, float)     # (chemin SVG produit, ecart pixel restant 0-255)
+    progress = Signal(int, int)  # (candidat en cours, total)
+    done = Signal(str, float)  # (chemin SVG produit, ecart pixel restant 0-255)
     failed = Signal(str)
 
     def __init__(self, src: Path, out: Path, params: VectorParams):
@@ -56,8 +63,11 @@ class AutoTuneWorker(QThread):
     def run(self):
         try:
             _, score = auto_refine(
-                self._src, self._out, self._params,
-                progress=lambda i, total, _s: self.progress.emit(i, total))
+                self._src,
+                self._out,
+                self._params,
+                progress=lambda i, total, _s: self.progress.emit(i, total),
+            )
             self.done.emit(str(self._out), score)
         except Exception as e:  # noqa: BLE001 - remonte tout au thread UI
             self.failed.emit(str(e))
@@ -66,17 +76,32 @@ class AutoTuneWorker(QThread):
 class BatchWorker(QThread):
     """Vectorise tout un dossier d'images en tache de fond, format au choix."""
 
-    progress = Signal(int, str)   # numero (1-based), nom du fichier en cours
-    done = Signal(int, int, int)  # nb traites, nb echecs, nb avertissements post-traitement
+    progress = Signal(int, str)  # numero (1-based), nom du fichier en cours
+    done = Signal(
+        int, int, int
+    )  # nb traites, nb echecs, nb avertissements post-traitement
 
-    def __init__(self, files: list[Path], out_dir: Path, fmt: str,
-                 params: VectorParams, gradients: bool = False, refine: bool = False,
-                 png_size: int = 2048, svg_size: int = 0):
+    def __init__(
+        self,
+        files: list[Path],
+        out_dir: Path,
+        fmt: str,
+        params: VectorParams,
+        gradients: bool = False,
+        refine: bool = False,
+        png_size: int = 2048,
+        svg_size: int = 0,
+    ):
         super().__init__()
-        self._files, self._out_dir, self._fmt, self._params = files, out_dir, fmt, params
+        self._files, self._out_dir, self._fmt, self._params = (
+            files,
+            out_dir,
+            fmt,
+            params,
+        )
         self._gradients, self._refine = gradients, refine
         self._png_size = png_size
-        self._svg_size = svg_size   # 0 = taille d'origine (cf. export.resize_svg)
+        self._svg_size = svg_size  # 0 = taille d'origine (cf. export.resize_svg)
         self._cancel = False
 
     def cancel(self):
@@ -128,7 +153,7 @@ class DeleteWorker(QThread):
     figeait pendant tout ce temps.
     """
 
-    done = Signal(str, int)   # nouveau SVG, nb de tracés supprimés
+    done = Signal(str, int)  # nouveau SVG, nb de tracés supprimés
     failed = Signal(str)
 
     def __init__(self, svg_text: str, x: float, y: float):
@@ -138,7 +163,8 @@ class DeleteWorker(QThread):
     def run(self):
         try:
             new_svg, removed = remove_shape_at(
-                self._svg_text, self._x, self._y, group=True, color_merge=18)
+                self._svg_text, self._x, self._y, group=True, color_merge=18
+            )
             self.done.emit(new_svg, removed)
         except Exception as e:  # noqa: BLE001
             self.failed.emit(str(e))
@@ -162,7 +188,7 @@ class LicenseRefreshWorker(QThread):
         try:
             self._lic.refresh_online()
         except Exception:  # noqa: BLE001
-            pass          # une revalidation ratee ne doit jamais casser l'app
+            pass  # une revalidation ratee ne doit jamais casser l'app
         self.done.emit()
 
 
@@ -173,9 +199,9 @@ class AIDownloadWorker(QThread):
     plusieurs dizaines de secondes voire minutes selon la connexion.
     """
 
-    progress = Signal(int, int)   # (octets recus, total ; total vaut 0 si inconnu)
+    progress = Signal(int, int)  # (octets recus, total ; total vaut 0 si inconnu)
     done = Signal()
-    failed = Signal(str)          # "cancelled" si annule par l'utilisateur
+    failed = Signal(str)  # "cancelled" si annule par l'utilisateur
 
     def __init__(self):
         super().__init__()
@@ -188,7 +214,8 @@ class AIDownloadWorker(QThread):
         try:
             ai_module.download(
                 progress=lambda d, t: self.progress.emit(d, t),
-                should_cancel=lambda: self._cancel)
+                should_cancel=lambda: self._cancel,
+            )
             self.done.emit()
         except ai_module.DownloadCancelled:
             self.failed.emit("cancelled")
@@ -199,9 +226,9 @@ class AIDownloadWorker(QThread):
 class WeightsDownloadWorker(QThread):
     """Telecharge les poids de la finition IA (~5 Mo) hors du thread UI."""
 
-    progress = Signal(int, int)   # (octets recus, total ; total vaut 0 si inconnu)
+    progress = Signal(int, int)  # (octets recus, total ; total vaut 0 si inconnu)
     done = Signal()
-    failed = Signal(str)          # "cancelled" si annule par l'utilisateur
+    failed = Signal(str)  # "cancelled" si annule par l'utilisateur
 
     def __init__(self):
         super().__init__()
@@ -214,10 +241,10 @@ class WeightsDownloadWorker(QThread):
         try:
             ai_upscale.download_weights(
                 progress=lambda d, t: self.progress.emit(d, t),
-                should_cancel=lambda: self._cancel)
+                should_cancel=lambda: self._cancel,
+            )
             self.done.emit()
         except ai_module.DownloadCancelled:
             self.failed.emit("cancelled")
         except Exception as e:  # noqa: BLE001
             self.failed.emit(str(e))
-

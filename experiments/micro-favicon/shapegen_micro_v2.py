@@ -3,6 +3,7 @@ des formes par SAILLANCE (contraste local + compacite + proximite du
 centre) au lieu de l'aire brute -- pour eviter que 2 grosses barres ternes
 eliminent les 2 petits yeux qui sont l'element le plus identifiant.
 """
+
 from __future__ import annotations
 import numpy as np
 from PIL import Image, ImageDraw
@@ -11,7 +12,9 @@ from scipy.cluster.vq import kmeans2
 from scipy.ndimage import label, find_objects, binary_dilation
 
 SRC = r"C:\Users\William\Downloads\Copilot_20260716_072241.png"
-OUT_DIR = Path(r"C:\Users\William\AppData\Local\Temp\claude\C--Users-William-Documents-Entreprenariat\f6243753-b159-4e23-9823-8c693bbcb16a\scratchpad")
+OUT_DIR = Path(
+    r"C:\Users\William\AppData\Local\Temp\claude\C--Users-William-Documents-Entreprenariat\f6243753-b159-4e23-9823-8c693bbcb16a\scratchpad"
+)
 
 
 def load():
@@ -20,10 +23,14 @@ def load():
 
 
 def bg_color(arr):
-    corners = np.concatenate([
-        arr[:8, :8].reshape(-1, 3), arr[:8, -8:].reshape(-1, 3),
-        arr[-8:, :8].reshape(-1, 3), arr[-8:, -8:].reshape(-1, 3),
-    ])
+    corners = np.concatenate(
+        [
+            arr[:8, :8].reshape(-1, 3),
+            arr[:8, -8:].reshape(-1, 3),
+            arr[-8:, :8].reshape(-1, 3),
+            arr[-8:, -8:].reshape(-1, 3),
+        ]
+    )
     return corners.mean(axis=0)
 
 
@@ -35,7 +42,9 @@ def extract_shapes(arr, n_colors: int, n_shapes: int, min_area_frac: float = 0.0
     ink_pixels = arr[ink_mask]
 
     rng = np.random.default_rng(0)
-    sample = ink_pixels[rng.choice(len(ink_pixels), size=min(20000, len(ink_pixels)), replace=False)]
+    sample = ink_pixels[
+        rng.choice(len(ink_pixels), size=min(20000, len(ink_pixels)), replace=False)
+    ]
     centers, _ = kmeans2(sample, n_colors, seed=0, minit="++")
 
     d = np.linalg.norm(arr[..., None, :] - centers[None, None, :, :], axis=-1)
@@ -69,7 +78,7 @@ def extract_shapes(arr, n_colors: int, n_shapes: int, min_area_frac: float = 0.0
             bbox_area = (y1 - y0 + 1) * (x1 - x0 + 1)
             extent = area / bbox_area
             r_max = np.sqrt(((ys - cy) ** 2 + (xs - cx) ** 2).max()) if len(ys) else 1
-            roundness = area / (np.pi * r_max ** 2 + 1e-6)
+            roundness = area / (np.pi * r_max**2 + 1e-6)
 
             # --- contraste local : anneau juste autour du blob ---
             dil = comp_mask
@@ -86,13 +95,22 @@ def extract_shapes(arr, n_colors: int, n_shapes: int, min_area_frac: float = 0.0
             dist_center = np.hypot(cx - cx_img, cy - cy_img) / (diag / 2)
             centrality = 1 - min(dist_center, 1.0)
 
-            blobs.append(dict(
-                color=tuple(int(c) for c in blob_color),
-                area=int(area), cx=cx, cy=cy,
-                x0=x0, x1=x1, y0=y0, y1=y1,
-                extent=extent, roundness=roundness,
-                contrast=contrast, centrality=centrality,
-            ))
+            blobs.append(
+                dict(
+                    color=tuple(int(c) for c in blob_color),
+                    area=int(area),
+                    cx=cx,
+                    cy=cy,
+                    x0=x0,
+                    x1=x1,
+                    y0=y0,
+                    y1=y1,
+                    extent=extent,
+                    roundness=roundness,
+                    contrast=contrast,
+                    centrality=centrality,
+                )
+            )
 
     if not blobs:
         return [], (H, W)
@@ -106,7 +124,7 @@ def extract_shapes(arr, n_colors: int, n_shapes: int, min_area_frac: float = 0.0
         rng_ = x.max() - x.min()
         return (x - x.min()) / rng_ if rng_ > 1e-9 else np.zeros_like(x)
 
-    area_n = norm(np.log(areas + 1))       # log pour atténuer l'effet "grosse zone"
+    area_n = norm(np.log(areas + 1))  # log pour atténuer l'effet "grosse zone"
     contrast_n = norm(contrasts)
     round_n = norm(roundnesses)
     central_n = norm(centralities)
@@ -142,7 +160,9 @@ def classify_primitive(b):
     return "ellipse"
 
 
-def render_png_supersampled(blobs, canvas_hw, size_px: int, supersample: int = 8) -> Image.Image:
+def render_png_supersampled(
+    blobs, canvas_hw, size_px: int, supersample: int = 8
+) -> Image.Image:
     H, W = canvas_hw
     big = size_px * supersample
     scale = big / max(H, W)
@@ -170,8 +190,13 @@ def render_png_supersampled(blobs, canvas_hw, size_px: int, supersample: int = 8
 
 def contact_sheet(cells, cell_px: int = 220):
     pad = 14
-    sheet = Image.new("RGB", (len(cells) * (cell_px + pad) + pad, cell_px + pad * 2 + 30), (235, 235, 232))
+    sheet = Image.new(
+        "RGB",
+        (len(cells) * (cell_px + pad) + pad, cell_px + pad * 2 + 30),
+        (235, 235, 232),
+    )
     from PIL import ImageDraw as _D
+
     d = _D.Draw(sheet)
     for i, (label_, im) in enumerate(cells):
         bgpaste = Image.new("RGB", (cell_px, cell_px), (245, 245, 240))

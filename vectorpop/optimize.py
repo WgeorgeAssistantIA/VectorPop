@@ -14,7 +14,7 @@ import re
 
 # Nombre décimal (avec ou sans partie entière) : "12.3456", "-0.5", ".75"
 _DECIMAL = re.compile(r"-?\d*\.\d+")
-_XML_DECL = re.compile(r"^\s*<\?xml[^>]*\?>\s*")   # prologue optionnel (contient "1.0")
+_XML_DECL = re.compile(r"^\s*<\?xml[^>]*\?>\s*")  # prologue optionnel (contient "1.0")
 _COMMENT = re.compile(r"<!--.*?-->", re.S)
 _METADATA = re.compile(r"<metadata>.*?</metadata>", re.S)
 _BETWEEN_TAGS = re.compile(r">\s+<")
@@ -23,7 +23,7 @@ _BETWEEN_TAGS = re.compile(r">\s+<")
 def _round_number(m: re.Match, precision: int) -> str:
     val = round(float(m.group(0)), precision)
     if val == int(val):
-        return str(int(val))                       # 12.0 -> "12"
+        return str(int(val))  # 12.0 -> "12"
     return f"{val:.{precision}f}".rstrip("0").rstrip(".")
 
 

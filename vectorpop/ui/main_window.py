@@ -9,9 +9,23 @@ from pathlib import Path
 from PySide6.QtCore import Qt, QTimer, QSize, QSettings, QUrl
 from PySide6.QtGui import QDesktopServices, QIcon, QKeySequence, QPixmap, QShortcut
 from PySide6.QtWidgets import (
-    QApplication, QCheckBox, QComboBox, QHBoxLayout, QInputDialog,
-    QLabel, QMainWindow, QMessageBox, QProgressBar, QProgressDialog,
-    QPushButton, QSizePolicy, QSlider, QSplitter, QVBoxLayout, QWidget, QFileDialog
+    QApplication,
+    QCheckBox,
+    QComboBox,
+    QHBoxLayout,
+    QInputDialog,
+    QLabel,
+    QMainWindow,
+    QMessageBox,
+    QProgressBar,
+    QProgressDialog,
+    QPushButton,
+    QSizePolicy,
+    QSlider,
+    QSplitter,
+    QVBoxLayout,
+    QWidget,
+    QFileDialog,
 )
 from PIL import Image, ImageDraw
 
@@ -19,25 +33,51 @@ from .. import ai_module, ai_upscale
 from ..analytics import track_event
 from ..export import resize_svg, svg_to_pdf, svg_to_png
 from ..license import (
-    FEAT_AI_UPSCALE, FEAT_AUTOTUNE, FEAT_BATCH, FEAT_BG_AI, FEAT_DELETE_SHAPE, FEAT_EXPORT_PDF,
-    FEAT_EXPORT_PNG, FREE_DAILY_MAX, PRO_PRICE_EUR, LicenseManager, UsageTracker,
+    FEAT_AI_UPSCALE,
+    FEAT_AUTOTUNE,
+    FEAT_BATCH,
+    FEAT_BG_AI,
+    FEAT_DELETE_SHAPE,
+    FEAT_EXPORT_PDF,
+    FEAT_EXPORT_PNG,
+    FREE_DAILY_MAX,
+    PRO_PRICE_EUR,
+    LicenseManager,
+    UsageTracker,
     buy_url,
 )
 from ..i18n import PRESET_LABELS, STRINGS, detect_system_lang
 from ..theme import (
-    ICON_COMPARE, ICON_CROP, ICON_EXPAND, ICON_HELP, ICON_LAYERS, ICON_MOON,
-    ICON_RESET, ICON_SUN, ICON_TRASH, ICON_UNDO, build_qss, checker_brush, icon,
+    ICON_COMPARE,
+    ICON_CROP,
+    ICON_EXPAND,
+    ICON_HELP,
+    ICON_LAYERS,
+    ICON_MOON,
+    ICON_RESET,
+    ICON_SUN,
+    ICON_TRASH,
+    ICON_UNDO,
+    build_qss,
+    checker_brush,
+    icon,
 )
 from ..vectorizer import PRESETS, VectorParams
 from ..app_utils import app_icon, ACCEPTED
 
 from ..core.workers import (
-    VectorizeWorker, AutoTuneWorker, BatchWorker, DeleteWorker,
-    LicenseRefreshWorker, AIDownloadWorker, WeightsDownloadWorker
+    VectorizeWorker,
+    AutoTuneWorker,
+    BatchWorker,
+    DeleteWorker,
+    LicenseRefreshWorker,
+    AIDownloadWorker,
+    WeightsDownloadWorker,
 )
 from ..core.recipes import RECIPES
 from .widgets import DropImage, SvgView, CompareView
 from .dialogs import SettingsHelpDialog, SizeDialog, LicenseDialog
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -49,12 +89,17 @@ class MainWindow(QMainWindow):
         if self.lang not in STRINGS:
             self.lang = "fr"
         dark_setting = self._settings.value("dark_mode")
-        self._dark = (dark_setting in (True, "true", "True", 1, "1")
-                      if dark_setting is not None else False)
-        ai_module.ensure_on_path()   # rend rembg importable si deja telecharge
+        self._dark = (
+            dark_setting in (True, "true", "True", 1, "1")
+            if dark_setting is not None
+            else False
+        )
+        ai_module.ensure_on_path()  # rend rembg importable si deja telecharge
         self._rembg_missing = importlib.util.find_spec("rembg") is None
-        self._retranslators: list = []            # callables a rejouer au changement de langue
-        self._cur_display_name: str | None = None  # pour reconstruire le titre de fenetre
+        self._retranslators: list = []  # callables a rejouer au changement de langue
+        self._cur_display_name: str | None = (
+            None  # pour reconstruire le titre de fenetre
+        )
 
         # Licence : is_pro() est purement local (aucun reseau), donc appelable
         # a chaque clic sans geler l'UI. La revalidation en ligne part dans un
@@ -67,18 +112,20 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(app_icon())
         self.resize(1120, 680)
 
-        self.src_path: Path | None = None       # image courante (peut etre un rognage)
-        self.orig_src: Path | None = None        # image d'origine (pour « revenir »)
+        self.src_path: Path | None = None  # image courante (peut etre un rognage)
+        self.orig_src: Path | None = None  # image d'origine (pour « revenir »)
         self.svg_path: Path | None = None
-        self._crop_tmp: Path | None = None       # PNG temporaire du dernier rognage
-        self._paste_tmp: Path | None = None      # PNG temporaire de la derniere image collee
-        self._demo_tmp: Path | None = None       # PNG temporaire de l'image d'exemple
+        self._crop_tmp: Path | None = None  # PNG temporaire du dernier rognage
+        self._paste_tmp: Path | None = (
+            None  # PNG temporaire de la derniere image collee
+        )
+        self._demo_tmp: Path | None = None  # PNG temporaire de l'image d'exemple
         self._worker: VectorizeWorker | None = None
-        self._cur_out: Path | None = None        # SVG temp du worker en cours
+        self._cur_out: Path | None = None  # SVG temp du worker en cours
         self._autotune_worker: AutoTuneWorker | None = None
-        self._autotune_out: Path | None = None   # SVG temp de la recherche auto
-        self._silent = True                      # erreurs muettes (apercu live)
-        self._pending = False                    # une relance est demandee
+        self._autotune_out: Path | None = None  # SVG temp de la recherche auto
+        self._silent = True  # erreurs muettes (apercu live)
+        self._pending = False  # une relance est demandee
         self._pending_silent = True
         self._batch: BatchWorker | None = None
         self._progress: QProgressDialog | None = None
@@ -86,11 +133,11 @@ class MainWindow(QMainWindow):
         self._ai_progress: QProgressDialog | None = None
         self._up_worker: WeightsDownloadWorker | None = None
         self._up_progress: QProgressDialog | None = None
-        self._pending_upscale = False   # re-enclenche la finition apres le module IA
-        self._last_dir = ""                      # dernier dossier d'export (memorise)
-        self._last_png_size = 2048               # derniere resolution PNG choisie (memorisee)
-        self._last_svg_size = 0                  # derniere taille SVG choisie (0 = origine)
-        self._last_warn: str | None = None       # avertissement post-traitement en attente
+        self._pending_upscale = False  # re-enclenche la finition apres le module IA
+        self._last_dir = ""  # dernier dossier d'export (memorise)
+        self._last_png_size = 2048  # derniere resolution PNG choisie (memorisee)
+        self._last_svg_size = 0  # derniere taille SVG choisie (0 = origine)
+        self._last_warn: str | None = None  # avertissement post-traitement en attente
 
         # Debounce de l'apercu live : on attend que l'utilisateur arrete de bouger.
         self._live = QTimer(self)
@@ -99,17 +146,27 @@ class MainWindow(QMainWindow):
         self._live.timeout.connect(self._live_run)
 
         # --- Apercus ---
-        self.original = DropImage(self.load_image, on_demo=self.load_demo_image, tr=self._t)
+        self.original = DropImage(
+            self.load_image, on_demo=self.load_demo_image, tr=self._t
+        )
         self.preview = SvgView(tr=self._t)
         self._retranslators.append(self.original.retranslate)
         self._retranslators.append(self.preview.retranslate)
 
         # Panneaux dans un QSplitter : 50/50 au départ, divise ajustable à la souris.
         self.previews = QSplitter(Qt.Horizontal)
-        self.previews.addWidget(self._labeled(
-            "panel_original", self.original, on_expand=lambda: self.open_fullscreen("original")))
-        self.previews.addWidget(self._labeled(
-            "panel_svg", self.preview, on_expand=lambda: self.open_fullscreen("svg")))
+        self.previews.addWidget(
+            self._labeled(
+                "panel_original",
+                self.original,
+                on_expand=lambda: self.open_fullscreen("original"),
+            )
+        )
+        self.previews.addWidget(
+            self._labeled(
+                "panel_svg", self.preview, on_expand=lambda: self.open_fullscreen("svg")
+            )
+        )
         self.previews.setSizes([500, 500])
 
         # --- Pretraitement : rognage ---
@@ -120,7 +177,8 @@ class MainWindow(QMainWindow):
         self.btn_crop.clicked.connect(self.crop_to_selection)
         self.btn_crop.setEnabled(False)
         self.btn_reset_img = self._tr_widget(
-            QPushButton(), "btn_reset_img", "btn_reset_img_tooltip")
+            QPushButton(), "btn_reset_img", "btn_reset_img_tooltip"
+        )
         self.btn_reset_img.setIcon(icon(ICON_RESET))
         self.btn_reset_img.setIconSize(icon_sz)
         self.btn_reset_img.clicked.connect(self.reset_image)
@@ -155,7 +213,9 @@ class MainWindow(QMainWindow):
         self.btn_theme.toggled.connect(self.toggle_theme)
 
         self.btn_lang = self._tr_widget(QPushButton(), tooltip_key="btn_lang_tooltip")
-        self.btn_lang.setMinimumWidth(50)   # "FR"/"EN" + le padding des boutons (theme.py)
+        self.btn_lang.setMinimumWidth(
+            50
+        )  # "FR"/"EN" + le padding des boutons (theme.py)
         self.btn_lang.clicked.connect(self.toggle_lang)
 
         # Libelle pose par refresh_pro_ui() (depend de l'etat de la licence),
@@ -183,25 +243,30 @@ class MainWindow(QMainWindow):
         self.preset = QComboBox()
         self._repopulate_preset_combo()
         self.preset.currentIndexChanged.connect(
-            lambda i: self.apply_preset(self.preset.itemData(i)))
+            lambda i: self.apply_preset(self.preset.itemData(i))
+        )
 
         self.s_speckle = self._slider(0, 20, 4)
         self.s_colors = self._slider(1, 8, 6)
         self.s_corner = self._slider(0, 180, 60)
         self.s_tol = self._slider(0, 120, 32)
         self.s_merge = self._slider(0, 100, 24)
-        self.s_contrast = self._slider(-50, 50, 0)   # retouche : contraste avant trace
-        self.s_sharpen = self._slider(0, 100, 0)     # retouche : nettete avant trace
+        self.s_contrast = self._slider(-50, 50, 0)  # retouche : contraste avant trace
+        self.s_sharpen = self._slider(0, 100, 0)  # retouche : nettete avant trace
 
         self.chk_bg = self._tr_widget(QCheckBox(), "chk_bg", "chk_bg_tooltip")
         self.chk_bg_ai = self._tr_widget(QCheckBox(), "chk_bg_ai", "chk_bg_ai_tooltip")
-        self.chk_upscale = self._tr_widget(QCheckBox(), "chk_upscale", "chk_upscale_tooltip")
+        self.chk_upscale = self._tr_widget(
+            QCheckBox(), "chk_upscale", "chk_upscale_tooltip"
+        )
         self.chk_merge = self._tr_widget(QCheckBox(), "chk_merge", "chk_merge_tooltip")
         self.chk_merge.setChecked(True)
         self.chk_edges = self._tr_widget(QCheckBox(), "chk_edges", "chk_edges_tooltip")
         self.chk_edges.setChecked(True)
         self.chk_grad = self._tr_widget(QCheckBox(), "chk_grad", "chk_grad_tooltip")
-        self.chk_refine = self._tr_widget(QCheckBox(), "chk_refine", "chk_refine_tooltip")
+        self.chk_refine = self._tr_widget(
+            QCheckBox(), "chk_refine", "chk_refine_tooltip"
+        )
 
         bg_box = QVBoxLayout()
         bg_box.addWidget(self.chk_bg)
@@ -230,25 +295,50 @@ class MainWindow(QMainWindow):
         controls.addWidget(self.preset)
         controls.addWidget(bg_w)
         controls.addWidget(ai_w)
-        controls.addWidget(self._labeled("lbl_bgtol", self.s_tol, small=True, show_value=True))
-        controls.addWidget(self._labeled("lbl_speckle", self.s_speckle, small=True, show_value=True))
-        controls.addWidget(self._labeled(
-            "lbl_colors", self.s_colors, small=True, show_value=True,
-            value_fmt=lambda v: 2 ** v))
-        controls.addWidget(self._labeled("lbl_corner", self.s_corner, small=True, show_value=True))
-        controls.addWidget(self._labeled("lbl_merge", self.s_merge, small=True, show_value=True))
+        controls.addWidget(
+            self._labeled("lbl_bgtol", self.s_tol, small=True, show_value=True)
+        )
+        controls.addWidget(
+            self._labeled("lbl_speckle", self.s_speckle, small=True, show_value=True)
+        )
+        controls.addWidget(
+            self._labeled(
+                "lbl_colors",
+                self.s_colors,
+                small=True,
+                show_value=True,
+                value_fmt=lambda v: 2**v,
+            )
+        )
+        controls.addWidget(
+            self._labeled("lbl_corner", self.s_corner, small=True, show_value=True)
+        )
+        controls.addWidget(
+            self._labeled("lbl_merge", self.s_merge, small=True, show_value=True)
+        )
 
         # Retouches d'image (au service de la vectorisation), sur une 2e ligne.
         self.lbl_image_retouch = self._tr_widget(QLabel(), "label_image_retouch")
         controls2 = QHBoxLayout()
         controls2.addWidget(self.lbl_image_retouch)
-        controls2.addWidget(self._labeled("lbl_contrast", self.s_contrast, small=True, show_value=True))
-        controls2.addWidget(self._labeled("lbl_sharpen", self.s_sharpen, small=True, show_value=True))
+        controls2.addWidget(
+            self._labeled("lbl_contrast", self.s_contrast, small=True, show_value=True)
+        )
+        controls2.addWidget(
+            self._labeled("lbl_sharpen", self.s_sharpen, small=True, show_value=True)
+        )
         controls2.addStretch(1)
 
         # Apercu live : tout changement de reglage relance (en differe) la vectorisation.
-        sliders = (self.s_speckle, self.s_colors, self.s_corner, self.s_tol,
-                   self.s_merge, self.s_contrast, self.s_sharpen)
+        sliders = (
+            self.s_speckle,
+            self.s_colors,
+            self.s_corner,
+            self.s_tol,
+            self.s_merge,
+            self.s_contrast,
+            self.s_sharpen,
+        )
         for s in sliders:
             s.valueChanged.connect(self._schedule_live)
         self.chk_bg.toggled.connect(self._schedule_live)
@@ -269,21 +359,32 @@ class MainWindow(QMainWindow):
         self.btn_copy = self._tr_widget(QPushButton(), "btn_copy", "btn_copy_tooltip")
         self.btn_copy.clicked.connect(self.copy_svg)
         self.btn_copy.setEnabled(False)
-        self.btn_batch = self._tr_widget(QPushButton(), "btn_batch", "btn_batch_tooltip")
+        self.btn_batch = self._tr_widget(
+            QPushButton(), "btn_batch", "btn_batch_tooltip"
+        )
         self.btn_batch.setIcon(icon(ICON_LAYERS))
         self.btn_batch.setIconSize(QSize(18, 18))
         self.btn_batch.clicked.connect(self.run_batch)
-        self.btn_compare = self._tr_widget(QPushButton(), "btn_compare", "btn_compare_tooltip")
+        self.btn_compare = self._tr_widget(
+            QPushButton(), "btn_compare", "btn_compare_tooltip"
+        )
         self.btn_compare.setIcon(icon(ICON_COMPARE))
         self.btn_compare.setIconSize(QSize(18, 18))
         self.btn_compare.clicked.connect(self.open_compare)
         self.btn_compare.setEnabled(False)
         self.btn_autotune = self._tr_widget(
-            QPushButton(), "btn_autotune", "btn_autotune_tooltip")
+            QPushButton(), "btn_autotune", "btn_autotune_tooltip"
+        )
         self.btn_autotune.clicked.connect(self.run_autotune)
         self.btn_autotune.setEnabled(False)
-        for b in (self.btn_vec, self.btn_exp, self.btn_copy, self.btn_batch,
-                  self.btn_compare, self.btn_autotune):
+        for b in (
+            self.btn_vec,
+            self.btn_exp,
+            self.btn_copy,
+            self.btn_batch,
+            self.btn_compare,
+            self.btn_autotune,
+        ):
             b.setMinimumHeight(40)
 
         actions = QHBoxLayout()
@@ -306,7 +407,7 @@ class MainWindow(QMainWindow):
 
         # Indicateur d'activite (barre indeterminee) a droite de la barre d'etat.
         self.busy = QProgressBar()
-        self.busy.setRange(0, 0)                  # 0..0 = animation "en cours"
+        self.busy.setRange(0, 0)  # 0..0 = animation "en cours"
         self.busy.setMaximumWidth(150)
         self.busy.setTextVisible(False)
         self.busy.setVisible(False)
@@ -321,7 +422,8 @@ class MainWindow(QMainWindow):
         # (detourage / finition IA) - exige par les politiques des stores (ex.
         # Microsoft Store 11.16 "Live Generative AI Content").
         self.btn_report_issue = self._tr_widget(
-            QPushButton(), "btn_report_issue", "btn_report_issue_tooltip")
+            QPushButton(), "btn_report_issue", "btn_report_issue_tooltip"
+        )
         self.btn_report_issue.setFlat(True)
         self.btn_report_issue.setCursor(Qt.PointingHandCursor)
         self.btn_report_issue.clicked.connect(self.report_issue)
@@ -329,16 +431,18 @@ class MainWindow(QMainWindow):
 
         # Voile « en cours » PAR-DESSUS l'apercu SVG : impossible a rater.
         # (texte generique fixe ; le message specifique va dans la barre de statut).
-        self.busy_overlay = self._tr_widget(QLabel(self.preview), "busy_overlay_generic")
+        self.busy_overlay = self._tr_widget(
+            QLabel(self.preview), "busy_overlay_generic"
+        )
         self.busy_overlay.setAlignment(Qt.AlignCenter)
-        self.busy_overlay.setObjectName("busyOverlay")   # style : QSS globale (theme.py)
+        self.busy_overlay.setObjectName("busyOverlay")  # style : QSS globale (theme.py)
         self.busy_overlay.hide()
 
         # Restaure les reglages memorises (preset, sliders, cases, geometrie).
         # Langue + theme sont deja charges (tout en haut de __init__).
         self._load_settings()
         self.apply_theme(self._dark)
-        self.retranslate_ui()   # applique la langue chargee (bouton, tooltip rembg, etc.)
+        self.retranslate_ui()  # applique la langue chargee (bouton, tooltip rembg, etc.)
 
         # Detourage IA (rembg) pas toujours installe : la case reste cliquable
         # (un utilisateur Pro doit pouvoir declencher le telechargement), mais
@@ -382,8 +486,9 @@ class MainWindow(QMainWindow):
         img.save(tmp, "PNG")
         self._paste_tmp = Path(tmp)
         self.statusBar().showMessage(self._t("status_pasted"), 3000)
-        self.load_image(self._paste_tmp, is_crop=False,
-                        display_name=self._t("display_name_pasted"))
+        self.load_image(
+            self._paste_tmp, is_crop=False, display_name=self._t("display_name_pasted")
+        )
 
     def load_demo_image(self):
         """Genere un logo d'exemple (aucun asset a livrer) pour un premier essai sans fichier."""
@@ -391,21 +496,33 @@ class MainWindow(QMainWindow):
             self._demo_tmp.unlink(missing_ok=True)
         img = Image.new("RGBA", (480, 480), (255, 255, 255, 0))
         d = ImageDraw.Draw(img)
-        d.ellipse((40, 40, 440, 440), fill=(122, 82, 245, 255))            # violet
-        d.pieslice((40, 40, 440, 440), 210, 330, fill=(201, 43, 192, 255))  # quartier magenta
-        d.ellipse((175, 175, 305, 305), fill=(63, 215, 251, 255))          # centre cyan
-        d.polygon([(240, 95), (263, 190), (325, 150)], fill=(255, 255, 255, 255))  # eclat
+        d.ellipse((40, 40, 440, 440), fill=(122, 82, 245, 255))  # violet
+        d.pieslice(
+            (40, 40, 440, 440), 210, 330, fill=(201, 43, 192, 255)
+        )  # quartier magenta
+        d.ellipse((175, 175, 305, 305), fill=(63, 215, 251, 255))  # centre cyan
+        d.polygon(
+            [(240, 95), (263, 190), (325, 150)], fill=(255, 255, 255, 255)
+        )  # eclat
         fd, tmp = tempfile.mkstemp(suffix=".png")
         os.close(fd)
         img.save(tmp)
         self._demo_tmp = Path(tmp)
         self.statusBar().showMessage(self._t("status_demo_loaded"), 5000)
-        self.load_image(self._demo_tmp, is_crop=False,
-                        display_name=self._t("display_name_demo"))
+        self.load_image(
+            self._demo_tmp, is_crop=False, display_name=self._t("display_name_demo")
+        )
 
     # --- helpers UI ---
-    def _labeled(self, text_key, widget, small=False, show_value=False, on_expand=None,
-                value_fmt=None):
+    def _labeled(
+        self,
+        text_key,
+        widget,
+        small=False,
+        show_value=False,
+        on_expand=None,
+        value_fmt=None,
+    ):
         """`text_key` est une cle i18n (STRINGS) : le libelle se retraduit tout seul
         (cf. `_retranslators`) quand la langue change."""
         box = QVBoxLayout()
@@ -415,15 +532,19 @@ class MainWindow(QMainWindow):
         # value_fmt permet d'afficher une valeur dérivée plutôt que le cran brut
         # (ex. "Couleurs" : le slider va de 1 à 8 mais la vraie quantité est 2**v).
         if show_value and isinstance(widget, QSlider):
+
             def _upd(*_a, _k=text_key, _l=lbl, _fmt=value_fmt, _w=widget):
                 shown = _fmt(_w.value()) if _fmt else _w.value()
                 _l.setText(f"{self._t(_k)} : {shown}")
+
             _upd()
             widget.valueChanged.connect(_upd)
             self._retranslators.append(_upd)
         else:
             lbl.setText(self._t(text_key))
-            self._retranslators.append(lambda _l=lbl, _k=text_key: _l.setText(self._t(_k)))
+            self._retranslators.append(
+                lambda _l=lbl, _k=text_key: _l.setText(self._t(_k))
+            )
         if on_expand is not None:
             # Titre + bouton plein écran à droite.
             head = QHBoxLayout()
@@ -438,7 +559,8 @@ class MainWindow(QMainWindow):
             btn.clicked.connect(on_expand)
             head.addWidget(btn)
             self._retranslators.append(
-                lambda _b=btn: _b.setToolTip(self._t("fullscreen_tooltip")))
+                lambda _b=btn: _b.setToolTip(self._t("fullscreen_tooltip"))
+            )
             box.addLayout(head)
         else:
             box.addWidget(lbl)
@@ -463,11 +585,13 @@ class MainWindow(QMainWindow):
 
     def _tr_widget(self, widget, text_key=None, tooltip_key=None):
         """Applique la traduction initiale et enregistre `widget` pour la bascule de langue."""
+
         def _upd():
             if text_key:
                 widget.setText(self._t(text_key))
             if tooltip_key:
                 widget.setToolTip(self._t(tooltip_key))
+
         _upd()
         self._retranslators.append(_upd)
         return widget
@@ -571,28 +695,35 @@ class MainWindow(QMainWindow):
     def report_issue(self):
         """Ouvre le client mail par defaut pour signaler un resultat IA problematique."""
         from . import __version__ as app_version
+
         subject = f"VectorPop {app_version} - Signalement resultat IA"
         body = (
             "Decris ici le probleme rencontre avec le detourage / la finition IA "
             "(joins si possible l'image d'origine et le SVG produit) :\n\n"
         )
         url = QUrl("mailto:george.william@hotmail.fr")
-        query = f"subject={QUrl.toPercentEncoding(subject).data().decode()}" \
-                f"&body={QUrl.toPercentEncoding(body).data().decode()}"
+        query = (
+            f"subject={QUrl.toPercentEncoding(subject).data().decode()}"
+            f"&body={QUrl.toPercentEncoding(body).data().decode()}"
+        )
         url.setQuery(query)
         QDesktopServices.openUrl(url)
 
     # --- suppression d'aplats (clic sur le SVG) ---
     def _toggle_delete_mode(self, on: bool):
         if on and not self._require_pro(FEAT_DELETE_SHAPE):
-            self.btn_del.setChecked(False)   # re-entre ici avec on=False
+            self.btn_del.setChecked(False)  # re-entre ici avec on=False
             return
         self.preview.set_delete_mode(on)
         if on:
             self.statusBar().showMessage(self._t("status_delete_mode"), 5000)
 
     def delete_shape_at(self, x: float, y: float):
-        if not self.svg_path or not self.btn_del.isChecked() or self._del_worker is not None:
+        if (
+            not self.svg_path
+            or not self.btn_del.isChecked()
+            or self._del_worker is not None
+        ):
             return  # rien a faire, ou une suppression tourne deja
         self._del_pending_txt = self.svg_path.read_text(encoding="utf-8")
         self._set_busy(True, self._t("busy_delete"))
@@ -602,12 +733,14 @@ class MainWindow(QMainWindow):
         self._del_worker.start()
 
     def _on_delete_done(self, new_svg: str, removed: int):
-        pending = self._del_pending_txt   # capture avant _finish_delete() qui la remet a None
+        pending = (
+            self._del_pending_txt
+        )  # capture avant _finish_delete() qui la remet a None
         self._finish_delete()
         if removed <= 0:
             self.statusBar().showMessage(self._t("status_delete_nothing"), 3000)
             return
-        self._del_history.append(pending)   # pour annuler
+        self._del_history.append(pending)  # pour annuler
         self.svg_path.write_text(new_svg, encoding="utf-8")
         self.preview.load(str(self.svg_path))
         self._show_stats(self.svg_path)
@@ -616,7 +749,9 @@ class MainWindow(QMainWindow):
 
     def _on_delete_failed(self, msg: str):
         self._finish_delete()
-        self.statusBar().showMessage(self._t("status_delete_failed", msg=msg[:80]), 4000)
+        self.statusBar().showMessage(
+            self._t("status_delete_failed", msg=msg[:80]), 4000
+        )
 
     def _finish_delete(self):
         if self._del_worker is not None:
@@ -641,21 +776,28 @@ class MainWindow(QMainWindow):
     def apply_recipe(self, cfg: dict):
         """Applique une recette de réglages (depuis l'aide) puis relance l'aperçu."""
         if "preset" in cfg:
-            idx = self.preset.findData(cfg["preset"])   # repositionne des sliders
+            idx = self.preset.findData(cfg["preset"])  # repositionne des sliders
             if idx >= 0:
                 self.preset.setCurrentIndex(idx)
         sliders = {
-            "colors": self.s_colors, "speckle": self.s_speckle,
-            "corner": self.s_corner, "tol": self.s_tol, "merge": self.s_merge,
-            "contrast": self.s_contrast, "sharpen": self.s_sharpen,
+            "colors": self.s_colors,
+            "speckle": self.s_speckle,
+            "corner": self.s_corner,
+            "tol": self.s_tol,
+            "merge": self.s_merge,
+            "contrast": self.s_contrast,
+            "sharpen": self.s_sharpen,
         }
         for key, widget in sliders.items():
             if key in cfg:
                 widget.setValue(cfg[key])
         checks = {
-            "merge_on": self.chk_merge, "edges": self.chk_edges,
-            "bg": self.chk_bg, "bg_ai": self.chk_bg_ai,
-            "grad": self.chk_grad, "refine": self.chk_refine,
+            "merge_on": self.chk_merge,
+            "edges": self.chk_edges,
+            "bg": self.chk_bg,
+            "bg_ai": self.chk_bg_ai,
+            "grad": self.chk_grad,
+            "refine": self.chk_refine,
         }
         for key, widget in checks.items():
             if key in cfg:
@@ -687,7 +829,9 @@ class MainWindow(QMainWindow):
             os.close(fd)
             cropped.save(tmp)
         except Exception as e:  # noqa: BLE001
-            QMessageBox.critical(self, self._t("title_error"), self._t("err_crop_failed", e=e))
+            QMessageBox.critical(
+                self, self._t("title_error"), self._t("err_crop_failed", e=e)
+            )
             return
         prev = self._crop_tmp
         self._crop_tmp = Path(tmp)
@@ -707,7 +851,9 @@ class MainWindow(QMainWindow):
             self._crop_tmp = None
 
     # --- actions ---
-    def load_image(self, path: Path, is_crop: bool = False, display_name: str | None = None):
+    def load_image(
+        self, path: Path, is_crop: bool = False, display_name: str | None = None
+    ):
         if not is_crop:
             # Nouvelle image source : on oublie tout rognage precedent.
             self._cleanup_crop_tmp()
@@ -733,7 +879,7 @@ class MainWindow(QMainWindow):
         self.btn_copy.setEnabled(False)
         self.btn_compare.setEnabled(False)
         if self.btn_del.isChecked():
-            self.btn_del.setChecked(False)   # sort du mode suppression
+            self.btn_del.setChecked(False)  # sort du mode suppression
         self.btn_del.setEnabled(False)
         self.btn_undo.setEnabled(False)
         self._del_history.clear()
@@ -756,8 +902,12 @@ class MainWindow(QMainWindow):
         self.btn_vec.setEnabled(False)
         self._set_busy(True, self._busy_message())
         self._worker = VectorizeWorker(
-            self.src_path, self._cur_out, self.current_params(),
-            self.chk_grad.isChecked(), self.chk_refine.isChecked())
+            self.src_path,
+            self._cur_out,
+            self.current_params(),
+            self.chk_grad.isChecked(),
+            self.chk_refine.isChecked(),
+        )
         self._worker.done.connect(self._on_vec_done)
         self._worker.warning.connect(self._on_vec_warning)
         self._worker.failed.connect(self._on_vec_failed)
@@ -791,7 +941,7 @@ class MainWindow(QMainWindow):
 
     def _on_vec_done(self, out_str: str):
         out = Path(out_str)
-        self._optimize_in_place(out)   # allege le SVG (rendu inchange)
+        self._optimize_in_place(out)  # allege le SVG (rendu inchange)
         # Nettoie le SVG temporaire precedent (evite les orphelins en apercu live).
         if self.svg_path and self.svg_path != out:
             self.svg_path.unlink(missing_ok=True)
@@ -810,14 +960,17 @@ class MainWindow(QMainWindow):
     @staticmethod
     def _optimize_in_place(svg: Path):
         try:
-            svg.write_text(optimize_svg(svg.read_text(encoding="utf-8")), encoding="utf-8")
+            svg.write_text(
+                optimize_svg(svg.read_text(encoding="utf-8")), encoding="utf-8"
+            )
         except OSError:
             pass
 
     def _on_vec_failed(self, msg: str):
         if not self._silent:
             QMessageBox.critical(
-                self, self._t("title_error"), self._t("err_vectorize_failed", msg=msg))
+                self, self._t("title_error"), self._t("err_vectorize_failed", msg=msg)
+            )
         if self._cur_out:
             self._cur_out.unlink(missing_ok=True)  # temp cree mais non retenu
         self._finish_vec()
@@ -831,9 +984,11 @@ class MainWindow(QMainWindow):
         self.btn_vec.setEnabled(True)
         if self._pending:
             self._pending = False
-            self.run_vectorize(silent=self._pending_silent)  # relance : garde l'indicateur
+            self.run_vectorize(
+                silent=self._pending_silent
+            )  # relance : garde l'indicateur
         else:
-            self._set_busy(False)                            # vraiment terminé
+            self._set_busy(False)  # vraiment terminé
 
     def run_autotune(self):
         """Teste plusieurs reglages et garde celui le plus proche de l'original.
@@ -852,7 +1007,8 @@ class MainWindow(QMainWindow):
         self.btn_autotune.setEnabled(False)
         self._set_busy(True, self._t("busy_autotune", i=0, total=0))
         self._autotune_worker = AutoTuneWorker(
-            self.src_path, self._autotune_out, self.current_params())
+            self.src_path, self._autotune_out, self.current_params()
+        )
         self._autotune_worker.progress.connect(self._on_autotune_progress)
         self._autotune_worker.done.connect(self._on_autotune_done)
         self._autotune_worker.failed.connect(self._on_autotune_failed)
@@ -874,12 +1030,15 @@ class MainWindow(QMainWindow):
         self.btn_del.setEnabled(True)
         self._del_history.clear()
         self.btn_undo.setEnabled(False)
-        self.statusBar().showMessage(self._t("status_autotune_done", score=round(score, 1)), 6000)
+        self.statusBar().showMessage(
+            self._t("status_autotune_done", score=round(score, 1)), 6000
+        )
         self._finish_autotune()
 
     def _on_autotune_failed(self, msg: str):
         QMessageBox.critical(
-            self, self._t("title_error"), self._t("err_vectorize_failed", msg=msg))
+            self, self._t("title_error"), self._t("err_vectorize_failed", msg=msg)
+        )
         if self._autotune_out:
             self._autotune_out.unlink(missing_ok=True)
         self._finish_autotune()
@@ -908,7 +1067,7 @@ class MainWindow(QMainWindow):
         if self._del_worker is not None:
             self._del_worker.wait(3000)
         if self._lic_worker is not None:
-            self._lic_worker.wait(3000)   # sinon Qt rale : thread detruit en marche
+            self._lic_worker.wait(3000)  # sinon Qt rale : thread detruit en marche
         if self.svg_path:
             self.svg_path.unlink(missing_ok=True)
         if self._cur_out:
@@ -938,8 +1097,11 @@ class MainWindow(QMainWindow):
                 if src_kb > 0:
                     pct = ((size_kb - src_kb) / src_kb) * 100
                     msg += self._t(
-                        "stats_weight", src=f"{src_kb:.0f}", out=f"{size_kb:.1f}",
-                        pct=f"{pct:+.0f}%")
+                        "stats_weight",
+                        src=f"{src_kb:.0f}",
+                        out=f"{size_kb:.1f}",
+                        pct=f"{pct:+.0f}%",
+                    )
             if self._last_warn:
                 msg += self._t("stats_warn", msg=self._last_warn[:50])
                 self._last_warn = None
@@ -1010,8 +1172,10 @@ class MainWindow(QMainWindow):
         pro = self.lic.is_pro()
         self.btn_pro.setText(self._t("btn_pro_active" if pro else "btn_pro"))
         self.btn_pro.setToolTip(
-            self._t("btn_pro_active_tooltip") if pro
-            else self._t("btn_pro_tooltip", price=PRO_PRICE_EUR))
+            self._t("btn_pro_active_tooltip")
+            if pro
+            else self._t("btn_pro_tooltip", price=PRO_PRICE_EUR)
+        )
         self._update_plan_label()
         # Grace offline bientot epuisee : prevenir plutot que couper sans preavis.
         days = self.lic.grace_days_left()
@@ -1024,7 +1188,8 @@ class MainWindow(QMainWindow):
             return
         left = self.usage.remaining()
         self.lbl_plan.setText(
-            self._t("status_free", n=left) if left else self._t("status_free_none"))
+            self._t("status_free", n=left) if left else self._t("status_free_none")
+        )
 
     def open_license(self):
         if not self.lic.is_pro():
@@ -1033,19 +1198,22 @@ class MainWindow(QMainWindow):
         box = QMessageBox(self)
         box.setWindowTitle(self._t("lic_active_title"))
         box.setText(self._t("lic_active_as", email=self.lic.email() or "—"))
-        deact = box.addButton(self._t("lic_deactivate"),
-                              QMessageBox.ButtonRole.DestructiveRole)
+        deact = box.addButton(
+            self._t("lic_deactivate"), QMessageBox.ButtonRole.DestructiveRole
+        )
         box.addButton(self._t("lic_close"), QMessageBox.ButtonRole.RejectRole)
         box.exec()
         if box.clickedButton() is not deact:
             return
-        confirm = QMessageBox.question(self, self._t("lic_active_title"),
-                                       self._t("lic_deactivate_confirm"))
+        confirm = QMessageBox.question(
+            self, self._t("lic_active_title"), self._t("lic_deactivate_confirm")
+        )
         if confirm == QMessageBox.StandardButton.Yes:
             self.lic.deactivate()
             self.refresh_pro_ui()
-            QMessageBox.information(self, self._t("lic_active_title"),
-                                    self._t("lic_deactivated"))
+            QMessageBox.information(
+                self, self._t("lic_active_title"), self._t("lic_deactivated")
+            )
 
     def _show_upsell(self, title: str, body: str, category: str = "other"):
         track_event("paywall_shown", category)
@@ -1057,10 +1225,13 @@ class MainWindow(QMainWindow):
         box.setWindowTitle(title)
         box.setText(body)
         box.setIcon(QMessageBox.Icon.Information)
-        buy = box.addButton(self._t("upsell_buy", price=PRO_PRICE_EUR),
-                            QMessageBox.ButtonRole.AcceptRole)
-        have = box.addButton(self._t("upsell_have_key"),
-                             QMessageBox.ButtonRole.ActionRole)
+        buy = box.addButton(
+            self._t("upsell_buy", price=PRO_PRICE_EUR),
+            QMessageBox.ButtonRole.AcceptRole,
+        )
+        have = box.addButton(
+            self._t("upsell_have_key"), QMessageBox.ButtonRole.ActionRole
+        )
         box.addButton(self._t("upsell_later"), QMessageBox.ButtonRole.RejectRole)
         box.exec()
         if box.clickedButton() is buy:
@@ -1075,19 +1246,25 @@ class MainWindow(QMainWindow):
             return True
         self._show_upsell(
             self._t("upsell_title"),
-            self._t("upsell_body", feat=self._t(f"feat_{feature}"),
-                    n=FREE_DAILY_MAX, price=PRO_PRICE_EUR),
-            category=feature)
+            self._t(
+                "upsell_body",
+                feat=self._t(f"feat_{feature}"),
+                n=FREE_DAILY_MAX,
+                price=PRO_PRICE_EUR,
+            ),
+            category=feature,
+        )
         return False
 
     def _can_export_now(self) -> bool:
         """Quota du jour (gratuit). Affiche l'upsell une fois epuise."""
         if self.lic.is_pro() or self.usage.can_export():
             return True
-        self._show_upsell(self._t("upsell_quota_title"),
-                          self._t("upsell_quota_body", n=FREE_DAILY_MAX,
-                                  price=PRO_PRICE_EUR),
-                          category="quota")
+        self._show_upsell(
+            self._t("upsell_quota_title"),
+            self._t("upsell_quota_body", n=FREE_DAILY_MAX, price=PRO_PRICE_EUR),
+            category="quota",
+        )
         return False
 
     def _record_export(self):
@@ -1106,18 +1283,26 @@ class MainWindow(QMainWindow):
             self.chk_bg_ai.setChecked(False)
             return
         if self._rembg_missing:
-            self.chk_bg_ai.setChecked(False)   # decoche : attend le succes du telechargement
+            self.chk_bg_ai.setChecked(
+                False
+            )  # decoche : attend le succes du telechargement
             self._start_ai_download()
 
     def _start_ai_download(self):
         if self._ai_worker is not None:
             return  # deja en cours
         confirm = QMessageBox.question(
-            self, self._t("ai_dl_confirm_title"), self._t("ai_dl_confirm_body"))
+            self, self._t("ai_dl_confirm_title"), self._t("ai_dl_confirm_body")
+        )
         if confirm != QMessageBox.StandardButton.Yes:
             return
         self._ai_progress = QProgressDialog(
-            self._t("ai_dl_progress_label_indeterminate"), self._t("ai_dl_cancel"), 0, 0, self)
+            self._t("ai_dl_progress_label_indeterminate"),
+            self._t("ai_dl_cancel"),
+            0,
+            0,
+            self,
+        )
         self._ai_progress.setWindowTitle(self._t("ai_dl_progress_title"))
         self._ai_progress.setWindowModality(Qt.WindowModal)
         self._ai_progress.setMinimumDuration(0)
@@ -1136,9 +1321,12 @@ class MainWindow(QMainWindow):
             self._ai_progress.setRange(0, total)
             self._ai_progress.setValue(done)
             self._ai_progress.setLabelText(
-                self._t("ai_dl_progress_label", pct=int(done * 100 / total)))
+                self._t("ai_dl_progress_label", pct=int(done * 100 / total))
+            )
         else:
-            self._ai_progress.setLabelText(self._t("ai_dl_progress_label_indeterminate"))
+            self._ai_progress.setLabelText(
+                self._t("ai_dl_progress_label_indeterminate")
+            )
 
     def _on_ai_download_done(self):
         self._finish_ai_download()
@@ -1150,7 +1338,9 @@ class MainWindow(QMainWindow):
             self._pending_upscale = False
             self._start_weights_download()
         else:
-            self.chk_bg_ai.setChecked(True)   # redeclenche _guard_bg_ai, sans effet (plus manquant)
+            self.chk_bg_ai.setChecked(
+                True
+            )  # redeclenche _guard_bg_ai, sans effet (plus manquant)
         self.statusBar().showMessage(self._t("ai_dl_done"), 5000)
 
     def _on_ai_download_failed(self, msg: str):
@@ -1159,7 +1349,10 @@ class MainWindow(QMainWindow):
             self.statusBar().showMessage(self._t("ai_dl_cancelled"), 4000)
             return
         QMessageBox.warning(
-            self, self._t("ai_dl_failed_title"), self._t("ai_dl_failed_body", msg=msg[:200]))
+            self,
+            self._t("ai_dl_failed_title"),
+            self._t("ai_dl_failed_body", msg=msg[:200]),
+        )
 
     def _finish_ai_download(self):
         if self._ai_progress is not None:
@@ -1178,7 +1371,9 @@ class MainWindow(QMainWindow):
             return
         if ai_upscale.is_available():
             return
-        self.chk_upscale.setChecked(False)   # decoche : attend le succes des telechargements
+        self.chk_upscale.setChecked(
+            False
+        )  # decoche : attend le succes des telechargements
         if self._rembg_missing:
             # onnxruntime vit dans le module IA : on le telecharge d'abord,
             # puis _on_ai_download_done enchaine sur les poids.
@@ -1191,11 +1386,17 @@ class MainWindow(QMainWindow):
         if self._up_worker is not None:
             return  # deja en cours
         confirm = QMessageBox.question(
-            self, self._t("up_dl_confirm_title"), self._t("up_dl_confirm_body"))
+            self, self._t("up_dl_confirm_title"), self._t("up_dl_confirm_body")
+        )
         if confirm != QMessageBox.StandardButton.Yes:
             return
         self._up_progress = QProgressDialog(
-            self._t("ai_dl_progress_label_indeterminate"), self._t("ai_dl_cancel"), 0, 0, self)
+            self._t("ai_dl_progress_label_indeterminate"),
+            self._t("ai_dl_cancel"),
+            0,
+            0,
+            self,
+        )
         self._up_progress.setWindowTitle(self._t("up_dl_progress_title"))
         self._up_progress.setWindowModality(Qt.WindowModal)
         self._up_progress.setMinimumDuration(0)
@@ -1214,11 +1415,14 @@ class MainWindow(QMainWindow):
             self._up_progress.setRange(0, total)
             self._up_progress.setValue(done)
             self._up_progress.setLabelText(
-                self._t("ai_dl_progress_label", pct=int(done * 100 / total)))
+                self._t("ai_dl_progress_label", pct=int(done * 100 / total))
+            )
 
     def _on_weights_done(self):
         self._finish_weights_download()
-        self.chk_upscale.setChecked(True)   # redeclenche _guard_upscale, sans effet (dispo)
+        self.chk_upscale.setChecked(
+            True
+        )  # redeclenche _guard_upscale, sans effet (dispo)
         self.statusBar().showMessage(self._t("up_dl_done"), 5000)
 
     def _on_weights_failed(self, msg: str):
@@ -1227,7 +1431,10 @@ class MainWindow(QMainWindow):
             self.statusBar().showMessage(self._t("ai_dl_cancelled"), 4000)
             return
         QMessageBox.warning(
-            self, self._t("ai_dl_failed_title"), self._t("ai_dl_failed_body", msg=msg[:200]))
+            self,
+            self._t("ai_dl_failed_title"),
+            self._t("ai_dl_failed_body", msg=msg[:200]),
+        )
 
     def _finish_weights_download(self):
         if self._up_progress is not None:
@@ -1241,8 +1448,12 @@ class MainWindow(QMainWindow):
         """Demande la resolution PNG (cote long) : presets + valeur libre.
         Renvoie None si annule."""
         dlg = SizeDialog(
-            self, self._t("png_size_title"), self._t("png_size_label"),
-            self._last_png_size, recommended_tip=self._t("png_size_recommended"))
+            self,
+            self._t("png_size_title"),
+            self._t("png_size_label"),
+            self._last_png_size,
+            recommended_tip=self._t("png_size_recommended"),
+        )
         if dlg.exec() != QDialog.DialogCode.Accepted:
             return None
         size = dlg.value()
@@ -1257,9 +1468,13 @@ class MainWindow(QMainWindow):
         pour garder la taille d'origine, ou None si l'utilisateur annule.
         """
         dlg = SizeDialog(
-            self, self._t("svg_size_title"), self._t("svg_size_label"),
-            self._last_svg_size, offer_original=True,
-            recommended_tip=self._t("png_size_recommended"))
+            self,
+            self._t("svg_size_title"),
+            self._t("svg_size_label"),
+            self._last_svg_size,
+            offer_original=True,
+            recommended_tip=self._t("png_size_recommended"),
+        )
         if dlg.exec() != QDialog.DialogCode.Accepted:
             return None
         size = dlg.value()
@@ -1272,7 +1487,8 @@ class MainWindow(QMainWindow):
         stem = self.src_path.stem if self.src_path else "logo"
         start = os.path.join(self._last_dir, stem) if self._last_dir else stem
         f, flt = QFileDialog.getSaveFileName(
-            self, self._t("export_dialog_title"), start, self._t("export_filter"))
+            self, self._t("export_dialog_title"), start, self._t("export_filter")
+        )
         if not f:
             return
         out = Path(f)
@@ -1308,7 +1524,9 @@ class MainWindow(QMainWindow):
             self._last_dir = str(out.parent)
             self._record_export()
         except Exception as e:  # noqa: BLE001
-            QMessageBox.critical(self, self._t("title_error"), self._t("err_export_failed", e=e))
+            QMessageBox.critical(
+                self, self._t("title_error"), self._t("err_export_failed", e=e)
+            )
 
     # --- traitement par lot ---
     def run_batch(self):
@@ -1317,18 +1535,26 @@ class MainWindow(QMainWindow):
         if not self._require_pro(FEAT_BATCH):
             return
         in_dir = QFileDialog.getExistingDirectory(
-            self, self._t("batch_dialog_title"), self._last_dir)
+            self, self._t("batch_dialog_title"), self._last_dir
+        )
         if not in_dir:
             return
-        files = sorted(p for p in Path(in_dir).iterdir()
-                       if p.suffix.lower() in ACCEPTED)
+        files = sorted(
+            p for p in Path(in_dir).iterdir() if p.suffix.lower() in ACCEPTED
+        )
         if not files:
             QMessageBox.information(
-                self, self._t("title_batch"), self._t("warn_batch_empty"))
+                self, self._t("title_batch"), self._t("warn_batch_empty")
+            )
             return
         fmt, ok = QInputDialog.getItem(
-            self, self._t("batch_format_title"), self._t("batch_format_label"),
-            ["SVG", "PNG", "PDF"], 0, False)
+            self,
+            self._t("batch_format_title"),
+            self._t("batch_format_label"),
+            ["SVG", "PNG", "PDF"],
+            0,
+            False,
+        )
         if not ok:
             return
         png_size = 2048
@@ -1344,7 +1570,8 @@ class MainWindow(QMainWindow):
                 return
             svg_size = size
         out_dir = QFileDialog.getExistingDirectory(
-            self, self._t("batch_out_dialog_title"), in_dir)
+            self, self._t("batch_out_dialog_title"), in_dir
+        )
         if not out_dir:
             return
         self._last_dir = out_dir
@@ -1352,13 +1579,21 @@ class MainWindow(QMainWindow):
 
     def _start_batch(self, files, out_dir, fmt, png_size=2048, svg_size=0):
         self._progress = QProgressDialog(
-            self._t("batch_preparing"), self._t("batch_cancel"), 0, len(files), self)
+            self._t("batch_preparing"), self._t("batch_cancel"), 0, len(files), self
+        )
         self._progress.setWindowTitle(self._t("title_batch"))
         self._progress.setWindowModality(Qt.WindowModal)
         self._progress.setMinimumDuration(0)
-        self._batch = BatchWorker(files, out_dir, fmt, self.current_params(),
-                                  self.chk_grad.isChecked(), self.chk_refine.isChecked(),
-                                  png_size, svg_size)
+        self._batch = BatchWorker(
+            files,
+            out_dir,
+            fmt,
+            self.current_params(),
+            self.chk_grad.isChecked(),
+            self.chk_refine.isChecked(),
+            png_size,
+            svg_size,
+        )
         self._batch.progress.connect(self._on_batch_progress)
         self._batch.done.connect(self._on_batch_done)
         self._progress.canceled.connect(self._batch.cancel)
@@ -1386,16 +1621,26 @@ class MainWindow(QMainWindow):
 
     # --- reglages persistants (QSettings) ---
     def _slider_map(self):
-        return {"s_speckle": self.s_speckle, "s_colors": self.s_colors,
-                "s_corner": self.s_corner, "s_tol": self.s_tol,
-                "s_merge": self.s_merge, "s_contrast": self.s_contrast,
-                "s_sharpen": self.s_sharpen}
+        return {
+            "s_speckle": self.s_speckle,
+            "s_colors": self.s_colors,
+            "s_corner": self.s_corner,
+            "s_tol": self.s_tol,
+            "s_merge": self.s_merge,
+            "s_contrast": self.s_contrast,
+            "s_sharpen": self.s_sharpen,
+        }
 
     def _chk_map(self):
-        return {"chk_bg": self.chk_bg, "chk_bg_ai": self.chk_bg_ai,
-                "chk_upscale": self.chk_upscale,
-                "chk_merge": self.chk_merge, "chk_edges": self.chk_edges,
-                "chk_grad": self.chk_grad, "chk_refine": self.chk_refine}
+        return {
+            "chk_bg": self.chk_bg,
+            "chk_bg_ai": self.chk_bg_ai,
+            "chk_upscale": self.chk_upscale,
+            "chk_merge": self.chk_merge,
+            "chk_edges": self.chk_edges,
+            "chk_grad": self.chk_grad,
+            "chk_refine": self.chk_refine,
+        }
 
     def _load_settings(self):
         # Langue + theme sont deja charges tout en haut de __init__ (necessaires
@@ -1441,4 +1686,3 @@ class MainWindow(QMainWindow):
         s.setValue("lang", self.lang)
         s.setValue("png_size", self._last_png_size)
         s.setValue("svg_size", self._last_svg_size)
-

@@ -11,9 +11,9 @@ from PySide6.QtCore import QByteArray, Qt
 from PySide6.QtGui import QBrush, QIcon, QPainter, QPixmap
 from PySide6.QtSvg import QSvgRenderer
 
-ACCENT1 = "#7A52F5"   # violet
-ACCENT2 = "#C92BC0"   # magenta
-ACCENT3 = "#3FD7FB"   # cyan
+ACCENT1 = "#7A52F5"  # violet
+ACCENT2 = "#C92BC0"  # magenta
+ACCENT3 = "#3FD7FB"  # cyan
 
 _ACCENT_GRAD = (
     f"qlineargradient(x1:0, y1:0, x2:1, y2:0, "
@@ -210,7 +210,11 @@ _ICON_COMPARE = """<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
  stroke-linecap="round" stroke-linejoin="round"/></svg>"""
 
 ICON_CROP, ICON_RESET, ICON_TRASH, ICON_UNDO = (
-    _ICON_CROP, _ICON_RESET, _ICON_TRASH, _ICON_UNDO)
+    _ICON_CROP,
+    _ICON_RESET,
+    _ICON_TRASH,
+    _ICON_UNDO,
+)
 ICON_LAYERS, ICON_HELP, ICON_EXPAND = _ICON_LAYERS, _ICON_HELP, _ICON_EXPAND
 ICON_MOON, ICON_SUN, ICON_COMPARE = _ICON_MOON, _ICON_SUN, _ICON_COMPARE
 

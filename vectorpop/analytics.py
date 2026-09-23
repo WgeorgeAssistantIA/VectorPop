@@ -5,6 +5,7 @@ seul UUID aléatoire persisté localement, jamais lié à l'email ou à la clé 
 licence. Échoue toujours en silence (hors ligne, pare-feu...) pour ne jamais
 impacter l'UI.
 """
+
 import json
 import threading
 import uuid
@@ -13,6 +14,7 @@ from .license import _get_data_dir
 
 try:
     import urllib.request as _urllib
+
     _NET_OK = True
 except Exception:
     _NET_OK = False
@@ -44,14 +46,21 @@ def track_event(event: str, category: str = "other") -> None:
 
     def worker():
         try:
-            data = json.dumps({
-                "event":     event,
-                "category":  category,
-                "client_id": _client_id(),
-            }).encode()
-            req = _urllib.Request(_TRACK_URL, data=data,
-                                  headers={"Content-Type": "application/json",
-                                           "Accept": "application/json"})
+            data = json.dumps(
+                {
+                    "event": event,
+                    "category": category,
+                    "client_id": _client_id(),
+                }
+            ).encode()
+            req = _urllib.Request(
+                _TRACK_URL,
+                data=data,
+                headers={
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
+            )
             _urllib.urlopen(req, timeout=5).close()
         except Exception:
             pass  # best-effort uniquement

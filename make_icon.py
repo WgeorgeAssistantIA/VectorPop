@@ -34,7 +34,9 @@ img = rounded_gradient(S, (124, 92, 255), (56, 130, 246), radius=56)  # violet -
 d = ImageDraw.Draw(img)
 
 # Courbe vectorielle blanche (evoque un chemin SVG entre deux noeuds).
-d.line([(64, 188), (110, 96), (146, 160), (192, 68)], fill="white", width=12, joint="curve")
+d.line(
+    [(64, 188), (110, 96), (146, 160), (192, 68)], fill="white", width=12, joint="curve"
+)
 
 # Noeuds d'ancrage aux extremites.
 node(d, 64, 188)
