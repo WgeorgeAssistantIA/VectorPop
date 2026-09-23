@@ -150,6 +150,10 @@ Le but est de renforcer ce que Pro apporte sur PC, là où le mobile ne peut pas
 
 **Recommandation** : ne pas alourdir la 2.0.0, qui est déjà chargée (freemium, onboarding, démo, écran Pro). Y ajouter seulement **A (lot 2.0)**, car il valorise directement le Pro que le nouveau freemium met en avant, plus « Ouvrir le dossier » et le choix du fond (D), qui coûtent peu. Prévoir **B puis C en 2.1**, et arbitrer avec les données PostHog (`batch_started`, formats d'export utilisés, `onboarding_usecase_selected` = gravure/flocage ?).
 
+### 2.7 ⚠️ Conformité : les statistiques PostHog contredisent certains messages « aucun suivi »
+- Android envoie des events PostHog depuis la refonte de septembre (`posthog_flutter`). Or le formulaire **Sécurité des données** de la Play Console avait été rempli le 26/07 en « aucune donnée collectée », à une époque où l'app n'avait aucun SDK d'analytics. Les visuels du Store (`scripts/generate_store_screenshots.py`) affichent aussi « zéro traqueur ». **Il faut mettre à jour le formulaire Play Console** (données d'utilisation et identifiants d'appareil, anonymes, non partagés) et retirer « zéro traqueur » des visuels.
+- Desktop V2 : même point pour la politique de confidentialité du site et la fiche Microsoft Store. Formulation honnête : « vos images ne quittent jamais votre ordinateur ; statistiques d'usage anonymes, sans compte ni donnée personnelle ». La case « statistiques anonymes » du §1.1 devient nécessaire avant la release.
+
 ## 3. Hors périmètre V2
 - Changement de prix, bundle Android + desktop, licence partagée entre plateformes.
 - Idées PerfectVector (mode « App Icon iOS », superposition des tracés avant export) : à évaluer en 2.1 avec `vectorpop-feature-ideas`.
