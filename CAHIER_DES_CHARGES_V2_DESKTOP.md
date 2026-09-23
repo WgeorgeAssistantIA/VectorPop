@@ -20,8 +20,8 @@ Rédigé le 23/09/2026. Objectif : reprendre sur la version desktop (Windows/Lin
 | Badge « Passer Pro » | Libellé de plan texte | Pastille dégradé violet → magenta → cyan |
 
 ### Points d'attention avant de commencer
-1. **Rien de la refonte Android n'est commité.** `onboarding_screen.dart`, `paywall_sheet.dart`, `demo_models.dart`, `export_celebration_sheet.dart`, `services/` (analytics, review, update), `assets/samples/` et 4 fichiers de test sont encore non suivis dans git. Le dernier commit Android date du 31/08 (1.0.1+3). Il faut les commiter **avant** d'en faire la source de référence du desktop.
-2. **Le desktop contient ~1 000 lignes modifiées non commitées.** Ce n'est que du reformatage `black` (vérifié avec `git diff -w`). Il faut le commiter à part pour garder un diff V2 lisible.
+1. ✅ Refonte Android 1.0.2 → 1.0.5 commitée le 23/09 (`fff1a7b`, `ce0564d`).
+2. ✅ Reformatage `black` du desktop commité à part le 23/09 (`3918820`). Vérifié : `black` appliqué à la version HEAD donne exactement la copie de travail. Le seul vrai changement, un garde-fou sur le dossier d'export dans `vectorizer.py`, est isolé dans `6aa6451`.
 3. ~~Push GitHub bloqué par les vidéos >100 Mo~~ : **déjà réglé** (nettoyage fait, branche `backup-before-video-cleanup` conservée). Push vérifié le 23/09.
 4. La 1.2.1 a été buildée **avant** le découpage `app.py` → `core/` + `ui/` du 19/08. Comme pour InOneShot, la V2 sera le premier build de la nouvelle structure : il faudra tester le parcours complet sur le build packagé.
 
