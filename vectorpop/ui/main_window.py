@@ -7,11 +7,20 @@ import webbrowser
 from pathlib import Path
 
 from PySide6.QtCore import Qt, QTimer, QSize, QSettings, QUrl
-from PySide6.QtGui import QDesktopServices, QIcon, QKeySequence, QPixmap, QShortcut
+from PySide6.QtGui import (
+    QDesktopServices,
+    QIcon,
+    QKeySequence,
+    QPainter,
+    QPixmap,
+    QShortcut,
+)
+from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
     QComboBox,
+    QDialog,
     QHBoxLayout,
     QInputDialog,
     QLabel,
@@ -32,6 +41,7 @@ from PIL import Image, ImageDraw
 from .. import ai_module, ai_upscale
 from ..analytics import track_event
 from ..export import resize_svg, svg_to_pdf, svg_to_png
+from ..optimize import optimize_svg
 from ..license import (
     FEAT_AI_UPSCALE,
     FEAT_AUTOTUNE,
