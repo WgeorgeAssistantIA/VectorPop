@@ -17,6 +17,7 @@ $startDate  = $endDate.AddDays(-$windowDays + 1)
 $fmt        = { param($d) $d.ToString("yyyy-MM-dd") }
 
 $results = [System.Collections.ArrayList]::new()
+$totalDownloads = [ordered]@{}
 
 function New-Card {
     param($Source, $Icon, $Status, $Window, $Metrics, $Note = "", $ErrorMsg = "")
@@ -53,6 +54,7 @@ try {
         "Linux (.tar.gz)"              = $tarball
         "TOTAL app"                    = ($installeur + $portable + $appimage + $tarball)
     }) "Ne compte QUE les releases GitHub (hors Microsoft Store, pas encore publie, et hors Snap Store). Module detourage IA (lazy-install a la demande) telecharge $module fois separement."
+    $totalDownloads["GitHub (installeur + portable + Linux)"] = ($installeur + $portable + $appimage + $tarball)
 }
 catch { New-Card "GitHub - telechargements" "download" "error" "cumul" ([ordered]@{}) "" $_.Exception.Message }
 
@@ -70,6 +72,8 @@ if (($m.installations -ne $null) -or ($m.snap -ne $null)) {
     if ($m.snap -ne $null) { $metrics["Snap Store (Linux)"] = $m.snap }
     New-Card "Microsoft Store / Snap" "download" "manual" "saisie manuelle" $metrics `
         "Store : soumission encore en brouillon (captures d'ecran manquantes au 19/07/2026). Snap : releve dans snapcraft.io/vectorpop/metrics. A mettre a jour a la main."
+    if ($m.installations -ne $null) { $totalDownloads["Microsoft Store"] = [int]$m.installations }
+    if ($m.snap -ne $null) { $totalDownloads["Snap Store"] = [int]$m.snap }
 }
 else { New-Card "Microsoft Store / Snap" "download" "todo" "" ([ordered]@{}) "Renseigne 'manual.store' dans config.json (chiffres Partner Center + Snap snapcraft.io/vectorpop/metrics)." }
 
@@ -85,6 +89,7 @@ if ($m.installs -ne $null) {
     $pMetrics["Nombre d'avis"]         = $m.ratings
     New-Card "Google Play Store" "download" "manual" "saisie manuelle" $pMetrics `
         "Play Console > Statistiques > Installations. Totales = cumul depuis toujours ; actives = installations actuelles (desinstalls deduites). A mettre a jour a la main (paquet com.lafabriknumerique.vectorpop)."
+    $totalDownloads["Google Play Store"] = [int]($(if ($m.installsTotal -ne $null) { $m.installsTotal } else { $m.installs }))
 }
 else { New-Card "Google Play Store" "download" "todo" "" ([ordered]@{}) "Renseigne 'manual.playstore' dans config.json (chiffres de Play Console > Statistiques) une fois l'app publiee (encore en revue au 31/07/2026)." }
 
@@ -261,6 +266,21 @@ elseif ($m.ventes -ne $null) {
 }
 else { New-Card "Lemon Squeezy - ventes" "cart" "todo" "" ([ordered]@{}) "Ajoute 'lemonsqueezy.apiKey' (et 'storeId' optionnel) dans config.json (voir LISEZMOI)." }
 
+# ------------------------------------------------------------
+# 7) TOTAL TELECHARGEMENTS (tous canaux, calcule a partir des cartes ci-dessus)
+# ------------------------------------------------------------
+if ($totalDownloads.Count -gt 0) {
+    $grandTotal = 0
+    foreach ($k in @($totalDownloads.Keys)) { $grandTotal += [int]$totalDownloads[$k] }
+    $totalDownloads["TOTAL"] = $grandTotal
+    [void]$results.Insert(0, [pscustomobject]@{
+        Source = "Telechargements totaux (tous canaux)"; Icon = "download"; Status = "ok"
+        Window = "cumul, tous canaux confondus"; Metrics = $totalDownloads
+        Note = "Somme des chiffres de telechargement/installation ci-dessous (GitHub + Store + Play Store + Snap). Ordre de grandeur, pas une mesure unique et parfaite : melange de compteurs cumules depuis toujours et d'installations actives (desinstalls deduites) selon la source."
+        ErrorMsg = ""
+    })
+}
+
 # ============================================================
 #  GENERATION HTML
 # ============================================================
@@ -288,7 +308,7 @@ foreach ($c in $results) {
     $rows = ""
     $i = 0
     foreach ($k in $c.Metrics.Keys) {
-        $big = if ($c.Metrics.Count -le 3 -or $k -eq "TOTAL app") { "big" } else { "" }
+        $big = if ($c.Metrics.Count -le 3 -or $k -eq "TOTAL app" -or $k -eq "TOTAL") { "big" } else { "" }
         $rows += "<div class='metric $big'><span class='label'>$(E $k)</span><span class='value'>$(E ([string]$c.Metrics[$k]))</span></div>"
         $i++
     }
