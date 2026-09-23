@@ -19,17 +19,27 @@ class Preprocessing {
       image.getPixel(0, h - 1),
       image.getPixel(w - 1, h - 1),
     ];
-    final rs = corners.map((p) => p.r.toDouble()).toList()..sort();
-    final gs = corners.map((p) => p.g.toDouble()).toList()..sort();
-    final bs = corners.map((p) => p.b.toDouble()).toList()..sort();
-    // Median of 4 samples: average of the two middle values.
-    double median(List<double> v) => (v[1] + v[2]) / 2;
+    final solidCorners = corners.where((p) => p.a > 128).toList();
+    if (solidCorners.isEmpty) return image; // Already transparent background
+
+    final rs = solidCorners.map((p) => p.r.toDouble()).toList()..sort();
+    final gs = solidCorners.map((p) => p.g.toDouble()).toList()..sort();
+    final bs = solidCorners.map((p) => p.b.toDouble()).toList()..sort();
+    
+    double median(List<double> v) {
+      if (v.isEmpty) return 0;
+      if (v.length == 1) return v[0];
+      final mid = v.length ~/ 2;
+      return v.length % 2 == 1 ? v[mid] : (v[mid - 1] + v[mid]) / 2;
+    }
+    
     final bgR = median(rs), bgG = median(gs), bgB = median(bs);
 
     final tolSq = (tolerance * tolerance).toDouble();
     for (var y = 0; y < h; y++) {
       for (var x = 0; x < w; x++) {
         final p = image.getPixel(x, y);
+        if (p.a == 0) continue; // Already transparent
         final dr = p.r - bgR, dg = p.g - bgG, db = p.b - bgB;
         final distSq = dr * dr + dg * dg + db * db;
         if (distSq <= tolSq) {

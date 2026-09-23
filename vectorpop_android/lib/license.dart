@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'services/analytics_service.dart';
 
 /// Same pattern as InOneShot/VoxCut Android: non-consumable in-app purchase
 /// via Google Play Billing. Play Store forbids third-party payment
@@ -10,8 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// permission comes bundled with in_app_purchase's manifest).
 class LicenseConfig {
   static const productId = 'vectorpop_pro';
+  static const freeLifetimeMax = 3;
   static const freeDailyMax = 3;
-  static const fallbackPrice = '19,99 €';
+  static const fallbackPrice = '12,99 €';
 }
 
 class LicenseManager {
@@ -36,6 +40,9 @@ class LicenseManager {
   String? get lastError => _lastError;
   bool get purchasePending => _purchasePending;
   bool get canBuy => _product != null;
+
+  @visibleForTesting
+  set mockProduct(ProductDetails? p) => _product = p;
 
   void Function()? onChanged;
 
@@ -63,13 +70,27 @@ class LicenseManager {
   }
 
   Future<void> buyPro() async {
+    if (_purchasePending) return;
     _lastError = null;
     if (_product == null) {
       _lastError = 'unavailable';
       onChanged?.call();
       return;
     }
-    await _iap.buyNonConsumable(purchaseParam: PurchaseParam(productDetails: _product!));
+    _purchasePending = true;
+    onChanged?.call();
+    try {
+      final launched = await _iap.buyNonConsumable(purchaseParam: PurchaseParam(productDetails: _product!));
+      if (!launched) {
+        _purchasePending = false;
+        _lastError = 'launch_failed';
+        onChanged?.call();
+      }
+    } catch (e) {
+      _purchasePending = false;
+      _lastError = '$e';
+      onChanged?.call();
+    }
   }
 
   Future<void> restorePurchases() async {
@@ -79,21 +100,60 @@ class LicenseManager {
 
   Future<void> _onPurchaseUpdate(List<PurchaseDetails> purchases) async {
     for (final p in purchases) {
-      if (p.productID != LicenseConfig.productId) continue;
+      // 1. User canceled: in_app_purchase_android synthesizes an empty productID on cancellation
+      if (p.status == PurchaseStatus.canceled) {
+        _purchasePending = false;
+        if (p.pendingCompletePurchase) await _iap.completePurchase(p);
+        AnalyticsService.instance.trackPaywallCancelled();
+        onChanged?.call();
+        continue;
+      }
+
+      // 2. Billing error: in_app_purchase_android also synthesizes an empty productID on error
+      if (p.status == PurchaseStatus.error) {
+        _purchasePending = false;
+        if (p.pendingCompletePurchase) await _iap.completePurchase(p);
+        _lastError = p.error?.message ?? 'Purchase error';
+        AnalyticsService.instance.trackPaywallError(
+          errorCode: p.error?.code ?? 'unknown',
+          errorMessage: p.error?.message ?? 'Purchase error',
+        );
+        onChanged?.call();
+        continue;
+      }
+
+      // 3. Purchase pending
       if (p.status == PurchaseStatus.pending) {
         _purchasePending = true;
         onChanged?.call();
-      } else if (p.status == PurchaseStatus.purchased || p.status == PurchaseStatus.restored) {
+        continue;
+      }
+
+      // 4. Successful purchase or restore
+      if (p.status == PurchaseStatus.purchased || p.status == PurchaseStatus.restored) {
+        // Only trigger mismatch if productID is non-empty and different from our product.
+        // NOTE: This assumes VectorPop only sells a single in-app product (vectorpop_pro).
+        // If a 2nd product is ever added, explicit product routing is required.
+        if (p.productID.isNotEmpty && p.productID != LicenseConfig.productId) {
+          _purchasePending = false;
+          if (p.pendingCompletePurchase) await _iap.completePurchase(p);
+          AnalyticsService.instance.trackPaywallError(
+            errorCode: 'unexpected_product_id',
+            errorMessage: 'ID mismatch: ${p.productID} != ${LicenseConfig.productId}',
+          );
+          onChanged?.call();
+          continue;
+        }
+
+        _purchasePending = false;
         if (p.pendingCompletePurchase) await _iap.completePurchase(p);
-        _purchasePending = false;
+        // Tracked here (once per real completed transaction) rather than
+        // from the paywall UI, which only sees the first purchase of a
+        // session and silently misses any that complete after it closes.
+        if (p.status == PurchaseStatus.purchased) {
+          AnalyticsService.instance.trackPaywallPurchased(formattedPrice);
+        }
         await _setPro(true);
-      } else if (p.status == PurchaseStatus.error) {
-        _purchasePending = false;
-        _lastError = p.error?.message ?? 'Purchase error';
-        onChanged?.call();
-      } else if (p.status == PurchaseStatus.canceled) {
-        _purchasePending = false;
-        onChanged?.call();
       }
     }
   }
@@ -108,47 +168,42 @@ class LicenseManager {
   void dispose() => _sub?.cancel();
 }
 
-/// Daily export counter for the free tier — mirrors `UsageTracker` in the
-/// desktop app's license.py. Reset automatically at midnight (local date).
+/// Export counter for the free tier.
+/// - Early users (installed before lifetime quota) keep their 3 daily exports.
+/// - New users receive 3 lifetime trial exports.
 class UsageTracker {
-  static const _kDate = 'usage_date';
   static const _kCount = 'usage_count';
+  static const _kTotal = 'total_vectorizations';
 
   SharedPreferences? _prefs;
 
+  bool get isEarlyUser => false;
+
   Future<void> load() async {
     _prefs ??= await SharedPreferences.getInstance();
-    _resetIfNewDay();
   }
 
-  String _today() {
-    final now = DateTime.now();
-    return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+  int totalExports() {
+    return _prefs?.getInt(_kTotal) ?? _prefs?.getInt(_kCount) ?? 0;
   }
 
-  void _resetIfNewDay() {
-    final prefs = _prefs;
-    if (prefs == null) return;
-    if (prefs.getString(_kDate) != _today()) {
-      prefs.setString(_kDate, _today());
-      prefs.setInt(_kCount, 0);
-    }
+  int exportsToday() => totalExports();
+
+  int get maxQuota => LicenseConfig.freeLifetimeMax;
+
+  int remaining() {
+    return (LicenseConfig.freeLifetimeMax - totalExports()).clamp(0, LicenseConfig.freeLifetimeMax);
   }
 
-  int exportsToday() {
-    _resetIfNewDay();
-    return _prefs?.getInt(_kCount) ?? 0;
+  bool canExport() {
+    return totalExports() < LicenseConfig.freeLifetimeMax;
   }
-
-  int remaining() =>
-      (LicenseConfig.freeDailyMax - exportsToday()).clamp(0, LicenseConfig.freeDailyMax);
-
-  bool canExport() => exportsToday() < LicenseConfig.freeDailyMax;
 
   Future<void> recordExport() async {
-    _resetIfNewDay();
     final prefs = _prefs;
     if (prefs == null) return;
-    await prefs.setInt(_kCount, exportsToday() + 1);
+    final next = totalExports() + 1;
+    await prefs.setInt(_kTotal, next);
+    await prefs.setInt(_kCount, next);
   }
 }

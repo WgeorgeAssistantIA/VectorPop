@@ -12,6 +12,9 @@ class L10n {
   String get pickImage => _t('Choisir une image', 'Choose an image');
   String get exportSvg => _t('Exporter le SVG', 'Export SVG');
   String get noImage => _t('Aucune image sélectionnée', 'No image selected');
+  String get emptyStateSubtitle => _t(
+      'Importez un logo, croquis ou icône pour générer un SVG net et léger, ou testez nos modèles prêts à l\'emploi :',
+      'Import a logo, sketch, or icon to generate clean, sharp SVG vectors, or try our ready-to-use samples:');
   String get before => _t('Avant', 'Before');
   String get after => _t('Après', 'After');
   String get preset => _t('Préréglage', 'Preset');
@@ -143,17 +146,63 @@ class L10n {
   String get purchasePending =>
       _t('Achat en cours de validation…', 'Purchase being validated…');
   String get quotaReachedTitle => _t('Quota gratuit atteint', 'Free quota reached');
-  String quotaReachedBody(int max) => _t(
-      'Vous avez utilisé vos $max exports SVG gratuits aujourd\'hui. '
-      'Passez Pro pour des exports illimités.',
-      'You\'ve used your $max free SVG exports for today. '
-      'Go Pro for unlimited exports.');
+  String quotaReachedBody(int max) => quotaReachedBodyLifetime(max);
+  String quotaReachedBodyLifetime(int max) => _t(
+      'Vous avez utilisé vos $max exports gratuits d\'essai. '
+      'Continuez à convertir vos images avec VectorPop Pro.',
+      'You\'ve used your $max free trial exports. '
+      'Keep converting images with VectorPop Pro.');
+  String quotaReachedBodyDaily(int max) => _t(
+      'Vous avez utilisé vos $max exports gratuits aujourd\'hui. '
+      'Revenez demain ou passez Pro pour des exports illimités.',
+      'You\'ve used your $max free exports for today. '
+      'Come back tomorrow or go Pro for unlimited exports.');
   String get pngProOnlyTitle => _t('Export PNG réservé au Pro', 'PNG export is Pro-only');
   String get pngProOnlyBody => _t(
       'L\'export PNG haute définition fait partie de VectorPop Pro.',
       'High-resolution PNG export is part of VectorPop Pro.');
+  String remainingExports(int n, int max) =>
+      _t('$n/$max exports gratuits restants', '$n/$max free exports left');
   String remainingToday(int n, int max) =>
       _t('$n/$max exports gratuits restants aujourd\'hui', '$n/$max free exports left today');
+  String get lastFreeExportNotice => _t(
+      'Dernier export d\'essai gratuit utilisé. Continuez avec VectorPop Pro !',
+      'Last free trial export used. Keep converting with VectorPop Pro!');
+
+  // PaywallSheet Premium strings
+  String get paywallLifetimeBadge =>
+      _t('ACCÈS À VIE — SANS ABONNEMENT', 'LIFETIME ACCESS — NO SUBSCRIPTION');
+  String paywallRoiBanner(int count) => _t(
+      'Vous avez déjà vectorisé $count image${count > 1 ? 's' : ''} avec VectorPop',
+      'You have already vectorized $count image${count > 1 ? 's' : ''} with VectorPop');
+  String get paywallTitle => 'VectorPop Pro';
+  String get paywallSubtitle => _t(
+      'Débloquez la vectorisation sans limite', 'Unlock unlimited vectorization');
+  String get paywallPostQuotaTitle => _t(
+      'Continuez avec VectorPop Pro', 'Keep converting with VectorPop Pro');
+  String get paywallPostQuotaSubtitle => _t(
+      'Vous avez utilisé vos 3 exports gratuits. Accès à vie sans abonnement.',
+      'You\'ve used your 3 free exports. Lifetime access, no subscription.');
+  String get paywallFeatureSvg => _t(
+      'Exports SVG illimités à vie (sans plafond)',
+      'Lifetime unlimited SVG exports (no limits)');
+  String get paywallFeaturePng => _t(
+      'Exports PNG Ultra-HD jusqu\'à 8192px (8K)',
+      'Ultra-HD PNG exports up to 8192px (8K)');
+  String get paywallFeatureAi => _t(
+      'Finitions IA illimitées (Détourage + Upscale x4 en local)',
+      'Unlimited AI finishing (Cutout + 4x Upscale locally)');
+  String get paywallFeatureLicense => _t(
+      'Licence commerciale à vie & zéro filigrane',
+      'Lifetime commercial license & zero watermark');
+  String paywallBtnBuy(String price) =>
+      _t('Débloquer VectorPop Pro — $price', 'Unlock VectorPop Pro — $price');
+  String get paywallBtnRestore => _t('Restaurer mes achats', 'Restore purchases');
+  String get paywallDesktopHint =>
+      _t('Besoin de gros volumes sur PC ? Découvrez', 'Need heavy batches on PC? Check out');
+  String get paywallReassurance => _t(
+      'Paiement unique et sécurisé via Google Play. Aucun prélèvement récurrent.',
+      'One-time secure payment via Google Play. No recurring subscription.');
 
   String get helpDialogTitle => _t('Aide aux réglages', 'Settings help');
   String get helpDialogIntro => _t(
@@ -238,4 +287,80 @@ class L10n {
       'si possible) :\n\n',
       'Describe the issue you encountered with the AI finishing (attach a '
       'screenshot if possible):\n\n');
+
+  // ─── Onboarding & Modèles Démo ──────────────────────────────────────────────
+  String get onboardingWelcomeTitle => _t(
+      'Transformez vos images en tracés parfaits',
+      'Turn your images into perfect vectors');
+  String get onboardingWelcomeDesc => _t(
+      'Convertissez vos logos, dessins et mascottes en fichiers SVG nets à l\'infini, légers et prêts pour l\'impression.',
+      'Convert logos, sketches, and graphics into infinitely sharp, lightweight, print-ready SVG files.');
+
+  String get onboardingHowTitle => _t(
+      'Adieu les pixels, place à la netteté',
+      'Farewell pixels, welcome pure vectors');
+  String get onboardingHowDesc => _t(
+      'Le format vectoriel SVG ne perd jamais en qualité : zoomez à 1000%, imprimez en grand format ou exportez en 8K sans aucun flou.',
+      'SVG never loses quality: zoom to 1000%, print large-scale, or export in 8K with zero blur or degradation.');
+  String get onboardingBitmapLabel => _t('Image Bitmap (floue au zoom)', 'Bitmap image (pixelated)');
+  String get onboardingVectorLabel => _t('Vectoriel SVG (net à l\'infini)', 'SVG Vector (infinitely sharp)');
+
+  String get onboardingProfileTitle => _t(
+      'Quel est votre usage principal ?',
+      'What is your primary use case?');
+  String get onboardingProfileDesc => _t(
+      'VectorPop pré-calibrera le préréglage optimal pour vos créations.',
+      'VectorPop will pre-tune optimal settings for your workflow.');
+  String get profileLogoTitle => _t('Logos & Identité de marque', 'Logos & Brand Identity');
+  String get profileLogoDesc => _t('Aplats nets et suppression de fond uni', 'Clean solid shapes & flat background removal');
+  String get profileMascotTitle => _t('Mascottes & Illustrations', 'Mascots & Illustrations');
+  String get profileMascotDesc => _t('Nuances riches et calques multi-couleurs', 'Rich color shades & multi-layer depth');
+  String get profileSketchTitle => _t('Signatures & Gravure N&B', 'Signatures & B&W Engraving');
+  String get profileSketchDesc => _t('Courbes pures pour découpe laser, tampon, vinyle', 'Pure contours for laser, stamp, vinyl cut');
+  String get profilePrintTitle => _t('Flocage & Sérigraphie', 'Apparel & Screen Printing');
+  String get profilePrintDesc => _t('Séparation des teintes et contours francs', 'Color separation and bold vector outlines');
+
+  String get onboardingPrivacyTitle => _t(
+      '100% Local & Respect de votre vie privée',
+      '100% On-Device & Private');
+  String get onboardingPrivacyDesc => _t(
+      'Vos images ne quittent jamais votre smartphone. Aucun compte requis, tout le traitement est exécuté localement en natif.',
+      'Your images never leave your phone. No account required, all processing runs locally on-device.');
+  String get onboardingQuotaTitle => _t(
+      '3 exports gratuits offerts pour tester',
+      '3 free trial exports included');
+  String get onboardingQuotaDesc => _t(
+      'Testez en conditions réelles sans engagement. Passez Pro à tout moment pour débloquer les exports illimités à vie.',
+      'Test freely with full quality. Go Pro anytime to unlock lifetime unlimited exports.');
+
+  String get onboardingNext => _t('Suivant', 'Next');
+  String get onboardingGetStarted => _t('Commencer à vectoriser', 'Start vectorizing');
+  String get onboardingSkip => _t('Passer', 'Skip');
+
+  String get newImage => _t('Nouvelle image', 'New image');
+  String get changeImage => _t('Changer d\'image', 'Change image');
+  String get tryDemoSample => _t('Ou essayez un exemple en 1 clic :', 'Or try a sample in 1 tap:');
+  String get demoSamplesAction => _t('Exemples', 'Samples');
+  String get loadingSample => _t('Chargement de l\'exemple…', 'Loading sample…');
+
+  String get resetZoom => _t('Réinitialiser le zoom', 'Reset zoom');
+  String get pinchToZoomHint => _t('Pincez pour zoomer', 'Pinch to zoom');
+
+  String get celebrationTitle => _t('Félicitations pour votre 1er export !', 'Congratulations on your 1st export!');
+  String get celebrationSubtitle => _t(
+      'Votre image a été convertie en un tracé vectoriel ultra-net, prêt pour la gravure, l\'impression ou le web.',
+      'Your image has been converted into razor-sharp vectors, ready for engraving, printing, or web.');
+  String get celebrationPillarLocal => _t('100% Local & Privé', '100% On-Device & Private');
+  String get celebrationPillarLocalDesc => _t(
+      'Calculé sur votre appareil, aucune image n\'a été envoyée sur un serveur distant.',
+      'Processed right on your device, zero images sent to external servers.');
+  String get celebrationPillarVector => _t('Netteté infinie', 'Infinite Sharpness');
+  String get celebrationPillarVectorDesc => _t(
+      'Le format SVG ne pixellise jamais, même imprimé sur une bâche de 10 mètres.',
+      'SVG never degrades or blurs, even if printed on a billboard.');
+  String get celebrationProPromo => _t(
+      'Besoin d\'exports illimités et du PNG Ultra-HD jusqu\'à 8K ?',
+      'Need unlimited exports and Ultra-HD PNG up to 8K?');
+  String get celebrationDiscoverPro => _t('Découvrir VectorPop Pro (À vie)', 'Discover VectorPop Pro (Lifetime)');
+  String get celebrationContinueFree => _t('Continuer avec la version gratuite', 'Continue with free version');
 }

@@ -2,6 +2,12 @@
 
 Ce fichier consolide l'historique de toutes les versions de VectorPop.
 
+## Version 1.0.2 (Android build 4)
+**Date** : 16 Septembre 2026
+**Plateforme** : Android (AAB)
+- **Correction Critique Google Play Billing** : Ajout de la permission `<uses-permission android:name="com.android.vending.BILLING" />` dans `AndroidManifest.xml` débloquant l'ouverture du tunnel de paiement Google Play Store lors du tap sur le bouton Pro.
+- **Build de Production** : Génération du bundle signé `VectorPop-1.0.2-release.aab` et notes de release en 15 langues.
+
 ## Version 1.2.1
 **Date** : 18 Août 2026
 **Plateformes** : Windows (EXE, MSIX), Linux (AppImage, tar.gz)

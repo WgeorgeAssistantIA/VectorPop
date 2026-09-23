@@ -8,23 +8,57 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:vectorpop/demo_models.dart';
+import 'package:vectorpop/export_celebration_sheet.dart';
+import 'package:vectorpop/i18n.dart';
 import 'package:vectorpop/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('VectorPopApp smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(const VectorPopApp());
+    expect(find.byType(VectorPopApp), findsOneWidget);
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  test('DemoModels has 4 preconfigured sample models', () {
+    expect(kDemoModels.length, 4);
+    expect(kDemoModels.any((m) => m.id == 'logo'), isTrue);
+    expect(kDemoModels.any((m) => m.id == 'mascot'), isTrue);
+    expect(kDemoModels.any((m) => m.id == 'sketch'), isTrue);
+    expect(kDemoModels.any((m) => m.id == 'icon'), isTrue);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('ExportCelebrationSheet renders and invokes callback', (WidgetTester tester) async {
+    var proClicked = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ExportCelebrationSheet(
+            lang: AppLang.fr,
+            onDiscoverPro: () {
+              proClicked = true;
+            },
+          ),
+        ),
+      ),
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Félicitations pour votre 1er export !'), findsOneWidget);
+    expect(find.text('Découvrir VectorPop Pro (À vie)'), findsOneWidget);
+    expect(find.text('Continuer avec la version gratuite'), findsOneWidget);
+
+    await tester.tap(find.text('Découvrir VectorPop Pro (À vie)'));
+    await tester.pumpAndSettle();
+    expect(proClicked, isTrue);
+  });
+
+  test('i18n contains newImage and 8K PNG strings', () {
+    final fr = L10n(AppLang.fr);
+    final en = L10n(AppLang.en);
+
+    expect(fr.newImage, 'Nouvelle image');
+    expect(en.newImage, 'New image');
+
+    expect(fr.paywallFeaturePng, contains('8192px (8K)'));
+    expect(en.paywallFeaturePng, contains('8192px (8K)'));
   });
 }

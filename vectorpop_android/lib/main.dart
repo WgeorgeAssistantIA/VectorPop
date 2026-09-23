@@ -5,24 +5,36 @@ import 'dart:typed_data' show Uint8List;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show RootIsolateToken, BackgroundIsolateBinaryMessenger;
+import 'package:flutter/services.dart' show RootIsolateToken, BackgroundIsolateBinaryMessenger, rootBundle;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'ai_common.dart';
 import 'ai_detourage.dart';
 import 'ai_upscale.dart';
 import 'color_cleanup.dart';
+import 'demo_models.dart';
+import 'export_celebration_sheet.dart';
 import 'i18n.dart';
 import 'license.dart';
+import 'onboarding_screen.dart';
+import 'paywall_sheet.dart';
 import 'preprocessing.dart';
+import 'services/analytics_service.dart';
+import 'services/review_service.dart';
+import 'services/update_service.dart';
 import 'vectorizer_ffi.dart';
 
-void main() => runApp(const VectorPopApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AnalyticsService.instance.init();
+  runApp(const VectorPopApp());
+}
 
 /// Top-level so the closure captured by [Isolate.run] only closes over its
 /// own parameters -- an inline closure inside a State method can end up
@@ -30,8 +42,41 @@ void main() => runApp(const VectorPopApp());
 /// (e.g. the surrounding `setState` calls), which drags `this` (and the
 /// whole widget tree behind it) along and makes the isolate message
 /// unsendable at runtime (`flutter analyze` does not catch this).
-Future<img.Image?> _decodeImageBytes(Uint8List bytes) {
-  return Isolate.run(() => img.decodeImage(bytes));
+Future<img.Image?> _decodeImageBytes(Uint8List bytes) async {
+  // 1. First try pure Dart decoder in isolate
+  try {
+    final decoded = await Isolate.run(() {
+      try {
+        return img.decodeImage(bytes);
+      } catch (_) {
+        return null;
+      }
+    });
+    if (decoded != null) return decoded;
+  } catch (_) {}
+
+  // 2. Native Skia fallback: handles tablet screenshots, progressive JPEGs,
+  // HEIC, and other formats where pure Dart package:image throws RangeError.
+  try {
+    final codec = await ui.instantiateImageCodec(bytes);
+    final frameInfo = await codec.getNextFrame();
+    final uiImage = frameInfo.image;
+    final byteData = await uiImage.toByteData(format: ui.ImageByteFormat.rawRgba);
+    if (byteData != null) {
+      final image = img.Image.fromBytes(
+        width: uiImage.width,
+        height: uiImage.height,
+        bytes: byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes).buffer,
+        order: img.ChannelOrder.rgba,
+        numChannels: 4,
+      );
+      uiImage.dispose();
+      return image;
+    }
+  } catch (e) {
+    debugPrint('Native fallback image decode failed: $e');
+  }
+  return null;
 }
 
 Future<img.Image> _runAiUpscaleIsolate(img.Image source, RootIsolateToken token) {
@@ -65,9 +110,22 @@ Future<String> _runVectorizePipeline({
   required int filterSpeckle,
   required int cornerThresh,
   required int layerDiff,
+  required int modePolygon,
 }) {
   return Isolate.run(() {
     var working = source;
+    // Cap working resolution for vectorization to avoid long freezes or OOM
+    // on ultra-high-resolution camera photos (e.g. 12MP/48MP).
+    // Vector traces remain infinitely scalable bezier curves.
+    const maxDim = 2048;
+    if (working.width > maxDim || working.height > maxDim) {
+      if (working.width >= working.height) {
+        working = img.copyResize(working, width: maxDim, interpolation: img.Interpolation.linear);
+      } else {
+        working = img.copyResize(working, height: maxDim, interpolation: img.Interpolation.linear);
+      }
+    }
+
     if (!aiDetourageRan && removeBg) {
       working = Preprocessing.removeBackground(working, tolerance: bgTol);
     }
@@ -114,6 +172,7 @@ Future<String> _runVectorizePipeline({
         filterSpeckle: filterSpeckle,
         cornerThreshold: cornerThresh,
         layerDifference: layerDiff,
+        modePolygon: modePolygon,
       ),
     );
   });
@@ -143,6 +202,29 @@ class VectorPopApp extends StatefulWidget {
 class _VectorPopAppState extends State<VectorPopApp> {
   ThemeMode _themeMode = ThemeMode.system;
   AppLang _lang = AppLang.fr;
+  bool _showOnboarding = false;
+  bool _ready = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initApp();
+  }
+
+  Future<void> _initApp() async {
+    final prefs = await SharedPreferences.getInstance();
+    final seen = prefs.getBool('has_seen_onboarding') ?? false;
+    final savedLang = prefs.getString('lang');
+    if (savedLang != null) {
+      _lang = savedLang == 'en' ? AppLang.en : AppLang.fr;
+    }
+    if (mounted) {
+      setState(() {
+        _showOnboarding = !seen;
+        _ready = true;
+      });
+    }
+  }
 
   void _toggleTheme() {
     setState(() {
@@ -180,12 +262,19 @@ class _VectorPopAppState extends State<VectorPopApp> {
         scaffoldBackgroundColor: const Color(0xFF1B1C25),
         cardColor: const Color(0xFF242631),
       ),
-      home: VectorizeScreen(
-        onToggleTheme: _toggleTheme,
-        themeMode: _themeMode,
-        lang: _lang,
-        onToggleLang: _toggleLang,
-      ),
+      home: !_ready
+          ? const Scaffold(body: Center(child: CircularProgressIndicator()))
+          : _showOnboarding
+              ? OnboardingScreen(
+                  lang: _lang,
+                  onFinish: () => setState(() => _showOnboarding = false),
+                )
+              : VectorizeScreen(
+                  onToggleTheme: _toggleTheme,
+                  themeMode: _themeMode,
+                  lang: _lang,
+                  onToggleLang: _toggleLang,
+                ),
     );
   }
 }
@@ -206,6 +295,7 @@ class _Settings {
   double sharpen = 0;
   bool mergeColors = true;
   double mergeThreshold = 24;
+  int modePolygon = 0;
   bool cleanEdges = true;
   bool aiUpscale = false;
   bool aiDetourage = false;
@@ -216,7 +306,7 @@ class _Settings {
         colorModeBinary = false;
         filterSpeckle = 4;
         colorPrecision = 6;
-        cornerThreshold = 60;
+        cornerThreshold = 100;
         layerDifference = 16;
         mergeColors = true;
         mergeThreshold = 24;
@@ -272,6 +362,9 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
   Timer? _debounce;
   final _license = LicenseManager();
   final _usage = UsageTracker();
+  final ScrollController _controlsScrollController = ScrollController();
+  final TransformationController _transformationController = TransformationController();
+  bool _isZoomed = false;
   bool _licenseLoaded = false;
   bool _aiUpscaleAvailable = false;
   bool _aiDetourageAvailable = false;
@@ -281,7 +374,27 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
   @override
   void initState() {
     super.initState();
+    _transformationController.addListener(_onTransformationChanged);
     _initLicense();
+    UpdateService.instance.checkForUpdate();
+  }
+
+  void _onTransformationChanged() {
+    final scale = _transformationController.value.getMaxScaleOnAxis();
+    final zoomed = (scale - 1.0).abs() > 0.05;
+    if (zoomed != _isZoomed) {
+      if (zoomed) {
+        AnalyticsService.instance.trackZoomInteracted();
+      }
+      setState(() => _isZoomed = zoomed);
+    }
+  }
+
+  void _resetZoom() {
+    _transformationController.value = Matrix4.identity();
+    if (_isZoomed) {
+      setState(() => _isZoomed = false);
+    }
   }
 
   Future<void> _initLicense() async {
@@ -305,41 +418,185 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
 
   @override
   void dispose() {
+    _transformationController.removeListener(_onTransformationChanged);
+    _transformationController.dispose();
+    _controlsScrollController.dispose();
     _debounce?.cancel();
     _license.dispose();
     super.dispose();
   }
 
   Future<void> _pickImage() async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (picked == null) return;
-    final file = File(picked.path);
-    final bytes = await file.readAsBytes();
-    
+    try {
+      final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (picked == null) return;
+      final file = File(picked.path);
+      final bytes = await file.readAsBytes();
+      
+      setState(() {
+        _busy = true;
+        _error = null;
+      });
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      final decoded = await _decodeImageBytes(bytes);
+      if (decoded == null) {
+        if (mounted) {
+          setState(() {
+            _error = t.lang == AppLang.fr
+                ? 'Format image non reconnu'
+                : 'Unrecognized image format';
+          });
+        }
+        return;
+      }
+      AnalyticsService.instance.trackImagePicked(
+        width: decoded.width,
+        height: decoded.height,
+        sizeBytes: bytes.length,
+        hasAlpha: decoded.hasAlpha,
+      );
+      _resetZoom();
+      if (mounted) {
+        setState(() {
+          _sourceFile = file;
+          _decoded = decoded;
+          _svg = null;
+          _error = null;
+          _showAfter = false; // Show the original image first
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _error = '$e');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _busy = false);
+      }
+    }
+  }
+
+  Future<void> _loadDemoModel(DemoModel model) async {
     setState(() {
       _busy = true;
       _error = null;
     });
-    await Future.delayed(const Duration(milliseconds: 50));
+    try {
+      final byteData = await rootBundle.load(model.assetPath);
+      final bytes = byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes);
+      final tempDir = await getTemporaryDirectory();
+      final tempFile = File('${tempDir.path}/${model.id}.png');
+      await tempFile.writeAsBytes(bytes, flush: true);
 
-    final decoded = await _decodeImageBytes(bytes);
-    if (decoded == null) {
+      final decoded = await _decodeImageBytes(bytes);
+      if (decoded == null) throw StateError('Failed to decode demo image');
+
+      AnalyticsService.instance.trackSampleModelSelected(
+        model.id,
+        model.title(t.lang == AppLang.fr),
+      );
+
+      _Preset targetPreset;
+      switch (model.preset) {
+        case DemoPresetType.flat:
+          targetPreset = _Preset.flat;
+          break;
+        case DemoPresetType.detailed:
+          targetPreset = _Preset.detailed;
+          break;
+        case DemoPresetType.bw:
+          targetPreset = _Preset.bw;
+          break;
+      }
+      _preset = targetPreset;
+      _settings.applyPreset(targetPreset);
+      _settings.removeBackground = model.removeBackground;
+      _settings.bgTolerance = model.bgTolerance;
+      _settings.colorPrecision = model.colorPrecision;
+      if (model.cornerThreshold != null) _settings.cornerThreshold = model.cornerThreshold!;
+      if (model.mergeColors != null) _settings.mergeColors = model.mergeColors!;
+      if (model.modePolygon != null) _settings.modePolygon = model.modePolygon!;
+      if (model.cleanEdges != null) _settings.cleanEdges = model.cleanEdges!;
+      if (model.filterSpeckle != null) _settings.filterSpeckle = model.filterSpeckle!.toDouble();
+
+      _resetZoom();
       setState(() {
+        _sourceFile = tempFile;
+        _decoded = decoded;
+        _svg = null;
+        _error = null;
+        _showAfter = false;
         _busy = false;
-        _error = t.lang == AppLang.fr
-            ? 'Format image non reconnu'
-            : 'Unrecognized image format';
       });
-      return;
+
+      _scheduleVectorize(immediate: true);
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          _error = '$e';
+        });
+      }
     }
-    setState(() {
-      _sourceFile = file;
-      _decoded = decoded;
-      _svg = null;
-      _error = null;
-      _showAfter = false; // Show the original image first
-      _busy = false; // We are done loading the image
-    });
+  }
+
+  void _showDemoSamplesSheet() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isFr = t.lang == AppLang.fr;
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: isDark ? const Color(0xFF1E1834) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.white24 : Colors.black26,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  const Icon(Icons.flash_on_rounded, color: Brand.accent2, size: 20),
+                  const SizedBox(width: 8),
+                  Text(
+                    t.demoSamplesAction,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              ...kDemoModels.map((m) => ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset(m.assetPath, width: 44, height: 44, fit: BoxFit.cover),
+                    ),
+                    title: Text(m.title(isFr), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                    subtitle: Text(m.desc(isFr), style: TextStyle(fontSize: 12, color: isDark ? Colors.white60 : Colors.black54)),
+                    onTap: () {
+                      Navigator.pop(ctx);
+                      _loadDemoModel(m);
+                    },
+                  )),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void _scheduleVectorize({bool immediate = false}) {
@@ -362,20 +619,21 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
     // Let the UI render the loading state
     await Future.delayed(const Duration(milliseconds: 50));
 
+    final stopwatch = Stopwatch()..start();
+    AnalyticsService.instance.trackVectorizeStarted(
+      preset: _preset.name,
+      colorPrecision: _settings.colorPrecision.round(),
+      removeBg: _settings.removeBackground,
+      aiUpscale: _settings.aiUpscale,
+      aiDetourage: _settings.aiDetourage,
+    );
+
     try {
       var working = decoded;
       // Finition IA en tout premier : elle redessine la source AVANT le
       // reste du pipeline, comme cote desktop (ai_upscale.py) -- les etapes
       // suivantes (fond, seuillage, contraste...) travaillent alors sur une
       // image deja nettoyee/agrandie.
-      //
-      // Chaque appel tourne dans son propre Isolate.run() : les boucles
-      // pixel-par-pixel de conversion NCHW/masque (ai_upscale.dart,
-      // ai_detourage.dart) sont du Dart pur et bloqueraient sinon le thread
-      // UI pendant plusieurs secondes sur une grosse image (ANR). Le plugin
-      // onnxruntime parle par MethodChannel, qui n'existe pas dans un isolate
-      // frais -- BackgroundIsolateBinaryMessenger le reconnecte au moteur
-      // Flutter via le token du isolate racine.
       final rootIsolateToken = RootIsolateToken.instance!;
       if (_settings.aiUpscale && _aiUpscaleAvailable) {
         working = await _runAiUpscaleIsolate(working, rootIsolateToken);
@@ -402,6 +660,12 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
         filterSpeckle: _settings.filterSpeckle.round(),
         cornerThresh: _settings.cornerThreshold.round(),
         layerDiff: _settings.layerDifference.round(),
+        modePolygon: _settings.modePolygon,
+      );
+      AnalyticsService.instance.trackVectorizeCompleted(
+        preset: _preset.name,
+        durationMs: stopwatch.elapsedMilliseconds,
+        svgSizeBytes: svg.length,
       );
       if (!mounted) return;
       setState(() {
@@ -409,6 +673,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
         _showAfter = true; // Auto-switch to the result view
       });
     } catch (e) {
+      AnalyticsService.instance.trackVectorizeFailed('$e');
       if (!mounted) return;
       setState(() => _error = '$e');
     } finally {
@@ -416,24 +681,65 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
     }
   }
 
+  Future<void> _handlePostExportTriggers({ShareResult? shareResult}) async {
+    if (!mounted) return;
+    final total = _usage.totalExports();
+
+    // Export 1: Aha moment (célébration et découverte douce de Pro)
+    if (total == 1 && !_license.isPro()) {
+      await ExportCelebrationSheet.show(
+        context: context,
+        lang: widget.lang,
+        onDiscoverPro: () => _showPaywall(source: 'export_celebration'),
+      );
+    }
+    // Export 3 (Nouveaux utilisateurs) : notification discrète pour le dernier essai gratuit
+    else if (total == 3 && !_license.isPro() && !_usage.isEarlyUser) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(t.lastFreeExportNotice),
+            action: SnackBarAction(
+              label: t.goPro,
+              onPressed: () => _showPaywall(source: 'last_free_export_snack'),
+            ),
+            duration: const Duration(seconds: 5),
+          ),
+        );
+      }
+    }
+
+    // Demande d'avis Play Store : uniquement sur signal réel de satisfaction (partage réussi sur export >= 2)
+    if (shareResult?.status == ShareResultStatus.success && total >= 2) {
+      await ReviewService.instance.requestReviewIfAppropriate();
+    }
+  }
+
   Future<void> _exportSvg() async {
     final svg = _svg;
     if (svg == null) return;
     if (!_license.isPro() && !_usage.canExport()) {
+      AnalyticsService.instance.trackQuotaReached(totalExports: _usage.totalExports());
       await _showQuotaReachedDialog();
       return;
     }
     final dir = await getTemporaryDirectory();
     final file = File('${dir.path}/vectorpop_export.svg');
     await file.writeAsString(svg);
-    if (!_license.isPro()) await _usage.recordExport();
+    await _usage.recordExport();
+    AnalyticsService.instance.trackExportSvg();
     if (mounted) setState(() {});
-    await Share.shareXFiles([XFile(file.path)]);
+    final shareRes = await Share.shareXFiles([XFile(file.path)]);
+    await _handlePostExportTriggers(shareResult: shareRes);
   }
 
   Future<void> _exportPng(int longSidePx) async {
     final svg = _svg;
     if (svg == null) return;
+    if (!_license.isPro()) {
+      _showPngProOnlyDialog();
+      return;
+    }
     setState(() => _busy = true);
     try {
       final loader = SvgStringLoader(svg);
@@ -458,8 +764,11 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
       final dir = await getTemporaryDirectory();
       final file = File('${dir.path}/vectorpop_export.png');
       await file.writeAsBytes(bytes.buffer.asUint8List(), flush: true);
+      await _usage.recordExport();
+      AnalyticsService.instance.trackExportPng(longSidePx);
       if (!mounted) return;
-      await Share.shareXFiles([XFile(file.path)]);
+      final shareRes = await Share.shareXFiles([XFile(file.path)]);
+      await _handlePostExportTriggers(shareResult: shareRes);
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = '$e');
@@ -473,8 +782,16 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
     var format = 'svg';
     var size = 1024;
     var isCustom = false;
-    final sizes = [128, 256, 512, 1024, 2048, 4096];
+    final sizes = [512, 1024, 2048, 4096, 8192];
     final customController = TextEditingController();
+
+    String sizeLabel(int s) {
+      if (s == 1024) return '1024px (HD)';
+      if (s == 2048) return '2048px (2K)';
+      if (s == 4096) return '4096px (4K)';
+      if (s == 8192) return '8192px (8K)';
+      return '${s}px';
+    }
 
     await showDialog<void>(
       context: context,
@@ -509,7 +826,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
                     runSpacing: 8,
                     children: [
                       ...sizes.map((s) => ChoiceChip(
-                            label: Text('${s}px'),
+                            label: Text(sizeLabel(s)),
                             selected: !isCustom && size == s,
                             onSelected: (_) => setDialogState(() {
                               isCustom = false;
@@ -530,6 +847,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         labelText: t.exportCustomSizeLabel,
+                        hintText: 'max 8192px',
                         border: const OutlineInputBorder(),
                         isDense: true,
                       ),
@@ -619,7 +937,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
 
   Future<void> _onToggleAiUpscale(bool v) async {
     if (!_license.isPro()) {
-      _showProDialog();
+      _showPaywall(source: 'toggle_ai_upscale');
       return;
     }
     if (v && !_aiUpscaleAvailable) {
@@ -637,7 +955,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
 
   Future<void> _onToggleAiDetourage(bool v) async {
     if (!_license.isPro()) {
-      _showProDialog();
+      _showPaywall(source: 'toggle_ai_detourage');
       return;
     }
     if (v && !_aiDetourageAvailable) {
@@ -697,10 +1015,21 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
             icon: const Icon(Icons.help_outline),
           ),
           IconButton(
+            tooltip: t.demoSamplesAction,
+            onPressed: _showDemoSamplesSheet,
+            icon: const Icon(Icons.collections_bookmark_outlined),
+          ),
+          IconButton(
             tooltip: isDark ? t.lightMode : t.darkMode,
             onPressed: widget.onToggleTheme,
             icon: Icon(isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined),
           ),
+          if (_sourceFile != null)
+            IconButton(
+              tooltip: t.newImage,
+              onPressed: _busy ? null : _pickImage,
+              icon: const Icon(Icons.add_photo_alternate_outlined),
+            ),
           IconButton(
             tooltip: t.exportTitle,
             onPressed: _svg == null ? null : _showExportDialog,
@@ -927,113 +1256,115 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
         ),
       );
     }
-    return TextButton.icon(
-      onPressed: _showProDialog,
-      icon: const Icon(Icons.workspace_premium_outlined, size: 16),
-      label: Text(t.goPro),
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: Center(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF7A52F5), Color(0xFFC92BC0), Color(0xFF3FD7FB)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () => _showPaywall(source: 'appbar_go_pro'),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.workspace_premium_rounded, size: 16, color: Colors.white),
+                    const SizedBox(width: 6),
+                    Text(
+                      t.goPro,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
-  Future<void> _showProDialog() async {
-    // Auto-close the dialog once the purchase succeeds so the user isn't
-    // stuck on the CTA after Play returns them to the app.
-    void listener() {
-      if (!mounted) return;
-      setState(() {});
-      if (_license.isPro() && Navigator.of(context, rootNavigator: true).canPop()) {
-        Navigator.of(context, rootNavigator: true).pop();
-      }
+  void _showPaywall({String source = 'direct'}) {
+    AnalyticsService.instance.trackPaywallViewed(source);
+    
+    final bool isTablet = MediaQuery.of(context).size.width > 600;
+    
+    Widget buildPaywall(BuildContext ctx, StateSetter setSheetState) {
+      final previous = _license.onChanged;
+      _license.onChanged = () {
+        previous?.call();
+        if (mounted) {
+          setState(() {});
+          setSheetState(() {});
+          if (_license.isPro() && Navigator.of(ctx, rootNavigator: true).canPop()) {
+            // Purchase tracking now happens in LicenseManager._onPurchaseUpdate
+            // itself, so it fires for every completed transaction even if
+            // this sheet is no longer open when it lands.
+            Navigator.of(ctx, rootNavigator: true).pop();
+          }
+        }
+      };
+      return PaywallSheet(
+        t: t,
+        license: _license,
+        totalExports: _usage.totalExports(),
+        onBuy: () async {
+          final price = _license.formattedPrice;
+          AnalyticsService.instance.trackPaywallBuyClicked(price);
+          await _license.buyPro();
+        },
+        onRestore: () async {
+          await _license.restorePurchases();
+        },
+      );
     }
 
-    final previous = _license.onChanged;
-    _license.onChanged = () {
-      previous?.call();
-      listener();
-    };
-
-    await showDialog<void>(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) {
-          // Local rebuild so the dialog reflects pending/error transitions.
-          _license.onChanged = () {
-            previous?.call();
-            listener();
-            setDialogState(() {});
-          };
-          return AlertDialog(
-            title: Text(t.proBenefitsTitle),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _benefitRow(Icons.high_quality_outlined, t.proBenefitPng),
-                _benefitRow(Icons.all_inclusive, t.proBenefitUnlimited),
-                const SizedBox(height: 10),
-                Text(t.proBenefitBoth, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                if (_license.purchasePending) ...[
-                  const SizedBox(height: 12),
-                  Row(children: [
-                    const SizedBox(
-                      width: 14,
-                      height: 14,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(t.purchasePending, style: const TextStyle(fontSize: 12)),
-                  ]),
-                ],
-                if (_license.lastError != null) ...[
-                  const SizedBox(height: 8),
-                  Text(_license.lastError!,
-                      style: const TextStyle(color: Colors.red, fontSize: 12)),
-                ],
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () async {
-                  await _license.restorePurchases();
-                },
-                child: Text(t.restorePurchases),
-              ),
-              FilledButton(
-                onPressed: _license.canBuy && !_license.purchasePending
-                    ? () async {
-                        await _license.buyPro();
-                      }
-                    : null,
-                child: Text(_license.canBuy
-                    ? t.buyProForPrice(_license.formattedPrice)
-                    : t.buyProUnavailable),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-    _license.onChanged = previous;
+    if (isTablet) {
+      showDialog<void>(
+        context: context,
+        builder: (ctx) => Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          insetPadding: const EdgeInsets.all(24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 420),
+            child: StatefulBuilder(builder: buildPaywall),
+          ),
+        ),
+      );
+    } else {
+      showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (ctx) => StatefulBuilder(builder: buildPaywall),
+      );
+    }
   }
 
-  Widget _benefitRow(IconData icon, String label) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: Brand.accent1),
-          const SizedBox(width: 8),
-          Expanded(child: Text(label, style: const TextStyle(fontSize: 13))),
-        ],
-      ),
-    );
-  }
 
   Future<void> _showQuotaReachedDialog() async {
+    final bodyText = t.quotaReachedBodyLifetime(LicenseConfig.freeLifetimeMax);
+
     await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(t.quotaReachedTitle),
-        content: Text(t.quotaReachedBody(LicenseConfig.freeDailyMax)),
+        content: Text(bodyText),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -1042,7 +1373,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
           FilledButton(
             onPressed: () {
               Navigator.of(context).pop();
-              _showProDialog();
+              _showPaywall(source: 'quota_reached_dialog');
             },
             child: Text(t.goPro),
           ),
@@ -1065,7 +1396,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
           FilledButton(
             onPressed: () {
               Navigator.of(context).pop();
-              _showProDialog();
+              _showPaywall(source: 'png_pro_only_dialog');
             },
             child: Text(t.goPro),
           ),
@@ -1100,6 +1431,21 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
                       child: CircularProgressIndicator(strokeWidth: 2.4),
                     ),
                   ),
+                if (_sourceFile != null && _isZoomed)
+                  Positioned(
+                    bottom: 12,
+                    right: 12,
+                    child: Material(
+                      elevation: 4,
+                      shape: const CircleBorder(),
+                      color: Theme.of(context).cardColor,
+                      child: IconButton(
+                        tooltip: t.resetZoom,
+                        onPressed: _resetZoom,
+                        icon: const Icon(Icons.zoom_out_map_rounded, size: 20),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -1111,9 +1457,17 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
             child: Text(_error!, style: const TextStyle(color: Colors.red)),
           ),
         if (_sourceFile != null)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 12,
+            runSpacing: 8,
             children: [
+              OutlinedButton.icon(
+                onPressed: _busy ? null : _pickImage,
+                icon: const Icon(Icons.add_photo_alternate_outlined, size: 18),
+                label: Text(t.newImage),
+              ),
               SegmentedButton<bool>(
                 segments: [
                   ButtonSegment(
@@ -1124,7 +1478,6 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
                 selected: {_showAfter},
                 onSelectionChanged: (s) => setState(() => _showAfter = s.first),
               ),
-              const SizedBox(width: 12),
               FilledButton.tonalIcon(
                 onPressed: _svg == null ? null : _showExportDialog,
                 icon: const Icon(Icons.ios_share, size: 18),
@@ -1136,7 +1489,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 6),
             child: Text(
-              t.remainingToday(_usage.remaining(), LicenseConfig.freeDailyMax),
+              t.remainingExports(_usage.remaining(), LicenseConfig.freeLifetimeMax),
               style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ),
@@ -1146,25 +1499,230 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
 
   Widget _buildPreviewContent() {
     if (_sourceFile == null) {
-      return Center(
-        child: Text(t.noImage, style: const TextStyle(color: Colors.grey)),
-      );
+      return _buildEmptyStateWithSamples();
     }
+    final Widget content;
     if (_showAfter && _svg != null) {
-      return _CheckerBackground(
+      content = _CheckerBackground(
         child: SvgPicture.string(_svg!, fit: BoxFit.contain),
       );
+    } else {
+      content = _CheckerBackground(
+        child: Image.file(_sourceFile!, fit: BoxFit.contain),
+      );
     }
-    return _CheckerBackground(
-      child: Image.file(_sourceFile!, fit: BoxFit.contain),
+
+    return InteractiveViewer(
+      transformationController: _transformationController,
+      minScale: 0.8,
+      maxScale: 10000.0,
+      boundaryMargin: const EdgeInsets.all(double.infinity),
+      clipBehavior: Clip.none,
+      child: content,
+    );
+  }
+
+  Widget _buildEmptyStateWithSamples() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isFr = widget.lang == AppLang.fr;
+    final theme = Theme.of(context);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final useGrid = constraints.maxWidth >= 380;
+
+        return SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 54,
+                height: 54,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      Brand.accent2.withValues(alpha: 0.2),
+                      Brand.accent1.withValues(alpha: 0.15),
+                    ],
+                  ),
+                ),
+                child: const Icon(
+                  Icons.auto_awesome_rounded,
+                  size: 28,
+                  color: Brand.accent2,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                t.noImage,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 4),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  t.emptyStateSubtitle,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    height: 1.35,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(height: 16),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: Brand.gradient,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Brand.accent2.withValues(alpha: 0.25),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: FilledButton.icon(
+                  onPressed: _busy ? null : _pickImage,
+                  icon: const Icon(Icons.photo_library_outlined, size: 20),
+                  label: Text(
+                    t.pickImage,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  const Expanded(child: Divider()),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      t.tryDemoSample,
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                  const Expanded(child: Divider()),
+                ],
+              ),
+              const SizedBox(height: 12),
+              if (useGrid)
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: 2.3,
+                  children: kDemoModels.map((m) => _buildDemoSampleCard(m, isDark, isFr)).toList(),
+                )
+              else
+                Column(
+                  children: kDemoModels
+                      .map((m) => Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: _buildDemoSampleCard(m, isDark, isFr),
+                          ))
+                      .toList(),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDemoSampleCard(DemoModel model, bool isDark, bool isFr) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: _busy ? null : () => _loadDemoModel(model),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.black.withValues(alpha: 0.03),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5),
+            ),
+          ),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset(
+                  model.assetPath,
+                  width: 42,
+                  height: 42,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      model.title(isFr),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      model.desc(isFr),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: isDark ? Colors.white60 : Colors.black54,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right, size: 16, color: Colors.grey),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
   Widget _buildControlsPanel() {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        if (_sourceFile == null)
+    return ShaderMask(
+      shaderCallback: (Rect rect) {
+        return const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.transparent, Colors.transparent, Colors.black],
+          stops: [0.0, 0.9, 1.0],
+        ).createShader(rect);
+      },
+      blendMode: BlendMode.dstOut,
+      child: ListView(
+        controller: _controlsScrollController,
+        padding: const EdgeInsets.all(16),
+        children: [
+          if (_sourceFile == null)
           DecoratedBox(
             decoration: BoxDecoration(
               gradient: Brand.gradient,
@@ -1403,6 +1961,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
         ),
         const SizedBox(height: 12),
       ],
+    ),
     );
   }
 
