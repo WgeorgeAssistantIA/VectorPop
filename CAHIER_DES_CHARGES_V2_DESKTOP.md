@@ -118,6 +118,36 @@ Suivre `quota_reached`, `paywall_viewed` par source, `pro_buy_clicked` et l'expo
 - Plafonner la résolution de travail sur les très grosses images (Android le fait déjà contre les gels et les manques de mémoire sur les photos de 12 à 48 Mpx). Vérifier le comportement desktop avec une photo de 48 Mpx.
 - Relancer `stress_test_agent.py` sur le **build packagé** (le rapport `stress_test_report_windows.json` date d'avant le refactor).
 
+### 2.6 Nouvelles évolutions proposées (23/09, à valider par William)
+Le but est de renforcer ce que Pro apporte sur PC, là où le mobile ne peut pas suivre (volume, fichiers de production).
+
+**A. Traitement par lot 2.0** (existe déjà en Pro, mais en version minimale : choix d'un dossier, un format, les réglages courants, un bilan en `QMessageBox`)
+- Glisser-déposer **plusieurs fichiers ou un dossier** sur la fenêtre, en plus du sélecteur de dossier. Option « inclure les sous-dossiers ».
+- Liste des fichiers avec vignette et statut (en attente / OK / avertissement / erreur), « Relancer les échecs », « Ouvrir le dossier de sortie » à la fin.
+- **Plusieurs formats en une passe** (SVG + PNG + PDF cochables) et modèle de nom (`{nom}_vector`, sous-dossier par format).
+- Option « Optimiser chaque image » (autotune par fichier). C'est lent, avec une estimation affichée, mais c'est le vrai avantage face aux outils en ligne qui facturent à l'image.
+- Effort : moyen (1 à 2 jours). Valeur : forte, c'est l'argument n°1 de la version PC (`paywallDesktopHint` sur Android).
+
+**B. Exports « production » pour la découpe et la gravure** (le profil « Signatures & gravure / découpe laser, vinyle » de l'onboarding)
+- **DXF** (découpeuses laser, CNC, logiciels Silhouette et LightBurn), avec `ezdxf` et les tracés SVG convertis en polylignes.
+- **EPS** (imprimeurs, sérigraphie).
+- **Un fichier par couleur** (séparation de teintes pour la sérigraphie et le flocage) : un SVG ou PDF par aplat de couleur.
+- Effort : moyen. Valeur : ouvre un public prêt à payer (makers, ateliers de flocage), peu servi par Canva ou Vectorizer.AI.
+
+**C. Palette de couleurs éditable**
+- Liste des couleurs du SVG, avec la surface occupée. Un clic permet de recolorer, fusionner deux couleurs ou supprimer une couleur (généralise la « suppression d'aplat au clic »).
+- « Limiter à N couleurs » après coup, sans refaire la vectorisation.
+- Effort : moyen à élevé. Valeur : forte pour les logos, réduit les allers-retours vers Inkscape.
+
+**D. Petits gains rapides**
+- « Copier pour le web » : SVG inline, data URI, composant React.
+- **Pack logo** : SVG + PNG 16 à 1024 px + `favicon.ico` en un clic. C'est un export à partir du vecteur, à ne pas confondre avec l'impasse « miniaturisation de logo par IA ».
+- Choix du fond à l'export (transparent / blanc).
+- Menu clic droit de l'Explorateur « Vectoriser avec VectorPop » (installeur Inno Setup uniquement, pas MSIX).
+- Mode ligne de commande (`VectorPop.exe --batch in/ out/ --format svg`) pour les utilisateurs avancés.
+
+**Recommandation** : ne pas alourdir la 2.0.0, qui est déjà chargée (freemium, onboarding, démo, écran Pro). Y ajouter seulement **A (lot 2.0)**, car il valorise directement le Pro que le nouveau freemium met en avant, plus « Ouvrir le dossier » et le choix du fond (D), qui coûtent peu. Prévoir **B puis C en 2.1**, et arbitrer avec les données PostHog (`batch_started`, formats d'export utilisés, `onboarding_usecase_selected` = gravure/flocage ?).
+
 ## 3. Hors périmètre V2
 - Changement de prix, bundle Android + desktop, licence partagée entre plateformes.
 - Idées PerfectVector (mode « App Icon iOS », superposition des tracés avant export) : à évaluer en 2.1 avec `vectorpop-feature-ideas`.
