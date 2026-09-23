@@ -39,7 +39,7 @@ from PySide6.QtWidgets import (
 from PIL import Image
 
 from .. import ai_module, ai_upscale
-from .. import analytics, onboarding
+from .. import analytics, onboarding, updater
 from ..analytics import track_event
 from ..export import add_svg_background, resize_svg, svg_to_pdf, svg_to_png
 from ..optimize import optimize_svg
@@ -105,6 +105,14 @@ class MainWindow(QMainWindow):
         # Langue + theme charges en tout premier : necessaires des la construction
         # des premiers widgets (placeholders, libelles de preset, etc.).
         self._settings = QSettings("VectorPop", "VectorPop")
+        # Choix « statistiques anonymes » (aide > Confidentialite), applique
+        # AVANT le premier event (app_opened, fin de __init__).
+        analytics.set_user_enabled(
+            self._settings.value("analytics_enabled", True)
+            not in (False, "false", "False", 0, "0")
+        )
+        self._btn_update: QPushButton | None = None
+        self._update_worker = None
         self.lang = self._settings.value("lang") or detect_system_lang()
         if self.lang not in STRINGS:
             self.lang = "fr"
@@ -171,6 +179,7 @@ class MainWindow(QMainWindow):
             on_files=self.drop_many,
         )
         self.preview = SvgView(tr=self._t)
+        self.preview.zoomChanged.connect(self._on_svg_zoom)
         self._retranslators.append(self.original.retranslate)
         self._retranslators.append(self.preview.retranslate)
 
@@ -531,6 +540,55 @@ class MainWindow(QMainWindow):
         # apres le .show() fait par app.main()), pas pendant la construction.
         if onboarding.should_show():
             QTimer.singleShot(0, self._maybe_show_onboarding)
+        self._start_update_check()
+
+    # --- confidentialite / mises a jour / zoom ---
+
+    def set_analytics_enabled(self, on: bool):
+        """Case « Envoyer des statistiques d'usage anonymes » (aide). Rien n'est
+        envoye pour signaler la desactivation elle-meme."""
+        if on:
+            analytics.set_user_enabled(True)
+            analytics.capture("analytics_enabled")
+        else:
+            analytics.set_user_enabled(False)
+        self._settings.setValue("analytics_enabled", bool(on))
+
+    def _start_update_check(self):
+        if not updater.should_check(analytics.channel()):
+            return  # MSIX / Snap : le store met a jour ; sources : developpement
+        self._update_worker = updater.UpdateCheckWorker()
+        self._update_worker.found.connect(self._on_update_found)
+        self._update_worker.start()
+
+    def _on_update_found(self, data: dict):
+        version = str(data.get("version", ""))
+        url = str(data.get("url") or updater.DOWNLOAD_URL)
+        if self._btn_update is None:
+            self._btn_update = QPushButton()
+            self._btn_update.setObjectName("btnProCta")
+            self._btn_update.setCursor(Qt.PointingHandCursor)
+            self.statusBar().insertPermanentWidget(0, self._btn_update)
+        self._btn_update.setText(self._t("update_available", v=version))
+        self._btn_update.setToolTip(self._t("update_tooltip"))
+        try:
+            self._btn_update.clicked.disconnect()
+        except (RuntimeError, TypeError):
+            pass
+        self._btn_update.clicked.connect(lambda: self._open_update(version, url))
+        self._btn_update.show()
+        analytics.capture("update_banner_shown", {"version": version})
+
+    def _open_update(self, version: str, url: str):
+        analytics.capture("update_clicked", {"version": version})
+        QDesktopServices.openUrl(QUrl(url))
+
+    def _on_svg_zoom(self, factor: float):
+        z = f"{factor:.1f}" if factor < 10 else f"{factor:,.0f}".replace(",", " ")
+        self.statusBar().showMessage(self._t("status_zoom", z=z), 1500)
+        if factor >= 100 and not getattr(self, "_deep_zoom_tracked", False):
+            self._deep_zoom_tracked = True  # une fois par session suffit
+            analytics.capture("preview_deep_zoom", {"factor": round(factor)})
 
     def _maybe_show_onboarding(self):
         if onboarding.should_show():
@@ -1378,6 +1436,11 @@ class MainWindow(QMainWindow):
         apres activation/desactivation, et au retour de la revalidation en ligne)."""
         pro = self.lic.is_pro()
         self.btn_pro.setText(self._t("btn_pro_active" if pro else "btn_pro"))
+        # Gratuit : pastille « Passer Pro » (appel a l'action) ; Pro : bouton
+        # neutre de gestion de licence, plus rien a vendre.
+        self.btn_pro.setObjectName("dlgSecondary" if pro else "btnProCta")
+        self.btn_pro.style().unpolish(self.btn_pro)
+        self.btn_pro.style().polish(self.btn_pro)
         self.btn_pro.setToolTip(
             self._t("btn_pro_active_tooltip")
             if pro

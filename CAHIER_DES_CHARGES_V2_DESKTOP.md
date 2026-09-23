@@ -100,24 +100,24 @@ Suivre `quota_reached`, `paywall_viewed` par source, `pro_buy_clicked` et l'expo
 
 ## 2. Périmètre V2 — P2 (important, pas bloquant)
 
-### 2.1 Aperçu et zoom
+### 2.1 Aperçu et zoom ✅ FAIT le 24/09
 - **Corriger le panneau « Original »** : zoom à la molette et déplacement par glisser, comme le panneau SVG (bug noté en septembre, jamais corrigé).
 - Relever la limite de zoom SVG (`_zoom >= 20` dans `ui/widgets.py`) pour afficher les tracés « au microscope », comme le ×10 000 d'Android. Vérifier que le rendu `QSvgRenderer` reste fluide à fort zoom, et ajouter un indicateur de niveau (×100, ×1000…).
 - Optionnel : zooms synchronisés entre l'original et le SVG (argument de précision fort pour les captures du Store).
 
-### 2.2 Identité visuelle Pro
+### 2.2 Identité visuelle Pro ✅ FAIT le 24/09 (pastille ; le fondu du panneau de réglages n'a pas été fait)
 - Pastille « Passer Pro » en dégradé violet #7A52F5 → magenta #C92BC0 → cyan #3FD7FB (QSS), à la place du libellé texte. Elle disparaît une fois Pro activé.
 - Fondu en bas du panneau de réglages s'il défile (équivalent du `ShaderMask` Android).
 
-### 2.3 Détection de mise à jour
+### 2.3 Détection de mise à jour ✅ FAIT le 24/09 (`vectorpop/updater.py`, `site/public/version.json`)
 - Reprendre `updater.py` de VoxCut PC : `vectorpop.fr/api/version.json`, bandeau dans l'app, events PostHog. Désactivé pour le canal MSIX et Snap (le Store et snapd gèrent les mises à jour).
 - ⚠️ Passer la catégorie en **chaîne** dans les appels de tracking, pas un dict (bug déjà corrigé sur VoxCut).
 - Plus tard, un écran « Nouveautés » à la première ouverture d'une nouvelle version (`whats_new_viewed` existe sur Android).
 
-### 2.4 Pont Android ↔ desktop
+### 2.4 Pont Android ↔ desktop ✅ FAIT le 24/09
 - Dans la fenêtre Pro et le menu Aide : « Aussi sur Android » avec lien Play Store. Android renvoie déjà vers le PC (`paywallDesktopHint`, `desktop_link_opened`).
 
-### 2.5 Robustesse
+### 2.5 Robustesse ✅ FAIT le 24/09 pour le plafond de résolution (2048 px) ; stress-test sur build packagé à faire à la release
 - Plafonner la résolution de travail sur les très grosses images (Android le fait déjà contre les gels et les manques de mémoire sur les photos de 12 à 48 Mpx). Vérifier le comportement desktop avec une photo de 48 Mpx.
 - Relancer `stress_test_agent.py` sur le **build packagé** (le rapport `stress_test_report_windows.json` date d'avant le refactor).
 
@@ -151,7 +151,7 @@ Le but est de renforcer ce que Pro apporte sur PC, là où le mobile ne peut pas
 
 **Recommandation** : ne pas alourdir la 2.0.0, qui est déjà chargée (freemium, onboarding, démo, écran Pro). Y ajouter seulement **A (lot 2.0)**, car il valorise directement le Pro que le nouveau freemium met en avant, plus « Ouvrir le dossier » et le choix du fond (D), qui coûtent peu. Prévoir **B puis C en 2.1**, et arbitrer avec les données PostHog (`batch_started`, formats d'export utilisés, `onboarding_usecase_selected` = gravure/flocage ?).
 
-### 2.7 ⚠️ Conformité : les statistiques PostHog contredisent certains messages « aucun suivi »
+### 2.7 ⚠️ Conformité : les statistiques PostHog contredisent certains messages « aucun suivi » — desktop ✅ FAIT le 24/09 (case dans l'aide + textes honnêtes) ; Android et fiches Store restent à corriger
 - Android envoie des events PostHog depuis la refonte de septembre (`posthog_flutter`). Or le formulaire **Sécurité des données** de la Play Console avait été rempli le 26/07 en « aucune donnée collectée », à une époque où l'app n'avait aucun SDK d'analytics. Les visuels du Store (`scripts/generate_store_screenshots.py`) affichent aussi « zéro traqueur ». **Il faut mettre à jour le formulaire Play Console** (données d'utilisation et identifiants d'appareil, anonymes, non partagés) et retirer « zéro traqueur » des visuels.
 - Desktop V2 : même point pour la politique de confidentialité du site et la fiche Microsoft Store. Formulation honnête : « vos images ne quittent jamais votre ordinateur ; statistiques d'usage anonymes, sans compte ni donnée personnelle ». La case « statistiques anonymes » du §1.1 devient nécessaire avant la release.
 
@@ -165,6 +165,7 @@ Le but est de renforcer ce que Pro apporte sur PC, là où le mobile ne peut pas
 - Version **2.0.0** partout : `vectorpop/__init__.py`, `installer.iss`, manifeste MSIX, `snapcraft.yaml`, `build_linux.sh`.
 - Canaux : installeur Inno Setup, MSIX Store, zip portable, AppImage + tar.gz Linux, Snap, via `/release VectorPop 2.0.0`.
 - ⚠️ **Site à aligner sur le nouveau freemium le jour de la release, pas avant** (la 1.2.1 en ligne est encore à 3 par jour) : `site/src/routes/index.tsx` (« 3 SVG exports per day » l.157, « 3 exports SVG par jour » l.362, et la FAQ « ce n'est pas une version d'essai » l.247/452, qui devient fausse), `site/src/lib/blog-posts.ts` (l.117, 219, 412), la fiche Microsoft Store et les pages annuaires.
+- Passer `site/public/version.json` à **2.0.0** (sinon la détection de mise à jour ne servira à rien pour la version suivante), et le mettre à jour à chaque release.
 - Mettre à jour les **liens de téléchargement du site** (codés en dur par version, piège déjà rencontré), `CHANGELOG.md`, `release_notes/history.md` (il ne contient pour l'instant que la 1.0.2 Android et s'arrête là), les notes Store, et les captures du Store avec l'onboarding et les modèles démo.
 - Ajouter `version.json` sur le site si le §2.3 est fait.
 

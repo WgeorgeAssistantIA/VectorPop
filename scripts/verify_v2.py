@@ -1085,6 +1085,233 @@ check(
 )
 BATCH_DRIVER[0] = None
 
+# ── Lot 8 : avant la release ─────────────────────────────────────────────────
+from PySide6.QtCore import QPoint, QPointF, QEvent, Qt as _Qt  # noqa: E402
+from PySide6.QtGui import QMouseEvent, QWheelEvent  # noqa: E402
+from PySide6.QtWidgets import QGraphicsItem  # noqa: E402
+from vectorpop import updater, vectorizer  # noqa: E402
+from vectorpop.core.recipes import _postprocess_svg  # noqa: E402
+from vectorpop.license import PLAY_STORE_URL  # noqa: E402
+
+win.show()  # offscreen : rien ne s'affiche, mais les widgets deviennent "visibles"
+app.processEvents()
+
+
+def wheel(widget, pos, up=True):
+    widget.wheelEvent(
+        QWheelEvent(QPointF(pos), QPointF(pos), QPoint(0, 0), QPoint(0, 120 if up else -120),
+                    _Qt.NoButton, _Qt.NoModifier, _Qt.ScrollUpdate, False)
+    )
+
+
+def mouse(widget, kind, pos, button):
+    ev = QMouseEvent(kind, QPointF(pos), QPointF(pos), button,
+                     button if kind != QEvent.MouseButtonRelease else _Qt.NoButton, _Qt.NoModifier)
+    {QEvent.MouseButtonPress: widget.mousePressEvent,
+     QEvent.MouseMove: widget.mouseMoveEvent,
+     QEvent.MouseButtonRelease: widget.mouseReleaseEvent}[kind](ev)
+
+
+# L1 : statistiques désactivables (aide > Confidentialité), mémorisées au redémarrage
+help_dlg = dialogs.SettingsHelpDialog(win)
+was_checked = help_dlg.chk_analytics.isChecked()
+m = mark()
+help_dlg.chk_analytics.setChecked(False)
+analytics.capture("probe_should_not_be_sent")
+off_events = since(m)
+stored_off = win._settings.value("analytics_enabled")
+win_off = main_window.MainWindow()  # redémarrage avec le choix mémorisé
+wait_idle(win_off)
+restart_events = since(m)
+startup_disabled = not analytics.user_enabled()
+win_off._save_settings = lambda: None
+win_off.close()
+help_dlg2 = dialogs.SettingsHelpDialog(win)
+unchecked_on_restart = not help_dlg2.chk_analytics.isChecked()
+m = mark()
+help_dlg2.chk_analytics.setChecked(True)
+on_events = since(m)
+check(
+    "L1",
+    was_checked
+    and off_events == []
+    and restart_events == []  # pas même "app_opened" au redémarrage
+    and str(stored_off).lower() == "false"
+    and startup_disabled
+    and unchecked_on_restart
+    and on_events == ["analytics_enabled"]
+    and analytics.user_enabled(),
+    f"off={off_events} redémarrage={restart_events} réactivé={on_events}",
+)
+
+# L2 : plafond de la résolution de travail (photo 5000 x 3000)
+big = TMP / "big.png"
+Image.new("RGB", (5000, 3000), (122, 82, 245)).save(big)
+bimg = Image.open(big).convert("RGB")
+ImageDraw.Draw(bimg).ellipse((800, 400, 4200, 2600), fill=(63, 215, 251))
+bimg.save(big)
+big_svg = TMP / "big.svg"
+t0 = time.monotonic()
+vectorizer.vectorize(big, big_svg, vectorizer.PRESETS["flat"])
+dt_big = time.monotonic() - t0
+head = big_svg.read_text(encoding="utf-8")[:400]
+check(
+    "L2",
+    'width="2048"' in head and ('height="1229"' in head or 'height="1228"' in head),
+    f"en-tête={head[head.find('<svg'):head.find('<svg') + 80]!r} durée={dt_big:.1f}s",
+)
+
+# L3 : dégradés/affinage quand la source est plus grande que le SVG (plafond,
+# finition IA x4) -- avant le correctif, dégradés ignorés avec un avertissement.
+warn = _postprocess_svg(big_svg, big, gradients=True, refine=True)
+check("L3", warn is None, f"avertissement={warn!r}")
+
+# L4 : panneau Original -- zoom molette sous le curseur, déplacement clic droit,
+# retour clic molette, rognage toujours en pixels RÉELS (aperçu décodé réduit).
+win.load_image(big)
+wait_idle(win)
+orig = win.original
+disp_w = orig._src_pix.width()
+full_sel = None
+orig._rubber = None
+r0 = orig._draw_rect
+mouse(orig, QEvent.MouseButtonPress, r0.topLeft() + QPoint(1, 1), _Qt.LeftButton)
+mouse(orig, QEvent.MouseMove, r0.bottomRight(), _Qt.LeftButton)
+full_sel = orig.selection_in_image_px()
+orig.clear_selection()
+c = orig.rect().center()
+target = QPointF(c.x() + 40, c.y() + 20)
+before = ((target.x() - orig._draw_rect.x()) / orig._draw_rect.width(),
+          (target.y() - orig._draw_rect.y()) / orig._draw_rect.height())
+for _ in range(3):
+    wheel(orig, target)
+after = ((target.x() - orig._draw_rect.x()) / orig._draw_rect.width(),
+         (target.y() - orig._draw_rect.y()) / orig._draw_rect.height())
+zoomed = orig.zoom_level()
+pan_before = QPointF(orig._pan)
+mouse(orig, QEvent.MouseButtonPress, QPoint(c.x(), c.y()), _Qt.RightButton)
+mouse(orig, QEvent.MouseMove, QPoint(c.x() + 30, c.y() + 10), _Qt.RightButton)
+mouse(orig, QEvent.MouseButtonRelease, QPoint(c.x() + 30, c.y() + 10), _Qt.RightButton)
+panned = orig._pan - pan_before
+cr = orig.contentsRect()
+mouse(orig, QEvent.MouseButtonPress, cr.topLeft() + QPoint(2, 2), _Qt.LeftButton)
+mouse(orig, QEvent.MouseMove, cr.bottomRight() - QPoint(2, 2), _Qt.LeftButton)
+zoom_sel = orig.selection_in_image_px()
+vis = orig._draw_rect.intersected(cr.adjusted(2, 2, -2, -2))
+expected_w = 5000 * vis.width() / orig._draw_rect.width()
+orig.clear_selection()
+grab_ok = not orig.grab().isNull()
+mouse(orig, QEvent.MouseButtonPress, QPoint(c.x(), c.y()), _Qt.MiddleButton)
+check(
+    "L4",
+    disp_w == 4096  # aperçu décodé réduit…
+    and full_sel is not None and full_sel[2] >= 4990 and full_sel[3] >= 2990  # …rognage en px réels
+    and abs(zoomed - 1.25 ** 3) < 1e-6
+    and abs(before[0] - after[0]) < 0.01 and abs(before[1] - after[1]) < 0.01
+    and (round(panned.x()), round(panned.y())) == (30, 10)
+    and zoom_sel is not None and abs((zoom_sel[2] - zoom_sel[0]) - expected_w) < 60  # px réels de la zone visible
+    and expected_w < 5000
+    and grab_ok
+    and orig.zoom_level() == 1.0,
+    f"aperçu={disp_w}px sélection={full_sel} zoomée={zoom_sel} zoom={zoomed:.3f} "
+    f"point={before}->{after} pan={panned.x():.0f},{panned.y():.0f}",
+)
+
+# L5 : panneau SVG -- jusqu'à ~x9 400, sans cache bitmap géant, indicateur de zoom
+win.load_image(batch_in / "img0.png")
+wait_idle(win)
+pv = win.preview
+m = mark()
+for _ in range(60):
+    pv.wheelEvent(QWheelEvent(QPointF(pv.viewport().rect().center()), QPointF(0, 0), QPoint(0, 0),
+                              QPoint(0, 120), _Qt.NoButton, _Qt.NoModifier, _Qt.ScrollUpdate, False))
+steps = pv._zoom
+cache_deep = pv._svg_item.cacheMode()
+msg = win.statusBar().currentMessage()
+t0 = time.monotonic()
+grab_ok = not pv.grab().isNull()
+dt_grab = time.monotonic() - t0
+pv.mouseDoubleClickEvent(None)
+check(
+    "L5",
+    steps == pv.MAX_ZOOM_STEPS == 41
+    and cache_deep == QGraphicsItem.NoCache
+    and pv._svg_item.cacheMode() == QGraphicsItem.DeviceCoordinateCache
+    and msg.startswith("Zoom ×") and "9" in msg
+    and since(m).count("preview_deep_zoom") == 1
+    and grab_ok and dt_grab < 10,
+    f"crans={steps} message={msg!r} rendu={dt_grab:.2f}s",
+)
+
+# L6 : détection de mise à jour
+cmp_ok = (
+    updater.is_newer("2.0.1", "2.0.0") and updater.is_newer("2.1", "2.0.9")
+    and not updater.is_newer("2.0", "2.0.0") and not updater.is_newer("1.9.9", "2.0.0")
+    and not updater.is_newer("", "2.0.0") and updater.parse_version("2.1.0-beta") == (2, 1, 0)
+)
+chan_ok = (
+    updater.should_check("exe") and updater.should_check("portable")
+    and updater.should_check("appimage") and updater.should_check("tar")
+    and not updater.should_check("msix") and not updater.should_check("snap")
+    and not updater.should_check("source")
+)
+got = []
+real_fetch = updater.fetch_latest
+updater.fetch_latest = lambda timeout=5.0: {"version": "99.0.0", "url": "https://vectorpop.fr/"}
+w = updater.UpdateCheckWorker()
+w.found.connect(got.append)
+w.run()
+updater.fetch_latest = lambda timeout=5.0: {"version": updater.__version__}
+w.run()
+updater.fetch_latest = lambda timeout=5.0: None
+w.run()
+updater.fetch_latest = real_fetch
+m = mark()
+win._on_update_found({"version": "99.0.0", "url": "https://vectorpop.fr/"})
+btn = win._btn_update
+n_opened = len(OPENED)
+btn.click()
+check(
+    "L6",
+    cmp_ok and chan_ok
+    and len(got) == 1  # seulement quand la version distante est plus récente
+    and btn.isVisible() and "99.0.0" in btn.text()
+    and len(OPENED) == n_opened + 1 and OPENED[-1].startswith("https://vectorpop.fr")
+    and since(m) == ["update_banner_shown", "update_clicked"],
+    f"comparaisons={cmp_ok} canaux={chan_ok} trouvé={got} bouton={btn.text()!r}",
+)
+btn.hide()
+
+# L7 : pastille « Passer Pro » en gratuit, bouton neutre une fois Pro
+win.lic.is_pro = lambda: False
+win.refresh_pro_ui()
+free_name = win.btn_pro.objectName()
+win.lic.is_pro = lambda: True
+win.refresh_pro_ui()
+check(
+    "L7",
+    free_name == "btnProCta" and win.btn_pro.objectName() == "dlgSecondary",
+    f"gratuit={free_name} pro={win.btn_pro.objectName()}",
+)
+
+# L8 : lien « Aussi sur Android » (aide + écran Pro)
+m = mark()
+n_browser = len(BROWSER)
+help_dlg2.btn_android.click()
+win.lic.is_pro = lambda: False
+CHOICE["upsell"] = "later"
+win._require_pro("batch")
+LAST_PRODIALOG[0].btn_android.click()
+win.lic.is_pro = lambda: True
+sources = [p["properties"].get("source") for p in ph_events()[m:] if p["event"] == "android_link_opened"]
+check(
+    "L8",
+    BROWSER[n_browser:] == [PLAY_STORE_URL, PLAY_STORE_URL]
+    and sources == ["help", "pro_dialog_batch"],
+    f"ouverts={BROWSER[n_browser:]} sources={sources}",
+)
+win.hide()
+
 # F9 : en Pro, un rendu Optimiser s'exporte sans aucun verrou
 win.run_autotune()
 wait_idle(win, 180)

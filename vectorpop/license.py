@@ -58,6 +58,10 @@ def buy_url() -> str:
     return CHECKOUT_URL or UPGRADE_URL
 
 
+PLAY_STORE_URL = (
+    "https://play.google.com/store/apps/details?id=com.lafabriknumerique.vectorpop"
+)
+
 # Fiche Microsoft Store (cf. site/src/routes/index.tsx, MS_STORE_URL).
 MS_STORE_PRODUCT_ID = "9MT2XVDXX7DG"
 

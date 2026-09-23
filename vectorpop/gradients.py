@@ -236,6 +236,11 @@ def gradientize_svg(
     for i in range(len(paths)):
         groups.setdefault(uf.find(i), []).append(i)
 
+    # Meme precaution que refine_colors : la source peut differer de la taille
+    # du SVG (resolution de travail plafonnee, finition IA x4) -> sinon masques
+    # et pixels ne se superposent plus et le degrade est ignore.
+    if source.size != (w, h):
+        source = source.resize((w, h))
     src = np.asarray(source.convert("RGB"))
     ys_all, xs_all = np.mgrid[0:h, 0:w]
     defs = []

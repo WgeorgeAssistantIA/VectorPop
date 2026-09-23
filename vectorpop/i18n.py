@@ -35,7 +35,10 @@ STRINGS = {
         "display_name_pasted": "Image collée",
         "display_name_demo": "Exemple",
         "drop_placeholder": "Glisse un PNG / JPEG ici\n(ou clique)",
-        "drop_tooltip": "Trace un rectangle pour rogner. Clic simple : changer d'image.",
+        "drop_tooltip": (
+            "Tracez un rectangle pour rogner. Clic simple : changer d'image.\n"
+            "Molette : zoom. Clic droit + glisser : déplacer. Clic molette : image entière."
+        ),
         "demo_btn": "Essayer avec un exemple",
         "demo_intro": "Essayez avec un exemple :",
         "demo_logo_title": "Logo",
@@ -81,7 +84,9 @@ STRINGS = {
         "onboarding_privacy_title": "100 % local et respect de votre vie privée",
         "onboarding_privacy_desc": (
             "Vos images ne quittent jamais votre ordinateur. Aucun compte "
-            "requis, tout le traitement est exécuté localement."
+            "requis, tout le traitement est exécuté localement. Seules des "
+            "statistiques d'usage anonymes nous aident à améliorer l'app "
+            "(désactivables dans l'aide)."
         ),
         "onboarding_quota_title": "{n} exports gratuits offerts pour tester",
         "onboarding_quota_desc": (
@@ -321,6 +326,19 @@ STRINGS = {
         "chk_white_bg_tooltip": "Ajoute un fond blanc aux fichiers exportés (SVG, PNG, PDF) au lieu d'un fond transparent.",
         "btn_open_dir": " Ouvrir le dossier",
         "btn_open_dir_tooltip": "Ouvre le dossier du dernier fichier exporté.",
+        "privacy_title": "Confidentialité",
+        "privacy_body": (
+            "Vos images ne quittent jamais votre ordinateur : tout le traitement "
+            "est local. VectorPop peut envoyer des statistiques d'usage anonymes "
+            "(fonctions utilisées, erreurs), sans compte, sans nom de fichier ni "
+            "donnée personnelle, pour savoir quoi améliorer."
+        ),
+        "chk_analytics": "Envoyer des statistiques d'usage anonymes",
+        "update_available": "Mise à jour {v} disponible",
+        "update_tooltip": "Une nouvelle version de VectorPop est disponible. Cliquez pour la télécharger.",
+        "android_link": "Aussi sur Android",
+        "android_link_tooltip": "VectorPop existe aussi sur Android (Google Play).",
+        "status_zoom": "Zoom ×{z}",
         "stats_svg": "SVG : {n} tracés · {kb} Ko",
         "stats_weight": "  ·  {src} Ko → {out} Ko ({pct})",
         "stats_warn": "  ·  ⚠ Dégradés/Affinage échoué ({msg})",
@@ -463,7 +481,10 @@ STRINGS = {
         "display_name_pasted": "Pasted image",
         "display_name_demo": "Example",
         "drop_placeholder": "Drop a PNG / JPEG here\n(or click)",
-        "drop_tooltip": "Draw a rectangle to crop. Single click: change image.",
+        "drop_tooltip": (
+            "Draw a rectangle to crop. Single click: change image.\n"
+            "Wheel: zoom. Right-click + drag: pan. Middle-click: whole image."
+        ),
         "demo_btn": "Try an example",
         "demo_intro": "Try a sample:",
         "demo_logo_title": "Logo",
@@ -509,7 +530,8 @@ STRINGS = {
         "onboarding_privacy_title": "100% local, your privacy respected",
         "onboarding_privacy_desc": (
             "Your images never leave your computer. No account required, "
-            "everything runs locally."
+            "everything runs locally. Only anonymous usage statistics help us "
+            "improve the app (can be turned off in Help)."
         ),
         "onboarding_quota_title": "{n} free trial exports included",
         "onboarding_quota_desc": (
@@ -747,6 +769,19 @@ STRINGS = {
         "chk_white_bg_tooltip": "Adds a white background to exported files (SVG, PNG, PDF) instead of a transparent one.",
         "btn_open_dir": " Open folder",
         "btn_open_dir_tooltip": "Opens the folder of the last exported file.",
+        "privacy_title": "Privacy",
+        "privacy_body": (
+            "Your images never leave your computer: all processing is local. "
+            "VectorPop may send anonymous usage statistics (features used, "
+            "errors), with no account, no file name and no personal data, so we "
+            "know what to improve."
+        ),
+        "chk_analytics": "Send anonymous usage statistics",
+        "update_available": "Update {v} available",
+        "update_tooltip": "A new version of VectorPop is available. Click to download it.",
+        "android_link": "Also on Android",
+        "android_link_tooltip": "VectorPop is also available on Android (Google Play).",
+        "status_zoom": "Zoom ×{z}",
         "stats_svg": "SVG: {n} paths · {kb} KB",
         "stats_weight": "  ·  {src} KB → {out} KB ({pct})",
         "stats_warn": "  ·  ⚠ Gradients/Refine failed ({msg})",

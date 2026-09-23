@@ -1,7 +1,8 @@
 from pathlib import Path
-from PySide6.QtCore import Qt, QRect, QSize, Signal
-from PySide6.QtGui import QPainter, QPen, QPixmap, QIcon
+from PySide6.QtCore import Qt, QPointF, QRect, QRectF, QSize, Signal
+from PySide6.QtGui import QImageReader, QPainter, QPen, QPixmap, QIcon
 from PySide6.QtWidgets import (
+    QGraphicsItem,
     QLabel,
     QFrame,
     QSizePolicy,
@@ -40,6 +41,12 @@ class DropImage(QLabel):
         self._draw_rect = QRect()  # ou le pixmap est dessine (coords widget)
         self._origin = None  # debut de la selection
         self._rubber: QRubberBand | None = None
+        # Zoom / deplacement du panneau Original (bug connu : il n'en avait pas).
+        self._zoom = 1.0
+        self._pan = QPointF(0, 0)  # decalage du centre de l'image / centre du widget
+        self._pan_origin = None
+        self._pan_start = QPointF(0, 0)
+        self._img_size = QSize()  # taille REELLE de l'image (px), pour le rognage
         self.setAlignment(Qt.AlignCenter)
         self.setAcceptDrops(True)
         self.setMinimumSize(360, 360)
@@ -140,24 +147,107 @@ class DropImage(QLabel):
             self._on_file(images[0])
 
     # --- affichage ---
+    # Au-dela, l'apercu est decode reduit (une photo de 48 Mpx ne charge pas
+    # 190 Mo de pixmap) ; le rognage reste calcule en pixels REELS (_img_size).
+    MAX_DISPLAY_PX = 4096
+
     def show_image(self, path: Path):
-        self._src_pix = QPixmap(str(path))
+        reader = QImageReader(str(path))
+        full = reader.size()
+        if full.isValid() and max(full.width(), full.height()) > self.MAX_DISPLAY_PX:
+            reader.setScaledSize(
+                full.scaled(
+                    self.MAX_DISPLAY_PX,
+                    self.MAX_DISPLAY_PX,
+                    Qt.AspectRatioMode.KeepAspectRatio,
+                )
+            )
+        img = reader.read()
+        self._src_pix = (
+            QPixmap.fromImage(img) if not img.isNull() else QPixmap(str(path))
+        )
+        self._img_size = full if full.isValid() else self._src_pix.size()
+        self.setText("")  # dessin personnalise (paintEvent), plus de texte
+        self.setPixmap(QPixmap())
+        self.reset_zoom()
         self.clear_selection()
-        self._render()
         self.setToolTip(self._tr("drop_tooltip"))
         if self._demo_panel is not None:
             self._demo_panel.hide()  # une vraie image est chargee : plus besoin des exemples
 
+    def _fit_size(self) -> QSize:
+        return self._src_pix.size().scaled(
+            self.size(), Qt.AspectRatioMode.KeepAspectRatio
+        )
+
     def _render(self):
+        """Rectangle ou l'image entiere est dessinee (coords widget) : peut
+        deborder du widget une fois zoome. Le rognage s'appuie dessus."""
         if self._src_pix is None:
             return
-        scaled = self._src_pix.scaled(
-            self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
+        fit = self._fit_size()
+        w, h = fit.width() * self._zoom, fit.height() * self._zoom
+        cx = self.width() / 2 + self._pan.x()
+        cy = self.height() / 2 + self._pan.y()
+        self._draw_rect = QRect(
+            round(cx - w / 2), round(cy - h / 2), round(w), round(h)
         )
-        x = (self.width() - scaled.width()) // 2
-        y = (self.height() - scaled.height()) // 2
-        self._draw_rect = QRect(x, y, scaled.width(), scaled.height())
-        self.setPixmap(scaled)
+        self.update()
+
+    def paintEvent(self, e):
+        super().paintEvent(e)  # cadre, fond, texte d'accueil
+        if self._src_pix is None or self._draw_rect.isEmpty():
+            return
+        visible = QRectF(self._draw_rect).intersected(QRectF(self.contentsRect()))
+        if visible.isEmpty():
+            return
+        # On ne peint que la portion visible (a fort zoom, la cible serait immense).
+        sx = self._src_pix.width() / self._draw_rect.width()
+        sy = self._src_pix.height() / self._draw_rect.height()
+        src = QRectF(
+            (visible.x() - self._draw_rect.x()) * sx,
+            (visible.y() - self._draw_rect.y()) * sy,
+            visible.width() * sx,
+            visible.height() * sy,
+        )
+        p = QPainter(self)
+        # Fort zoom : pixels nets (on veut VOIR les pixels de la source).
+        p.setRenderHint(QPainter.SmoothPixmapTransform, self._zoom < 4)
+        p.drawPixmap(visible, self._src_pix, src)
+        p.end()
+
+    def zoom_level(self) -> float:
+        return self._zoom
+
+    def reset_zoom(self):
+        self._zoom = 1.0
+        self._pan = QPointF(0, 0)
+        self._render()
+
+    def wheelEvent(self, e):
+        if self._src_pix is None or self._draw_rect.isEmpty():
+            return
+        factor = 1.25 if e.angleDelta().y() > 0 else 0.8
+        z = min(64.0, max(1.0, self._zoom * factor))
+        if abs(z - self._zoom) < 1e-9:
+            return
+        # Zoom sous le curseur : le point de l'image vise reste sous la souris.
+        pos = e.position()
+        old = QRectF(self._draw_rect)
+        rx = (pos.x() - old.x()) / old.width()
+        ry = (pos.y() - old.y()) / old.height()
+        fit = self._fit_size()
+        nw, nh = fit.width() * z, fit.height() * z
+        self._zoom = z
+        if z <= 1.0:
+            self._pan = QPointF(0, 0)
+        else:
+            nx, ny = pos.x() - rx * nw, pos.y() - ry * nh
+            self._pan = QPointF(
+                nx + nw / 2 - self.width() / 2, ny + nh / 2 - self.height() / 2
+            )
+        self.clear_selection()
+        self._render()
 
     def resizeEvent(self, e):
         super().resizeEvent(e)
@@ -168,6 +258,14 @@ class DropImage(QLabel):
     # --- selection / rognage ---
     def mousePressEvent(self, e):
         pos = e.position().toPoint()
+        if self._src_pix is not None and e.button() == Qt.MouseButton.MiddleButton:
+            self.reset_zoom()  # clic molette : retour a l'image entiere
+            return
+        if self._src_pix is not None and e.button() == Qt.MouseButton.RightButton:
+            if self._zoom > 1.0:  # clic droit + glisser : deplacer l'image zoomee
+                self._pan_origin = e.position()
+                self._pan_start = QPointF(self._pan)
+            return
         if self._src_pix is None:
             self._open_dialog()
             return
@@ -179,12 +277,19 @@ class DropImage(QLabel):
         self._rubber.show()
 
     def mouseMoveEvent(self, e):
+        if self._pan_origin is not None:
+            self._pan = self._pan_start + (e.position() - self._pan_origin)
+            self._render()
+            return
         if self._origin is None or self._rubber is None:
             return
         rect = QRect(self._origin, e.position().toPoint()).normalized()
         self._rubber.setGeometry(rect.intersected(self._draw_rect))
 
     def mouseReleaseEvent(self, e):
+        if self._pan_origin is not None:
+            self._pan_origin = None
+            return
         if self._origin is None:
             return
         moved = (e.position().toPoint() - self._origin).manhattanLength()
@@ -218,15 +323,17 @@ class DropImage(QLabel):
         sel = self._rubber.geometry().intersected(self._draw_rect)
         if sel.width() < 3 or sel.height() < 3:
             return None
-        sx = self._src_pix.width() / self._draw_rect.width()
-        sy = self._src_pix.height() / self._draw_rect.height()
+        # En pixels REELS de l'image (l'apercu peut etre decode reduit).
+        iw, ih = self._img_size.width(), self._img_size.height()
+        sx = iw / self._draw_rect.width()
+        sy = ih / self._draw_rect.height()
         left = round((sel.left() - self._draw_rect.left()) * sx)
         top = round((sel.top() - self._draw_rect.top()) * sy)
         right = round((sel.right() - self._draw_rect.left()) * sx)
         bottom = round((sel.bottom() - self._draw_rect.top()) * sy)
         left, top = max(0, left), max(0, top)
-        right = min(self._src_pix.width(), right)
-        bottom = min(self._src_pix.height(), bottom)
+        right = min(iw, right)
+        bottom = min(ih, bottom)
         if right - left < 2 or bottom - top < 2:
             return None
         return (left, top, right, bottom)
@@ -240,6 +347,13 @@ class SvgView(QGraphicsView):
     """
 
     pathClicked = Signal(float, float)
+    zoomChanged = Signal(float)  # facteur par rapport a « ajuste a la vue »
+
+    # 1.25 ** 41 ~ x9 400 : les vecteurs « au microscope », comme sur Android (x10 000).
+    MAX_ZOOM_STEPS = 41
+    # Au-dela, plus de cache bitmap de l'item : il faudrait allouer une image
+    # de la taille du SVG zoome (des centaines de millions de pixels).
+    NO_CACHE_ABOVE = 12
 
     def __init__(self, tr=None):
         super().__init__()
@@ -268,6 +382,7 @@ class SvgView(QGraphicsView):
         """Charge un SVG et l'ajuste a la vue (API compatible avec l'ancien QSvgWidget)."""
         self._scene.clear()
         self._item = QGraphicsSvgItem(str(path))
+        self._svg_item = self._item
         self._scene.addItem(self._item)
         self._scene.setSceneRect(self._item.boundingRect())
         self._zoom = 0
@@ -277,6 +392,7 @@ class SvgView(QGraphicsView):
         """Affiche une image raster (pour le plein écran de l'original)."""
         self._scene.clear()
         self._item = self._scene.addPixmap(pix)
+        self._svg_item = None
         self._item.setTransformationMode(Qt.SmoothTransformation)
         self._scene.setSceneRect(self._item.boundingRect())
         self._zoom = 0
@@ -292,10 +408,24 @@ class SvgView(QGraphicsView):
         up = e.angleDelta().y() > 0
         if not up and self._zoom <= -8:  # ne pas dezoomer a l'infini
             return
-        if up and self._zoom >= 20:  # ni zoomer a l'infini
+        if up and self._zoom >= self.MAX_ZOOM_STEPS:  # ni zoomer a l'infini
             return
         self._zoom += 1 if up else -1
+        self._update_cache_mode()
         self.scale(1.25 if up else 0.8, 1.25 if up else 0.8)
+        self.zoomChanged.emit(self.zoom_factor())
+
+    def zoom_factor(self) -> float:
+        return 1.25**self._zoom
+
+    def _update_cache_mode(self):
+        item = getattr(self, "_svg_item", None)
+        if item is not None:
+            item.setCacheMode(
+                QGraphicsItem.NoCache
+                if self._zoom > self.NO_CACHE_ABOVE
+                else QGraphicsItem.DeviceCoordinateCache
+            )
 
     def resizeEvent(self, e):
         super().resizeEvent(e)
@@ -304,7 +434,9 @@ class SvgView(QGraphicsView):
 
     def mouseDoubleClickEvent(self, e):
         self._zoom = 0
+        self._update_cache_mode()
         self._fit()
+        self.zoomChanged.emit(1.0)
 
     def set_delete_mode(self, on: bool):
         self._delete_mode = on

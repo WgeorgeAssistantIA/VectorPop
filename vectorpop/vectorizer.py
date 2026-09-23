@@ -339,6 +339,23 @@ def _project_on_source_palette(
     return Image.fromarray(out.reshape(h, w, 3), "RGB")
 
 
+# Resolution de travail maximale (cote long), comme VectorPop Android : une
+# photo de telephone (12-48 Mpx) figeait sinon la vectorisation, voire
+# saturait la memoire -- et le traitement par lot rend ce cas frequent. Le
+# resultat reste un SVG : il s'agrandit sans perte a l'export (PNG jusqu'a 8K).
+MAX_WORK_PX = 2048
+
+
+def _load_capped(src: str | Path) -> Image.Image:
+    img = Image.open(src)
+    if max(img.size) > MAX_WORK_PX:
+        img.draft("RGB", (MAX_WORK_PX, MAX_WORK_PX))  # JPEG : decode deja reduit
+        img = img.convert("RGBA")
+        img.thumbnail((MAX_WORK_PX, MAX_WORK_PX), Image.LANCZOS)
+        return img
+    return img.convert("RGBA")
+
+
 def _preprocess(src: Path, params: VectorParams, reduce_colors: bool) -> Path:
     """Nettoie l'image avant vectorisation. Renvoie un PNG temporaire.
 
@@ -346,7 +363,7 @@ def _preprocess(src: Path, params: VectorParams, reduce_colors: bool) -> Path:
     plutot le canal alpha (seuillage net) pour supprimer l'ombre portee et le
     halo d'anti-aliasing, qui sinon se transforment en milliers de paths gris.
     """
-    img = Image.open(src).convert("RGBA")
+    img = _load_capped(src)
 
     source_ref: Image.Image | None = None
     if params.ai_upscale:

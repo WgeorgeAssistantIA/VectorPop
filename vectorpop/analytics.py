@@ -40,6 +40,24 @@ _APP_TAG = "vectorpop_desktop"
 
 _ENABLED = getattr(sys, "frozen", False) or os.environ.get("VECTORPOP_ANALYTICS") == "1"
 
+# Choix de l'utilisateur (case « Statistiques d'usage anonymes » de l'aide),
+# pose par la fenetre principale au demarrage depuis QSettings.
+_user_enabled = True
+
+
+def set_user_enabled(on: bool) -> None:
+    global _user_enabled
+    _user_enabled = bool(on)
+
+
+def user_enabled() -> bool:
+    return _user_enabled
+
+
+def _can_send() -> bool:
+    return _ENABLED and _NET_OK and _user_enabled
+
+
 # Contexte commun (langue, statut Pro), renseigné par la fenêtre principale.
 _ctx: dict = {"lang": None, "is_pro": None}
 
@@ -137,7 +155,7 @@ def _posthog_payload(event: str, props: dict | None) -> dict:
 
 def capture(event: str, props: dict | None = None) -> None:
     """Event PostHog en arrière-plan. Ne bloque jamais l'UI."""
-    if not (_ENABLED and _NET_OK):
+    if not _can_send():
         return
     payload = _posthog_payload(event, props)
     threading.Thread(
@@ -150,7 +168,7 @@ def capture_sync(event: str, props: dict | None = None, timeout: float = 1.5) ->
     avant que l'utilisateur quitte l'app (ex. clic « Acheter » qui ouvre le
     navigateur) : un thread daemon serait tué à la fermeture et l'event perdu
     (bug constaté sur VoxCut PC : 0 clic enregistré pour 36 paywalls vus)."""
-    if not (_ENABLED and _NET_OK):
+    if not _can_send():
         return
     _post(f"{_POSTHOG_HOST}/capture/", _posthog_payload(event, props), timeout)
 
@@ -158,7 +176,7 @@ def capture_sync(event: str, props: dict | None = None, timeout: float = 1.5) ->
 def track_event(event: str, category: str = "other") -> None:
     """Event paywall historique vers GA4 (vectorpop.fr/api/track), gardé en
     parallèle de PostHog le temps de valider ce dernier."""
-    if not (_ENABLED and _NET_OK):
+    if not _can_send():
         return
     payload = {"event": event, "category": category, "client_id": _client_id()}
     threading.Thread(target=_post, args=(_TRACK_URL, payload, 5), daemon=True).start()

@@ -109,6 +109,20 @@ Tout ce qui ouvrirait un fichier, un dossier, le Store ou un mail sur le PC est 
 | B9 | Export simple avec « Fond blanc à l'export » + bouton « Ouvrir le dossier » | Fond blanc dans le SVG et le PNG ; le bouton ouvre le dossier du dernier export (intercepté) | ✅ |
 | M4 | Lot de 100+ vraies photos sur le build packagé | Interface fluide (vignettes réduites au décodage), pas de gel | Manuel |
 
+## Lot 8 — Avant la release (§2.1 à §2.5, §2.7)
+
+| ID | Vérification | Attendu | Auto |
+|---|---|---|---|
+| L1 | Case « Envoyer des statistiques d'usage anonymes » (Aide > Confidentialité) décochée, puis redémarrage, puis recochée | Plus aucun event envoyé, même pas `app_opened` au redémarrage ; choix mémorisé ; en recochant, un seul `analytics_enabled` | ✅ |
+| L2 | Photo 5000 × 3000 vectorisée | Résolution de travail plafonnée à 2048 px (SVG 2048 × 1229), comme sur Android | ✅ |
+| L3 | Dégradés + affinage avec une source plus grande que le SVG (plafond, finition IA ×4) | Plus d'avertissement « dégradés ignorés » (bug latent corrigé) | ✅ |
+| L4 | Panneau Original : molette, clic droit + glisser, clic molette, rognage | Zoom sous le curseur (le point visé ne bouge pas), déplacement, retour à l'image entière ; aperçu décodé en 4096 px max mais rognage calculé en pixels réels (5000 px) | ✅ |
+| L5 | Panneau SVG : zoom maximal | ~×9 400 (41 crans), cache bitmap coupé au-delà de ×12 (pas d'image géante en mémoire), indicateur « Zoom ×… » dans la barre d'état, rendu rapide | ✅ |
+| L6 | Détection de mise à jour | Comparaison de versions correcte ; vérification seulement pour exe/portable/Linux (pas MSIX/Snap/sources) ; bouton « Mise à jour X disponible » seulement si la version en ligne est plus récente, qui ouvre la page de téléchargement (interceptée) | ✅ |
+| L7 | Bouton « Passer Pro » | Pastille d'appel à l'action en gratuit, bouton neutre une fois Pro | ✅ |
+| L8 | Lien « Aussi sur Android » (aide + écran Pro) | Ouvre la fiche Google Play (interceptée), event avec la source | ✅ |
+| M5 | Mise à jour réelle | Publier `site/public/version.json` en 2.0.0 le jour de la release, lancer une 2.0.0 de test avec une version locale plus ancienne : le bouton apparaît | Manuel, à la release |
+
 - Final — Non-régression complète sur le build packagé (voir §5 du cahier des charges).
 
 ## Journal d'exécution
@@ -121,3 +135,4 @@ Tout ce qui ouvrirait un fichier, un dossier, le Store ou un mail sur le PC est 
 | 23/09/2026 | Lot 5 (Onboarding) | 43/43 PASS. 4 écrans (aligné sur Android, qui combine en réalité vie privée+quota sur un même écran, pas 5 séparés comme décrit trop vite dans le §1.4 initial) : promesse, bitmap vs vectoriel (vrai SVG vtracer rendu, pas une approximation), usage principal (ouvre le modèle démo assorti), local+quota. Bouton « Passer » gardé, complète quand même (charge un 1er résultat par défaut). Versionné (`onboarding.py`, `ONBOARDING_VERSION=1`). |
 | 23/09/2026 | Lot 6 (Moments après export) | 49/49 PASS. Corrigé en cours de route : après une copie, le message « Code SVG copié » écrasait le bandeau « Dernier export gratuit » (invisible). Choix : la célébration ne se déclenche jamais sur une image d'exemple (drapeau `celebrated` dédié, sinon un essai de démo avant la vraie image l'aurait fait sauter). 👍 → Store (et non un mail comme sur VoxCut PC), pour faire monter les notes Store de VectorPop. |
 | 24/09/2026 | Lot 7 (Traitement par lot 2.0) | 57/57 PASS (hors V-NET, déjà validé). Nouvel écran de lot (fichiers + dossiers, glisser-déposer, statut par image, plusieurs formats, optimisation par image, fond, suffixe, sous-dossiers, relance des échecs, ouverture du dossier). Choix : deux images homonymes d'un même lot ne s'écrasent jamais (`_2`) ; un dépôt multiple en gratuit n'est jamais perdu (la 1re image est chargée après l'écran Pro). |
+| 24/09/2026 | Lot 8 (avant release) | 66/66 PASS, V-NET compris. En cours de route : un bug latent corrigé (`gradientize_svg` ne redimensionnait pas la source à la taille du SVG, alors que `refine_colors` le faisait : dégradés ignorés avec la finition IA ×4, et avec le nouveau plafond de résolution). Un seuil trop naïf dans le test L4 corrigé (dépendait des proportions du panneau). |

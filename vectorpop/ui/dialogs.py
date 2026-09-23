@@ -30,10 +30,17 @@ from ..license import (
     FEAT_EXPORT_PDF,
     FEAT_EXPORT_PNG,
     PRO_PRICE_EUR,
+    PLAY_STORE_URL,
     buy_url,
     review_url,
 )
 from ..core.recipes import RECIPES, TIPS
+
+
+def open_android_listing(source: str):
+    """Pont desktop -> Android (§2.4) : Android renvoie deja vers le PC."""
+    analytics.capture("android_link_opened", {"source": source})
+    webbrowser.open(PLAY_STORE_URL)
 
 
 class SettingsHelpDialog(QDialog):
@@ -74,13 +81,33 @@ class SettingsHelpDialog(QDialog):
             row.setWordWrap(True)
             tl.addWidget(row)
         vb.addWidget(tb)
+
+        # Confidentialite : ce qui part (ou pas) de l'ordinateur, et le choix.
+        pb = QGroupBox(t("privacy_title"))
+        pl = QVBoxLayout(pb)
+        privacy = QLabel(t("privacy_body"))
+        privacy.setWordWrap(True)
+        pl.addWidget(privacy)
+        self.chk_analytics = QCheckBox(t("chk_analytics"))
+        self.chk_analytics.setChecked(analytics.user_enabled())
+        self.chk_analytics.toggled.connect(win.set_analytics_enabled)
+        pl.addWidget(self.chk_analytics)
+        vb.addWidget(pb)
         vb.addStretch(1)
 
         scroll.setWidget(content)
         outer.addWidget(scroll, 1)
+        bottom = QHBoxLayout()
+        self.btn_android = QPushButton(t("android_link"))
+        self.btn_android.setObjectName("dlgLink")
+        self.btn_android.setToolTip(t("android_link_tooltip"))
+        self.btn_android.clicked.connect(lambda: open_android_listing("help"))
+        bottom.addWidget(self.btn_android)
+        bottom.addStretch(1)
         buttons = QDialogButtonBox(QDialogButtonBox.Close)
         buttons.rejected.connect(self.reject)
-        outer.addWidget(buttons)
+        bottom.addWidget(buttons)
+        outer.addLayout(bottom)
 
 
 class SizeDialog(QDialog):
@@ -275,6 +302,13 @@ class ProDialog(QDialog):
         reassurance.setWordWrap(True)
         reassurance.setStyleSheet("color: palette(mid); font-size: 11px;")
         lay.addWidget(reassurance)
+        self.btn_android = QPushButton(win._t("android_link"))
+        self.btn_android.setObjectName("dlgLink")
+        self.btn_android.setToolTip(win._t("android_link_tooltip"))
+        self.btn_android.clicked.connect(
+            lambda: open_android_listing(f"pro_dialog_{self._category}")
+        )
+        lay.addWidget(self.btn_android, alignment=Qt.AlignmentFlag.AlignLeft)
 
     def _on_buy(self):
         track_event("paywall_buy_click", self._category)

@@ -122,6 +122,10 @@ def build_qss(dark: bool) -> str:
         border-radius: 8px; padding: 7px 14px; font-weight: 600;
     }}
     QPushButton#dlgSecondary:hover {{ background: {input_bg}; }}
+    QPushButton#btnProCta {{
+        border-radius: 14px; padding: 6px 16px; font-weight: 800;
+        border: 1px solid rgba(255, 255, 255, 0.55);
+    }}
     QPushButton#dlgLink {{
         background: transparent; color: {subtle}; border: none;
         font-weight: 500; padding: 6px 8px; text-decoration: underline;
