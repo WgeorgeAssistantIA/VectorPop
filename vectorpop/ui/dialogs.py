@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
+from .. import analytics
 from ..license import buy_url
 from ..core.recipes import RECIPES, TIPS
 
@@ -187,6 +188,7 @@ class LicenseDialog(QDialog):
             )
             return
         ok, err = self._win.lic.activate(email, key)
+        analytics.capture("license_activated" if ok else "license_activation_failed")
         if ok:
             QMessageBox.information(
                 self, self._win._t("lic_ok_title"), self._win._t("lic_ok")

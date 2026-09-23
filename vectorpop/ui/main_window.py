@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import os
 import tempfile
+import time
 import webbrowser
 from pathlib import Path
 
@@ -39,6 +40,7 @@ from PySide6.QtWidgets import (
 from PIL import Image, ImageDraw
 
 from .. import ai_module, ai_upscale
+from .. import analytics
 from ..analytics import track_event
 from ..export import resize_svg, svg_to_pdf, svg_to_png
 from ..optimize import optimize_svg
@@ -484,6 +486,9 @@ class MainWindow(QMainWindow):
         self._paste_shortcut = QShortcut(QKeySequence.Paste, self)
         self._paste_shortcut.activated.connect(self.paste_image)
 
+        analytics.set_context(lang=self.lang, is_pro=self.lic.is_pro)
+        analytics.capture("app_opened")
+
     def paste_image(self):
         img = QApplication.clipboard().image()
         if img.isNull():
@@ -497,7 +502,10 @@ class MainWindow(QMainWindow):
         self._paste_tmp = Path(tmp)
         self.statusBar().showMessage(self._t("status_pasted"), 3000)
         self.load_image(
-            self._paste_tmp, is_crop=False, display_name=self._t("display_name_pasted")
+            self._paste_tmp,
+            is_crop=False,
+            display_name=self._t("display_name_pasted"),
+            source="paste",
         )
 
     def load_demo_image(self):
@@ -520,7 +528,10 @@ class MainWindow(QMainWindow):
         self._demo_tmp = Path(tmp)
         self.statusBar().showMessage(self._t("status_demo_loaded"), 5000)
         self.load_image(
-            self._demo_tmp, is_crop=False, display_name=self._t("display_name_demo")
+            self._demo_tmp,
+            is_crop=False,
+            display_name=self._t("display_name_demo"),
+            source="demo",
         )
 
     # --- helpers UI ---
@@ -862,9 +873,14 @@ class MainWindow(QMainWindow):
 
     # --- actions ---
     def load_image(
-        self, path: Path, is_crop: bool = False, display_name: str | None = None
+        self,
+        path: Path,
+        is_crop: bool = False,
+        display_name: str | None = None,
+        source: str = "file",
     ):
         if not is_crop:
+            self._track_image_picked(path, source)
             # Nouvelle image source : on oublie tout rognage precedent.
             self._cleanup_crop_tmp()
             self.orig_src = path
@@ -893,9 +909,29 @@ class MainWindow(QMainWindow):
         self.btn_del.setEnabled(False)
         self.btn_undo.setEnabled(False)
         self._del_history.clear()
-        self.run_vectorize(silent=True)  # premier apercu immediat
+        self.run_vectorize(
+            silent=True, trigger=None if is_crop else "load"
+        )  # premier apercu immediat
 
-    def run_vectorize(self, silent: bool = False):
+    @staticmethod
+    def _track_image_picked(path: Path, source: str):
+        props = {"source": source}
+        try:
+            props["size_kb"] = round(path.stat().st_size / 1024)
+            with Image.open(path) as im:  # lazy : ne lit que l'en-tete
+                props.update(
+                    width=im.width,
+                    height=im.height,
+                    has_alpha="A" in im.getbands() or "transparency" in im.info,
+                    format=im.format,
+                )
+        except Exception:  # noqa: BLE001
+            pass
+        if source == "demo":
+            analytics.capture("sample_model_selected", {"model_id": "logo"})
+        analytics.capture("image_picked", props)
+
+    def run_vectorize(self, silent: bool = False, trigger: str | None = None):
         if not self.src_path:
             return
         if self._worker is not None:
@@ -903,6 +939,10 @@ class MainWindow(QMainWindow):
             self._pending = True
             self._pending_silent = silent
             return
+        # "live" (apercu auto a chaque reglage) n'est pas envoye a PostHog :
+        # trop bavard. Seuls le 1er rendu d'une image et le bouton comptent.
+        self._vec_trigger = trigger or ("live" if silent else "button")
+        self._vec_t0 = time.monotonic()
         fd, out = tempfile.mkstemp(suffix=".svg")
         os.close(fd)
         self._cur_out = Path(out)
@@ -965,7 +1005,29 @@ class MainWindow(QMainWindow):
         self._del_history.clear()
         self.btn_undo.setEnabled(False)
         self._show_stats(out)
+        if getattr(self, "_vec_trigger", "live") != "live":
+            try:
+                svg_kb = round(out.stat().st_size / 1024)
+            except OSError:
+                svg_kb = None
+            analytics.capture(
+                "vectorize_completed",
+                {
+                    **self._vec_props(),
+                    "trigger": self._vec_trigger,
+                    "duration_ms": round((time.monotonic() - self._vec_t0) * 1000),
+                    "svg_size_kb": svg_kb,
+                },
+            )
         self._finish_vec()
+
+    def _vec_props(self) -> dict:
+        return {
+            "preset": self.preset.currentData(),
+            "ai_detourage": self.chk_bg_ai.isChecked(),
+            "ai_upscale": self.chk_upscale.isChecked(),
+            "gradients": self.chk_grad.isChecked(),
+        }
 
     @staticmethod
     def _optimize_in_place(svg: Path):
@@ -977,6 +1039,14 @@ class MainWindow(QMainWindow):
             pass
 
     def _on_vec_failed(self, msg: str):
+        analytics.capture(
+            "vectorize_failed",
+            {
+                **self._vec_props(),
+                "trigger": getattr(self, "_vec_trigger", None),
+                "error": msg[:200],
+            },
+        )
         if not self._silent:
             QMessageBox.critical(
                 self, self._t("title_error"), self._t("err_vectorize_failed", msg=msg)
@@ -1009,6 +1079,7 @@ class MainWindow(QMainWindow):
             return
         if not self._require_pro(FEAT_AUTOTUNE):
             return
+        analytics.capture("autotune_used", self._vec_props())
         fd, out = tempfile.mkstemp(suffix=".svg")
         os.close(fd)
         self._autotune_out = Path(out)
@@ -1135,6 +1206,7 @@ class MainWindow(QMainWindow):
             return
         QApplication.clipboard().setText(txt)
         self._record_export()
+        analytics.capture("copy_clipboard")
         self.statusBar().showMessage(self._t("status_svg_copied"), 3000)
 
     # --- theme ---
@@ -1155,6 +1227,7 @@ class MainWindow(QMainWindow):
     # --- langue ---
     def toggle_lang(self):
         self.lang = "en" if self.lang == "fr" else "fr"
+        analytics.set_context(lang=self.lang)
         self.retranslate_ui()
 
     def _update_lang_button(self):
@@ -1227,6 +1300,10 @@ class MainWindow(QMainWindow):
 
     def _show_upsell(self, title: str, body: str, category: str = "other"):
         track_event("paywall_shown", category)
+        analytics.capture(
+            "paywall_viewed",
+            {"source": category, "total_exports": self.usage.total_exports()},
+        )
         total = self.usage.total_exports()
         if total > 0:
             body = body + "\n\n" + self._t("upsell_total", n=total)
@@ -1246,8 +1323,10 @@ class MainWindow(QMainWindow):
         box.exec()
         if box.clickedButton() is buy:
             track_event("paywall_buy_click", category)
+            analytics.capture_sync("pro_buy_clicked", {"source": category})
             webbrowser.open(buy_url())
         elif box.clickedButton() is have:
+            analytics.capture("paywall_have_key_clicked", {"source": category})
             self.open_license()
 
     def _require_pro(self, feature: str) -> bool:
@@ -1270,6 +1349,9 @@ class MainWindow(QMainWindow):
         """Quota du jour (gratuit). Affiche l'upsell une fois epuise."""
         if self.lic.is_pro() or self.usage.can_export():
             return True
+        analytics.capture(
+            "quota_reached", {"total_exports": self.usage.total_exports()}
+        )
         self._show_upsell(
             self._t("upsell_quota_title"),
             self._t("upsell_quota_body", n=FREE_DAILY_MAX, price=PRO_PRICE_EUR),
@@ -1533,7 +1615,14 @@ class MainWindow(QMainWindow):
                 out.write_text(txt, encoding="utf-8")
             self._last_dir = str(out.parent)
             self._record_export()
+            if is_png:
+                analytics.capture("export_png", {"resolution_px": size})
+            elif is_pdf:
+                analytics.capture("export_pdf")
+            else:
+                analytics.capture("export_svg", {"target_px": target or None})
         except Exception as e:  # noqa: BLE001
+            analytics.capture("export_failed", {"error": str(e)[:200]})
             QMessageBox.critical(
                 self, self._t("title_error"), self._t("err_export_failed", e=e)
             )
@@ -1608,6 +1697,7 @@ class MainWindow(QMainWindow):
         self._batch.done.connect(self._on_batch_done)
         self._progress.canceled.connect(self._batch.cancel)
         self._progress.show()
+        analytics.capture("batch_started", {"count": len(files), "format": fmt})
         self._batch.start()
 
     def _on_batch_progress(self, i, name):
@@ -1622,6 +1712,10 @@ class MainWindow(QMainWindow):
         if self._batch is not None:
             self._batch.deleteLater()
             self._batch = None
+        analytics.capture(
+            "batch_completed",
+            {"done": done_n, "errors": errors, "warnings": warnings},
+        )
         msg = self._t("batch_done_msg", n=done_n)
         if warnings:
             msg += "\n" + self._t("batch_warn_msg", n=warnings)
