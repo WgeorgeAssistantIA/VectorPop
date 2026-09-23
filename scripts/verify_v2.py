@@ -255,6 +255,57 @@ class FakeOnboardingDialog(main_window.OnboardingDialog):
 
 
 main_window.OnboardingDialog = FakeOnboardingDialog
+
+# Lot 6 : jamais de vrai fichier/dossier/Store/mail ouvert sur le PC de William.
+OPENED: list[str] = []
+
+
+class FakeDesktop:
+    @staticmethod
+    def openUrl(url):
+        OPENED.append(url.toString())
+        return True
+
+
+dialogs.QDesktopServices = FakeDesktop
+
+CHOICE["celebration"] = "close"  # close | open_file | open_folder | pro
+CHOICE["review"] = "later"  # later | positive | negative
+SHOWN: list[str] = []  # "celebration" / "review", dans l'ordre d'apparition
+LAST_CELEBRATION: list = [None]
+
+
+class FakeCelebration(dialogs.ExportCelebrationDialog):
+    def exec(self):
+        SHOWN.append("celebration")
+        LAST_CELEBRATION[0] = self
+        c = CHOICE["celebration"]
+        if c == "open_file":
+            self._open_file()
+        elif c == "open_folder":
+            self._open_folder()
+        elif c == "pro":
+            self._discover_pro()
+            return self.result()
+        self.accept()
+        return self.result()
+
+
+class FakeReview(dialogs.ReviewPromptDialog):
+    def exec(self):
+        SHOWN.append("review")
+        c = CHOICE["review"]
+        if c == "positive":
+            self._positive()
+        elif c == "negative":
+            self._negative()
+        else:
+            self.reject()
+        return self.result()
+
+
+main_window.ExportCelebrationDialog = FakeCelebration
+main_window.ReviewPromptDialog = FakeReview
 from vectorpop import onboarding  # noqa: E402
 
 onboarding.mark_seen()  # l'onboarding auto-déclenché (singleShot) ne doit pas
@@ -452,14 +503,26 @@ check("F1", win.usage.plan == "trial" and win.usage.max_quota == 5
       f"plan={win.usage.plan} max={win.usage.max_quota} label={win.lbl_plan.text()!r}")
 
 # L'image courante est l'exemple (A9) : on recharge une vraie image.
+SHOWN.clear()
 win.load_image(src)
 wait_idle(win)
 m = mark()
 for n in "abcd":
     export_to(f"{n}.svg", "SVG vectoriel (*.svg)")
-check("A10", since(m).count("export_svg") == 4 and (out_dir / "a.svg").exists()
+a10_events = since(m)
+check("A10", a10_events.count("export_svg") == 4 and (out_dir / "a.svg").exists()
       and win.usage.remaining() == 1 and "1/5" in win.lbl_plan.text(),
       f"events={since(m)} restant={win.usage.remaining()} label={win.lbl_plan.text()!r}")
+
+# X1 : 1er export d'une vraie image -> célébration, une seule fois (pas aux 3 suivants)
+check(
+    "X1",
+    SHOWN.count("celebration") == 1
+    and a10_events.count("first_export_celebrated") == 1
+    and LAST_CELEBRATION[0] is not None
+    and LAST_CELEBRATION[0]._out.name == "a.svg",
+    f"shown={SHOWN} events={a10_events}",
+)
 
 m = mark()
 win.copy_svg()
@@ -633,6 +696,113 @@ export_to("lock.pdf", "PDF vectoriel (*.pdf)")
 srcs = [p["properties"].get("source") for p in ph_events()[m:] if p["event"] == "paywall_viewed"]
 check("F8", "batch" in srcs and "export_pdf" in srcs and not (out_dir / "lock.pdf").exists(),
       f"sources={srcs}")
+
+# ── Lot 6 : moments après export ─────────────────────────────────────────────
+from vectorpop.license import review_url  # noqa: E402
+
+win.load_image(src)
+wait_idle(win)
+win.usage._data.update(trial_used=0, celebrated=False, opened_result=False, review_asked=False)
+
+# X2 : une image d'exemple ne déclenche jamais la célébration ; la vraie image, si.
+SHOWN.clear()
+win.load_demo_model("logo")
+wait_idle(win)
+m = mark()
+export_to("x2_demo.svg", "SVG vectoriel (*.svg)")
+demo_ev = since(m)
+win.load_image(src)
+wait_idle(win)
+m = mark()
+CHOICE["celebration"] = "open_file"
+export_to("x2_real.svg", "SVG vectoriel (*.svg)")
+real_ev = since(m)
+check(
+    "X2",
+    "first_export_celebrated" not in demo_ev
+    and "first_export_celebrated" in real_ev
+    and SHOWN == ["celebration"]
+    and win.usage.has_celebrated_first_export(),
+    f"demo={demo_ev} réel={real_ev} shown={SHOWN}",
+)
+
+# X3 : boutons de la célébration -- fichier puis dossier ouverts (interceptés),
+# signal "fichier ouvert" enregistré, lien Pro -> ProDialog source=celebration.
+dlg = LAST_CELEBRATION[0]
+opened_file = OPENED[-1] if OPENED else ""
+dlg._open_folder()
+opened_folder = OPENED[-1] if OPENED else ""
+m = mark()
+CHOICE["upsell"] = "later"
+dlg._discover_pro()
+pv = last("paywall_viewed")
+check(
+    "X3",
+    opened_file.endswith("x2_real.svg")
+    and opened_folder.rstrip("/").endswith("out")
+    and win.usage.has_opened_result()
+    and "celebration_pro_clicked" in since(m)
+    and pv and pv.get("source") == "celebration",
+    f"fichier={opened_file} dossier={opened_folder} events={since(m)}",
+)
+
+# X4 : demande d'avis -- seulement après fichier ouvert + >= 3 exports ;
+# « Plus tard » la repousse (redemandée), « 👍 » ouvre le Store et ne redemande plus.
+CHOICE["celebration"] = "close"
+SHOWN.clear()
+win.usage._data["total"] = max(win.usage.total_exports(), 3)
+CHOICE["review"] = "later"
+export_to("x4_a.svg", "SVG vectoriel (*.svg)")
+CHOICE["review"] = "positive"
+m = mark()
+export_to("x4_b.svg", "SVG vectoriel (*.svg)")
+pos_ev = since(m)
+opened_review = OPENED[-1] if OPENED else ""
+export_to("x4_c.svg", "SVG vectoriel (*.svg)")
+check(
+    "X4",
+    SHOWN == ["review", "review"]  # 2 fois (Plus tard, puis 👍), pas une 3e
+    and "review_positive_clicked" in pos_ev
+    and opened_review == review_url()
+    and win.usage._data.get("review_asked") is True,
+    f"shown={SHOWN} ouvert={opened_review}",
+)
+
+# X5 : « 👎 » -> mail de retour (intercepté), plus redemandé ensuite
+win.usage._data["review_asked"] = False
+SHOWN.clear()
+CHOICE["review"] = "negative"
+m = mark()
+export_to("x5.svg", "SVG vectoriel (*.svg)")
+check(
+    "X5",
+    SHOWN == ["review"]
+    and "review_negative_clicked" in since(m)
+    and OPENED and OPENED[-1].startswith("mailto:")
+    and win.usage._data.get("review_asked") is True,
+    f"shown={SHOWN} ouvert={OPENED[-1] if OPENED else None}",
+)
+
+# X6 : dernier export gratuit -> bandeau non bloquant (export fichier ET copie)
+SHOWN.clear()
+win.usage._data["trial_used"] = win.usage.max_quota - 1
+m = mark()
+export_to("x6.svg", "SVG vectoriel (*.svg)")
+msg_file = win.statusBar().currentMessage()
+ev_file = since(m)
+win.usage._data["trial_used"] = win.usage.max_quota - 1
+m = mark()
+win.copy_svg()
+msg_copy = win.statusBar().currentMessage()
+check(
+    "X6",
+    "last_free_export_banner_shown" in ev_file
+    and "last_free_export_banner_shown" in since(m)
+    and "Dernier export gratuit" in msg_file
+    and "Dernier export gratuit" in msg_copy
+    and not SHOWN,  # aucune fenêtre bloquante
+    f"fichier={msg_file!r} copie={msg_copy!r} shown={SHOWN}",
+)
 
 # A17 : activation échouée
 dlg = dialogs.LicenseDialog(win)

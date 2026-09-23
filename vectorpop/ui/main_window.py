@@ -88,7 +88,14 @@ from ..core.workers import (
 from ..core.recipes import RECIPES
 from ..core.demo_models import DEMO_MODELS, DEMO_MODELS_BY_ID
 from .widgets import DropImage, SvgView, CompareView
-from .dialogs import ProDialog, SettingsHelpDialog, SizeDialog, LicenseDialog
+from .dialogs import (
+    ExportCelebrationDialog,
+    LicenseDialog,
+    ProDialog,
+    ReviewPromptDialog,
+    SettingsHelpDialog,
+    SizeDialog,
+)
 from .onboarding_dialog import OnboardingDialog
 
 
@@ -1308,6 +1315,8 @@ class MainWindow(QMainWindow):
         self._record_export()
         analytics.capture("copy_clipboard")
         self.statusBar().showMessage(self._t("status_svg_copied"), 3000)
+        # Apres le message de copie, sinon il ecrase aussitot le bandeau.
+        self._maybe_last_free_export_banner()
 
     # --- theme ---
     def toggle_theme(self, dark: bool):
@@ -1719,6 +1728,37 @@ class MainWindow(QMainWindow):
             QMessageBox.critical(
                 self, self._t("title_error"), self._t("err_export_failed", e=e)
             )
+            return
+        self._handle_post_export_file(out)
+
+    def _handle_post_export_file(self, out: Path):
+        """Moments du funnel apres un export FICHIER reussi (§1.5), un seul par
+        export, par priorite : celebration du 1er export > demande d'avis >
+        bandeau du dernier export gratuit. Jamais en Pro ni sur une image
+        d'exemple (le 1er export « compte » quand c'est la vraie image de
+        l'utilisateur, pas la demo -- d'ou un drapeau dedie, pas total == 1)."""
+        if self.lic.is_pro() or self._is_demo:
+            return
+        if not self.usage.has_celebrated_first_export():
+            self.usage.mark_celebrated()
+            analytics.capture("first_export_celebrated")
+            ExportCelebrationDialog(self, out).exec()
+            return
+        if self.usage.should_ask_review():
+            analytics.capture("review_requested")
+            ReviewPromptDialog(self).exec()
+            return
+        self._maybe_last_free_export_banner()
+
+    def _maybe_last_free_export_banner(self):
+        """Bandeau non bloquant (barre d'etat) quand le quota vient de tomber a 0.
+        Le bouton « Passer Pro » reste en permanence dans la barre d'outils."""
+        if self.lic.is_pro() or self._is_demo or self.usage.remaining() != 0:
+            return
+        analytics.capture("last_free_export_banner_shown", {"plan": self.usage.plan})
+        self.statusBar().showMessage(
+            self._t("last_free_export_banner", n=self.usage.max_quota), 10000
+        )
 
     # --- traitement par lot ---
     def run_batch(self):

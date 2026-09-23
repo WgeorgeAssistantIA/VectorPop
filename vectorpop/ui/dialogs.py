@@ -1,6 +1,8 @@
 import webbrowser
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QFontMetrics
+from pathlib import Path
+
+from PySide6.QtCore import Qt, QUrl
+from PySide6.QtGui import QDesktopServices, QFontMetrics
 from PySide6.QtWidgets import (
     QDialog,
     QVBoxLayout,
@@ -29,6 +31,7 @@ from ..license import (
     FEAT_EXPORT_PNG,
     PRO_PRICE_EUR,
     buy_url,
+    review_url,
 )
 from ..core.recipes import RECIPES, TIPS
 
@@ -356,3 +359,137 @@ class LicenseDialog(QDialog):
             "timeout": self._win._t("lic_timeout"),
         }.get(err, err)
         QMessageBox.warning(self, self._win._t("lic_title"), msg)
+
+
+class ExportCelebrationDialog(QDialog):
+    """1er export reussi (gratuit, image reelle) : ouvrir/utiliser le resultat
+    AVANT toute sollicitation Pro (meme hierarchie que l'ExportDoneDialog de
+    VoxCut PC), puis les 2 atouts, puis un lien discret vers Pro."""
+
+    def __init__(self, win: "MainWindow", out_path: Path):
+        super().__init__(win)
+        self._win = win
+        self._out = Path(out_path)
+        self.setWindowTitle(win._t("celebration_title"))
+        self.setMinimumWidth(440)
+
+        lay = QVBoxLayout(self)
+        lay.setSpacing(12)
+        title = QLabel(win._t("celebration_title"))
+        title.setStyleSheet("font-size: 16px; font-weight: 700;")
+        title.setWordWrap(True)
+        lay.addWidget(title)
+        name = QLabel(self._out.name)
+        name.setStyleSheet("color: palette(mid); font-size: 11px;")
+        lay.addWidget(name)
+        subtitle = QLabel(win._t("celebration_subtitle"))
+        subtitle.setWordWrap(True)
+        lay.addWidget(subtitle)
+
+        actions = QHBoxLayout()
+        self.btn_open_file = QPushButton(win._t("celebration_open_file"))
+        self.btn_open_file.setDefault(True)
+        self.btn_open_file.clicked.connect(self._open_file)
+        self.btn_open_folder = QPushButton(win._t("celebration_open_folder"))
+        self.btn_open_folder.setObjectName("dlgSecondary")
+        self.btn_open_folder.clicked.connect(self._open_folder)
+        actions.addWidget(self.btn_open_file)
+        actions.addWidget(self.btn_open_folder)
+        lay.addLayout(actions)
+
+        for title_key, desc_key in (
+            ("celebration_pillar_local", "celebration_pillar_local_desc"),
+            ("celebration_pillar_vector", "celebration_pillar_vector_desc"),
+        ):
+            row = QLabel(f"<b>{win._t(title_key)}</b> — {win._t(desc_key)}")
+            row.setWordWrap(True)
+            lay.addWidget(row)
+
+        bottom = QHBoxLayout()
+        self.btn_pro = QPushButton(win._t("celebration_discover_pro"))
+        self.btn_pro.setObjectName("dlgLink")
+        self.btn_pro.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_pro.clicked.connect(self._discover_pro)
+        bottom.addWidget(self.btn_pro)
+        bottom.addStretch(1)
+        close_btn = QPushButton(win._t("pro_dialog_close"))
+        close_btn.setObjectName("dlgSecondary")
+        close_btn.clicked.connect(self.accept)
+        bottom.addWidget(close_btn)
+        lay.addLayout(bottom)
+
+    def _open_file(self):
+        self._win.usage.mark_opened_result()
+        analytics.capture("celebration_open_file_clicked")
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(self._out)))
+
+    def _open_folder(self):
+        self._win.usage.mark_opened_result()
+        analytics.capture("celebration_open_folder_clicked")
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(self._out.parent)))
+
+    def _discover_pro(self):
+        analytics.capture("celebration_pro_clicked")
+        self.accept()
+        self._win._show_upsell(
+            self._win._t("upsell_title"),
+            self._win._t("celebration_pro_body", price=PRO_PRICE_EUR),
+            category="celebration",
+        )
+
+
+class ReviewPromptDialog(QDialog):
+    """Demande d'avis (§1.5) : seulement apres un usage reel (fichier ouvert +
+    >= 3 exports). 👍 -> ecran de notation du Store (site hors Windows),
+    👎 -> mail de retour. « Plus tard » ne marque rien : redemande plus tard."""
+
+    def __init__(self, win: "MainWindow"):
+        super().__init__(win)
+        self._win = win
+        self.setWindowTitle(win._t("review_title"))
+        self.setMinimumWidth(380)
+
+        lay = QVBoxLayout(self)
+        lay.setSpacing(12)
+        title = QLabel(win._t("review_title"))
+        title.setStyleSheet("font-size: 15px; font-weight: 700;")
+        lay.addWidget(title)
+        subtitle = QLabel(win._t("review_subtitle"))
+        subtitle.setWordWrap(True)
+        lay.addWidget(subtitle)
+
+        row = QHBoxLayout()
+        self.btn_positive = QPushButton(win._t("review_positive"))
+        self.btn_positive.clicked.connect(self._positive)
+        self.btn_negative = QPushButton(win._t("review_negative"))
+        self.btn_negative.setObjectName("dlgSecondary")
+        self.btn_negative.clicked.connect(self._negative)
+        row.addWidget(self.btn_positive)
+        row.addWidget(self.btn_negative)
+        lay.addLayout(row)
+
+        later = QPushButton(win._t("review_later"))
+        later.setObjectName("dlgLink")
+        later.clicked.connect(self.reject)
+        lay.addWidget(later, alignment=Qt.AlignmentFlag.AlignCenter)
+
+    def _positive(self):
+        analytics.capture("review_positive_clicked")
+        self._win.usage.mark_review_asked()
+        QDesktopServices.openUrl(QUrl(review_url()))
+        self._win.statusBar().showMessage(self._win._t("review_thanks_positive"), 5000)
+        self.accept()
+
+    def _negative(self):
+        analytics.capture("review_negative_clicked")
+        self._win.usage.mark_review_asked()
+        url = QUrl("mailto:george.william@hotmail.fr")
+        subject = self._win._t("review_negative_subject")
+        body = self._win._t("review_negative_body")
+        url.setQuery(
+            f"subject={QUrl.toPercentEncoding(subject).data().decode()}"
+            f"&body={QUrl.toPercentEncoding(body).data().decode()}"
+        )
+        QDesktopServices.openUrl(url)
+        self._win.statusBar().showMessage(self._win._t("review_thanks_negative"), 5000)
+        self.accept()

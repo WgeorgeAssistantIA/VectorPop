@@ -80,7 +80,19 @@ Accompagne [CAHIER_DES_CHARGES_V2_DESKTOP.md](CAHIER_DES_CHARGES_V2_DESKTOP.md).
 | O3 | Parcours complet, profil « Signatures & gravure N&B » choisi | `onboarding_usecase_selected`, `onboarding_completed`(usecase=sketch), le preset `bw` appliqué et le modèle démo assorti chargé automatiquement | ✅ |
 | O4 | Déclenchement automatique (le vrai câblage `QTimer.singleShot` dans `__init__`, pas un appel manuel) sur une fenêtre neuve | Le dialogue s'ouvre tout seul | ✅ |
 
-- Lot 6 — Moments après export (§1.5)
+## Lot 6 — Moments après export (§1.5)
+
+| ID | Vérification | Attendu | Auto |
+|---|---|---|---|
+| X1 | 1er export d'une vraie image | Célébration affichée une seule fois (pas aux exports suivants), sur le bon fichier | ✅ |
+| X2 | Export d'une image d'exemple avant la vraie | Jamais de célébration sur la démo ; elle arrive au 1er export de la vraie image (drapeau dédié, pas `total == 1`) | ✅ |
+| X3 | Boutons de la célébration | « Ouvrir le fichier/dossier » ouvrent le bon chemin (intercepté) et enregistrent le signal « fichier ouvert » ; « Découvrir Pro » ouvre l'écran Pro (source=celebration) | ✅ |
+| X4 | Demande d'avis | Seulement après fichier ouvert + ≥ 3 exports ; « Plus tard » la repousse (redemandée), 👍 ouvre l'écran de notation du Microsoft Store et ne redemande plus | ✅ |
+| X5 | 👎 | Ouvre un mail de retour, ne redemande plus | ✅ |
+| X6 | Dernier export gratuit (fichier et copie) | Bandeau dans la barre d'état, aucune fenêtre bloquante | ✅ |
+
+Tout ce qui ouvrirait un fichier, un dossier, le Store ou un mail sur le PC est intercepté par le script (`FakeDesktop`).
+
 - Final — Non-régression complète sur le build packagé (voir §5 du cahier des charges).
 
 ## Journal d'exécution
@@ -91,3 +103,4 @@ Accompagne [CAHIER_DES_CHARGES_V2_DESKTOP.md](CAHIER_DES_CHARGES_V2_DESKTOP.md).
 | 23/09/2026 | Lot 3 (ProDialog) | 33/33 PASS. Les 3 boîtes QMessageBox d'upsell (fonction verrouillée, quota, teaser) remplacées par un seul `ProDialog` réel (badge, preuve de valeur, 6 avantages avec la fonction concernée mise en avant, CTA dégradé). Vérifié via le vrai widget (P1), pas seulement les events. |
 | 23/09/2026 | Lot 4 (Modèles démo) | 38/38 PASS. Les 4 échantillons Android copiés dans `assets/samples/`, ajoutés aux 3 `.spec` PyInstaller (l'installeur/MSIX/Snap/AppImage en héritent automatiquement, pas de changement séparé nécessaire). Écran vide : 4 tuiles cliquables (icône + titre) remplacent l'unique logo généré ; menu « Exemples » ajouté pour y revenir. `apply_recipe()` (déjà existant, déjà testé pour le bouton d'aide) réutilisé pour forcer preset+réglages, ce qui règle le piège QSettings gratuitement. |
 | 23/09/2026 | Lot 5 (Onboarding) | 43/43 PASS. 4 écrans (aligné sur Android, qui combine en réalité vie privée+quota sur un même écran, pas 5 séparés comme décrit trop vite dans le §1.4 initial) : promesse, bitmap vs vectoriel (vrai SVG vtracer rendu, pas une approximation), usage principal (ouvre le modèle démo assorti), local+quota. Bouton « Passer » gardé, complète quand même (charge un 1er résultat par défaut). Versionné (`onboarding.py`, `ONBOARDING_VERSION=1`). |
+| 23/09/2026 | Lot 6 (Moments après export) | 49/49 PASS. Corrigé en cours de route : après une copie, le message « Code SVG copié » écrasait le bandeau « Dernier export gratuit » (invisible). Choix : la célébration ne se déclenche jamais sur une image d'exemple (drapeau `celebrated` dédié, sinon un essai de démo avant la vraie image l'aurait fait sauter). 👍 → Store (et non un mail comme sur VoxCut PC), pour faire monter les notes Store de VectorPop. |

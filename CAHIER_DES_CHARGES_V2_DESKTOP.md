@@ -63,7 +63,7 @@ Rédigé le 23/09/2026. Objectif : reprendre sur la version desktop (Windows/Lin
 - ⚠️ **Correction en cours de route** : Android combine en réalité les écrans « 100 % local » et « quota + Pro » sur un seul écran (4 pages au total, pas 5 comme décrit ci-dessus au départ) -- le desktop suit fidèlement Android : 4 pages.
 - **Bouton « Passer » : à trancher.** Android l'a (avec tracking), InOneShot desktop non. Sur VoxCut Android, 110 skips sur 150 à l'étape 1 étaient des passages volontaires, pas des abandons. Recommandation : le garder et suivre `onboarding_skipped` par étape.
 
-### 1.5 Moments du funnel après export
+### 1.5 Moments du funnel après export ✅ FAIT le 23/09
 - **1er export réussi** (gratuit) : petite fenêtre de célébration (`export_celebration_sheet.dart`) avec « Ouvrir le fichier » / « Ouvrir le dossier » en action principale, les 2 atouts (local, netteté infinie), puis un lien discret « Découvrir Pro ». Même hiérarchie que l'`ExportDoneDialog` de VoxCut PC.
 - **Dernier export gratuit** : message dans la barre d'état ou petit bandeau « Dernier export gratuit utilisé » + bouton Pro. Pas de popup bloquante.
 - **Demande d'avis** : pas d'API d'avis native sur desktop (sauf Store). Reprendre le principe VoxCut PC : 👍 / 👎 après 3 exports **et** au moins un fichier ouvert, demandé une seule fois. 👍 mène à la fiche Microsoft Store (ou au site pour les autres canaux), 👎 ouvre un mailto de retour.

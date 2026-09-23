@@ -88,6 +88,41 @@ STRINGS = {
             "Testez en conditions réelles sans engagement. Passez Pro à tout "
             "moment pour débloquer les exports illimités à vie."
         ),
+        # --- Moments post-export (célébration, avis, dernier export gratuit) ---
+        "celebration_title": "Félicitations pour votre 1er export !",
+        "celebration_subtitle": (
+            "Votre image a été convertie en un tracé vectoriel ultra-net, prêt "
+            "pour la gravure, l'impression ou le web."
+        ),
+        "celebration_open_file": "Ouvrir le fichier",
+        "celebration_open_folder": "Ouvrir le dossier",
+        "celebration_pillar_local": "100 % local & privé",
+        "celebration_pillar_local_desc": (
+            "Calculé sur votre ordinateur, aucune image n'a été envoyée sur un "
+            "serveur distant."
+        ),
+        "celebration_pillar_vector": "Netteté infinie",
+        "celebration_pillar_vector_desc": (
+            "Le format SVG ne pixellise jamais, même imprimé sur une bâche de "
+            "10 mètres."
+        ),
+        "celebration_discover_pro": "Découvrir VectorPop Pro",
+        "celebration_pro_body": (
+            "Besoin d'exports illimités, du PNG Ultra-HD et du traitement par "
+            "lot ?\n\nVectorPop Pro : {price} €, une seule fois, à vie."
+        ),
+        "review_title": "Vous aimez VectorPop ?",
+        "review_subtitle": "Votre avis nous aide énormément à faire connaître l'app.",
+        "review_positive": "👍 Oui, je recommande",
+        "review_negative": "👎 Pas vraiment",
+        "review_later": "Plus tard",
+        "review_thanks_positive": "Merci ! La fiche du Store va s'ouvrir.",
+        "review_thanks_negative": "Merci pour votre retour, on va lire ça.",
+        "review_negative_subject": "VectorPop — retour d'expérience",
+        "review_negative_body": "Voici ce qui pourrait être amélioré dans VectorPop :\n\n",
+        "last_free_export_banner": (
+            "Dernier export gratuit utilisé ({n}/{n}). Passez Pro pour continuer."
+        ),
         "open_dialog_title": "Choisir une image",
         "img_filter": "Images (*.png *.jpg *.jpeg *.bmp *.webp)",
         "svg_view_tooltip": "Molette : zoom · glisser : déplacer · double-clic : ajuster",
@@ -448,6 +483,39 @@ STRINGS = {
         "onboarding_quota_desc": (
             "Test freely with full quality. Go Pro anytime to unlock lifetime "
             "unlimited exports."
+        ),
+        # --- Post-export moments (celebration, review, last free export) ---
+        "celebration_title": "Congratulations on your 1st export!",
+        "celebration_subtitle": (
+            "Your image has been converted into razor-sharp vectors, ready for "
+            "engraving, printing, or the web."
+        ),
+        "celebration_open_file": "Open file",
+        "celebration_open_folder": "Open folder",
+        "celebration_pillar_local": "100% local & private",
+        "celebration_pillar_local_desc": (
+            "Processed right on your computer, zero images sent to external " "servers."
+        ),
+        "celebration_pillar_vector": "Infinite sharpness",
+        "celebration_pillar_vector_desc": (
+            "SVG never degrades or blurs, even printed on a 10-meter billboard."
+        ),
+        "celebration_discover_pro": "Discover VectorPop Pro",
+        "celebration_pro_body": (
+            "Need unlimited exports, Ultra-HD PNG and batch processing?\n\n"
+            "VectorPop Pro: €{price}, once, forever."
+        ),
+        "review_title": "Enjoying VectorPop?",
+        "review_subtitle": "Your feedback helps us a lot to get the word out.",
+        "review_positive": "👍 Yes, I recommend it",
+        "review_negative": "👎 Not really",
+        "review_later": "Later",
+        "review_thanks_positive": "Thanks! The Store listing will open.",
+        "review_thanks_negative": "Thanks for the feedback, we'll read it.",
+        "review_negative_subject": "VectorPop — feedback",
+        "review_negative_body": "Here's what could be improved in VectorPop:\n\n",
+        "last_free_export_banner": (
+            "Last free export used ({n}/{n}). Go Pro to keep converting."
         ),
         "open_dialog_title": "Choose an image",
         "img_filter": "Images (*.png *.jpg *.jpeg *.bmp *.webp)",

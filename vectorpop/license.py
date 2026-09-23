@@ -58,6 +58,20 @@ def buy_url() -> str:
     return CHECKOUT_URL or UPGRADE_URL
 
 
+# Fiche Microsoft Store (cf. site/src/routes/index.tsx, MS_STORE_URL).
+MS_STORE_PRODUCT_ID = "9MT2XVDXX7DG"
+
+
+def review_url() -> str:
+    """Avis positif (§1.5) : ouvre directement l'ecran de notation du Store sur
+    Windows (l'app Store gere le protocole ms-windows-store: nativement, sans
+    depasser un aller-retour navigateur) ; renvoie au site sur les autres OS,
+    ou le Store n'a pas d'equivalent facilement invocable (Snap/AppImage)."""
+    if sys.platform.startswith("win"):
+        return f"ms-windows-store://review/?ProductId={MS_STORE_PRODUCT_ID}"
+    return WEBSITE_URL
+
+
 # Secret de signature des cles HMAC (mode dev / hors Lemon Squeezy).
 _LICENSE_SECRET = b"VectorPop-2026-Kv3mRt-Secret"
 
@@ -424,3 +438,38 @@ class UsageTracker:
         """Compteur cumulé, jamais remis à zéro. Sert de preuve de valeur
         affichée dans l'upsell ("X images vectorisées avec VectorPop")."""
         return self._data.get("total", 0)
+
+    # ── Moments post-export (cahier des charges V2 §1.5) ─────────────────────
+    # `celebrated`/`opened_result`/`review_asked` : jamais remis a zero par
+    # _reset_if_new_day() (qui ne touche que "date"/"count"), memes garanties
+    # que "total".
+
+    def has_celebrated_first_export(self) -> bool:
+        return bool(self._data.get("celebrated"))
+
+    def mark_celebrated(self) -> None:
+        self._data["celebrated"] = True
+        self._save()
+
+    def mark_opened_result(self) -> None:
+        """Signal comportemental : l'utilisateur a reellement ouvert le fichier
+        exporte (pas juste clique sur Exporter). Sert de filtre pour la demande
+        d'avis, plus fiable qu'un simple compteur d'exports (porte de VoxCut PC)."""
+        if not self._data.get("opened_result"):
+            self._data["opened_result"] = True
+            self._save()
+
+    def has_opened_result(self) -> bool:
+        return bool(self._data.get("opened_result"))
+
+    def should_ask_review(self) -> bool:
+        """Demande d'avis affichee au plus une fois par reponse (l'utilisateur
+        peut la repousser via "Plus tard", qui ne marque pas review_asked), et
+        seulement si l'usage reel (fichier ouvert + >= 3 exports) le justifie."""
+        if self._data.get("review_asked"):
+            return False
+        return self.has_opened_result() and self.total_exports() >= 3
+
+    def mark_review_asked(self) -> None:
+        self._data["review_asked"] = True
+        self._save()
