@@ -141,6 +141,31 @@ def build_qss(dark: bool) -> str:
     QLabel#dlgFeature {{ font-size: 13px; }}
     QLabel#dlgFeature[used="true"] {{ font-weight: 700; color: {ACCENT1}; }}
 
+    QLabel#obBadge {{
+        background: {input_bg}; color: {text}; border: 1px solid {border};
+        border-radius: 12px; padding: 4px 10px; font-size: 11px; font-weight: 600;
+    }}
+    QLabel#obCompareLabel {{ font-size: 11px; }}
+    QLabel#obCompareLabel[kind="bitmap"] {{ color: #E5484D; font-weight: 600; }}
+    QLabel#obCompareLabel[kind="vector"] {{ color: #10B981; font-weight: 600; }}
+    QFrame#obCompareFrame {{
+        border-radius: 14px; border: 1px solid {border}; background: {panel_bg};
+    }}
+    QFrame#obCompareFrame[kind="bitmap"] {{ border-color: rgba(229, 72, 77, 0.4); }}
+    QFrame#obCompareFrame[kind="vector"] {{ border-color: rgba(16, 185, 129, 0.4); }}
+    QPushButton#obProfileCard {{
+        background: {panel_bg}; color: {text}; border: 1px solid {border};
+        border-radius: 12px; padding: 10px 12px; text-align: left; font-weight: 600;
+    }}
+    QPushButton#obProfileCard:hover {{ background: {input_bg}; }}
+    QPushButton#obProfileCard:checked {{
+        border: 2px solid {ACCENT1}; background: {input_bg};
+    }}
+    QLabel#obDot {{
+        background: {border}; border-radius: 4px; min-height: 7px; max-height: 7px;
+    }}
+    QLabel#obDot[active="true"] {{ background: {ACCENT1}; }}
+
     QLabel#dropImage {{
         border: 2px dashed {drop_border}; border-radius: 14px;
         background: {drop_bg}; color: {subtle}; font-size: 15px;

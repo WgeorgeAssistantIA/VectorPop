@@ -48,6 +48,46 @@ STRINGS = {
         "demo_icon_tooltip": "Pictogramme / icône — lissage parfait des angles et contours",
         "btn_examples": "Exemples",
         "btn_examples_tooltip": "Recharger l'un des 4 modèles démo",
+        # --- Onboarding (premier lancement) ---
+        "onboarding_app_name": "VectorPop",
+        "onboarding_skip": "Passer",
+        "onboarding_next": "Suivant",
+        "onboarding_get_started": "Commencer à vectoriser",
+        "onboarding_welcome_title": "Transformez vos images en tracés parfaits",
+        "onboarding_welcome_desc": (
+            "Convertissez vos logos, dessins et mascottes en fichiers SVG nets "
+            "à l'infini, légers et prêts pour l'impression."
+        ),
+        "onboarding_badge_svg": "SVG standard W3C",
+        "onboarding_badge_zoom": "Zoom infini",
+        "onboarding_badge_ai": "Finitions IA locales",
+        "onboarding_how_title": "Adieu les pixels, place à la netteté",
+        "onboarding_how_desc": (
+            "Le format vectoriel SVG ne perd jamais en qualité : zoomez à "
+            "1000 %, imprimez en grand format ou exportez en 8K sans aucun flou."
+        ),
+        "onboarding_bitmap_label": "Image bitmap (floue au zoom)",
+        "onboarding_vector_label": "Vectoriel SVG (net à l'infini)",
+        "onboarding_profile_title": "Quel est votre usage principal ?",
+        "onboarding_profile_desc": "VectorPop pré-réglera le preset optimal pour vos créations.",
+        "onboarding_profile_logo_title": "Logos & identité de marque",
+        "onboarding_profile_logo_desc": "Aplats nets et suppression de fond uni",
+        "onboarding_profile_mascot_title": "Mascottes & illustrations",
+        "onboarding_profile_mascot_desc": "Nuances riches et calques multi-couleurs",
+        "onboarding_profile_sketch_title": "Signatures & gravure N&B",
+        "onboarding_profile_sketch_desc": "Courbes pures pour découpe laser, tampon, vinyle",
+        "onboarding_profile_icon_title": "Pictogrammes & icônes",
+        "onboarding_profile_icon_desc": "Lissage parfait des angles et contours",
+        "onboarding_privacy_title": "100 % local et respect de votre vie privée",
+        "onboarding_privacy_desc": (
+            "Vos images ne quittent jamais votre ordinateur. Aucun compte "
+            "requis, tout le traitement est exécuté localement."
+        ),
+        "onboarding_quota_title": "{n} exports gratuits offerts pour tester",
+        "onboarding_quota_desc": (
+            "Testez en conditions réelles sans engagement. Passez Pro à tout "
+            "moment pour débloquer les exports illimités à vie."
+        ),
         "open_dialog_title": "Choisir une image",
         "img_filter": "Images (*.png *.jpg *.jpeg *.bmp *.webp)",
         "svg_view_tooltip": "Molette : zoom · glisser : déplacer · double-clic : ajuster",
@@ -369,6 +409,46 @@ STRINGS = {
         "demo_icon_tooltip": "App icon / glyph — smooth corners and crisp contours",
         "btn_examples": "Examples",
         "btn_examples_tooltip": "Reload one of the 4 demo models",
+        # --- Onboarding (first launch) ---
+        "onboarding_app_name": "VectorPop",
+        "onboarding_skip": "Skip",
+        "onboarding_next": "Next",
+        "onboarding_get_started": "Start vectorizing",
+        "onboarding_welcome_title": "Turn your images into perfect vectors",
+        "onboarding_welcome_desc": (
+            "Convert logos, sketches, and mascots into infinitely sharp, "
+            "lightweight, print-ready SVG files."
+        ),
+        "onboarding_badge_svg": "W3C standard SVG",
+        "onboarding_badge_zoom": "Infinite zoom",
+        "onboarding_badge_ai": "Local AI finishing",
+        "onboarding_how_title": "Farewell pixels, welcome pure vectors",
+        "onboarding_how_desc": (
+            "SVG never loses quality: zoom to 1000%, print large-scale, or "
+            "export in 8K with zero blur or degradation."
+        ),
+        "onboarding_bitmap_label": "Bitmap image (pixelated when zoomed)",
+        "onboarding_vector_label": "SVG vector (infinitely sharp)",
+        "onboarding_profile_title": "What is your primary use case?",
+        "onboarding_profile_desc": "VectorPop will pre-tune the optimal preset for your work.",
+        "onboarding_profile_logo_title": "Logos & brand identity",
+        "onboarding_profile_logo_desc": "Clean flat shapes & solid background removal",
+        "onboarding_profile_mascot_title": "Mascots & illustrations",
+        "onboarding_profile_mascot_desc": "Rich shades & multi-color layers",
+        "onboarding_profile_sketch_title": "Signatures & B&W engraving",
+        "onboarding_profile_sketch_desc": "Pure curves for laser cutting, stamps, vinyl",
+        "onboarding_profile_icon_title": "Icons & glyphs",
+        "onboarding_profile_icon_desc": "Perfectly smoothed corners and contours",
+        "onboarding_privacy_title": "100% local, your privacy respected",
+        "onboarding_privacy_desc": (
+            "Your images never leave your computer. No account required, "
+            "everything runs locally."
+        ),
+        "onboarding_quota_title": "{n} free trial exports included",
+        "onboarding_quota_desc": (
+            "Test freely with full quality. Go Pro anytime to unlock lifetime "
+            "unlimited exports."
+        ),
         "open_dialog_title": "Choose an image",
         "img_filter": "Images (*.png *.jpg *.jpeg *.bmp *.webp)",
         "svg_view_tooltip": "Wheel: zoom · drag: pan · double-click: fit",

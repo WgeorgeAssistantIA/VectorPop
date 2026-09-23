@@ -71,7 +71,15 @@ Accompagne [CAHIER_DES_CHARGES_V2_DESKTOP.md](CAHIER_DES_CHARGES_V2_DESKTOP.md).
 | D5 | Tuiles de l'écran vide | 4 tuiles avec icône réelle (non nulle) ; le panneau se cache une fois une vraie image chargée | ✅ |
 | M3 | Packaging (exe, MSIX, AppImage, Snap) | Les 4 images sont bien dans `assets/samples/` du build packagé (vérifié via `VectorPop.spec`/`VectorPop_onefile.spec`/`build_linux.spec`, pas encore testé sur un vrai build) | Manuel, au moment de la release |
 
-- Lot 5 — Onboarding (§1.4)
+## Lot 5 — Onboarding (§1.4)
+
+| ID | Vérification | Attendu | Auto |
+|---|---|---|---|
+| O1a/b | `should_show()` après `mark_seen(0)`, puis affichage manuel | True ; le dialogue construit ses 4 pages et émet `onboarding_started` + `onboarding_step_viewed`(0, welcome) | ✅ |
+| O2 | « Passer » à l'étape 2 | `onboarding_skipped`(at_step=1), puis `onboarding_completed` (Passer complète quand même, comme Android — charge le profil par défaut pour un 1er résultat immédiat), marqué vu | ✅ |
+| O3 | Parcours complet, profil « Signatures & gravure N&B » choisi | `onboarding_usecase_selected`, `onboarding_completed`(usecase=sketch), le preset `bw` appliqué et le modèle démo assorti chargé automatiquement | ✅ |
+| O4 | Déclenchement automatique (le vrai câblage `QTimer.singleShot` dans `__init__`, pas un appel manuel) sur une fenêtre neuve | Le dialogue s'ouvre tout seul | ✅ |
+
 - Lot 6 — Moments après export (§1.5)
 - Final — Non-régression complète sur le build packagé (voir §5 du cahier des charges).
 
@@ -82,3 +90,4 @@ Accompagne [CAHIER_DES_CHARGES_V2_DESKTOP.md](CAHIER_DES_CHARGES_V2_DESKTOP.md).
 | 23/09/2026 | Lot 2 (Freemium) | 32/32 PASS (lot 1 adapté à l'essai de 5 + F1 à F9 + R1 + V-NET). Corrigé en cours de route : le message « N tracé(s) supprimé(s) » écrasait l'avertissement « Aperçu Pro » (les deux sont maintenant affichés). |
 | 23/09/2026 | Lot 3 (ProDialog) | 33/33 PASS. Les 3 boîtes QMessageBox d'upsell (fonction verrouillée, quota, teaser) remplacées par un seul `ProDialog` réel (badge, preuve de valeur, 6 avantages avec la fonction concernée mise en avant, CTA dégradé). Vérifié via le vrai widget (P1), pas seulement les events. |
 | 23/09/2026 | Lot 4 (Modèles démo) | 38/38 PASS. Les 4 échantillons Android copiés dans `assets/samples/`, ajoutés aux 3 `.spec` PyInstaller (l'installeur/MSIX/Snap/AppImage en héritent automatiquement, pas de changement séparé nécessaire). Écran vide : 4 tuiles cliquables (icône + titre) remplacent l'unique logo généré ; menu « Exemples » ajouté pour y revenir. `apply_recipe()` (déjà existant, déjà testé pour le bouton d'aide) réutilisé pour forcer preset+réglages, ce qui règle le piège QSettings gratuitement. |
+| 23/09/2026 | Lot 5 (Onboarding) | 43/43 PASS. 4 écrans (aligné sur Android, qui combine en réalité vie privée+quota sur un même écran, pas 5 séparés comme décrit trop vite dans le §1.4 initial) : promesse, bitmap vs vectoriel (vrai SVG vtracer rendu, pas une approximation), usage principal (ouvre le modèle démo assorti), local+quota. Bouton « Passer » gardé, complète quand même (charge un 1er résultat par défaut). Versionné (`onboarding.py`, `ONBOARDING_VERSION=1`). |

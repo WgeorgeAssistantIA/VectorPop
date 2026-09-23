@@ -233,6 +233,33 @@ class FakeProDialog(dialogs.ProDialog):
 
 
 main_window.ProDialog = FakeProDialog
+
+LAST_ONBOARDING: list = [None]
+ONBOARDING_DRIVER: list = [None]  # callable(dlg), défini par chaque test O* avant coup
+
+
+class FakeOnboardingDialog(main_window.OnboardingDialog):
+    """Construit le vrai OnboardingDialog (widgets réels) mais saute exec() :
+    joue le "parcours" fourni par ONBOARDING_DRIVER (par défaut : jusqu'au bout,
+    sans changer de profil) au lieu d'attendre un vrai clic."""
+
+    def __init__(self, *a, **k):
+        super().__init__(*a, **k)
+        LAST_ONBOARDING[0] = self
+
+    def exec(self):
+        DIALOGS.append("onboarding")
+        driver = ONBOARDING_DRIVER[0] or (lambda d: [d._next() for _ in range(4)])
+        driver(self)
+        return self.result()
+
+
+main_window.OnboardingDialog = FakeOnboardingDialog
+from vectorpop import onboarding  # noqa: E402
+
+onboarding.mark_seen()  # l'onboarding auto-déclenché (singleShot) ne doit pas
+# gêner le reste du parcours ; le Lot 5 réinitialise et teste ça explicitement.
+
 BROWSER: list[str] = []
 dialogs.webbrowser.open = lambda url, *a, **k: (BROWSER.append(url), ORDER.append("BROWSER"))
 
@@ -653,6 +680,90 @@ n_dialogs = DIALOGS.count("upsell")
 export_to("pro_autotune.svg", "SVG vectoriel (*.svg)")
 check("F9", (out_dir / "pro_autotune.svg").exists() and DIALOGS.count("upsell") == n_dialogs,
       f"events={since(m)}")
+
+# ── Lot 5 : onboarding ────────────────────────────────────────────────────────
+win.lang = "fr"
+win.retranslate_ui()
+
+# O1 : affichage manuel (should_show True après reset), 4 pages, events de départ
+onboarding.mark_seen(0)
+check("O1a", onboarding.should_show(), "should_show() devrait être True après mark_seen(0)")
+m = mark()
+ONBOARDING_DRIVER[0] = lambda d: None  # ne rien faire : juste vérifier la construction
+win._maybe_show_onboarding()
+dlg = LAST_ONBOARDING[0]
+ev = since(m)
+check(
+    "O1b",
+    dlg is not None
+    and dlg._stack.count() == 4
+    and ev[:2] == ["onboarding_started", "onboarding_step_viewed"]
+    and last("onboarding_step_viewed").get("step_title") == "welcome",
+    f"pages={dlg and dlg._stack.count()} events={ev}",
+)
+
+# O2 : « Passer » à l'étape 2 -> onboarding_skipped(at_step=1), marqué vu. Passer
+# appelle quand même _complete() (comme Android) : le profil par défaut ("logo")
+# est chargé pour donner un premier résultat, même sans avoir choisi de profil.
+onboarding.mark_seen(0)
+m = mark()
+ONBOARDING_DRIVER[0] = lambda d: (d._next(), d._skip())  # avance une fois, puis passe
+win._maybe_show_onboarding()
+wait_idle(win)
+ev = since(m)
+check(
+    "O2",
+    ev[:2] == ["onboarding_started", "onboarding_step_viewed"]  # construction du dialogue
+    and "onboarding_skipped" in ev
+    and "onboarding_completed" in ev
+    and last("onboarding_skipped").get("at_step") == 1
+    and not onboarding.should_show()
+    and win.svg_path is not None,
+    f"events={ev} svg_path={win.svg_path}",
+)
+
+# O3 : parcours complet, profil "sketch" choisi à l'étape 3 -> preset bw appliqué
+# et le modèle démo correspondant chargé automatiquement à la fin.
+onboarding.mark_seen(0)
+m = mark()
+
+
+def _o3_driver(d):
+    d._next()  # -> how_it_works
+    d._next()  # -> profile
+    d._select_profile("sketch")
+    d._next()  # -> privacy_quota
+    d._next()  # -> complete
+
+
+ONBOARDING_DRIVER[0] = _o3_driver
+win._maybe_show_onboarding()
+wait_idle(win)
+ev = since(m)
+completed = last("onboarding_completed")
+check(
+    "O3",
+    "onboarding_usecase_selected" in ev
+    and completed
+    and completed.get("usecase") == "sketch"
+    and win.preset.currentData() == "bw"
+    and (last("sample_model_selected") or {}).get("model_id") == "sketch",
+    f"events={ev} completed={completed} preset={win.preset.currentData()}",
+)
+
+# O4 : déclenchement automatique (singleShot dans __init__, pas d'appel manuel)
+# sur une fenêtre neuve -- prouve le vrai câblage, pas seulement _maybe_show_onboarding().
+onboarding.mark_seen(0)
+ONBOARDING_DRIVER[0] = lambda d: d._skip()
+LAST_ONBOARDING[0] = None
+win2 = main_window.MainWindow()
+wait_idle(win2)
+check("O4", LAST_ONBOARDING[0] is not None, "aucun OnboardingDialog auto-déclenché sur une fenêtre neuve")
+win2._save_settings = lambda: None
+win2.close()
+
+onboarding.mark_seen()  # remis "vu" pour ne pas perturber la suite du script
+ONBOARDING_DRIVER[0] = None
 
 # A18 : langue
 m = mark()

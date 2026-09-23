@@ -52,7 +52,7 @@ Rédigé le 23/09/2026. Objectif : reprendre sur la version desktop (Windows/Lin
 - Ajouter aussi une entrée de menu « Ouvrir un exemple » pour y revenir plus tard.
 - ⚠️ Piège `QSettings` : les sliders persistés sont rechargés **par-dessus** les presets. Charger un modèle démo doit forcer les valeurs du preset, sinon le rendu démo dépend des derniers réglages de l'utilisateur.
 
-### 1.4 Onboarding au premier lancement
+### 1.4 Onboarding au premier lancement ✅ FAIT le 23/09 (4 écrans, pas 5 : voir note)
 - Fenêtre modale reprenant les 5 écrans Android, FR/EN, textes déjà écrits dans `i18n.dart` (`onboarding*`, `profile*`) :
   1. Promesse : « Transformez vos images en tracés parfaits »
   2. Bitmap vs vectoriel (visuel avant/après : zoom flou vs net)
@@ -60,6 +60,7 @@ Rédigé le 23/09/2026. Objectif : reprendre sur la version desktop (Windows/Lin
   4. 100 % local : « vos images ne quittent jamais votre ordinateur, aucun compte »
   5. Quota gratuit + Pro (texte adapté à la décision §1.6)
 - Versionnement : `onboarding_version` dans `data_dir()` + constante `ONBOARDING_VERSION`. Les utilisateurs existants le revoient quand on l'incrémente.
+- ⚠️ **Correction en cours de route** : Android combine en réalité les écrans « 100 % local » et « quota + Pro » sur un seul écran (4 pages au total, pas 5 comme décrit ci-dessus au départ) -- le desktop suit fidèlement Android : 4 pages.
 - **Bouton « Passer » : à trancher.** Android l'a (avec tracking), InOneShot desktop non. Sur VoxCut Android, 110 skips sur 150 à l'étape 1 étaient des passages volontaires, pas des abandons. Recommandation : le garder et suivre `onboarding_skipped` par étape.
 
 ### 1.5 Moments du funnel après export

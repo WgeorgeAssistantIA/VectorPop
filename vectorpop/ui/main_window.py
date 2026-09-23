@@ -40,7 +40,7 @@ from PySide6.QtWidgets import (
 from PIL import Image
 
 from .. import ai_module, ai_upscale
-from .. import analytics
+from .. import analytics, onboarding
 from ..analytics import track_event
 from ..export import resize_svg, svg_to_pdf, svg_to_png
 from ..optimize import optimize_svg
@@ -89,6 +89,7 @@ from ..core.recipes import RECIPES
 from ..core.demo_models import DEMO_MODELS, DEMO_MODELS_BY_ID
 from .widgets import DropImage, SvgView, CompareView
 from .dialogs import ProDialog, SettingsHelpDialog, SizeDialog, LicenseDialog
+from .onboarding_dialog import OnboardingDialog
 
 
 class MainWindow(QMainWindow):
@@ -503,6 +504,16 @@ class MainWindow(QMainWindow):
 
         analytics.set_context(lang=self.lang, is_pro=self.lic.is_pro)
         analytics.capture("app_opened")
+
+        # Onboarding : affiche apres que la fenetre principale soit visible
+        # (singleShot(0) -> prochain passage de la boucle d'evenements, donc
+        # apres le .show() fait par app.main()), pas pendant la construction.
+        if onboarding.should_show():
+            QTimer.singleShot(0, self._maybe_show_onboarding)
+
+    def _maybe_show_onboarding(self):
+        if onboarding.should_show():
+            OnboardingDialog(self).exec()
 
     def paste_image(self):
         img = QApplication.clipboard().image()

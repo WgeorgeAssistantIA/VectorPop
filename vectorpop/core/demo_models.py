@@ -101,3 +101,16 @@ DEMO_MODELS: list[DemoModel] = [
 ]
 
 DEMO_MODELS_BY_ID: dict[str, DemoModel] = {m.id: m for m in DEMO_MODELS}
+
+
+# Choix d'usage de l'onboarding (ecran "Quel est votre usage principal ?").
+# Mappe 1:1 sur DEMO_MODELS (memes ids) : le profil choisi ouvre directement
+# le modele demo correspondant. Android propose un 4e choix "Flocage &
+# Serigraphie" sans asset associe (aucun sample dedie, non repris ici) ; on
+# garde "Pictogrammes & icones" (deja un vrai modele demo) a la place.
+ONBOARDING_PROFILES: list[tuple[str, str, str]] = [
+    ("logo", "onboarding_profile_logo_title", "onboarding_profile_logo_desc"),
+    ("mascot", "onboarding_profile_mascot_title", "onboarding_profile_mascot_desc"),
+    ("sketch", "onboarding_profile_sketch_title", "onboarding_profile_sketch_desc"),
+    ("icon", "onboarding_profile_icon_title", "onboarding_profile_icon_desc"),
+]
