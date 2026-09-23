@@ -430,6 +430,18 @@ def vectorize(
 ) -> Path:
     """Vectorise `src` vers le fichier SVG `dst`. Renvoie le chemin SVG."""
     src, dst = Path(src), Path(dst)
+    # Garde-fou : si le dossier de destination n'existe pas (lecteur reseau
+    # debranche, dossier supprime entre la selection et l'export...), vtracer
+    # ne leve pas une exception Python normale mais PANIQUE cote Rust
+    # (pyo3_runtime.PanicException, qui n'herite PAS de Exception). Un simple
+    # "except Exception" autour de vectorize() (ex: vectorpop/core/workers.py)
+    # ne l'attrape alors pas, et le thread worker meurt en silence. On leve
+    # ici une erreur normale, AVANT d'atteindre vtracer, pour rester dans le
+    # monde des exceptions attrapables.
+    if not dst.parent.is_dir():
+        raise FileNotFoundError(
+            f"Le dossier de destination n'existe pas : {dst.parent}"
+        )
     prepped = _preprocess(src, params, reduce_colors)
     try:
         vtracer.convert_image_to_svg_py(
