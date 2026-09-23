@@ -1,6 +1,14 @@
 from pathlib import Path
 from PySide6.QtCore import Qt, QPointF, QRect, QRectF, QSize, Signal
-from PySide6.QtGui import QImageReader, QPainter, QPen, QPixmap, QIcon
+from PySide6.QtGui import (
+    QColor,
+    QImageReader,
+    QLinearGradient,
+    QPainter,
+    QPen,
+    QPixmap,
+    QIcon,
+)
 from PySide6.QtWidgets import (
     QGraphicsItem,
     QLabel,
@@ -9,6 +17,7 @@ from PySide6.QtWidgets import (
     QRubberBand,
     QFileDialog,
     QGraphicsView,
+    QScrollArea,
     QGraphicsScene,
     QHBoxLayout,
     QVBoxLayout,
@@ -498,3 +507,84 @@ class CompareView(QWidget):
         p.setClipping(False)
         p.setPen(QPen(Qt.white, 2))
         p.drawLine(split_x, target.top(), split_x, target.bottom())
+
+
+class _FadeOverlay(QWidget):
+    """Degrade transparent -> couleur de fond, peint par-dessus le bas de la
+    zone de reglages : invisible aux clics, il signale juste qu'il y a une suite."""
+
+    HEIGHT = 30
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self.setAttribute(Qt.WA_NoSystemBackground)
+        self._color = QColor("#f4f5fa")
+
+    def set_color(self, color: str):
+        self._color = QColor(color)
+        self.update()
+
+    def paintEvent(self, e):
+        g = QLinearGradient(0, 0, 0, self.height())
+        start = QColor(self._color)
+        start.setAlpha(0)
+        g.setColorAt(0.0, start)
+        g.setColorAt(1.0, self._color)
+        p = QPainter(self)
+        p.fillRect(self.rect(), g)
+        p.end()
+
+
+class FadingScrollArea(QScrollArea):
+    """Panneau de reglages defilant, avec fondu en bas quand du contenu est
+    cache en dessous (equivalent du ShaderMask de VectorPop Android). Sur un
+    grand ecran rien ne deborde : pas de barre, pas de fondu, meme rendu qu'avant."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWidgetResizable(True)
+        self.setFrameShape(QFrame.NoFrame)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.fade = _FadeOverlay(self)
+        self.fade.hide()
+        bar = self.verticalScrollBar()
+        bar.valueChanged.connect(self._update_fade)
+        bar.rangeChanged.connect(self._update_fade)
+
+    def sizeHint(self):
+        """Hauteur REELLE du contenu (QScrollArea en propose une plus petite par
+        defaut, ce qui faisait defiler le panneau meme sur un grand ecran). Le
+        plafond est pose par la fenetre (setMaximumHeight)."""
+        w = self.widget()
+        base = super().sizeHint()
+        if w is None:
+            return base
+        h = w.sizeHint().height() + 2 * self.frameWidth()
+        if self.horizontalScrollBar().isVisible():
+            h += self.horizontalScrollBar().sizeHint().height()
+        return QSize(base.width(), h)
+
+    def set_fade_color(self, color: str):
+        self.fade.set_color(color)
+
+    def fade_visible(self) -> bool:
+        return self.fade.isVisible()
+
+    def _update_fade(self, *_):
+        bar = self.verticalScrollBar()
+        more_below = bar.maximum() > 0 and bar.value() < bar.maximum() - 2
+        vp = self.viewport().geometry()
+        self.fade.setGeometry(
+            vp.x(),
+            vp.bottom() - _FadeOverlay.HEIGHT + 1,
+            vp.width(),
+            _FadeOverlay.HEIGHT,
+        )
+        self.fade.setVisible(more_below)
+        self.fade.raise_()
+
+    def resizeEvent(self, e):
+        super().resizeEvent(e)
+        self._update_fade()

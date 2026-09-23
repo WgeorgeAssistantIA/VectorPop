@@ -29,6 +29,12 @@ _ACCENT_GRAD_PRESSED = (
 )
 
 
+def window_bg(dark: bool) -> str:
+    """Fond de fenetre du theme (meme valeur que dans build_qss), pour les
+    widgets peints a la main (ex. fondu du panneau de reglages)."""
+    return "#1b1c25" if dark else "#f4f5fa"
+
+
 def build_qss(dark: bool) -> str:
     """Feuille de style globale de l'appli, theme clair ou sombre."""
     if dark:
@@ -123,8 +129,16 @@ def build_qss(dark: bool) -> str:
     }}
     QPushButton#dlgSecondary:hover {{ background: {input_bg}; }}
     QPushButton#btnProCta {{
-        border-radius: 14px; padding: 6px 16px; font-weight: 800;
-        border: 1px solid rgba(255, 255, 255, 0.55);
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+            stop:0 {ACCENT1}, stop:0.5 {ACCENT2}, stop:1 {ACCENT3});
+        color: white; font-weight: 800; letter-spacing: 0.3px;
+        border: 2px solid {ACCENT3}; border-radius: 15px;
+        min-height: 26px; max-height: 26px; padding: 0 18px;
+    }}
+    QPushButton#btnProCta:hover {{
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+            stop:0 #8E6BFF, stop:0.5 #DB4CD4, stop:1 #5FE1FC);
+        border-color: white;
     }}
     QPushButton#dlgLink {{
         background: transparent; color: {subtle}; border: none;

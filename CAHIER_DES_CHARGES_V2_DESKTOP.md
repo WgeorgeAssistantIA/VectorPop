@@ -105,7 +105,7 @@ Suivre `quota_reached`, `paywall_viewed` par source, `pro_buy_clicked` et l'expo
 - Relever la limite de zoom SVG (`_zoom >= 20` dans `ui/widgets.py`) pour afficher les tracés « au microscope », comme le ×10 000 d'Android. Vérifier que le rendu `QSvgRenderer` reste fluide à fort zoom, et ajouter un indicateur de niveau (×100, ×1000…).
 - Optionnel : zooms synchronisés entre l'original et le SVG (argument de précision fort pour les captures du Store).
 
-### 2.2 Identité visuelle Pro ✅ FAIT le 24/09 (pastille ; le fondu du panneau de réglages n'a pas été fait)
+### 2.2 Identité visuelle Pro ✅ FAIT le 24/09 (pastille « ★ Passer Pro » + fondu : le panneau de réglages devient défilant et plafonné à 40 % de la hauteur, fondu seulement s'il reste des réglages cachés)
 - Pastille « Passer Pro » en dégradé violet #7A52F5 → magenta #C92BC0 → cyan #3FD7FB (QSS), à la place du libellé texte. Elle disparaît une fois Pro activé.
 - Fondu en bas du panneau de réglages s'il défile (équivalent du `ShaderMask` Android).
 

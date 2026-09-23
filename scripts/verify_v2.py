@@ -1286,12 +1286,18 @@ btn.hide()
 win.lic.is_pro = lambda: False
 win.refresh_pro_ui()
 free_name = win.btn_pro.objectName()
+free_text = win.btn_pro.text()
 win.lic.is_pro = lambda: True
 win.refresh_pro_ui()
 check(
     "L7",
-    free_name == "btnProCta" and win.btn_pro.objectName() == "dlgSecondary",
-    f"gratuit={free_name} pro={win.btn_pro.objectName()}",
+    free_name == "btnProCta"
+    and free_text.startswith("★")
+    and win.btn_pro.objectName() == "dlgSecondary"
+    and not win.btn_pro.text().startswith("★")
+    and "QPushButton#btnProCta" in app.styleSheet()
+    and "border-radius: 15px" in app.styleSheet(),
+    f"gratuit={free_name} {free_text!r} pro={win.btn_pro.objectName()} {win.btn_pro.text()!r}",
 )
 
 # L8 : lien « Aussi sur Android » (aide + écran Pro)
@@ -1310,6 +1316,42 @@ check(
     and sources == ["help", "pro_dialog_batch"],
     f"ouverts={BROWSER[n_browser:]} sources={sources}",
 )
+# L9 : fondu en bas du panneau de réglages -- visible seulement quand des
+# réglages sont cachés en dessous ; grand écran = aucun changement.
+from vectorpop.theme import window_bg  # noqa: E402
+
+sc = win.settings_scroll
+win.resize(1100, 420)  # petit écran : le panneau est plafonné à 40 % de la hauteur
+for _ in range(10):
+    app.processEvents()
+bar = sc.verticalScrollBar()
+small_overflow = bar.maximum() > 0
+fade_top = sc.fade_visible()
+fade_geom_ok = sc.fade.geometry().bottom() == sc.viewport().geometry().bottom()
+bar.setValue(bar.maximum())
+app.processEvents()
+fade_bottom = sc.fade_visible()
+bar.setValue(0)
+win.resize(1400, 1100)  # grand écran : tout tient
+for _ in range(10):
+    app.processEvents()
+big_overflow = sc.verticalScrollBar().maximum() > 0
+fade_big = sc.fade_visible()
+light = sc.fade._color.name().lower()
+win.apply_theme(True)
+dark = sc.fade._color.name().lower()
+win.apply_theme(False)
+check(
+    "L9",
+    small_overflow and fade_top and fade_geom_ok
+    and not fade_bottom
+    and not big_overflow and not fade_big
+    and light == window_bg(False).lower() and dark == window_bg(True).lower()
+    and win.previews.height() > sc.height(),
+    f"petit: débord={small_overflow} fondu={fade_top}/{fade_bottom} ; grand: débord={big_overflow} "
+    f"fondu={fade_big} ; couleurs={light}/{dark} ; aperçu={win.previews.height()}px réglages={sc.height()}px",
+)
+
 win.hide()
 
 # F9 : en Pro, un rendu Optimiser s'exporte sans aucun verrou

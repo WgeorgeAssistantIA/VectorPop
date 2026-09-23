@@ -70,6 +70,7 @@ from ..theme import (
     ICON_UNDO,
     build_qss,
     checker_brush,
+    window_bg,
     icon,
 )
 from ..vectorizer import PRESETS, VectorParams
@@ -86,7 +87,7 @@ from ..core.workers import (
 )
 from ..core.recipes import RECIPES
 from ..core.demo_models import DEMO_MODELS, DEMO_MODELS_BY_ID
-from .widgets import DropImage, SvgView, CompareView
+from .widgets import CompareView, DropImage, FadingScrollArea, SvgView
 from .dialogs import (
     ExportCelebrationDialog,
     LicenseDialog,
@@ -453,11 +454,23 @@ class MainWindow(QMainWindow):
         actions.addWidget(self.btn_compare)
         actions.addWidget(self.btn_batch)
 
+        # Reglages dans une zone defilante plafonnee (~40 % de la hauteur, cf.
+        # resizeEvent) : sur un petit ecran l'apercu garde sa place, et un fondu
+        # en bas indique les reglages caches en dessous.
+        settings_w = QWidget()
+        settings_lay = QVBoxLayout(settings_w)
+        settings_lay.setContentsMargins(0, 0, 0, 0)
+        settings_lay.addLayout(controls)
+        settings_lay.addLayout(controls2)
+        self.settings_scroll = FadingScrollArea()
+        self.settings_scroll.setWidget(settings_w)
+        self.settings_scroll.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        self.settings_scroll.setMinimumHeight(90)
+
         root = QVBoxLayout()
         root.addWidget(self.previews, 1)
         root.addLayout(prep)
-        root.addLayout(controls)
-        root.addLayout(controls2)
+        root.addWidget(self.settings_scroll)
         root.addLayout(actions)
         central = QWidget()
         central.setLayout(root)
@@ -1313,6 +1326,11 @@ class MainWindow(QMainWindow):
         self.btn_vec.setEnabled(True)
         self._set_busy(False)
 
+    def resizeEvent(self, e):
+        super().resizeEvent(e)
+        if hasattr(self, "settings_scroll"):
+            self.settings_scroll.setMaximumHeight(max(120, int(self.height() * 0.4)))
+
     def closeEvent(self, e):
         # Memorise les reglages pour la prochaine session.
         self._save_settings()
@@ -1399,6 +1417,7 @@ class MainWindow(QMainWindow):
         self._dark = dark
         QApplication.instance().setStyleSheet(build_qss(dark))
         self.preview.setBackgroundBrush(checker_brush(dark))
+        self.settings_scroll.set_fade_color(window_bg(dark))
         self.btn_theme.setIcon(icon(ICON_SUN if dark else ICON_MOON))
         if self.btn_theme.isChecked() != dark:
             self.btn_theme.blockSignals(True)
@@ -1435,7 +1454,11 @@ class MainWindow(QMainWindow):
         """Realigne l'UI sur l'etat courant de la licence (appelee au demarrage,
         apres activation/desactivation, et au retour de la revalidation en ligne)."""
         pro = self.lic.is_pro()
-        self.btn_pro.setText(self._t("btn_pro_active" if pro else "btn_pro"))
+        # Etoile : la pastille doit se distinguer des autres boutons (tous en
+        # degrade dans ce theme), comme la pastille d'Android.
+        self.btn_pro.setText(
+            self._t("btn_pro_active") if pro else "★ " + self._t("btn_pro").strip()
+        )
         # Gratuit : pastille « Passer Pro » (appel a l'action) ; Pro : bouton
         # neutre de gestion de licence, plus rien a vendre.
         self.btn_pro.setObjectName("dlgSecondary" if pro else "btnProCta")
