@@ -31,10 +31,10 @@ const CONTACT = "contact@vectorpop.fr";
 const pp: Record<Lang, { title: string; updated: string; back: string; intro: string; sections: Section[] }> = {
   fr: {
     title: "Politique de confidentialité",
-    updated: "Dernière mise à jour : 17 juillet 2026",
+    updated: "Dernière mise à jour : 24 septembre 2026",
     back: "Retour à l'accueil",
     intro:
-      "VectorPop est un logiciel de vectorisation d'images (PNG, JPEG vers SVG) conçu pour fonctionner intégralement en local sur votre ordinateur. Le respect de votre vie privée est au cœur de sa conception. Cette politique explique quelles données sont — ou ne sont pas — traitées lorsque vous utilisez l'application VectorPop et le site vectorpop.fr.",
+      "VectorPop est un logiciel de vectorisation d'images (PNG, JPEG vers SVG) conçu pour fonctionner intégralement en local sur votre ordinateur ou appareil mobile. Le respect de votre vie privée est au cœur de sa conception. Cette politique explique quelles données sont — ou ne sont pas — traitées lorsque vous utilisez l'application VectorPop et le site vectorpop.fr.",
     sections: [
       {
         h: "1. Éditeur et responsable du traitement",
@@ -54,19 +54,21 @@ const pp: Record<Lang, { title: string; updated: string; back: string; intro: st
         blocks: [
           {
             type: "p",
-            text: "VectorPop traite vos images directement sur votre ordinateur. Vos fichiers ne sont jamais envoyés vers un serveur, un cloud ou un tiers : ils ne quittent pas votre machine. Le détourage IA lui-même s'exécute en local, sur votre processeur.",
+            text: "VectorPop traite vos images directement sur votre appareil. Vos fichiers ne sont jamais envoyés vers un serveur, un cloud ou un tiers : ils ne quittent pas votre machine. Le détourage IA lui-même s'exécute en local, sur votre processeur.",
           },
           {
             type: "ul",
             items: [
-              "Aucune image n'est téléversée ni stockée en ligne.",
-              "Aucune mesure d'audience (analytics), aucun mouchard ni télémétrie n'est intégré à l'application.",
-              "L'application fonctionne sans connexion internet, à l'exception de la vérification de licence (voir section 3).",
+              "Aucune image n'est téléversée, transmise ni stockée en ligne.",
+              "Statistiques d'usage produit anonymes : afin d'améliorer la fiabilité et l'ergonomie, VectorPop intègre un suivi d'événements produit via PostHog EU (serveurs situés au sein de l'Union Européenne en Allemagne, en stricte conformité RGPD). Ces mesures sont strictement anonymes (lancements, étapes de découverte, préréglages choisis, formats d'export, canal de distribution).",
+              "Zéro donnée personnelle dans l'application : aucun compte requis, aucun nom, aucun identifiant publicitaire, et aucun pixel ni contenu de vos images n'est jamais transmis.",
+              "Contrôle total de l'utilisateur : sur la version bureau (Windows / Linux), vous pouvez désactiver ces statistiques anonymes à tout moment via le menu Aide > Confidentialité.",
+              "L'application fonctionne parfaitement hors connexion internet (hors vérification de licence Lemon Squeezy en ligne lors de l'activation).",
             ],
           },
           {
             type: "p",
-            text: "L'application enregistre quelques fichiers techniques localement dans le dossier %APPDATA%\\VectorPop de votre ordinateur (clé de licence, compteur d'exports quotidiens, préférences de langue et de thème). Ces fichiers restent sur votre machine et ne nous sont jamais transmis.",
+            text: "L'application enregistre quelques fichiers techniques localement sur votre ordinateur (clé de licence chiffrée, compteur d'exports d'essai, préférences de langue et de thème). Ces fichiers restent sur votre machine et ne nous sont jamais transmis.",
           },
         ],
       },
@@ -144,11 +146,11 @@ const pp: Record<Lang, { title: string; updated: string; back: string; intro: st
         ],
       },
       {
-        h: "8. Transferts hors Union européenne",
+        h: "8. Hébergement et transferts hors Union européenne",
         blocks: [
           {
             type: "p",
-            text: "Certains de nos prestataires (Lemon Squeezy, Vercel) peuvent être établis en dehors de l'Union européenne, notamment aux États-Unis. Le cas échéant, ces transferts sont encadrés par les garanties prévues par le RGPD (clauses contractuelles types ou mécanismes équivalents).",
+            text: "Nos serveurs d'analyse de produit (PostHog EU) sont exclusivement hébergés dans l'Union Européenne (Francfort, Allemagne). Certains de nos prestataires (Lemon Squeezy, Vercel) peuvent être établis en dehors de l'Union européenne, notamment aux États-Unis. Le cas échéant, ces transferts sont encadrés par les garanties prévues par le RGPD (clauses contractuelles types de la Commission Européenne).",
           },
         ],
       },
@@ -174,10 +176,10 @@ const pp: Record<Lang, { title: string; updated: string; back: string; intro: st
   },
   en: {
     title: "Privacy Policy",
-    updated: "Last updated: July 17, 2026",
+    updated: "Last updated: September 24, 2026",
     back: "Back to home",
     intro:
-      "VectorPop is an image vectorizer (PNG, JPEG to SVG) designed to run entirely locally on your computer. Respect for your privacy is built into its design. This policy explains what data is — and is not — processed when you use the VectorPop application and the vectorpop.fr website.",
+      "VectorPop is an image vectorizer (PNG, JPEG to SVG) designed to run entirely locally on your computer or mobile device. Respect for your privacy is built into its design. This policy explains what data is — and is not — processed when you use the VectorPop application and the vectorpop.fr website.",
     sections: [
       {
         h: "1. Publisher and data controller",
@@ -202,14 +204,16 @@ const pp: Record<Lang, { title: string; updated: string; back: string; intro: st
           {
             type: "ul",
             items: [
-              "No image is uploaded or stored online.",
-              "No analytics, tracker, or telemetry is built into the application.",
-              "The application works without an internet connection, except for license verification (see section 3).",
+              "No image is ever uploaded, processed remotely, or stored online.",
+              "Anonymous product analytics: to improve stability and UX, VectorPop uses PostHog EU (hosted entirely within the European Union in Frankfurt, Germany, in strict compliance with GDPR) to record strictly anonymous usage events (app opens, onboarding steps, selected preset, export formats, distribution channel).",
+              "Zero personal data in the app: no accounts required, no names, no advertising IDs, and absolutely no pixel data or image content is ever transmitted.",
+              "Full user control: on the desktop version (Windows / Linux), you can opt out of anonymous analytics at any time via the Help > Privacy menu.",
+              "The application works completely offline (except for online license activation via Lemon Squeezy).",
             ],
           },
           {
             type: "p",
-            text: "The application stores a few technical files locally in the %APPDATA%\\VectorPop folder on your computer (license key, daily export counter, language and theme preferences). These files stay on your machine and are never transmitted to us.",
+            text: "The application stores technical files locally on your device (encrypted license key, trial export counter, language and theme preferences). These files remain on your machine.",
           },
         ],
       },
@@ -287,11 +291,11 @@ const pp: Record<Lang, { title: string; updated: string; back: string; intro: st
         ],
       },
       {
-        h: "8. Transfers outside the European Union",
+        h: "8. Hosting and transfers outside the European Union",
         blocks: [
           {
             type: "p",
-            text: "Some of our providers (Lemon Squeezy, Vercel) may be established outside the European Union, in particular in the United States. Where applicable, such transfers are governed by the safeguards provided for by the GDPR (standard contractual clauses or equivalent mechanisms).",
+            text: "Our product analytics infrastructure (PostHog EU) is located exclusively within the European Union (Frankfurt, Germany). Some of our other providers (Lemon Squeezy, Vercel) may be established outside the European Union, in particular in the United States. Where applicable, such transfers are governed by the safeguards provided for by the GDPR (standard contractual clauses approved by the European Commission).",
           },
         ],
       },
