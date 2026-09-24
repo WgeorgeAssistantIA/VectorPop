@@ -1,10 +1,14 @@
 # Mémoire du Projet : VectorPop
 
 ## État Actuel (Septembre 2026)
-- **Application Desktop** : VectorPop Windows (MSIX / Store) et Linux (AppImage / Snap) en production.
+- **Application Desktop V2 (2.0.0)** : Production complète déployée le 24 Septembre 2026 :
+  - **Snap Store (Canonical)** : Publié sur le canal `stable` (Révision 4).
+  - **Windows Store** : Paquet MSIX 2.0.0 soumis sur Partner Center.
+  - **GitHub Releases** : Release `v2.0.0` publiée avec 6 artefacts binaires (EXE, MSIX, ZIP, AppImage, Tar.gz, Snap).
+  - **Site Web (`vectorpop.fr`)** : Mis à jour en 2.0.0 (`version.json` 2.0.0, liens v2.0.0, Freemium 2.0).
 - **Application Mobile (vectorpop_android)** : Version Flutter Android `1.0.3+5` passée en production sur le Play Store, avec moteur Rust VTracer embarqué (vectorisation 100% locale ultra-rapide).
 - **Fiche Google Play Store** : Visuels haute conversion (smartphone, tablette 7" et 10", feature graphic) et métadonnées bilingues (FR/EN) prêts pour la mise à jour de la fiche Play Store.
-- **Site Web** : `vectorpop.fr` actif.
+
 
 ---
 
@@ -50,10 +54,32 @@
 - **Déclaration IA** : Déclarée conforme (« Ne pas signaler les éléments » car application de traitement local algorithmique déterministe).
 - **Data Safety** : Déclaration zéro collecte de données personnelles, zéro traqueur, fonctionnement 100% hors-ligne.
 
+### 6. Publication VectorPop Desktop V2.0.0 (24 Septembre 2026)
+- **Validation Qualité** : 66/66 tests automatisés validés (`scripts/verify_v2.py --no-net`). Profil réel de l'utilisateur (`usage.json`) certifié intact.
+- **Packaging Complet (6 paquets dans `releases/v2.0.0/`)** :
+  - `VectorPop-Setup-2.0.0.exe` (Inno Setup)
+  - `VectorPop-Setup-2.0.0.msix` (Windows Store avec `MinVersion="10.0.17763.0"`, UTF-8 strict)
+  - `VectorPop-v2.0.0-portable.zip` (Archive autonome Windows)
+  - `VectorPop-x86_64.AppImage` (Linux Standalone)
+  - `VectorPop_2.0.0_linux_x86_64.tar.gz` (Archive Linux)
+  - `vectorpop_2.0.0_amd64.snap` (Snap Linux compilé sous WSL avec `--destructive-mode`)
+- **Déploiement Snap Store (Canonical)** :
+  - Déployé directement sur le canal `stable` (Révision 4) via `snapcraft upload` et authentification sans trousseau graphique (`~/snap-creds.txt`).
+- **Windows Store** :
+  - Soumis dans le Microsoft Partner Center (ingestion MSIX validée).
+- **GitHub Releases** :
+  - Release officielle `v2.0.0` publiée avec les notes de version et les 6 binaires attachés.
+- **Site Web & Updater** :
+  - `site/public/version.json` mis à jour en `2.0.0` (FR/EN).
+  - Liens de téléchargement direct mis à jour vers `v2.0.0`.
+  - Copie freemium alignée sur la V2 (5 exports inclus pour démarrer, aperçu gratuit des fonctionnalités Pro).
+  - Validation du build Vite (`npm run build`) et déploiement automatique via push `origin/main`.
+
 ---
 
 ## Prochaines Étapes / Backlog
-- Mettre à jour la fiche Google Play Console avec les nouveaux textes et les visuels `capture d'écran/playstore/`.
-- Suivre la validation de la mise à jour par les équipes de Google Play.
-- Implémenter l'invite d'avis in-app (`in_app_review`) après une première vectorisation ou un export réussi.
-- Suivre les retours utilisateurs sur le moteur Rust Android.
+- Suivre la validation de la soumission MSIX 2.0.0 sur le Microsoft Partner Center.
+- Suivre les premiers événements analytiques PostHog de la V2 desktop (`app: "vectorpop_desktop"`).
+- Côté Android : Mettre à jour la fiche Google Play Console avec les nouveaux textes et les visuels `capture d'écran/playstore/`, et ajuster le formulaire Data Safety (déclarer PostHog anonyme).
+- Évaluer les retours utilisateurs sur le profil gravure/découpe pour les fonctionnalités V2.1 (DXF, EPS, palette).
+

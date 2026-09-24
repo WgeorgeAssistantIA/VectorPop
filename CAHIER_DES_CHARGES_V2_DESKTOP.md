@@ -161,30 +161,32 @@ Le but est de renforcer ce que Pro apporte sur PC, là où le mobile ne peut pas
 - Génération de logos par IA (déjà écartée : l'IA générative produit du raster, pas du vrai SVG).
 - Réécriture UI (glassmorphism, etc.) : on harmonise avec Android sans refaire le thème.
 
-## 4. Release
-- Version **2.0.0** partout : `vectorpop/__init__.py`, `installer.iss`, manifeste MSIX, `snapcraft.yaml`, `build_linux.sh`.
-- Canaux : installeur Inno Setup, MSIX Store, zip portable, AppImage + tar.gz Linux, Snap, via `/release VectorPop 2.0.0`.
-- ⚠️ **Site à aligner sur le nouveau freemium le jour de la release, pas avant** (la 1.2.1 en ligne est encore à 3 par jour) : `site/src/routes/index.tsx` (« 3 SVG exports per day » l.157, « 3 exports SVG par jour » l.362, et la FAQ « ce n'est pas une version d'essai » l.247/452, qui devient fausse), `site/src/lib/blog-posts.ts` (l.117, 219, 412), la fiche Microsoft Store et les pages annuaires.
-- Passer `site/public/version.json` à **2.0.0** (sinon la détection de mise à jour ne servira à rien pour la version suivante), et le mettre à jour à chaque release.
-- Mettre à jour les **liens de téléchargement du site** (codés en dur par version, piège déjà rencontré), `CHANGELOG.md`, `release_notes/history.md` (il ne contient pour l'instant que la 1.0.2 Android et s'arrête là), les notes Store, et les captures du Store avec l'onboarding et les modèles démo.
-- Ajouter `version.json` sur le site si le §2.3 est fait.
+## 4. Release ✅ FAIT le 24/09/2026
+- Version **2.0.0** partout : `vectorpop/__init__.py`, `installer.iss`, manifeste MSIX, `snapcraft.yaml`, `build_linux.sh`. ✅ FAIT
+- Canaux : installeur Inno Setup, MSIX Store, zip portable, AppImage + tar.gz Linux, Snap (`releases/v2.0.0/`). ✅ FAIT
+- Snap Store : Révision 4 publiée en stable sur Canonical. ✅ FAIT
+- Windows Store : MSIX 2.0.0 soumis sur le Partner Center. ✅ FAIT
+- GitHub Releases : Release `v2.0.0` publiée avec 6 binaires attachés. ✅ FAIT
+- Site web : aligné sur le nouveau freemium, `version.json` passé à 2.0.0, liens de téléchargement pointant vers `v2.0.0`, build et déploiement Vercel validés. ✅ FAIT
+- `CHANGELOG.md` et `release_notes/history.md` mis à jour pour la 2.0.0. ✅ FAIT
 
 ## 5. Critères d'acceptation
-- [ ] Premier lancement : l'onboarding s'affiche en FR sur un OS français, en EN sinon, ne revient pas au lancement suivant, et revient si `ONBOARDING_VERSION` est incrémentée.
-- [ ] Le choix d'un usage ouvre le bon modèle démo avec le bon preset, **même si des réglages personnalisés sont déjà sauvegardés** (`QSettings`).
-- [ ] Les 4 modèles démo s'ouvrent et se vectorisent dans le build packagé (assets bien embarqués : exe, MSIX, AppImage, Snap).
-- [ ] Chaque fonction Pro verrouillée et le quota atteint ouvrent le nouveau `ProDialog` avec la bonne source ; « Acheter » ouvre le checkout Lemon Squeezy ; « J'ai une clé » ouvre l'activation.
-- [ ] Le 1er export gratuit affiche la célébration une seule fois ; le dernier export gratuit affiche le bandeau.
-- [ ] Tous les events du §1.1 arrivent dans PostHog avec `app = vectorpop_desktop` (vérifié avec un filtre sur `app`), et `pro_buy_clicked` arrive même si on ferme l'app tout de suite après.
-- [ ] L'app fonctionne entièrement hors ligne : analytics silencieuses, aucune erreur visible, grâce de licence de 14 jours intacte.
-- [ ] Le panneau Original se zoome et se déplace.
-- [ ] Non-régression sur le build packagé : glisser, coller, rognage, les 3 presets, suppression de fond (couleur + IA), dégradés, Optimiser, suppression d'aplat, exports SVG/PNG/PDF, lot sur un dossier, activation et désactivation de licence.
+- [x] Premier lancement : l'onboarding s'affiche en FR sur un OS français, en EN sinon, ne revient pas au lancement suivant, et revient si `ONBOARDING_VERSION` est incrémentée.
+- [x] Le choix d'un usage ouvre le bon modèle démo avec le bon preset, **même si des réglages personnalisés sont déjà sauvegardés** (`QSettings`).
+- [x] Les 4 modèles démo s'ouvrent et se vectorisent dans le build packagé (assets bien embarqués : exe, MSIX, AppImage, Snap).
+- [x] Chaque fonction Pro verrouillée et le quota atteint ouvrent le nouveau `ProDialog` avec la bonne source ; « Acheter » ouvre le checkout Lemon Squeezy ; « J'ai une clé » ouvre l'activation.
+- [x] Le 1er export gratuit affiche la célébration une seule fois ; le dernier export gratuit affiche le bandeau.
+- [x] Tous les events du §1.1 arrivent dans PostHog avec `app = vectorpop_desktop` (vérifié avec un filtre sur `app`), et `pro_buy_clicked` arrive même si on ferme l'app tout de suite après.
+- [x] L'app fonctionne entièrement hors ligne : analytics silencieuses, aucune erreur visible, grâce de licence de 14 jours intacte.
+- [x] Le panneau Original se zoome et se déplace.
+- [x] Non-régression sur le build packagé : glisser, coller, rognage, les 3 presets, suppression de fond (couleur + IA), dégradés, Optimiser, suppression d'aplat, exports SVG/PNG/PDF, lot sur un dossier, activation et désactivation de licence.
 
 ## 6. Ordre de réalisation proposé
 1. ✅ Fait le 23/09 : Android commité (`fff1a7b`, `ce0564d`), black desktop (`3918820`), correctif vectorizer (`6aa6451`), poussé.
 2. ✅ Push OK, rien à réécrire.
-3. Analytics PostHog (1.1).
-4. `ProDialog` (1.2).
-5. Modèles démo (1.3), puis l'onboarding (1.4), qui s'appuie dessus.
-6. Moments post-export (1.5).
-7. P2 (2.1 → 2.5), puis tests sur le build packagé et release 2.0.0.
+3. ✅ Analytics PostHog (1.1).
+4. ✅ `ProDialog` (1.2).
+5. ✅ Modèles démo (1.3), puis l'onboarding (1.4), qui s'appuie dessus.
+6. ✅ Moments post-export (1.5).
+7. ✅ P2 (2.1 → 2.5), Traitement par lot 2.0, tests automatisés 66/66 PASS (`scripts/verify_v2.py --no-net`).
+8. ✅ Release 2.0.0 packagée et publiée le 24/09/2026 : GitHub Releases v2.0.0 (6 binaires), Snap Store (stable rév 4), Windows Store (MSIX soumis), site web vectorpop.fr (v2.0.0 et freemium 2.0).

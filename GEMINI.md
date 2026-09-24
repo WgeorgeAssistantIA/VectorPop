@@ -6,9 +6,12 @@ Ce fichier documente les décisions clés, les conventions, l'état de publicati
 
 ## 🚀 État de Publication & Version Logicielle
 
-* **Statut de production** : Version logicielle mobile (`vectorpop_android`) passée en production (Septembre 2026).
+* **Statut de production** :
+  - **Desktop (Windows / Linux)** : Version `2.0.0` publiée le 24 Septembre 2026 sur Snap Store (stable, rév. 4), GitHub Releases (6 paquets), Windows Store (MSIX soumis) et site `vectorpop.fr`.
+  - **Mobile (Android)** : Version Flutter Android `1.0.3+5` en production sur Google Play Store.
 * **Fiche Play Store prête** : Métadonnées et visuels complets prêts pour mise à jour sur Google Play Console.
 * **Version Android** : `1.0.3+5` (définie dans `vectorpop_android/pubspec.yaml`).
+* **Version Desktop** : `2.0.0` (définie dans `vectorpop/__init__.py`).
 * **Application ID / Namespace** : `com.lafabriknumerique.vectorpop`.
 * **Signature Release** : Keystore de production configuré (`android/vectorpop-release.jks` et `android/key.properties`).
 * **Moteur natif** : Moteur Rust VTracer compilé en local pour Android (vectorisation 100% hors-ligne et instantanée).
@@ -109,4 +112,11 @@ Ce fichier documente les décisions clés, les conventions, l'état de publicati
      ```bash
      wsl -d Ubuntu-24.04 bash -l -c "export SNAPCRAFT_STORE_CREDENTIALS=\$(cat ~/snap-creds.txt); snapcraft upload --release=stable /mnt/c/Users/William/Documents/Entreprenariat/VectorPop/snap-build/vectorpop_2.0.0_amd64.snap"
      ```
+
+### 🚀 Statut des Déploiements V2 (24 Septembre 2026)
+* **Snap Store (Canonical)** : ✅ Publié en **stable** (Révision 4).
+* **Microsoft Store** : ✅ Paquet MSIX 2.0.0 soumis sur Partner Center.
+* **GitHub Releases** : ✅ Release `v2.0.0` publiée avec les 6 binaires (EXE, MSIX, ZIP portable, AppImage, Tar.gz, Snap).
+* **Site Web (`vectorpop.fr`)** : ✅ Déployé en 2.0.0 (version.json 2.0.0, liens v2.0.0, modèle Freemium 2.0 aligné).
+
 

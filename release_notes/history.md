@@ -23,6 +23,12 @@ Ce fichier consolide l'historique de toutes les versions de VectorPop.
   - Fondu visuel en bas du panneau de réglages et pastille « ★ Passer Pro » distinctive.
   - Détection automatique des mises à jour (`updater.py`) via `site/public/version.json`.
 - **Validation** : 66 tests automatiques headless (`scripts/verify_v2.py`), 100% PASS.
+- **Canaux de distribution officiels** :
+  - **Snap Store Canonical** : Révision 4 publiée sur le canal `stable`.
+  - **Windows Store** : Paquet MSIX 2.0.0 soumis sur le Microsoft Partner Center.
+  - **GitHub Releases** : `v2.0.0` publiée avec les 6 binaires attachés (EXE, MSIX, ZIP, AppImage, Tar.gz, Snap).
+  - **Site web (vectorpop.fr)** : Mise à jour en 2.0.0 (`version.json` 2.0.0, liens v2.0.0 et freemium 2.0).
+
 
 ## Version 1.0.4 (Android build 6)
 **Date** : 16 Septembre 2026

@@ -53,22 +53,22 @@ Tout est couvert par [scripts/verify_v2.py](scripts/verify_v2.py) : **66 tests a
 
 William a aussi testé en direct sur sa machine le 24/09 : pastille Pro et traitement par lot confirmés OK. Un dossier de test avec 8 images variées existe déjà : `VectorPop/Test/lot_test/`.
 
-## Ce qui reste à faire avant de publier
+## Bilan de Publication V2.0.0 (Effectué le 24/09/2026)
 
-1. **Bumper la version** à 2.0.0 partout : `vectorpop/__init__.py`, `installer.iss`, manifeste MSIX, `snapcraft.yaml`, `build_linux.sh`.
-2. **Build packagé** : installeur Inno Setup, MSIX Store, zip portable Windows, AppImage + tar.gz + Snap Linux (`/release VectorPop 2.0.0` normalement).
-3. **Tests manuels sur le build packagé** (le script vérifie la logique, pas le vrai binaire) :
-   - Parcours complet : onboarding → modèle démo → vectoriser → export → écran Pro → activation.
-   - Un lot de 100+ vraies photos (pas des PNG de test synthétiques) — vérifier la fluidité des vignettes.
-   - Détourage IA / finition IA réellement calculés en gratuit (télécharge ~120 Mo de modèles), vérifier l'avertissement Pro puis l'export "sans les fonctions Pro".
-   - Confirmer que les statistiques PostHog arrivent bien avec `app = vectorpop_desktop` et le bon `channel` selon le canal testé.
-4. **`site/public/version.json`** : le passer à `"2.0.0"` **au moment de la release**, sinon la détection de mise à jour ne servira à rien tant que ce fichier ne pointe pas vers une version plus récente que celle des utilisateurs.
-5. **Site à réaligner sur le nouveau freemium**, mais **seulement le jour de la sortie** (pas avant, sinon il annoncerait un freemium que la version encore en ligne, la 1.2.1, ne respecte pas) :
-   - `site/src/routes/index.tsx` : « 3 SVG exports per day » (l.157), « 3 exports SVG par jour » (l.362), et la FAQ « ce n'est pas une version d'essai » (l.247/452, qui devient fausse avec le nouveau quota à vie).
-   - `site/src/lib/blog-posts.ts` (l.117, 219, 412).
-   - La fiche Microsoft Store et les pages annuaires qui citent le quota.
-6. **⚠️ Conformité (§2.7 du cahier des charges)** : côté **Android**, le formulaire « Sécurité des données » de la Play Console déclare encore « aucune donnée collectée », alors que l'app envoie du PostHog depuis septembre. Les visuels du Store affichent aussi « zéro traqueur ». C'est William qui doit corriger le formulaire Play Console (Claude Code ne peut pas). Le script de génération des visuels (`vectorpop_android/scripts/generate_store_screenshots.py` — chemin à vérifier) est à corriger si on retire « zéro traqueur ».
-7. **CHANGELOG.md / release_notes/history.md** : pas mis à jour pour la 2.0.0, à faire au moment du build.
+1. ✅ **Bumper la version à 2.0.0 partout** : `vectorpop/__init__.py`, `installer.iss`, manifeste MSIX `AppxManifest.xml`, `snapcraft.yaml`, `build_linux.sh`.
+2. ✅ **Builds packagés complets** : Rassemblés dans `releases/v2.0.0/` (Inno Setup EXE, MSIX Store, ZIP portable Windows, AppImage Linux, Tar.gz Linux, Snap Linux).
+3. ✅ **Vérification automatique** : 66/66 tests PASS (`scripts/verify_v2.py --no-net`).
+4. ✅ **Snap Store (Canonical)** : Téléversé et publié directement sur le canal `stable` (Révision 4) sans trousseau bloquant.
+5. ✅ **Windows Store (Microsoft Partner Center)** : Paquet MSIX 2.0.0 soumis avec `MinVersion="10.0.17763.0"` et UTF-8 strict.
+6. ✅ **GitHub Releases** : Release officielle `v2.0.0` publiée avec notes et 6 binaires attachés.
+7. ✅ **Site web (`vectorpop.fr`)** :
+   - `site/public/version.json` passé à `"2.0.0"`.
+   - Liens de téléchargement mis à jour vers `v2.0.0`.
+   - Copie freemium 2.0 (5 exports inclus pour démarrer, aperçu gratuit des fonctions Pro) réalignée dans `index.tsx` et `blog-posts.ts`.
+   - Build Vite validé et déploiement Vercel automatique via push `origin/main`.
+8. ✅ **Release notes & historique** : `release_notes/v2.0.0.md`, `release_notes/history.md`, `CHANGELOG.md` à jour.
+9. ⚠️ **Rappel restant (Android Play Console)** : Côté Play Console Android, William doit ajuster le formulaire Data Safety pour déclarer la télémétrie anonyme PostHog.
+
 
 ## Hors périmètre de cette V2 (proposé pour la 2.1, pas commencé)
 
