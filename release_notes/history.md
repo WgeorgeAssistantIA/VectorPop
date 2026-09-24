@@ -2,7 +2,7 @@
 
 Ce fichier consolide l'historique de toutes les versions de VectorPop.
 
-## Version 2.0.0 (Desktop — En préparation de publication)
+## Version 2.0.0 (Desktop)
 **Date** : 24 Septembre 2026
 **Plateformes** : Windows (EXE, MSIX, portable), Linux (AppImage, tar.gz, Snap)
 - **Funnel de conversion 2.0** :

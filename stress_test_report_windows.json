@@ -1,0 +1,146 @@
+{
+  "started_at": "2026-08-19T13:35:42.748754",
+  "target_os": "windows",
+  "host_os": "windows",
+  "summary": {
+    "PASS": 17
+  },
+  "cases": [
+    {
+      "name": "image_corrompue",
+      "category": "Fichiers d'entrée",
+      "status": "PASS",
+      "detail": "image corrompue rejetée proprement (RuntimeError: [OSError] Traceback (most recent call last):\n  File \"C:\\Users\\William\\Documents\\Entreprenariat\\VectorPop\\.venv\\Lib\\site-)",
+      "duration_s": 0.11926102638244629,
+      "traceback": ""
+    },
+    {
+      "name": "fichier_texte_renomme_png",
+      "category": "Fichiers d'entrée",
+      "status": "PASS",
+      "detail": "fichier texte renommé .png rejeté proprement (RuntimeError)",
+      "duration_s": 0.1828782558441162,
+      "traceback": ""
+    },
+    {
+      "name": "image_1x1",
+      "category": "Fichiers d'entrée",
+      "status": "PASS",
+      "detail": "image 1x1 vectorisée sans crash (svg existe: True)",
+      "duration_s": 0.018313884735107422,
+      "traceback": ""
+    },
+    {
+      "name": "image_enorme_4000px",
+      "category": "Fichiers d'entrée",
+      "status": "PASS",
+      "detail": "4000x4000 traité en 151.4s, SVG de 7 Ko",
+      "duration_s": 151.4202983379364,
+      "traceback": ""
+    },
+    {
+      "name": "image_transparence_partielle",
+      "category": "Formats / couleurs",
+      "status": "PASS",
+      "detail": "transparence partielle/dégradée gérée sans crash (svg=True)",
+      "duration_s": 0.23353958129882812,
+      "traceback": ""
+    },
+    {
+      "name": "image_niveaux_de_gris",
+      "category": "Formats / couleurs",
+      "status": "PASS",
+      "detail": "niveaux de gris géré sans crash (svg=True)",
+      "duration_s": 0.4566378593444824,
+      "traceback": ""
+    },
+    {
+      "name": "image_palette_indexee",
+      "category": "Formats / couleurs",
+      "status": "PASS",
+      "detail": "palette indexée (mode P) gérée sans crash (svg=True)",
+      "duration_s": 0.7301547527313232,
+      "traceback": ""
+    },
+    {
+      "name": "image_unie",
+      "category": "Formats / couleurs",
+      "status": "PASS",
+      "detail": "image 100% unie vectorisée sans crash (316 octets)",
+      "duration_s": 0.21469497680664062,
+      "traceback": ""
+    },
+    {
+      "name": "bruit_aleatoire",
+      "category": "Formats / couleurs",
+      "status": "PASS",
+      "detail": "bruit aléatoire (pire cas, pas de formes) géré, SVG 566 Ko",
+      "duration_s": 1.4684889316558838,
+      "traceback": ""
+    },
+    {
+      "name": "formats_varies_jpeg_bmp_gif",
+      "category": "Formats / couleurs",
+      "status": "PASS",
+      "detail": "JPEG/BMP/GIF traités sans problème",
+      "duration_s": 2.3159384727478027,
+      "traceback": ""
+    },
+    {
+      "name": "parametres_extremes_speckle_0",
+      "category": "Paramètres extrêmes",
+      "status": "PASS",
+      "detail": "filter_speckle=0 (aucun filtrage) géré, SVG 576 Ko",
+      "duration_s": 1.41459321975708,
+      "traceback": ""
+    },
+    {
+      "name": "parametres_extremes_speckle_max",
+      "category": "Paramètres extrêmes",
+      "status": "PASS",
+      "detail": "filtrage maximal + 1 seule couleur géré sans crash (svg=True)",
+      "duration_s": 0.4985017776489258,
+      "traceback": ""
+    },
+    {
+      "name": "mode_binary_bw",
+      "category": "Paramètres extrêmes",
+      "status": "PASS",
+      "detail": "preset noir&blanc géré sans crash (svg=True)",
+      "duration_s": 0.05001378059387207,
+      "traceback": ""
+    },
+    {
+      "name": "remove_background_tolerance_extremes",
+      "category": "Détourage / fond",
+      "status": "PASS",
+      "detail": "remove_background aux tolérances extrêmes (0 et 120) sans crash",
+      "duration_s": 0.4490325450897217,
+      "traceback": ""
+    },
+    {
+      "name": "sortie_dossier_invalide",
+      "category": "Export / sortie",
+      "status": "PASS",
+      "detail": "échec propre remonté en exception Python normale (FileNotFoundError)",
+      "duration_s": 0.0,
+      "traceback": ""
+    },
+    {
+      "name": "nom_fichier_caracteres_speciaux",
+      "category": "Export / sortie",
+      "status": "PASS",
+      "detail": "nom de fichier avec accents/emoji géré sans crash (svg=True)",
+      "duration_s": 0.49913573265075684,
+      "traceback": ""
+    },
+    {
+      "name": "batch_10_images_memoire",
+      "category": "Batch",
+      "status": "PASS",
+      "detail": "10 traitements successifs stables (0.50s -> 0.49s)",
+      "duration_s": 4.921535968780518,
+      "traceback": ""
+    }
+  ]
+}

@@ -1,8 +1,8 @@
-; Script Inno Setup pour VectorPop
+﻿; Script Inno Setup pour VectorPop
 ; Compilation : iscc installer.iss   (depuis ce dossier, apres un build PyInstaller onedir a jour dans dist\VectorPop)
 
 #define MyAppName "VectorPop"
-#define MyAppVersion "1.2.1"
+#define MyAppVersion "2.0.0"
 #define MyAppPublisher "VectorPop"
 #define MyAppExeName "VectorPop.exe"
 

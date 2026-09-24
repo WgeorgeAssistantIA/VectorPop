@@ -872,10 +872,10 @@ def create_screen_security_privacy(lang="fr"):
         },
         {
             "icon": "prohibited",
-            "title_fr": "Zéro traqueur, Zéro publicité",
-            "title_en": "Zero trackers, Zero ads",
-            "desc_fr": "Aucune mesure intrusive, zéro régie publicitaire. Conforme au secret professionnel et au RGPD.",
-            "desc_en": "No invasive analytics, no advertising networks. Strictly GDPR compliant with total privacy.",
+            "title_fr": "100% Anonyme, Zéro publicité",
+            "title_en": "100% Anonymous, Zero ads",
+            "desc_fr": "Statistiques anonymes sans compte ni données personnelles. Zéro régie publicitaire.",
+            "desc_en": "Anonymous metrics without account or personal data. Zero advertising networks.",
             "color": COLOR_BRAND_GREEN,
         },
     ]
@@ -1156,14 +1156,14 @@ def generate_slide_4(out_path, lang="fr"):
         badge_txt = "CONFIDENTIALITÉ TOTALE"
         lines_head = ["100% sur l'appareil — Vos images", "ne quittent pas votre téléphone"]
         hl_words = {"100% sur l'appareil", "ne quittent pas"}
-        lines_sub = ["Moteur Rust embarqué, zéro serveur cloud, zéro traqueur.", "Conformité stricte au RGPD et au secret professionnel."]
+        lines_sub = ["Moteur Rust embarqué, zéro serveur cloud, traitement 100% local.", "Conformité stricte au RGPD et respect de la vie privée."]
         pill_title = "Moteur Rust FFI embarqué"
         pill_sub = "Zéro cloud, vie privée respectée"
     else:
         badge_txt = "TOTAL ON-DEVICE PRIVACY"
         lines_head = ["100% on-device — Your images", "never leave your smartphone"]
         hl_words = {"100% on-device", "never leave"}
-        lines_sub = ["Embedded native Rust engine, zero cloud servers, zero trackers.", "Strict GDPR compliance and enterprise privacy."]
+        lines_sub = ["Embedded native Rust engine, zero cloud servers, 100% on-device.", "Strict GDPR compliance and enterprise privacy."]
         pill_title = "Native Rust Engine"
         pill_sub = "Zero cloud upload, private & secure"
 

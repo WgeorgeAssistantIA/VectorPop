@@ -164,7 +164,7 @@ VectorPop: give your images infinite sharpness in a single tap.
   - **Collecte de données :** Aucune donnée personnelle collectée.
   - **Partage avec des tiers :** Aucun partage de données.
   - **Fichiers & Photos :** Traités exclusivement en local dans la mémoire vive de l'application via le moteur Rust. Aucun fichier n'est téléversé sur un serveur distant.
-  - **Traqueurs / Publicités :** Zéro SDK de tracking, zéro publicité.
+  - **Traqueurs / Publicités :** Zéro régie publicitaire, zéro vente de données. Statistiques d'usage strictement anonymes (hébergées en UE) pour l'amélioration du produit.
 
 ---
 
