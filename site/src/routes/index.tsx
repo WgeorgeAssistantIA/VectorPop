@@ -30,9 +30,9 @@ declare function gtag(...args: unknown[]): void;
 // Squeezy est cree (id 1229563, cf. vectorpop/license.py) : CHECKOUT_URL est donc
 // renseigne, la carte Pro pointe vers le vrai checkout.
 const GITHUB_REPO = "https://github.com/WgeorgeAssistantIA/VectorPop";
-const DOWNLOAD_EXE = `${GITHUB_REPO}/releases/download/v1.2.1/VectorPop-Setup-1.2.1.exe`;
-const LINUX_URL = `${GITHUB_REPO}/releases/download/v1.2.1/VectorPop-x86_64.AppImage`;
-const LINUX_TAR_URL = `${GITHUB_REPO}/releases/download/v1.2.1/VectorPop_1.2.1_linux_x86_64.tar.gz`;
+const DOWNLOAD_EXE = `${GITHUB_REPO}/releases/download/v2.0.0/VectorPop-Setup-2.0.0.exe`;
+const LINUX_URL = `${GITHUB_REPO}/releases/download/v2.0.0/VectorPop-x86_64.AppImage`;
+const LINUX_TAR_URL = `${GITHUB_REPO}/releases/download/v2.0.0/VectorPop_2.0.0_linux_x86_64.tar.gz`;
 const SNAP_URL = "https://snapcraft.io/vectorpop";
 const MS_STORE_URL = "https://get.microsoft.com/installer/download/9MT2XVDXX7DG?referrer=appbadge";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.lafabriknumerique.vectorpop";
@@ -154,10 +154,10 @@ const t = {
         price: "€0",
         features: [
           "Unlimited vectorization",
-          "3 SVG exports per day",
-          "All 3 presets and every setting",
-          "Flat-colour background removal",
-          "Windows",
+          "5 SVG exports included to start",
+          "All presets and every setting",
+          "Free preview of Pro features (AI, upscale)",
+          "Windows & Linux",
         ],
         cta: "Download Free",
       },
@@ -244,7 +244,7 @@ const t = {
       items: [
         {
           q: "Is the free version really free?",
-          a: "Yes, and it isn't a trial. Vectorization itself is unlimited: all three presets, every slider, the live preview and flat-colour background removal. The free version caps you at 3 SVG exports per day, forever.",
+          a: "Yes. Vectorization itself is unlimited: all presets, every slider, the live preview, and even Pro features (AI background removal, 4x upscale) can be tested freely in the preview. The free version includes 5 SVG exports to test your real files before purchasing.",
         },
         {
           q: "Which formats can I use?",
@@ -359,10 +359,10 @@ const t = {
         price: "0 €",
         features: [
           "Vectorisation illimitée",
-          "3 exports SVG par jour",
-          "Les 3 presets et tous les réglages",
-          "Suppression de fond par couleur",
-          "Windows",
+          "5 exports SVG inclus pour démarrer",
+          "Tous les presets et réglages",
+          "Aperçu libre des fonctions Pro (IA, netteté)",
+          "Windows & Linux",
         ],
         cta: "Télécharger",
       },
@@ -449,7 +449,7 @@ const t = {
       items: [
         {
           q: "La version gratuite est-elle vraiment gratuite ?",
-          a: "Oui, et ce n'est pas une version d'essai. La vectorisation elle-même est illimitée : les trois presets, tous les curseurs, l'aperçu live et la suppression de fond uni. La version gratuite vous limite à 3 exports SVG par jour, sans limite de durée.",
+          a: "Oui. La vectorisation elle-même est illimitée : tous les presets, tous les curseurs, l'aperçu live et même les fonctions Pro (détourage IA, finition x4) sont testables librement en aperçu. La version gratuite comprend 5 exports SVG pour tester vos vrais fichiers avant achat.",
         },
         {
           q: "Quels formats puis-je utiliser ?",

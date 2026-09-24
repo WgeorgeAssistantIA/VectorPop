@@ -114,7 +114,7 @@ export const posts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "It's free to use, with three SVG exports a day. Pro is €39, paid once, and adds unlimited exports, vector PDF and high-resolution PNG export, AI background removal for photo backgrounds, one-click auto-tune, and batch processing. No subscription — because needing a vectorizer three times a year shouldn't cost you every month.",
+        text: "It's free to try, with 5 SVG exports included. Pro is €39, paid once, and adds unlimited exports, vector PDF and high-resolution PNG export, AI background removal for photo backgrounds, one-click auto-tune, and batch processing. No subscription — because needing a vectorizer three times a year shouldn't cost you every month.",
       },
     ],
   }),
@@ -184,7 +184,7 @@ export const posts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "VectorPop does the tracing part on your own machine: drop the PNG, pick a preset, watch the preview, export the SVG. It's free for three exports a day, and your images never leave your computer — which matters more than people admit when the logo belongs to a client.",
+        text: "VectorPop does the tracing part on your own machine: drop the PNG, pick a preset, watch the preview, export the SVG. It's free to try with exports included, and your images never leave your computer — which matters more than people admit when the logo belongs to a client.",
       },
     ],
   }),
@@ -216,7 +216,7 @@ export const posts: BlogPost[] = [
         items: [
           "Tracing runs on your own device: your images never leave your phone",
           "The same presets and preview workflow as the desktop version",
-          "Free for a limited number of exports a day, same as on desktop",
+          "Free exports included to start, same as on desktop",
         ],
       },
       { type: "h2", text: "Download VectorPop on Android" },
@@ -307,7 +307,7 @@ export const posts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "Gratuit à l'usage, avec trois exports SVG par jour. La version Pro coûte 39 €, en paiement unique, et ajoute les exports illimités, l'export PDF vectoriel et PNG haute définition, le détourage IA pour les fonds photo, le réglage automatique en un clic, et le traitement par lot. Aucun abonnement — parce qu'avoir besoin d'un vectoriseur trois fois par an ne devrait pas vous coûter tous les mois.",
+        text: "Gratuit pour démarrer, avec 5 exports SVG inclus. La version Pro coûte 39 €, en paiement unique, et ajoute les exports illimités, l'export PDF vectoriel et PNG haute définition, le détourage IA pour les fonds photo, le réglage automatique en un clic, et le traitement par lot. Aucun abonnement — parce qu'avoir besoin d'un vectoriseur trois fois par an ne devrait pas vous coûter tous les mois.",
       },
     ],
   }),
@@ -377,7 +377,7 @@ export const posts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "VectorPop réalise le tracé directement sur votre machine : déposez le PNG, choisissez un preset, observez l'aperçu, exportez le SVG. C'est gratuit pour trois exports par jour, et vos images ne quittent jamais votre ordinateur — ce qui compte plus qu'on ne l'admet quand le logo appartient à un client.",
+        text: "VectorPop réalise le tracé directement sur votre machine : déposez le PNG, choisissez un preset, observez l'aperçu, exportez le SVG. C'est gratuit pour démarrer avec exports inclus, et vos images ne quittent jamais votre ordinateur — ce qui compte plus qu'on ne l'admet quand le logo appartient à un client.",
       },
     ],
   }),
@@ -409,7 +409,7 @@ export const posts: BlogPost[] = [
         items: [
           "Le tracé s'exécute sur votre appareil : vos images ne quittent jamais votre téléphone",
           "Les mêmes presets et le même flux d'aperçu que la version bureau",
-          "Gratuit pour un nombre limité d'exports par jour, comme sur ordinateur",
+          "Gratuit avec exports inclus pour démarrer, comme sur ordinateur",
         ],
       },
       { type: "h2", text: "Télécharger VectorPop sur Android" },
