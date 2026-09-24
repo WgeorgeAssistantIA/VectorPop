@@ -358,11 +358,16 @@ class SvgView(QGraphicsView):
     pathClicked = Signal(float, float)
     zoomChanged = Signal(float)  # facteur par rapport a « ajuste a la vue »
 
-    # 1.25 ** 41 ~ x9 400 : les vecteurs « au microscope », comme sur Android (x10 000).
-    MAX_ZOOM_STEPS = 41
+    # 1.4 ** 28 ~ x12 400 : les vecteurs « au microscope », comme sur Android
+    # (x10 000). Facteur releve de 1.25 a 1.4 (28 crans au lieu de 41) : a
+    # 1.25/cran, l'utilisateur devait scroller tres longtemps avant de sentir
+    # que ca "zoome vraiment" -- un trait vectoriel ne pixellise jamais, donc
+    # sans grand pas par cran, l'effet passait inapercu (retour utilisateur).
+    ZOOM_STEP = 1.4
+    MAX_ZOOM_STEPS = 28
     # Au-dela, plus de cache bitmap de l'item : il faudrait allouer une image
     # de la taille du SVG zoome (des centaines de millions de pixels).
-    NO_CACHE_ABOVE = 12
+    NO_CACHE_ABOVE = 8
 
     def __init__(self, tr=None):
         super().__init__()
@@ -384,6 +389,26 @@ class SvgView(QGraphicsView):
         )  # style pris en charge par la QSS globale (theme.py)
         self.setToolTip(self._tr("svg_view_tooltip"))
 
+        # Pastille de zoom : contrairement au message de la barre d'etat (qui
+        # disparait apres 1,5s), reste affichee tant qu'on n'est pas revenu a
+        # « ajuste a la vue » -- feedback continu pendant qu'on scrolle.
+        self._badge = QLabel(self)
+        self._badge.setObjectName("zoomBadge")
+        self._badge.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self._badge.hide()
+
+    def _update_badge(self):
+        if self._zoom == 0:
+            self._badge.hide()
+            return
+        f = self.zoom_factor()
+        text = f"{f:.1f}×" if f < 10 else f"{f:,.0f}×".replace(",", " ")
+        self._badge.setText(f"🔍 {text}")
+        self._badge.adjustSize()
+        self._badge.move(self.viewport().width() - self._badge.width() - 10, 10)
+        self._badge.show()
+        self._badge.raise_()
+
     def retranslate(self):
         self.setToolTip(self._tr("svg_view_tooltip"))
 
@@ -396,6 +421,7 @@ class SvgView(QGraphicsView):
         self._scene.setSceneRect(self._item.boundingRect())
         self._zoom = 0
         self._fit()
+        self._update_badge()
 
     def show_pixmap(self, pix: QPixmap):
         """Affiche une image raster (pour le plein écran de l'original)."""
@@ -406,6 +432,7 @@ class SvgView(QGraphicsView):
         self._scene.setSceneRect(self._item.boundingRect())
         self._zoom = 0
         self._fit()
+        self._update_badge()
 
     def _fit(self):
         if self._item is not None:
@@ -421,11 +448,15 @@ class SvgView(QGraphicsView):
             return
         self._zoom += 1 if up else -1
         self._update_cache_mode()
-        self.scale(1.25 if up else 0.8, 1.25 if up else 0.8)
+        self.scale(
+            self.ZOOM_STEP if up else 1 / self.ZOOM_STEP,
+            self.ZOOM_STEP if up else 1 / self.ZOOM_STEP,
+        )
+        self._update_badge()
         self.zoomChanged.emit(self.zoom_factor())
 
     def zoom_factor(self) -> float:
-        return 1.25**self._zoom
+        return self.ZOOM_STEP**self._zoom
 
     def _update_cache_mode(self):
         item = getattr(self, "_svg_item", None)
@@ -440,11 +471,13 @@ class SvgView(QGraphicsView):
         super().resizeEvent(e)
         if self._zoom == 0:  # tant que l'utilisateur n'a pas zoome, on reste ajuste
             self._fit()
+        self._update_badge()
 
     def mouseDoubleClickEvent(self, e):
         self._zoom = 0
         self._update_cache_mode()
         self._fit()
+        self._update_badge()
         self.zoomChanged.emit(1.0)
 
     def set_delete_mode(self, on: bool):

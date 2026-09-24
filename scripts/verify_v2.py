@@ -1217,30 +1217,42 @@ check(
     f"point={before}->{after} pan={panned.x():.0f},{panned.y():.0f}",
 )
 
-# L5 : panneau SVG -- jusqu'à ~x9 400, sans cache bitmap géant, indicateur de zoom
+# L5 : panneau SVG -- jusqu'à ~x12 000 en 28 crans (1.4/cran, relevé de 1.25 après
+# retour utilisateur : à 1.25/cran, la portée n'était pas perceptible en scrollant),
+# sans cache bitmap géant, pastille de zoom persistante + indicateur barre d'état
 win.load_image(batch_in / "img0.png")
 wait_idle(win)
 pv = win.preview
 m = mark()
-for _ in range(60):
+badge_mid_visible = None
+for i in range(60):
     pv.wheelEvent(QWheelEvent(QPointF(pv.viewport().rect().center()), QPointF(0, 0), QPoint(0, 0),
                               QPoint(0, 120), _Qt.NoButton, _Qt.NoModifier, _Qt.ScrollUpdate, False))
+    if i == 4:
+        badge_mid_visible = pv._badge.isVisible() and "×" in pv._badge.text()
 steps = pv._zoom
+factor = pv.zoom_factor()
 cache_deep = pv._svg_item.cacheMode()
 msg = win.statusBar().currentMessage()
+badge_text = pv._badge.text()
 t0 = time.monotonic()
 grab_ok = not pv.grab().isNull()
 dt_grab = time.monotonic() - t0
 pv.mouseDoubleClickEvent(None)
+badge_hidden_after_fit = not pv._badge.isVisible()
 check(
     "L5",
-    steps == pv.MAX_ZOOM_STEPS == 41
+    steps == pv.MAX_ZOOM_STEPS == 28
+    and factor > 10000
     and cache_deep == QGraphicsItem.NoCache
     and pv._svg_item.cacheMode() == QGraphicsItem.DeviceCoordinateCache
-    and msg.startswith("Zoom ×") and "9" in msg
+    and msg.startswith("Zoom ×") and "1" in msg  # "×12 xxx"
+    and badge_mid_visible  # visible dès les premiers crans, pas seulement au max
+    and "×" in badge_text
+    and badge_hidden_after_fit  # revient à "ajusté" -> pastille cachée
     and since(m).count("preview_deep_zoom") == 1
     and grab_ok and dt_grab < 10,
-    f"crans={steps} message={msg!r} rendu={dt_grab:.2f}s",
+    f"crans={steps} facteur={factor:.0f} message={msg!r} pastille={badge_text!r} rendu={dt_grab:.2f}s",
 )
 
 # L6 : détection de mise à jour

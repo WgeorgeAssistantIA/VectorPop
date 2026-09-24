@@ -100,7 +100,7 @@ Suivre `quota_reached`, `paywall_viewed` par source, `pro_buy_clicked` et l'expo
 
 ## 2. Périmètre V2 — P2 (important, pas bloquant)
 
-### 2.1 Aperçu et zoom ✅ FAIT le 24/09
+### 2.1 Aperçu et zoom ✅ FAIT le 24/09, ajusté le 24/09 (retour William : le pas de zoom x1,25 ne se sentait pas assez ; passé à x1,4/cran + pastille de zoom persistante)
 - **Corriger le panneau « Original »** : zoom à la molette et déplacement par glisser, comme le panneau SVG (bug noté en septembre, jamais corrigé).
 - Relever la limite de zoom SVG (`_zoom >= 20` dans `ui/widgets.py`) pour afficher les tracés « au microscope », comme le ×10 000 d'Android. Vérifier que le rendu `QSvgRenderer` reste fluide à fort zoom, et ajouter un indicateur de niveau (×100, ×1000…).
 - Optionnel : zooms synchronisés entre l'original et le SVG (argument de précision fort pour les captures du Store).

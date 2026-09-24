@@ -191,6 +191,12 @@ def build_qss(dark: bool) -> str:
     QGraphicsView#svgView {{
         border: 1px solid {border}; border-radius: 14px; background: {panel_bg};
     }}
+    QLabel#zoomBadge {{
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+            stop:0 {ACCENT1}, stop:0.55 {ACCENT2}, stop:1 {ACCENT3});
+        color: white; font-weight: 700; font-size: 12px;
+        border-radius: 11px; padding: 4px 10px;
+    }}
     QLabel#busyOverlay {{
         background: {overlay_bg}; color: {ACCENT1};
         font-size: 20px; font-weight: bold; border-radius: 14px;
