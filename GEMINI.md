@@ -118,5 +118,6 @@ Ce fichier documente les décisions clés, les conventions, l'état de publicati
 * **Microsoft Store** : ✅ Paquet MSIX 2.0.0 soumis sur Partner Center.
 * **GitHub Releases** : ✅ Release `v2.0.0` publiée avec les 6 binaires (EXE, MSIX, ZIP portable, AppImage, Tar.gz, Snap).
 * **Site Web (`vectorpop.fr`)** : ✅ Déployé en 2.0.0 (version.json 2.0.0, liens v2.0.0, modèle Freemium 2.0 aligné).
+* **Conformité RGPD & Analytics** : ✅ Politiques de confidentialité harmonisées et déployées sur **VectorPop** (`1c94965`), **InOneShot** (`69397e0`) et **VoxCut** (`b783869`) : transparence PostHog EU (Francfort), zéro donnée personnelle/fichier transmis, traitement 100% local.
 
 

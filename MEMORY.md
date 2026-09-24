@@ -75,6 +75,12 @@
   - Copie freemium alignée sur la V2 (5 exports inclus pour démarrer, aperçu gratuit des fonctionnalités Pro).
   - Validation du build Vite (`npm run build`) et déploiement automatique via push `origin/main`.
 
+### 7. Harmonisation RGPD & Politiques de Confidentialité (24 Septembre 2026)
+- **Mise en conformité RGPD globale** des trois applications de l'écosystème (**VectorPop**, **InOneShot**, **VoxCut**) pour une transparence totale sur la télémétrie produit :
+  - **VectorPop (`vectorpop.fr/privacy`)** : Déclaration explicite des statistiques d'usage produit anonymes via PostHog EU (serveurs en Allemagne, Francfort), réaffirmation du traitement 100% local des images (zéro pixel transmis), mention du contrôle utilisateur (*Aide > Confidentialité*), zéro PII, commit `1c94965`.
+  - **InOneShot (`inoneshot.fr/privacy`)** : Remplacement de l'ancienne mention restrictive par la déclaration de PostHog EU (0 PII, lancements, découverte, publipostages, exports, canal de distribution), réaffirmation du traitement 100% local des PDF et données Excel/CSV, commit `69397e0`.
+  - **VoxCut (`voxcutpro.com/privacy`)** : Extension de la déclaration à l'ensemble du funnel produit PostHog EU (Desktop & Mobile : filtres studio FFT/LUFS, exports, paywall), suppression des mentions obsolètes de Google Analytics, réaffirmation du traitement 100% local de l'audio/vidéo, commit `b783869`.
+
 ---
 
 ## Prochaines Étapes / Backlog
