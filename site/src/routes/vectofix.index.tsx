@@ -207,37 +207,66 @@ const t = {
       ],
     },
     readiness: {
-      badge: "Production Readiness",
-      title: "Visual resemblance is not enough: measure machine feasibility",
-      text: "A vector file can look deceptively good on screen while hiding 20,000 messy anchor points that crash a CNC machine or ruin an embroidery run. VectoFix displays fidelity percentage and real-time node count together, giving you full confidence before sending files to fabrication.",
+      badge: "Vector Quality Control (Vector QA)",
+      title: "“A good SVG is not just visually faithful: it must be technically lightweight and machine-ready.”",
+      subtitle:
+        "Standard vectorizers leave you with a dangerous dilemma: either they over-simplify and distort your design, or they explode into 20,000 messy anchor points that choke your laser cutter or snap your embroidery needle.",
+      text: "VectoFix is the only tool that displays visual fidelity and real-time node count side-by-side, giving you absolute certainty before sending a file to production.",
       metrics: [
-        { value: "99.2%", label: "Pixel-exact geometric fidelity", sub: "Measured against source raster" },
-        { value: "-64%", label: "Superfluous anchor points eliminated", sub: "Automatic stroke fusion" },
-        { value: "100%", label: "Watertight closed paths", sub: "Guaranteed machine-ready" },
+        {
+          value: "99.4%",
+          label: "Pixel Fidelity Score",
+          sub: "Measured against source raster in RAM",
+          note: "Max visual resemblance",
+        },
+        {
+          value: "142 nodes",
+          label: "Streamlined Complexity",
+          sub: "vs 1,840 nodes in raw vectorizers (-77%)",
+          note: "Fluid laser head travel",
+        },
+        {
+          value: "100%",
+          label: "Watertight Closed Paths",
+          sub: "Zero contour gaps or leaks",
+          note: "Production-ready for LightBurn & Wilcom",
+        },
       ],
+      insight:
+        "Don't guess if your vector is usable. Inspect both visual accuracy and technical complexity before launching an expensive machine run.",
     },
     ecosystem: {
-      badge: "Toolchain Integration",
-      title: "Your 3-step production toolchain",
+      badge: "Brand Architecture & Production Pipeline",
+      title: "The 3-Step Production Pipeline",
       subtitle:
-        "VectorPop creates the vector. VectoFix inspects and repairs it. Your fabrication software runs it.",
+        "VectorPop creates the vector. VectoFix inspects and repairs it. Your machines produce it.",
+      cannibalizationNote:
+        "Zero cannibalization, zero confusion: VectorPop converts raster to vector quickly. VectoFix inspects and secures the critical paths for physical manufacturing. Together, they eliminate hours of manual pen tracing in Illustrator.",
       pipeline: [
         {
-          step: "1. Create",
-          tool: "VectorPop / Vectorizer",
-          desc: "Automatic raster-to-SVG conversion from PNG, JPEG, or client scans.",
+          step: "STEP 1 · CREATE",
+          title: "VectorPop",
+          subtitle: "Fast Vectorization Engine",
+          desc: "Converts pixel images (PNG, JPEG, scans) into clean SVG vector paths in seconds.",
+          action: "Vectorize image",
         },
         {
-          step: "2. Inspect & Repair",
-          tool: "VectoFix (Windows)",
-          desc: "Damage heatmap detection, node counting, and surgical brush repair.",
+          step: "STEP 2 · INSPECT & REPAIR",
+          title: "VectoFix (Windows)",
+          subtitle: "Vector QA & Surgical Repair",
+          desc: "Detects line drift with the Damage Heatmap, optimizes anchor points, and repairs flaws locally.",
+          action: "Inspect & Perfect",
+          isCurrent: true,
         },
         {
-          step: "3. Produce",
-          tool: "Fabrication Software",
-          desc: "Flawless physical execution with 0 wasted material and 0 broken needles.",
+          step: "STEP 3 · PRODUCE",
+          title: "Physical Production",
+          subtitle: "Fabrication in Atelier",
+          desc: "Adobe Illustrator · LightBurn Laser · Wilcom Hatch · Cricut. 0 machine stutter, 0 broken needles.",
+          action: "Physical Output",
         },
       ],
+      toolsTitle: "Seamless export compatibility with your atelier tools:",
       tools: [
         "Adobe Illustrator",
         "LightBurn Laser",
@@ -472,37 +501,66 @@ const t = {
       ],
     },
     readiness: {
-      badge: "Production Readiness",
-      title: "La fidélité visuelle ne suffit pas : mesurez la faisabilité machine",
-      text: "Un fichier vectoriel peut sembler correct sur votre écran tout en cachant 20 000 nœuds invisibles qui feront caler votre machine laser ou déchirer votre vinyle. VectoFix affiche la fidélité en temps réel et le compteur de nœuds exact, pour que vous n'envoyiez plus jamais un fichier non optimisé en atelier.",
+      badge: "Standard de Contrôle Qualité (Vector QA)",
+      title: "« Un bon SVG n'est pas seulement fidèle visuellement : il est techniquement léger et usinable. »",
+      subtitle:
+        "Les vectoriseurs classiques imposent un piège redoutable : soit ils simplifient trop et déforment votre visuel, soit ils créent 20 000 nœuds parasites qui font brouter votre découpeuse laser ou casser l'aiguille de votre brodeuse.",
+      text: "VectoFix est le seul outil à afficher simultanément le score de fidélité et le compteur de nœuds en temps réel, garantissant des fichiers irréprochables avant le lancement de la fabrication.",
       metrics: [
-        { value: "99,2 %", label: "Fidélité géométrique mesurée au pixel", sub: "Comparée à l'image matricielle source" },
-        { value: "-64 %", label: "Points d'ancrage superflus éliminés", sub: "Fusion automatique des tracés" },
-        { value: "100 %", label: "Contours fermés et étanches", sub: "Zéro défaut d'usinage machine" },
+        {
+          value: "99,4 %",
+          label: "Fidélité au pixel près",
+          sub: "Mesurée par comparaison directe avec la source",
+          note: "Ressemblance visuelle absolue",
+        },
+        {
+          value: "142 nœuds",
+          label: "Complexité épurée",
+          sub: "au lieu de 1 840 nœuds bruts (-77 %)",
+          note: "Déplacement laser fluide et rapide",
+        },
+        {
+          value: "100 %",
+          label: "Contours fermés et étanches",
+          sub: "Zéro rupture de découpe",
+          note: "Compatible direct LightBurn & Wilcom",
+        },
       ],
+      insight:
+        "Ne devinez plus si votre vecteur est exploitable. Mesurez à la fois sa fidélité géométrique et sa légèreté technique avant d'engager une production coûteuse.",
     },
     ecosystem: {
-      badge: "Intégration d'atelier",
-      title: "Votre chaîne de fabrication en 3 étapes",
+      badge: "Architecture de marque & Chaîne de production",
+      title: "Le triptyque de production en 3 étapes",
       subtitle:
-        "VectorPop crée le vecteur. VectoFix l'inspecte et le répare. Vos logiciels d'usinage le fabriquent.",
+        "VectorPop crée le vecteur. VectoFix l'inspecte et le répare. Vos logiciels de fabrication le produisent.",
+      cannibalizationNote:
+        "Cela élimine tout risque de cannibalisation : VectorPop vectorise vite à partir de n'importe quelle image. VectoFix inspecte et sécurise les zones critiques pour l'usinage machine. Ensemble, ils remplacent des heures de détourage manuel à la plume.",
       pipeline: [
         {
-          step: "1. Créer",
-          tool: "VectorPop / Vectoriseur",
-          desc: "Conversion automatique image vers SVG depuis vos PNG, JPG ou scans.",
+          step: "ÉTAPE 1 · CRÉER LE VECTEUR",
+          title: "VectorPop",
+          subtitle: "Moteur de vectorisation rapide",
+          desc: "Convertit vos images matricielles (PNG, JPG, scans) en tracés vectoriels SVG en quelques secondes.",
+          action: "Vectoriser l'image",
         },
         {
-          step: "2. Inspecter & Réparer",
-          tool: "VectoFix (Windows)",
-          desc: "Détection par carte des écarts, contrôle des nœuds et retouche chirurgicale.",
+          step: "ÉTAPE 2 · CONTRÔLER & RÉPARER",
+          title: "VectoFix (Windows)",
+          subtitle: "Atelier de contrôle qualité & retouche",
+          desc: "Révèle les dérives avec la Damage Heatmap, épure les nœuds et répare localement au pinceau ou à l'IA.",
+          action: "Contrôler & Réparer",
+          isCurrent: true,
         },
         {
-          step: "3. Fabriquer",
-          tool: "Logiciels de production",
-          desc: "Exécution physique impeccable, zéro matière gâchée et zéro aiguille brisée.",
+          step: "ÉTAPE 3 · FABRIQUER SANS ERREUR",
+          title: "Production d'Atelier",
+          subtitle: "Machines & Logiciels de fabrication",
+          desc: "Adobe Illustrator · LightBurn Laser · Wilcom Hatch · Cricut. Zéro broutement machine, zéro fil cassé.",
+          action: "Fabrication physique",
         },
       ],
+      toolsTitle: "Export direct et sans accroc vers vos outils de production :",
       tools: [
         "Adobe Illustrator",
         "LightBurn Laser",
@@ -1095,69 +1153,158 @@ function VectoFixPage() {
         <div className="mx-auto max-w-5xl px-6">
           <Reveal>
             <div className="rounded-3xl border border-border/80 bg-gradient-to-br from-card via-card/90 to-blue-950/20 p-8 md:p-12 shadow-2xl">
-              <div className="max-w-2xl">
+              <div className="max-w-3xl">
                 <span className="inline-block rounded-full bg-[#2563eb]/15 px-3.5 py-1 text-xs font-semibold text-[#60a5fa] border border-[#2563eb]/30 mb-4">
                   {c.readiness.badge}
                 </span>
-                <h3 className="text-2xl font-bold tracking-tight md:text-3xl text-foreground">
+                <h3 className="text-2xl font-bold tracking-tight md:text-3xl text-foreground leading-snug">
                   {c.readiness.title}
                 </h3>
-                <p className="mt-4 text-sm text-muted-foreground leading-relaxed md:text-base">
+                <p className="mt-3 text-sm text-[#60a5fa] font-medium leading-relaxed">
+                  {c.readiness.subtitle}
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                   {c.readiness.text}
                 </p>
               </div>
 
+              {/* Visual Dual Gauges & Metrics */}
               <div className="mt-10 grid gap-6 sm:grid-cols-3 border-t border-border/60 pt-8">
-                {c.readiness.metrics.map((m) => (
-                  <div key={m.label} className="rounded-xl border border-border/50 bg-background/50 p-5">
-                    <div className="text-3xl font-extrabold text-[#60a5fa]">{m.value}</div>
-                    <div className="mt-2 text-sm font-semibold text-foreground">{m.label}</div>
-                    <div className="mt-1 text-xs text-muted-foreground">{m.sub}</div>
+                {/* Metric 1: Visual Fidelity */}
+                <div className="rounded-2xl border border-border/60 bg-background/60 p-6 flex flex-col justify-between shadow-sm">
+                  <div>
+                    <span className="text-[11px] font-bold text-[#60a5fa] uppercase tracking-wider">{c.readiness.metrics[0].note}</span>
+                    <div className="mt-2 text-4xl font-black text-foreground">{c.readiness.metrics[0].value}</div>
+                    <div className="mt-2 h-2 w-full rounded-full bg-muted overflow-hidden">
+                      <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-emerald-400 w-[99.4%]" />
+                    </div>
+                    <div className="mt-3 text-sm font-semibold text-foreground">{c.readiness.metrics[0].label}</div>
+                    <div className="mt-1 text-xs text-muted-foreground">{c.readiness.metrics[0].sub}</div>
                   </div>
-                ))}
+                </div>
+
+                {/* Metric 2: Streamlined Node Count */}
+                <div className="rounded-2xl border border-border/60 bg-background/60 p-6 flex flex-col justify-between shadow-sm">
+                  <div>
+                    <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">{c.readiness.metrics[1].note}</span>
+                    <div className="mt-2 text-4xl font-black text-emerald-400">{c.readiness.metrics[1].value}</div>
+                    <div className="mt-2 flex items-center gap-1.5">
+                      <span className="inline-block rounded-md bg-emerald-500/20 px-2 py-0.5 text-[11px] font-bold text-emerald-300 border border-emerald-500/30">
+                        -77% de nœuds parasites
+                      </span>
+                    </div>
+                    <div className="mt-3 text-sm font-semibold text-foreground">{c.readiness.metrics[1].label}</div>
+                    <div className="mt-1 text-xs text-muted-foreground">{c.readiness.metrics[1].sub}</div>
+                  </div>
+                </div>
+
+                {/* Metric 3: Watertight Closed Paths */}
+                <div className="rounded-2xl border border-border/60 bg-background/60 p-6 flex flex-col justify-between shadow-sm">
+                  <div>
+                    <span className="text-[11px] font-bold text-blue-400 uppercase tracking-wider">{c.readiness.metrics[2].note}</span>
+                    <div className="mt-2 text-4xl font-black text-blue-400">{c.readiness.metrics[2].value}</div>
+                    <div className="mt-2 flex items-center gap-1.5">
+                      <span className="inline-block rounded-md bg-blue-500/20 px-2 py-0.5 text-[11px] font-bold text-blue-300 border border-blue-500/30">
+                        Watertight / Étanche
+                      </span>
+                    </div>
+                    <div className="mt-3 text-sm font-semibold text-foreground">{c.readiness.metrics[2].label}</div>
+                    <div className="mt-1 text-xs text-muted-foreground">{c.readiness.metrics[2].sub}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Summary Insight */}
+              <div className="mt-6 rounded-xl border border-[#2563eb]/20 bg-[#2563eb]/5 p-4 text-xs text-muted-foreground leading-relaxed">
+                💡 <span className="text-foreground font-semibold">{c.readiness.insight}</span>
               </div>
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* ECOSYSTEM / FABRICATION TOOLCHAIN */}
-      <section className="border-t border-border/50 py-20 bg-muted/20">
-        <div className="mx-auto max-w-5xl px-6 text-center">
+      {/* ECOSYSTEM / BRAND ARCHITECTURE & FABRICATION TOOLCHAIN */}
+      <section className="border-t border-border/50 py-24 bg-gradient-to-b from-card/10 via-background to-card/10">
+        <div className="mx-auto max-w-6xl px-6 text-center">
           <Reveal>
             <span className="inline-block rounded-full bg-[#2563eb]/10 px-3.5 py-1 text-xs font-semibold text-[#60a5fa] border border-[#2563eb]/20 mb-4">
               {c.ecosystem.badge}
             </span>
-            <h3 className="text-2xl font-bold tracking-tight md:text-3xl">{c.ecosystem.title}</h3>
-            <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">{c.ecosystem.subtitle}</p>
+            <h3 className="text-3xl font-bold tracking-tight md:text-4xl">{c.ecosystem.title}</h3>
+            <p className="mx-auto mt-3 max-w-2xl text-base text-muted-foreground">{c.ecosystem.subtitle}</p>
 
-            {/* 3-Step Pipeline Cards */}
-            <div className="mt-12 grid gap-6 md:grid-cols-3 text-left">
-              {c.ecosystem.pipeline.map((item, idx) => (
-                <div key={item.step} className="rounded-2xl border border-border bg-card/60 p-6 flex flex-col justify-between">
-                  <div>
-                    <span className="text-xs font-bold text-[#60a5fa]">{item.step}</span>
-                    <h4 className="mt-2 text-base font-semibold text-foreground">{item.tool}</h4>
-                    <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
-                  </div>
-                  {idx < 2 && (
-                    <div className="mt-4 hidden md:flex items-center text-xs text-muted-foreground/60 gap-1 font-mono">
-                      <span>Next</span> <ArrowRight className="h-3 w-3" />
+            {/* 3-Step Connected Triptyque Diagram */}
+            <div className="mt-14 grid gap-6 md:grid-cols-3 relative">
+              {c.ecosystem.pipeline.map((item, idx) => {
+                const isVectoFix = item.isCurrent;
+                return (
+                  <div
+                    key={item.step}
+                    className={`relative rounded-2xl border p-7 text-left flex flex-col justify-between transition-all ${
+                      isVectoFix
+                        ? "border-[#2563eb] bg-gradient-to-b from-[#2563eb]/15 to-card ring-2 ring-[#2563eb]/50 shadow-2xl shadow-blue-900/30 scale-[1.02] z-10"
+                        : "border-border bg-card/60 hover:border-border/80"
+                    }`}
+                  >
+                    {isVectoFix && (
+                      <span className="absolute -top-3 right-6 rounded-full bg-[#2563eb] px-3 py-0.5 text-[11px] font-bold text-white shadow-md">
+                        {lang === "fr" ? "Atelier de contrôle" : "Quality Control Hub"}
+                      </span>
+                    )}
+                    <div>
+                      <span className="text-[11px] font-mono font-bold tracking-wider text-[#60a5fa]">
+                        {item.step}
+                      </span>
+                      <h4 className="mt-2 text-xl font-bold text-foreground">{item.title}</h4>
+                      <p className="text-xs font-semibold text-muted-foreground mt-0.5">{item.subtitle}</p>
+                      <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                     </div>
-                  )}
-                </div>
-              ))}
+
+                    <div className="mt-6 pt-4 border-t border-border/50 flex items-center justify-between text-xs font-semibold">
+                      <span className={isVectoFix ? "text-[#60a5fa]" : "text-muted-foreground"}>{item.action}</span>
+                      {idx < 2 && (
+                        <div className="hidden md:flex items-center text-[#60a5fa] font-bold gap-1">
+                          <span>➔</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              {c.ecosystem.tools.map((tool) => (
-                <span
-                  key={tool}
-                  className="rounded-lg border border-border bg-card/80 px-4 py-2 text-xs font-medium text-foreground shadow-sm"
-                >
-                  {tool}
-                </span>
-              ))}
+            {/* Anti-Cannibalization Reassurance Box */}
+            <div className="mt-10 mx-auto max-w-4xl rounded-2xl border border-border/80 bg-card/70 p-6 text-left shadow-lg backdrop-blur-sm">
+              <div className="flex items-start gap-4">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2563eb]/15 text-[#60a5fa] font-bold">
+                  ✓
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-foreground">
+                    {lang === "fr" ? "Pourquoi deux outils complémentaires ?" : "Why two complementary tools?"}
+                  </h4>
+                  <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed sm:text-sm">
+                    {c.ecosystem.cannibalizationNote}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Fabrication Compatibility Badges */}
+            <div className="mt-12">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-4">
+                {c.ecosystem.toolsTitle}
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                {c.ecosystem.tools.map((tool) => (
+                  <span
+                    key={tool}
+                    className="rounded-lg border border-border bg-card/90 px-4 py-2 text-xs font-medium text-foreground shadow-sm hover:border-[#2563eb]/50 transition"
+                  >
+                    {tool}
+                  </span>
+                ))}
+              </div>
             </div>
           </Reveal>
         </div>
