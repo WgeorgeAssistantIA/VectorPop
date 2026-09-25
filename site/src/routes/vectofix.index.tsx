@@ -7,10 +7,15 @@ import {
   Check,
   CheckCircle2,
   Download,
+  Flame,
   Gauge,
+  Layers,
   Lock,
   MapPin,
+  Palette,
+  Scissors,
   ShieldCheck,
+  Sparkles,
 } from "lucide-react";
 
 import {
@@ -100,6 +105,49 @@ const t = {
         },
       },
     },
+    demo: {
+      badge: "Interactive Inspection",
+      title: "See surgical vector repair in action",
+      subtitle: "Click through the 4 stages of the VectoFix quality-control pipeline:",
+      steps: [
+        {
+          id: "original",
+          num: "01",
+          tab: "Original Image",
+          title: "Low-resolution raster source (PNG / JPG)",
+          desc: "A client logo received via WhatsApp, a scan, or a low-dpi badge with compressed artifacts and subtle curves.",
+          previewBadge: "Step 1: Raster Input",
+          previewStatus: "Pixel grid (72 DPI) · Blurred edges",
+        },
+        {
+          id: "drift",
+          num: "02",
+          tab: "Automatic Trace Drift",
+          title: "Standard vectorizers simplify blindly",
+          desc: "Global conversion algorithms smooth out sharp serifs, merge delicate gaps, and distort small typography.",
+          previewBadge: "Step 2: Flawed Vector Trace",
+          previewStatus: "Noticeable contour drift · Lost details",
+        },
+        {
+          id: "heatmap",
+          num: "03",
+          tab: "Diagnostic Heatmap",
+          title: "VectoFix measures the error delta pixel by pixel",
+          desc: "The vector is re-rasterized in RAM and subtracted from the source. Drifted outlines glow in warning red.",
+          previewBadge: "Step 3: Damage Heatmap",
+          previewStatus: "Error Delta detected (+12.4% drift) in red",
+        },
+        {
+          id: "repaired",
+          num: "04",
+          tab: "Surgical Touch-Up",
+          title: "Local magic brush & MobileSAM AI repair",
+          desc: "Paint over only the red areas. Contours snap back to original fidelity while clean curves stay untouched. Zero bloat.",
+          previewBadge: "Step 4: Clean Production SVG",
+          previewStatus: "99.4% Fidelity · Watertight closed path",
+        },
+      ],
+    },
     how: {
       title: "How does VectoFix work?",
       subtitle: "A 4-step surgical workflow: inspect what drifted, repair locally, export clean.",
@@ -126,10 +174,70 @@ const t = {
         },
       ],
     },
-    ecosystem: {
-      title: "Built for your actual fabrication toolchain",
+    personas: {
+      badge: "Target Workflows",
+      title: "Built for professionals who cannot afford defective vectors",
       subtitle:
-        "Whether you generate your base vectors with VectorPop, Vectorizer.AI, or Illustrator, VectoFix is the quality-control workstation that prepares your files for physical production.",
+        "If your vector files are sent to physical fabrication machines or demanding clients, VectoFix pays for itself on the first job.",
+      cards: [
+        {
+          icon: Flame,
+          title: "Laser Cutting & CNC",
+          sub: "LightBurn · xTool · Glowforge · GRBL",
+          desc: "No more open paths or 15,000 messy anchor points that cause laser heads to stutter and scorch materials. Get closed, watertight cutting outlines.",
+        },
+        {
+          icon: Sparkles,
+          title: "Machine Embroidery",
+          sub: "Wilcom Hatch · Brother · Bernina",
+          desc: "Eliminate micro-segments and jagged edges that break needles and create thread nests. Clean curves make automatic satin stitch conversion flawless.",
+        },
+        {
+          icon: Palette,
+          title: "Graphic Designers & Studios",
+          sub: "Adobe Illustrator · CorelDRAW · Figma",
+          desc: "Rescue pixelated WhatsApp logos and business card scans. Fix deformed lettering in 15 seconds without manually redrawing bezier curves with the pen tool.",
+        },
+        {
+          icon: Scissors,
+          title: "Vinyl Cutters & Apparel",
+          sub: "Cricut Design Space · Silhouette · Roland",
+          desc: "Continuous, unified contours with minimal node density allow rapid, tear-free vinyl and heat-transfer film weeding even on tiny intricate details.",
+        },
+      ],
+    },
+    readiness: {
+      badge: "Production Readiness",
+      title: "Visual resemblance is not enough: measure machine feasibility",
+      text: "A vector file can look deceptively good on screen while hiding 20,000 messy anchor points that crash a CNC machine or ruin an embroidery run. VectoFix displays fidelity percentage and real-time node count together, giving you full confidence before sending files to fabrication.",
+      metrics: [
+        { value: "99.2%", label: "Pixel-exact geometric fidelity", sub: "Measured against source raster" },
+        { value: "-64%", label: "Superfluous anchor points eliminated", sub: "Automatic stroke fusion" },
+        { value: "100%", label: "Watertight closed paths", sub: "Guaranteed machine-ready" },
+      ],
+    },
+    ecosystem: {
+      badge: "Toolchain Integration",
+      title: "Your 3-step production toolchain",
+      subtitle:
+        "VectorPop creates the vector. VectoFix inspects and repairs it. Your fabrication software runs it.",
+      pipeline: [
+        {
+          step: "1. Create",
+          tool: "VectorPop / Vectorizer",
+          desc: "Automatic raster-to-SVG conversion from PNG, JPEG, or client scans.",
+        },
+        {
+          step: "2. Inspect & Repair",
+          tool: "VectoFix (Windows)",
+          desc: "Damage heatmap detection, node counting, and surgical brush repair.",
+        },
+        {
+          step: "3. Produce",
+          tool: "Fabrication Software",
+          desc: "Flawless physical execution with 0 wasted material and 0 broken needles.",
+        },
+      ],
       tools: [
         "Adobe Illustrator",
         "LightBurn Laser",
@@ -262,6 +370,49 @@ const t = {
         },
       },
     },
+    demo: {
+      badge: "Démonstration Interactive",
+      title: "Voyez la réparation chirurgicale en action",
+      subtitle: "Parcourez les 4 étapes du pipeline de contrôle qualité VectoFix :",
+      steps: [
+        {
+          id: "original",
+          num: "01",
+          tab: "Image originale",
+          title: "Source matricielle basse résolution (PNG / JPG)",
+          desc: "Un logo client reçu par WhatsApp, un scan ou un badge basse définition avec des contours flous et des petits détails.",
+          previewBadge: "Étape 1 : Image matricielle",
+          previewStatus: "Grille de pixels (72 DPI) · Bords flous",
+        },
+        {
+          id: "drift",
+          num: "02",
+          tab: "Tracé brut dévié",
+          title: "Les vectoriseurs simplifient à l'aveugle",
+          desc: "Les algorithmes globaux écornent les empattements, bouchent les contreformes et déforment la typographie fine.",
+          previewBadge: "Étape 2 : Tracé vectoriel brut",
+          previewStatus: "Dérives visibles · Détails rabotés",
+        },
+        {
+          id: "heatmap",
+          num: "03",
+          tab: "Carte des écarts",
+          title: "VectoFix mesure l'écart pixel par pixel",
+          desc: "Le SVG est re-rasterisé en RAM et soustrait de la source. Les zones où le tracé a dérivé s'illuminent en rouge d'alerte.",
+          previewBadge: "Étape 3 : Damage Heatmap",
+          previewStatus: "Écart détecté (+12,4 % de dérive) en rouge",
+        },
+        {
+          id: "repaired",
+          num: "04",
+          tab: "Réparation chirurgicale",
+          title: "Retouche locale au pinceau magique & IA MobileSAM",
+          desc: "Passez le pinceau uniquement sur les zones rouges. Le tracé s'aligne parfaitement sur l'original sans ajouter de nœud parasite ailleurs.",
+          previewBadge: "Étape 4 : SVG propre pour la production",
+          previewStatus: "99,4 % de fidélité · Tracé fermé étanche",
+        },
+      ],
+    },
     how: {
       title: "Comment fonctionne VectoFix ?",
       subtitle: "Un flux chirurgical en 4 étapes : inspectez ce qui a dévié, réparez localement, exportez propre.",
@@ -288,10 +439,70 @@ const t = {
         },
       ],
     },
-    ecosystem: {
-      title: "Conçu pour votre chaîne de fabrication réelle",
+    personas: {
+      badge: "Métiers & Usages",
+      title: "Conçu pour les professionnels qui ne peuvent pas tolérer un vecteur défectueux",
       subtitle:
-        "Que vous créiez votre premier vecteur avec VectorPop, Vectorizer.AI ou Illustrator, VectoFix est l'atelier de contrôle qualité qui prépare vos tracés pour la découpe, l'impression ou la broderie.",
+        "Si vous envoyez des fichiers vectoriels à des machines d'atelier ou des clients exigeants, VectoFix est rentabilisé dès le premier travail.",
+      cards: [
+        {
+          icon: Flame,
+          title: "Découpe Laser & Fraisage CNC",
+          sub: "LightBurn · xTool · Glowforge · GRBL",
+          desc: "Fini les contours ouverts et les 15 000 nœuds parasites qui font brouter la tête laser et brûlent la matière. Obtenez des tracés de découpe fermés et ultra-propres.",
+        },
+        {
+          icon: Sparkles,
+          title: "Broderie Numérique & Textile",
+          sub: "Wilcom Hatch · Brother · Bernina",
+          desc: "Éliminez les micro-segments et bavures qui brisent les aiguilles et provoquent des bourrages de fil. Des contours lisses parfaits pour les points de bourdon.",
+        },
+        {
+          icon: Palette,
+          title: "Graphistes & Studios de création",
+          sub: "Adobe Illustrator · CorelDRAW · Figma",
+          desc: "Rattrapez les logos clients WhatsApp pixelisés ou les scans de cartes de visite. Corrigez les lettres abîmées en 15 secondes sans devoir tout redessiner à la plume.",
+        },
+        {
+          icon: Scissors,
+          title: "Flocage & Plotters de découpe",
+          sub: "Cricut Design Space · Silhouette · Roland",
+          desc: "Des tracés continus avec un nombre minimal de nœuds pour un échenillage facile et sans déchirure du vinyle adhésif et du flex textile.",
+        },
+      ],
+    },
+    readiness: {
+      badge: "Production Readiness",
+      title: "La fidélité visuelle ne suffit pas : mesurez la faisabilité machine",
+      text: "Un fichier vectoriel peut sembler correct sur votre écran tout en cachant 20 000 nœuds invisibles qui feront caler votre machine laser ou déchirer votre vinyle. VectoFix affiche la fidélité en temps réel et le compteur de nœuds exact, pour que vous n'envoyiez plus jamais un fichier non optimisé en atelier.",
+      metrics: [
+        { value: "99,2 %", label: "Fidélité géométrique mesurée au pixel", sub: "Comparée à l'image matricielle source" },
+        { value: "-64 %", label: "Points d'ancrage superflus éliminés", sub: "Fusion automatique des tracés" },
+        { value: "100 %", label: "Contours fermés et étanches", sub: "Zéro défaut d'usinage machine" },
+      ],
+    },
+    ecosystem: {
+      badge: "Intégration d'atelier",
+      title: "Votre chaîne de fabrication en 3 étapes",
+      subtitle:
+        "VectorPop crée le vecteur. VectoFix l'inspecte et le répare. Vos logiciels d'usinage le fabriquent.",
+      pipeline: [
+        {
+          step: "1. Créer",
+          tool: "VectorPop / Vectoriseur",
+          desc: "Conversion automatique image vers SVG depuis vos PNG, JPG ou scans.",
+        },
+        {
+          step: "2. Inspecter & Réparer",
+          tool: "VectoFix (Windows)",
+          desc: "Détection par carte des écarts, contrôle des nœuds et retouche chirurgicale.",
+        },
+        {
+          step: "3. Fabriquer",
+          tool: "Logiciels de production",
+          desc: "Exécution physique impeccable, zéro matière gâchée et zéro aiguille brisée.",
+        },
+      ],
       tools: [
         "Adobe Illustrator",
         "LightBurn Laser",
@@ -512,6 +723,7 @@ function LangToggle({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void 
 function VectoFixPage() {
   const [lang, setLangState] = useState<Lang>("en");
   const [reassuranceVariant, setReassuranceVariant] = useState<ReassuranceVariant>("a");
+  const [activeDemoStep, setActiveDemoStep] = useState(0);
 
   useEffect(() => {
     const variant = getReassuranceVariant();
@@ -692,6 +904,127 @@ function VectoFixPage() {
         </div>
       </section>
 
+      {/* INTERACTIVE WORKFLOW DEMO (SHOW, DON'T TELL) */}
+      <section className="border-t border-border/50 py-24 bg-gradient-to-b from-background via-card/30 to-background">
+        <div className="mx-auto max-w-5xl px-6">
+          <Reveal>
+            <div className="text-center max-w-3xl mx-auto">
+              <span className="inline-block rounded-full bg-[#2563eb]/10 px-3.5 py-1 text-xs font-semibold text-[#60a5fa] border border-[#2563eb]/20 mb-4">
+                {c.demo.badge}
+              </span>
+              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{c.demo.title}</h2>
+              <p className="mx-auto mt-4 text-muted-foreground">{c.demo.subtitle}</p>
+            </div>
+          </Reveal>
+
+          {/* Step Selector Tabs */}
+          <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {c.demo.steps.map((st, idx) => (
+              <button
+                key={st.id}
+                onClick={() => setActiveDemoStep(idx)}
+                className={`relative flex flex-col items-start rounded-xl border p-4 text-left transition-all ${
+                  activeDemoStep === idx
+                    ? "border-[#2563eb] bg-[#2563eb]/10 shadow-lg shadow-blue-900/20 ring-1 ring-[#2563eb]"
+                    : "border-border bg-card/40 hover:border-border/80 hover:bg-card/70"
+                }`}
+              >
+                <span className={`text-xs font-bold ${activeDemoStep === idx ? "text-[#60a5fa]" : "text-muted-foreground"}`}>
+                  {st.num}
+                </span>
+                <span className="mt-1 text-sm font-semibold">{st.tab}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Visual Showcase Stage */}
+          <div className="mt-8 overflow-hidden rounded-2xl border border-border bg-card/60 p-6 md:p-8 backdrop-blur-sm">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/60 pb-5">
+              <div className="flex items-center gap-3">
+                <span className="rounded-md bg-[#2563eb] px-2.5 py-1 text-xs font-semibold text-white">
+                  {c.demo.steps[activeDemoStep].previewBadge}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {c.demo.steps[activeDemoStep].previewStatus}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />
+                <span>100% Local GPU / In-Memory</span>
+              </div>
+            </div>
+
+            {/* Visual Canvas Representation */}
+            <div className="relative mt-6 flex min-h-[260px] flex-col items-center justify-center rounded-xl border border-border/60 bg-background/80 p-8 text-center overflow-hidden">
+              {activeDemoStep === 0 && (
+                <div className="flex flex-col items-center">
+                  <div className="relative flex h-36 w-36 items-center justify-center rounded-2xl border-2 border-dashed border-muted-foreground/30 bg-muted/20 font-mono text-5xl font-black text-muted-foreground">
+                    <span className="blur-[1px] select-none">R</span>
+                    <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:8px_8px] opacity-25" />
+                  </div>
+                  <p className="mt-4 text-xs font-mono text-muted-foreground">Source: PNG 240x240 px · 72 DPI</p>
+                </div>
+              )}
+
+              {activeDemoStep === 1 && (
+                <div className="flex flex-col items-center">
+                  <div className="relative flex h-36 w-36 items-center justify-center rounded-2xl border border-border bg-muted/10 font-sans text-5xl font-black text-foreground">
+                    <span className="text-foreground/80 select-none">R</span>
+                    <span className="absolute -bottom-2 -right-2 rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-semibold text-amber-300 border border-amber-500/40">
+                      ⚠ Serifs rounded
+                    </span>
+                  </div>
+                  <p className="mt-4 text-xs font-mono text-amber-400/90">Global trace: sharp corner rounded off by automatic simplification</p>
+                </div>
+              )}
+
+              {activeDemoStep === 2 && (
+                <div className="flex flex-col items-center">
+                  <div className="relative flex h-36 w-36 items-center justify-center rounded-2xl border border-red-500/40 bg-red-950/20 font-sans text-5xl font-black text-foreground">
+                    <span className="select-none text-foreground/80">R</span>
+                    <div className="absolute bottom-6 right-6 h-8 w-8 rounded-full bg-red-500/60 blur-sm animate-pulse" />
+                    <div className="absolute bottom-7 right-7 h-6 w-6 rounded-full border-2 border-red-400 bg-red-500/40 flex items-center justify-center">
+                      <span className="text-[10px] text-white font-bold">!</span>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-xs font-mono text-red-400">Heatmap delta: 18px deviation detected in lower corner</p>
+                </div>
+              )}
+
+              {activeDemoStep === 3 && (
+                <div className="flex flex-col items-center">
+                  <div className="relative flex h-36 w-36 items-center justify-center rounded-2xl border border-blue-500/60 bg-blue-950/20 font-sans text-5xl font-black text-blue-400 shadow-lg shadow-blue-500/10">
+                    <span className="select-none">R</span>
+                    <div className="absolute top-6 left-6 h-2 w-2 rounded-sm bg-[#60a5fa] ring-2 ring-background" />
+                    <div className="absolute top-6 right-6 h-2 w-2 rounded-sm bg-[#60a5fa] ring-2 ring-background" />
+                    <div className="absolute bottom-6 left-6 h-2 w-2 rounded-sm bg-[#60a5fa] ring-2 ring-background" />
+                    <div className="absolute bottom-6 right-6 h-2 w-2 rounded-sm bg-emerald-400 ring-2 ring-background" />
+                    <span className="absolute -top-2 -right-2 rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-semibold text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
+                      <Check className="h-3 w-3" /> Repaired
+                    </span>
+                  </div>
+                  <p className="mt-4 text-xs font-mono text-emerald-400">Clean SVG path: sharp serif restored · 0 superfluous nodes</p>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h4 className="text-base font-semibold">{c.demo.steps[activeDemoStep].title}</h4>
+                <p className="mt-1 text-sm text-muted-foreground">{c.demo.steps[activeDemoStep].desc}</p>
+              </div>
+              <button
+                onClick={() => setActiveDemoStep((prev) => (prev + 1) % 4)}
+                className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-xs font-semibold hover:border-[#2563eb] transition"
+              >
+                <span>{lang === "fr" ? "Étape suivante" : "Next step"}</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* HOW IT WORKS */}
       <section id="how" className="border-t border-border/50 py-24">
         <div className="mx-auto max-w-6xl px-6">
@@ -722,13 +1055,101 @@ function VectoFixPage() {
         </div>
       </section>
 
+      {/* WHO IS IT FOR / TARGET WORKFLOWS */}
+      <section className="border-t border-border/50 py-24 bg-card/10">
+        <div className="mx-auto max-w-6xl px-6">
+          <Reveal>
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <span className="inline-block rounded-full bg-[#2563eb]/10 px-3.5 py-1 text-xs font-semibold text-[#60a5fa] border border-[#2563eb]/20 mb-4">
+                {c.personas.badge}
+              </span>
+              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{c.personas.title}</h2>
+              <p className="mx-auto mt-4 text-muted-foreground leading-relaxed">{c.personas.subtitle}</p>
+            </div>
+          </Reveal>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {c.personas.cards.map((p, i) => {
+              const Icon = p.icon;
+              return (
+                <Reveal key={p.title} delay={i * 80}>
+                  <div className="h-full rounded-2xl border border-border bg-card/50 p-6 flex flex-col justify-between hover:border-[#2563eb]/50 hover:bg-card transition">
+                    <div>
+                      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#2563eb]/15 ring-1 ring-[#2563eb]/30">
+                        <Icon className="h-6 w-6 text-[#60a5fa]" />
+                      </div>
+                      <h3 className="text-base font-semibold text-foreground">{p.title}</h3>
+                      <p className="mt-1 text-xs font-medium text-[#60a5fa]">{p.sub}</p>
+                      <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
+                    </div>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* PRODUCTION READINESS / FIDELITY & NODE METRICS */}
+      <section className="border-t border-border/50 py-24 bg-card/20">
+        <div className="mx-auto max-w-5xl px-6">
+          <Reveal>
+            <div className="rounded-3xl border border-border/80 bg-gradient-to-br from-card via-card/90 to-blue-950/20 p-8 md:p-12 shadow-2xl">
+              <div className="max-w-2xl">
+                <span className="inline-block rounded-full bg-[#2563eb]/15 px-3.5 py-1 text-xs font-semibold text-[#60a5fa] border border-[#2563eb]/30 mb-4">
+                  {c.readiness.badge}
+                </span>
+                <h3 className="text-2xl font-bold tracking-tight md:text-3xl text-foreground">
+                  {c.readiness.title}
+                </h3>
+                <p className="mt-4 text-sm text-muted-foreground leading-relaxed md:text-base">
+                  {c.readiness.text}
+                </p>
+              </div>
+
+              <div className="mt-10 grid gap-6 sm:grid-cols-3 border-t border-border/60 pt-8">
+                {c.readiness.metrics.map((m) => (
+                  <div key={m.label} className="rounded-xl border border-border/50 bg-background/50 p-5">
+                    <div className="text-3xl font-extrabold text-[#60a5fa]">{m.value}</div>
+                    <div className="mt-2 text-sm font-semibold text-foreground">{m.label}</div>
+                    <div className="mt-1 text-xs text-muted-foreground">{m.sub}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ECOSYSTEM / FABRICATION TOOLCHAIN */}
-      <section className="border-t border-border/50 py-16 bg-muted/20">
+      <section className="border-t border-border/50 py-20 bg-muted/20">
         <div className="mx-auto max-w-5xl px-6 text-center">
           <Reveal>
-            <h3 className="text-xl font-bold tracking-tight md:text-2xl">{c.ecosystem.title}</h3>
+            <span className="inline-block rounded-full bg-[#2563eb]/10 px-3.5 py-1 text-xs font-semibold text-[#60a5fa] border border-[#2563eb]/20 mb-4">
+              {c.ecosystem.badge}
+            </span>
+            <h3 className="text-2xl font-bold tracking-tight md:text-3xl">{c.ecosystem.title}</h3>
             <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">{c.ecosystem.subtitle}</p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+
+            {/* 3-Step Pipeline Cards */}
+            <div className="mt-12 grid gap-6 md:grid-cols-3 text-left">
+              {c.ecosystem.pipeline.map((item, idx) => (
+                <div key={item.step} className="rounded-2xl border border-border bg-card/60 p-6 flex flex-col justify-between">
+                  <div>
+                    <span className="text-xs font-bold text-[#60a5fa]">{item.step}</span>
+                    <h4 className="mt-2 text-base font-semibold text-foreground">{item.tool}</h4>
+                    <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                  </div>
+                  {idx < 2 && (
+                    <div className="mt-4 hidden md:flex items-center text-xs text-muted-foreground/60 gap-1 font-mono">
+                      <span>Next</span> <ArrowRight className="h-3 w-3" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               {c.ecosystem.tools.map((tool) => (
                 <span
                   key={tool}
