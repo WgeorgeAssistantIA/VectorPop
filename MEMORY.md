@@ -81,6 +81,20 @@
   - **InOneShot (`inoneshot.fr/privacy`)** : Remplacement de l'ancienne mention restrictive par la déclaration de PostHog EU (0 PII, lancements, découverte, publipostages, exports, canal de distribution), réaffirmation du traitement 100% local des PDF et données Excel/CSV, commit `69397e0`.
   - **VoxCut (`voxcutpro.com/privacy`)** : Extension de la déclaration à l'ensemble du funnel produit PostHog EU (Desktop & Mobile : filtres studio FFT/LUFS, exports, paywall), suppression des mentions obsolètes de Google Analytics, réaffirmation du traitement 100% local de l'audio/vidéo, commit `b783869`.
 
+### 8. Synergie d'Écosystème & Déploiement VectoFix (25 Septembre 2026)
+- **Clarification Stratégique de Marque (Anti-cannibalisation)** :
+  - Mise en place du triptyque de production : `Étape 1 : VectorPop (Créer) ➔ Étape 2 : VectoFix (Contrôler & Réparer) ➔ Étape 3 : Production (Usiner en atelier)`.
+  - VectorPop se concentre sur la vitesse de génération vectorielle ; VectoFix sécurise la faisabilité technique et la fidélité chirurgicale pour l'usinage machine.
+- **Refonte de la Landing Page VectoFix (`vectorpop.fr/vectofix`)** :
+  - Repositionnement sur le contrôle qualité et la réparation locale (*« Fix bad vectorizations without starting over / Don't re-vectorize. Repair. »*).
+  - Démonstrateur interactif en 4 étapes (Source ➔ Dérive ➔ Heatmap ➔ Retouche).
+  - 4 Personas B2B d'atelier (Découpe laser LightBurn, Broderie Wilcom, Graphistes logos, Vinyle Cricut).
+  - Jauges de Production Readiness (99.4% fidélité, 142 nœuds légers, 100% contours étanches).
+  - Schéma visuel connecté du triptyque de production.
+- **Déploiement du Blog VectoFix (`vectorpop.fr/vectofix/blog`)** :
+  - 12 articles approfondis en production (6 EN + 6 FR) dont 3 nouveaux guides majeurs rédigés selon les standards SEO experts (guide décisionnel pour réparer sans tout refaire, guide atelier laser LightBurn, manifeste de création de catégorie Vector Repair & QA).
+  - Validation du build Vite/Nitro et déploiement Vercel réussi (commit `d3c463e`).
+
 ---
 
 ## Prochaines Étapes / Backlog
@@ -88,4 +102,6 @@
 - Suivre les premiers événements analytiques PostHog de la V2 desktop (`app: "vectorpop_desktop"`).
 - Côté Android : Mettre à jour la fiche Google Play Console avec les nouveaux textes et les visuels `capture d'écran/playstore/`, et ajuster le formulaire Data Safety (déclarer PostHog anonyme).
 - Évaluer les retours utilisateurs sur le profil gravure/découpe pour les fonctionnalités V2.1 (DXF, EPS, palette).
+- Suivre les premières retombées SEO et l'indexation Google des 12 articles de blog VectoFix.
+
 
