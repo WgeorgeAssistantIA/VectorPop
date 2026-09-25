@@ -63,12 +63,17 @@ const t = {
     hero: {
       title: "Vectorize without losing the detail.",
       subtitle:
-        "Every vectorizer simplifies your image — and simplifying always breaks something. VectoFix is the only one that measures exactly what it got wrong, and lets you repair it with a single brush stroke.",
+        "Every vectorizer simplifies your image — and simplifying always breaks something. VectoFix is the only one that measures exactly what it got wrong, and lets you repair it with a single brush stroke or 1-click AI selection.",
       btnPrimary: "Download free for Windows",
       smartscreenNote:
         "Windows may show a SmartScreen warning since the app is still new. Click “More info” then “Run anyway” to continue — the installer is safe.",
-      subText: "Full trial, no credit card — export locks only when you're ready to buy",
-      badges: ["100% local — nothing uploaded", "One-time purchase, no subscription", "PNG / JPG / SVG in, SVG / PNG out"],
+      subText: "3 full HD trial exports included, no credit card — test directly in your production workflow",
+      badges: [
+        "100% local — zero cloud, full privacy",
+        "3 free HD trial exports included",
+        "Ultra-fast in-memory engine (+38% speed)",
+        "One-time purchase €39, no subscription",
+      ],
     },
     pain: {
       title: "Vectorizers never tell you what they got wrong.",
@@ -78,58 +83,87 @@ const t = {
       title: "How does VectoFix work?",
       subtitle: "Four steps, and the last one is the only one you actually do.",
       steps: [
-        { icon: Gauge, title: "Automatic vectorization", desc: "Traced into SVG the moment you open it — no setting to touch first." },
-        { icon: MapPin, title: "Fidelity measurement", desc: "VectoFix re-rasterizes its own result and compares it, pixel by pixel, against your original." },
-        { icon: ShieldCheck, title: "Damage map", desc: "The zones where the trace drifted furthest from the source are highlighted — you know exactly where to look." },
-        { icon: Brush, title: "Magic brush", desc: "Paint over a damaged zone and it re-traces itself, stitched back into the SVG. 60–80% less error, in under a second." },
+        {
+          icon: Gauge,
+          title: "Instant ingestion & trace",
+          desc: "Drag & drop or paste from clipboard (Ctrl+V). Traced into SVG instantly with zero disk delay (+38% speedup).",
+        },
+        {
+          icon: MapPin,
+          title: "Fidelity measurement",
+          desc: "VectoFix re-rasterizes its own result and compares it, pixel by pixel, against your original image.",
+        },
+        {
+          icon: ShieldCheck,
+          title: "Damage heatmap & Compare",
+          desc: "Zones where the trace drifted are highlighted. Hold Space to instantly toggle the original image.",
+        },
+        {
+          icon: Brush,
+          title: "Magic brush & AI selection",
+          desc: "Paint over a damaged zone or click with local MobileSAM AI. Automatic stroke fusion ensures clean, unbloated SVGs.",
+        },
       ],
     },
     pillars: {
       title: "How does VectoFix differ from a classic vectorizer?",
       cards: [
-        { icon: Gauge, title: "Total transparency", desc: "Fidelity and node count shown together, always — re-tracing a zone makes it more accurate AND heavier, never hidden." },
-        { icon: MapPin, title: "Strong where others fail", desc: "Photos, gradients, rich illustrations — where classic image-trace produces banding or a mess of shapes." },
-        { icon: Lock, title: "100% local", desc: "No image is ever sent to a server, at any point. Works on a plane, too." },
+        {
+          icon: Gauge,
+          title: "Total transparency",
+          desc: "Fidelity and node count shown together, always — essential for laser cutting (LightBurn) and embroidery (Wilcom).",
+        },
+        {
+          icon: MapPin,
+          title: "Strong where others fail",
+          desc: "Pixelated WhatsApp logos, client scans, small details — sharp curves and clean closed paths without manual pen tracing.",
+        },
+        {
+          icon: Lock,
+          title: "100% local & confidential",
+          desc: "No image is ever uploaded to a server. Client trade secrets and GDPR compliance guaranteed.",
+        },
       ],
     },
     pricing: {
       title: "Simple pricing",
       subtitle: "One tier. Pay once, use it forever.",
-      name: "VectoFix",
+      name: "VectoFix Pro",
       price: "€39",
       priceNote: "one-time",
-      tagline: "Full trial before you buy — nothing hidden.",
+      tagline: "3 full HD trial exports included before you buy — nothing hidden.",
       features: [
-        "Unlimited vectorization, damage map and magic brush during the trial",
-        "Full-resolution SVG and high-res PNG export once licensed",
+        "3 full HD exports offered with zero watermark to test in real production",
+        "Unlimited vectorization, damage heatmap, magic brush and AI selection",
+        "Full-resolution SVG and Ultra-HD PNG export (> 2400 px / 4K)",
         "One activation, offline-friendly (14-day grace period)",
-        "Free updates",
+        "Free updates forever",
       ],
       cta: "Get VectoFix — €39 →",
-      trialNote: "Trial exports stay watermarked and lower-resolution until activated.",
+      trialNote: "After 3 full HD exports, trial exports switch to degraded watermarked mode until activated.",
     },
     faq: {
       title: "Frequently asked questions",
       items: [
         {
           q: "Is this a general-purpose vectorizer?",
-          a: "No — VectoFix is a repair tool. It's built for touching up a vectorization that already lost detail (yours or another tool's export), not as a first-stop raster-to-vector converter for every case.",
+          a: "VectoFix is a precision vectorization and repair tool. It is built to rescue imperfect traces, low-res client logos, and difficult details with local re-tracing and AI assistance.",
         },
         {
           q: "What can I do during the trial?",
-          a: "Everything: vectorization, the damage map, the magic brush, both quality modes — all unlimited. Only the export is locked (lower resolution, watermark) until you activate a license.",
+          a: "Everything: vectorization, damage heatmap, magic brush, AI selection, zoom and undo are completely unlimited. You also receive 3 full HD exports (zero watermark, native resolution) to test with your actual cutters, plotters, or design software. Beyond that, exports remain available in watermarked mode.",
         },
         {
           q: "Are my images uploaded anywhere?",
-          a: "No. Everything runs on your computer, offline included.",
+          a: "No. Everything runs 100% locally on your PC, completely offline.",
         },
         {
-          q: "Which formats are supported?",
-          a: "Import: PNG, JPG, SVG. Export: SVG and high-resolution PNG.",
+          q: "Which formats and workflows are supported?",
+          a: "Import: PNG, JPG, WebP, SVG, drag-and-drop and clipboard paste (Ctrl+V). Export: Clean SVG paths and Ultra-HD PNG.",
         },
         {
-          q: "Windows only?",
-          a: "Yes, for now — a desktop app, local installation.",
+          q: "Which operating systems are supported?",
+          a: "VectoFix is built specifically as a native, ultra-responsive Windows desktop application (Windows 10 / 11).",
         },
       ],
     },
@@ -148,17 +182,22 @@ const t = {
   fr: {
     metaTitle: "VectoFix — Vectoriser sans perdre le détail",
     metaDesc:
-      "Le seul outil qui mesure ce que sa propre vectorisation a raté — et vous laisse le réparer d'un coup de pinceau. Application Windows 100% locale.",
+      "Le seul outil qui mesure ce que sa propre vectorisation a raté — et vous laisse le réparer d'un coup de pinceau ou par sélection IA. Application Windows 100% locale.",
     nav: { how: "Comment ça marche", pricing: "Tarif", faq: "FAQ", cta: "Télécharger" },
     hero: {
       title: "Vectoriser sans perdre le détail.",
       subtitle:
-        "Tout vectoriseur simplifie votre image — et la simplification abîme toujours quelque chose. VectoFix est le seul à mesurer précisément ce qu'il a raté, et à vous laisser le réparer d'un coup de pinceau.",
+        "Tout vectoriseur simplifie votre image — et la simplification abîme toujours quelque chose. VectoFix est le seul à mesurer précisément ce qu'il a raté, et à vous laisser le réparer d'un coup de pinceau ou par détourage IA.",
       btnPrimary: "Télécharger gratuitement pour Windows",
       smartscreenNote:
         "Windows peut afficher un avertissement SmartScreen car l'appli est encore peu téléchargée. Cliquez sur « Informations complémentaires » puis « Exécuter quand même » pour continuer — l'installeur est sûr.",
-      subText: "Essai complet, sans carte bancaire — seul l'export se verrouille tant que vous n'avez pas acheté",
-      badges: ["100% local — rien n'est envoyé", "Achat unique, sans abonnement", "PNG / JPG / SVG en entrée, SVG / PNG en sortie"],
+      subText: "3 exports HD complets offerts, sans carte bancaire — testez en conditions réelles de production",
+      badges: [
+        "100% local — zéro cloud, confidentialité totale",
+        "3 exports HD complets offerts pour tester",
+        "Moteur ultra-rapide en mémoire (+38% de vitesse)",
+        "Achat unique 39 €, sans abonnement",
+      ],
     },
     pain: {
       title: "Les vectoriseurs ne disent jamais ce qu'ils ont raté.",
@@ -168,58 +207,87 @@ const t = {
       title: "Comment fonctionne VectoFix ?",
       subtitle: "Quatre étapes, dont une seule est vraiment à votre charge.",
       steps: [
-        { icon: Gauge, title: "Vectorisation automatique", desc: "Tracée en SVG dès l'ouverture, sans réglage à faire." },
-        { icon: MapPin, title: "Mesure de la fidélité", desc: "VectoFix re-rasterise son propre résultat et le compare, pixel par pixel, à l'image d'origine." },
-        { icon: ShieldCheck, title: "Carte des dégâts", desc: "Les zones où le tracé s'écarte le plus de la source sont signalées — vous savez exactement où regarder." },
-        { icon: Brush, title: "Pinceau magique", desc: "Peindre sur une zone abîmée la retrace finement et la recolle dans le SVG. 60 à 80% d'écart en moins, en moins d'une seconde." },
+        {
+          icon: Gauge,
+          title: "Ingestion & tracé instantané",
+          desc: "Glissez-déposez ou collez (Ctrl+V) depuis le presse-papier. Vectorisation 100% en mémoire vive (+38% de rapidité).",
+        },
+        {
+          icon: MapPin,
+          title: "Mesure de la fidélité",
+          desc: "VectoFix re-rasterise son résultat et le compare, pixel par pixel, à votre image source.",
+        },
+        {
+          icon: ShieldCheck,
+          title: "Carte des écarts & Comparaison",
+          desc: "Les zones où le tracé dévie sont surlignées en rouge. Maintenez Espace pour comparer avec l'original.",
+        },
+        {
+          icon: Brush,
+          title: "Pinceau magique & Détourage IA",
+          desc: "Peindre sur un détail le retrace finement. Détourage 1-clic par IA locale MobileSAM et fusion automatique des tracés.",
+        },
       ],
     },
     pillars: {
       title: "En quoi VectoFix diffère-t-il d'un vectoriseur classique ?",
       cards: [
-        { icon: Gauge, title: "Transparence totale", desc: "Fidélité et nombre de nœuds affichés ensemble, en permanence — retracer une zone la rend plus juste ET plus lourde, jamais caché." },
-        { icon: MapPin, title: "Fort là où les autres ratent", desc: "Photos, dégradés, illustrations riches — là où l'image-trace classique produit des bandes ou une explosion de formes." },
-        { icon: Lock, title: "100% local", desc: "Aucune image n'est envoyée sur un serveur, à aucun moment. Fonctionne dans l'avion aussi." },
+        {
+          icon: Gauge,
+          title: "Transparence totale",
+          desc: "Fidélité et nombre de nœuds affichés en temps réel, indispensable pour la découpe laser (LightBurn) et la broderie (Wilcom).",
+        },
+        {
+          icon: MapPin,
+          title: "Idéal pour les cas difficiles",
+          desc: "Logos WhatsApp pixelisés, petits textes, détails fins : des tracés nets et fermés sans détourage fastidieux à la plume.",
+        },
+        {
+          icon: Lock,
+          title: "100% local & confidentiel",
+          desc: "Aucune image ne quitte votre PC. Conforme au secret professionnel et aux exigences RGPD.",
+        },
       ],
     },
     pricing: {
       title: "Tarif simple",
       subtitle: "Une seule formule. Payez une fois, utilisez à vie.",
-      name: "VectoFix",
+      name: "VectoFix Pro",
       price: "39 €",
       priceNote: "paiement unique",
-      tagline: "Essai complet avant d'acheter — rien de caché.",
+      tagline: "3 exports HD complets offerts avant d'acheter — rien de caché.",
       features: [
-        "Vectorisation, carte des dégâts et pinceau magique illimités pendant l'essai",
-        "Export SVG pleine résolution et PNG haute définition une fois licencié",
+        "3 exports HD complets et sans filigrane offerts pour tester en production",
+        "Vectorisation, carte des dégâts, pinceau magique et détourage IA illimités",
+        "Export SVG vectoriel pur et PNG Ultra-HD (> 2400 px / 4K)",
         "Une activation, tolérant hors ligne (14 jours de grâce)",
-        "Mises à jour gratuites",
+        "Mises à jour gratuites à vie",
       ],
       cta: "Obtenir VectoFix — 39 € →",
-      trialNote: "Les exports en essai restent filigranés et en résolution dégradée tant que la licence n'est pas activée.",
+      trialNote: "Après 3 exports HD offerts, les exports basculent en mode dégradé avec filigrane jusqu'à activation de la licence.",
     },
     faq: {
       title: "Questions fréquentes",
       items: [
         {
           q: "Est-ce un vectoriseur généraliste ?",
-          a: "Non — VectoFix est un outil de réparation. Il sert à corriger une vectorisation qui a déjà perdu du détail (la vôtre ou celle d'un autre outil), pas à convertir n'importe quelle image en premier réflexe.",
+          a: "VectoFix est un outil de réparation et de précision vectorielle. Il sert à rattraper les logos imparfaits, les détails perdus et les fichiers clients basse définition avec une fidélité chirurgicale.",
         },
         {
           q: "Que puis-je faire pendant l'essai ?",
-          a: "Tout : vectorisation, carte des dégâts, pinceau magique, les deux modes de traitement — sans limite. Seul l'export est verrouillé (résolution réduite, filigrane) tant qu'une licence n'est pas activée.",
+          a: "Tout : vectorisation, carte des écarts, pinceau magique, détourage IA, zoom et historique sont 100% illimités. Vous disposez en plus de 3 exports HD complets (sans filigrane) pour tester directement dans vos logiciels de production (Illustrator, LightBurn, Cricut, etc.). Ensuite, l'export reste possible en mode dégradé filigrané.",
         },
         {
           q: "Mes images sont-elles envoyées quelque part ?",
-          a: "Non. Tout tourne sur votre ordinateur, y compris hors ligne.",
+          a: "Non. Tout s'exécute localement sur votre ordinateur, 100% hors ligne.",
         },
         {
           q: "Quels formats sont pris en charge ?",
-          a: "Import : PNG, JPG, SVG. Export : SVG et PNG haute définition.",
+          a: "Import : PNG, JPG, WebP, SVG, glisser-déposer et collage direct du presse-papier (Ctrl+V). Export : SVG vectoriel pur et PNG Ultra-HD.",
         },
         {
           q: "Seulement sur Windows ?",
-          a: "Oui pour l'instant — une application de bureau, installation locale.",
+          a: "Oui — VectoFix est développé spécifiquement comme une application de bureau native Windows (Windows 10 / 11), ultra-réactive et optimisée pour votre PC.",
         },
       ],
     },
