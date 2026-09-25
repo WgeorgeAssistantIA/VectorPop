@@ -14,6 +14,7 @@ export type BlogPost = {
   content: Array<
     | { type: "p"; text: string }
     | { type: "h2"; text: string }
+    | { type: "h3"; text: string }
     | { type: "ul"; items: string[] }
   >;
 };
@@ -21,7 +22,7 @@ export type BlogPost = {
 const wordsOf = (post: Omit<BlogPost, "readingTime">): number => {
   let n = 0;
   for (const b of post.content) {
-    if (b.type === "p" || b.type === "h2") n += b.text.split(/\s+/).length;
+    if (b.type === "p" || b.type === "h2" || b.type === "h3") n += b.text.split(/\s+/).length;
     else n += b.items.join(" ").split(/\s+/).length;
   }
   return n;
@@ -424,9 +425,9 @@ export const posts: BlogPost[] = [
 
   make({
     slug: "why-your-vectorized-svg-lost-detail",
-    title: "Why Your Vectorized SVG Lost Detail (And No Converter Tells You)",
+    title: "Why Your Vectorized SVG Lost Detail (And Why No Converter Tells You)",
     description:
-      "Every image-to-SVG converter simplifies your image — and simplifying always breaks something. Here's why no tool tells you what it got wrong, and what fixing just the broken part actually looks like.",
+      "Every raster-to-SVG converter simplifies your image, causing blurry curves, wobbles, and lost letters. Discover why tools fail to self-check and how local vector repair restores crisp lines.",
     date: "2026-08-12",
     author: "VectoFix Team",
     lang: "en",
@@ -438,55 +439,132 @@ export const posts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "You traced a logo, or a client sent you an SVG someone else traced, and something's off. A curve that should be smooth has a slight wobble. A gradient that was clean in the original photo turned into visible bands. You can't quite point to it, but next to the source image, it reads as slightly wrong.",
+        text: "You traced a customer logo, or received an SVG exported by another tool, and immediately noticed that something went wrong. A sharp typography serifs turned into rounded blobs. A smooth corporate gradient collapsed into stark, stepped color bands. Fine lines either vanished or took on an unsightly wobble.",
       },
       {
         type: "p",
-        text: "That feeling is correct, and it isn't your eyes. Vectorization is a simplification: pixels become curves, and curves are an approximation. Some approximation is unavoidable. What's avoidable is not knowing where it happened.",
-      },
-      { type: "h2", text: "Why doesn't any converter check its own work?" },
-      {
-        type: "p",
-        text: "Here's the part that's genuinely strange once you notice it: not a single image-to-SVG tool on the market — free or paid, online or desktop — renders its own SVG back to pixels and compares it against your original image. They trace, they hand you a file, and that's it. Whether the result actually looks like your source is left entirely to you, squinting at two windows side by side.",
+        text: "That frustration is completely justified. Vectorization is inherently a simplification process: discrete pixel grids are converted into continuous mathematical Bézier curves. While some degree of geometric approximation is inevitable, working blind without knowing what was compromised is not.",
       },
       {
-        type: "p",
-        text: "That's not a minor gap. It means the tool has no idea whether it did a good job. It can't, because it never looks back at what it produced.",
+        type: "h2",
+        text: "Why does vectorization distort fine details in logos and graphics?",
       },
-      { type: "h2", text: "Why are settings global when defects are local?" },
       {
-        type: "p",
-        text: "The second blind spot compounds the first. Every vectorizer's controls — colour count, corner threshold, denoise — apply to the whole image at once. But a defect is almost never everywhere. It's usually one gradient, one shaded fold, one busy corner where detail collapsed while the rest of the image traced fine.",
+        type: "h3",
+        text: "What actually happens when software converts pixels into Bézier curves?",
       },
       {
         type: "p",
-        text: "Faced with that, you have exactly one lever: turn a global setting up or down and re-trace the entire image, hoping the one bad zone improves without wrecking the parts that were already fine. It's a blunt instrument for a precise problem.",
-      },
-      { type: "h2", text: "What does \"measuring the loss\" actually mean?" },
-      {
-        type: "p",
-        text: "The fix isn't a smarter global algorithm. It's comparing the trace to the source, pixel by pixel, so the tool can tell you exactly where the SVG drifted the furthest — not \"the vectorization might not be perfect,\" but a map: this 40×40 zone is where the detail got lost, everything else is fine.",
+        text: "A bitmap image (PNG, JPEG, WebP) stores color values at rigid coordinate points on a grid. In contrast, an SVG file stores geometric instructions — curve endpoints, control handles, fills, and strokes. To generate these curves, tracing algorithms must guess where a boundary begins and ends.",
       },
       {
         type: "p",
-        text: "Once you know where, the fix stops being a whole-image gamble. You paint over that one zone, it gets re-traced at higher fidelity, and it's stitched back into the SVG you already had. The rest of the file — everything that was already correct — never moves.",
-      },
-      { type: "h2", text: "Is VectoFix a vectorizer?" },
-      {
-        type: "p",
-        text: "VectoFix does exactly this, and only this. It's not built to be your first stop for turning a raw photo into vector — it's built for the moment right after: you have an SVG (yours, or exported by another tool) that's mostly right, and you need to fix the part that isn't. It opens your image, traces it automatically, measures the fidelity against the source, shows you a damage map of where it drifted, and lets you repair those zones with a brush. Everything runs on your machine — nothing is uploaded.",
+        text: "When pixels are slightly blurred or antialiased, the algorithm calculates an average threshold. In high-contrast flat shapes, this works well. But in fine lettering, micro-textures, or subtle shadows, the math rounds off corners, smoothing away distinctive artistic details.",
       },
       {
+        type: "h3",
+        text: "Why do JPEG compression artefacts ruin automatic vector traces?",
+      },
+      {
         type: "p",
-        text: "One-time purchase, €39, full trial before you buy — export only locks until you activate a license.",
+        text: "When clients download logos from websites or send screenshots over WhatsApp, JPEG compression injects faint ringing noise and checkerboard pixel blocks around sharp borders. Standard vectorizers cannot distinguish intended artwork from compression noise.",
+      },
+      {
+        type: "p",
+        text: "The result is disastrous: the converter faithfully traces every single compression artifact, producing wavy outlines, jagged contours, and thousands of unnecessary anchor points that ruin laser cutters and vinyl plotters.",
+      },
+      {
+        type: "h2",
+        text: "Why do online and desktop converters fail to verify their own output?",
+      },
+      {
+        type: "h3",
+        text: "What is the blind spot behind conventional image-to-SVG converters?",
+      },
+      {
+        type: "p",
+        text: "Here is the critical design flaw in almost every converter on the market today: not a single tool rasterizes its own generated SVG back into pixels to measure discrepancy against your source bitmap. They run a forward pass, dump an SVG file onto your desktop, and immediately close the file.",
+      },
+      {
+        type: "p",
+        text: "Whether the vector looks identical to your source or lost 40% of its fidelity is left entirely to manual guesswork. You are forced to toggle between windows, squinting at overlapping layers in Illustrator or CorelDraw to spot what broke.",
+      },
+      {
+        type: "h3",
+        text: "Why are global settings the worst way to fix a local tracing defect?",
+      },
+      {
+        type: "p",
+        text: "Conventional vectorizers offer only global sliders: color precision, corner threshold, and noise reduction. These controls apply across 100% of the canvas. Yet, in real-world graphic files, defects are almost always localized — an illegible slogan under an otherwise perfect brand emblem.",
+      },
+      {
+        type: "p",
+        text: "Adjusting a global slider to fix one troubled corner forces the algorithm to re-trace the entire canvas. You end up bloating clean flat areas with thousands of extra nodes just to rescue one tiny detail, trading file weight against localized accuracy.",
+      },
+      {
+        type: "h2",
+        text: "How does pixel-by-pixel fidelity measurement solve the problem?",
+      },
+      {
+        type: "h3",
+        text: "How does objective error mapping eliminate guesswork?",
+      },
+      {
+        type: "p",
+        text: "Rather than guessing, VectoFix renders its newly calculated vector paths back into raw pixels and computes a pixel-by-pixel mathematical delta against the original bitmap. Any divergence beyond acceptable tolerance is instantly rendered on screen as a vibrant damage heatmap.",
+      },
+      {
+        type: "p",
+        text: "You immediately see highlighted red zones exactly where typography, shadows, or lines lost definition. By pressing the Space bar, you can instantly toggle back to the original image for instant visual verification.",
+      },
+      {
+        type: "h3",
+        text: "How does local brush repair and AI selection restore lost fidelity?",
+      },
+      {
+        type: "p",
+        text: "Once the damaged areas are visible, you simply paint over the red highlight with the magic brush, or click once with the embedded MobileSAM AI selector. VectoFix re-traces only the selected bounding box with maximum resolution and seamlessly stitches the refined curves back into the SVG structure.",
+      },
+      {
+        type: "p",
+        text: "Because neighboring strokes automatically fuse geometrically, the SVG never suffers from layered mask accumulation. You consistently achieve a 60% to 80% error reduction in under a second.",
+      },
+      {
+        type: "h2",
+        text: "Frequently Asked Questions About Vectorization Loss (FAQ)",
+      },
+      {
+        type: "h3",
+        text: "Why do straight lines wobble after vectorizing a low-resolution logo?",
+      },
+      {
+        type: "p",
+        text: "Wobbling occurs when tracing algorithms encounter antialiased stair-stepping on low-resolution edges. Instead of drawing a straight vector segment, the software creates multiple curves following individual pixel corners. In VectoFix, retouching the line with the magic brush recalculates straight geometric paths without distorting surrounding shapes.",
+      },
+      {
+        type: "h3",
+        text: "Can VectoFix restore tiny customer logos sent over WhatsApp or email?",
+      },
+      {
+        type: "p",
+        text: "Yes. You can paste graphics straight from your clipboard (Ctrl+V) or drag and drop files directly. The in-memory processing engine traces the file in RAM (+38% faster) and lets you isolate and re-render damaged text, crests, or emblems at Ultra-HD resolutions exceeding 2400 px / 4K.",
+      },
+      {
+        type: "h3",
+        text: "How does the free trial work before buying VectoFix?",
+      },
+      {
+        type: "p",
+        text: "VectoFix provides 3 full-resolution HD exports with zero watermark so you can test real cut files or print outputs in production. Once the trial quota is reached, you can continue exploring the tool in watermarked mode until you activate a lifetime €39 license without subscription.",
       },
     ],
   }),
+
   make({
     slug: "one-slider-cant-fix-a-whole-image",
-    title: "One Slider Can't Fix a Whole Image: Why Vector Repair Has to Be Local",
+    title: "Why One Slider Can't Fix a Vector Trace: The Case for Local SVG Repair",
     description:
-      "Turning up a global setting to fix one bad corner of a trace also changes every part that was already fine. Here's why local repair — not a better global algorithm — is the actual answer.",
+      "Turning up global vectorizer settings to fix one corner bloats your file everywhere else. Learn why node count control and localized repair are essential for clean cutting, laser, and print.",
     date: "2026-08-12",
     author: "VectoFix Team",
     lang: "en",
@@ -498,51 +576,132 @@ export const posts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "Open any vectorizer's settings panel and you'll find the same handful of sliders: colour precision, corner threshold, speckle filter, smoothing. Every one of them is global. Move it, and it changes the whole image — not the part you're unhappy with.",
+        text: "Open any standard vectorization program — whether Adobe Illustrator Image Trace, Corel PowerTRACE, or an online conversion site — and you are greeted by the same handful of sliders: color count, path threshold, corner precision, and noise filtering.",
       },
       {
         type: "p",
-        text: "That would be fine if defects were global too. They almost never are.",
-      },
-      { type: "h2", text: "Does a trace fail everywhere, or only in patches?" },
-      {
-        type: "p",
-        text: "Look closely at a mediocre vector trace and the bad parts cluster: a shaded fold in a logo's ribbon, a soft gradient behind text, a busy corner with fine detail. The rest of the image — the flat background, the clean outer outline — is usually traced perfectly well by the exact same pass.",
+        text: "Every time you drag one of these sliders, the software re-traces the entire image from scratch. If your goal was to clarify three tiny letters in a corner banner, you just forced every flat background, circle, and border across the canvas to be recalculated.",
       },
       {
-        type: "p",
-        text: "So the honest fix for \"this one corner is wrong\" is not \"change a setting that touches every corner.\" It's fixing that corner.",
+        type: "h2",
+        text: "Why do global tracing settings inevitably compromise vector quality?",
       },
-      { type: "h2", text: "What does raising a global setting actually cost you?" },
       {
-        type: "p",
-        text: "Say the fold in your logo lost its shading. You raise colour precision to capture it. It works — the fold looks better. It also adds nodes to the flat background that didn't need them, because the same setting now applies there too. Your file is heavier everywhere to fix a problem that existed in one place. Do this a few times chasing different defects and you end up with an SVG that's both imprecise in places and bloated overall — the worst of both.",
-      },
-      { type: "h2", text: "Which two numbers matter, and why together?" },
-      {
-        type: "p",
-        text: "Any repair — local or global — trades fidelity for node count. Retracing a zone more finely makes it more accurate and adds points to describe that accuracy. That trade-off is unavoidable. What's avoidable is not seeing it: a tool that shows you fidelity without node count (or the reverse) lets you optimise blind, usually toward a file that looks good in the preview and opens like a nightmare in Illustrator.",
-      },
-      { type: "h2", text: "What does local repair done right look like?" },
-      {
-        type: "p",
-        text: "VectoFix's damage map points at the zones that actually drifted from the source, measured pixel by pixel — not guessed at. Painting over one of those zones re-traces only that area and stitches it back into the existing SVG; nothing else in the file moves. Fidelity and node count are shown together after every stroke, so \"is this worth it\" is a number, not a hunch.",
+        type: "h3",
+        text: "What is the hidden cost of turning up global curve precision?",
       },
       {
         type: "p",
-        text: "Two treatment modes are available per stroke — Faithful, which recovers the most detail at the cost of more nodes, and Light, which trades some fidelity for a lighter file — so a face can be treated finely and a flat background lightly, in the same document.",
+        text: "Imagine a company crest featuring bold lettering over a solid background shield. The shield traces perfectly with 50 vector nodes. But the crest's ribbon has delicate shading that collapsed into an indistinct smudge.",
       },
       {
         type: "p",
-        text: "VectoFix is a Windows app, 100% local, one-time purchase at €39. Full trial before you buy.",
+        text: "To fix the ribbon, you turn the global precision slider up. The ribbon recovers its delicate folds, but the simple shield background now explodes from 50 nodes to 1,200 jagged points. By attempting to solve a local issue globally, you degraded clean geometry into heavy vector clutter.",
+      },
+      {
+        type: "h3",
+        text: "Why are vector defects almost always localized?",
+      },
+      {
+        type: "p",
+        text: "Graphic designs and branding files are fundamentally heterogeneous: they combine large, flat geometric expanses with intricate typographic details, drop shadows, or fine mascots. A single mathematical parameter cannot simultaneously serve a 500-pixel flat circle and a 12-pixel font serif.",
+      },
+      {
+        type: "p",
+        text: "Treating the file uniformly guarantees compromise: either your fine details blur away, or your flat shapes become bloated with microscopic nodes.",
+      },
+      {
+        type: "h2",
+        text: "Why is node count just as important as visual fidelity?",
+      },
+      {
+        type: "h3",
+        text: "How do excessive nodes sabotage laser cutters and CNC machines?",
+      },
+      {
+        type: "p",
+        text: "In software like LightBurn, RDWorks, or Vectric Aspire, every single anchor point represents a physical deceleration instruction for the stepper motors. When an SVG contains thousands of micro-nodes, the laser head stutters, vibrates, and slows down dramatically.",
+      },
+      {
+        type: "p",
+        text: "These mechanical pauses cause localized over-burning on delicate materials like acrylic, plywood, or leather. A clean vector path with minimal nodes ensures continuous, high-speed head movement and immaculate cut edges.",
+      },
+      {
+        type: "h3",
+        text: "Why does uncontrolled node density crash commercial embroidery machines?",
+      },
+      {
+        type: "p",
+        text: "Industrial embroidery digitizers (such as Wilcom or Tajima Pulse) translate vector vertices into needle penetrations and thread trim commands. Bloated vector traces lead to needle deflection, repeated thread snaps, and stiff fabric bunching that ruins garments.",
+      },
+      {
+        type: "p",
+        text: "Controlling the exact trade-off between fidelity and node count is the only way to deliver production-ready vector assets.",
+      },
+      {
+        type: "h2",
+        text: "How does VectoFix achieve surgical local vector repair?",
+      },
+      {
+        type: "h3",
+        text: "How does localized brush re-tracing preserve pristine regions?",
+      },
+      {
+        type: "p",
+        text: "VectoFix inspects the vectorization and highlights only drifted regions on a live fidelity map. You adjust your brush radius with the [ and ] shortcut keys and paint exclusively over the affected zone.",
+      },
+      {
+        type: "p",
+        text: "The software isolates that bounding region, recalculates precise curves at native resolution, and splices the patch into your SVG. The remainder of your vector graphic remains 100% untouched.",
+      },
+      {
+        type: "h3",
+        text: "What is automatic stroke fusion and why does it prevent file bloat?",
+      },
+      {
+        type: "p",
+        text: "Traditional graphic editors stack overlapping clip-paths and masks when you edit repeatedly. In VectoFix, when consecutive brush strokes overlap by 70% or more, the geometric engine automatically merges them into a unified boundary.",
+      },
+      {
+        type: "p",
+        text: "This prevents the multiplication of redundant tags and ensures that your exported SVG remains lightweight, clean, and immediately editable in Illustrator or CAD software.",
+      },
+      {
+        type: "h2",
+        text: "Frequently Asked Questions About Vector Nodes and Sliders (FAQ)",
+      },
+      {
+        type: "h3",
+        text: "How many nodes should a clean, professional logo have?",
+      },
+      {
+        type: "p",
+        text: "A well-optimized logo typically contains between 150 and 800 nodes depending on typography complexity. Automated converters frequently output 5,000 to 15,000 nodes. VectoFix displays live node count and fidelity indicators side-by-side so you can maintain optimal efficiency.",
+      },
+      {
+        type: "h3",
+        text: "What is the difference between Faithful and Light repair modes in VectoFix?",
+      },
+      {
+        type: "p",
+        text: "Faithful mode prioritizes maximum detail recovery, making it ideal for emblems, mascots, and script fonts. Light mode prioritizes minimal node generation, making it perfect for straight text, borders, and silhouettes where cutting speed matters most.",
+      },
+      {
+        type: "h3",
+        text: "Can I test VectoFix on my laser or CNC machine before purchasing?",
+      },
+      {
+        type: "p",
+        text: "Yes. VectoFix provides 3 free, full-quality HD exports without watermarks. You can take your exported SVG directly into LightBurn or your vinyl plotter to verify cut smoothness and path closure in real production.",
       },
     ],
   }),
+
   make({
     slug: "introducing-vectofix",
-    title: "Introducing VectoFix: Paint Over What Broke",
+    title: "Introducing VectoFix: The First Local Vector Repair Tool with AI Precision",
     description:
-      "VectoFix is now available: a desktop tool that measures exactly where a vectorization lost detail, and lets you repair just that zone with a single brush stroke.",
+      "VectoFix is a native Windows app that measures vectorization loss pixel by pixel and lets you repair damaged zones with a magic brush and local MobileSAM AI.",
     date: "2026-08-12",
     author: "VectoFix Team",
     lang: "en",
@@ -550,45 +709,116 @@ export const posts: BlogPost[] = [
     content: [
       {
         type: "p",
-        text: "VectoFix is a Windows app that measures, pixel by pixel, where a vectorized SVG lost detail compared to its source image, and lets you repair just that zone with a brush stroke.",
+        text: "VectoFix is a Windows desktop application that measures, pixel by pixel, where a vectorized SVG lost detail compared to its source image, and lets you repair just that zone with a brush stroke or 1-click AI selection.",
       },
       {
         type: "p",
-        text: "VectoFix is a new Windows app built around one idea: a vectorizer that doesn't compare its own result to the source image can't tell you what it got wrong — so it never does. VectoFix does, and lets you fix it.",
+        text: "Converting raster bitmaps into crisp vectors has always been a painful bottleneck for sign makers, engravers, textile customizers, and graphic studios. Automated converters either over-smooth important artwork or generate noisy, unworkable files.",
       },
-      { type: "h2", text: "How does VectoFix work?" },
-      {
-        type: "ul",
-        items: [
-          "Open a PNG, JPG or SVG — it's traced automatically, no setting to touch first",
-          "VectoFix re-rasterizes its own result and compares it, pixel by pixel, to your source",
-          "A damage map highlights exactly where the trace drifted furthest from the original",
-          "Paint over a damaged zone and it re-traces itself, stitched back into the SVG — 60 to 80% less error, in under a second",
-        ],
-      },
-      { type: "h2", text: "What is VectoFix built for?" },
       {
         type: "p",
-        text: "Classic image-trace tools are built for flat logos and struggle with photos, gradients and rich illustrations — the trace turns to banding or an explosion of shapes. That's exactly the territory VectoFix targets: not replacing a general vectorizer, but repairing the specific zones where any vectorizer — including a good one — loses ground.",
+        text: "VectoFix changes the paradigm completely: instead of forcing you to accept an all-or-nothing conversion, it acts as a high-precision repair bench, identifying defects and restoring perfection where conventional tools give up.",
       },
-      { type: "h2", text: "Is anything hidden?" },
+      {
+        type: "h2",
+        text: "What makes VectoFix fundamentally different from ordinary vectorizers?",
+      },
+      {
+        type: "h3",
+        text: "How does VectoFix verify its own tracing accuracy?",
+      },
       {
         type: "p",
-        text: "Fidelity and node count are shown together, always, because they trade against each other — retracing a zone makes it more accurate and heavier, never one without the other. Two treatment modes, Faithful and Light, are available per stroke, so a face and a flat background in the same image can each get the right amount of detail.",
+        text: "Ordinary vectorizers trace blindly and immediately exit. VectoFix rasterizes its vector output into memory, compares every single pixel with the source bitmap, and calculates a rigorous mathematical fidelity score.",
       },
-      { type: "h2", text: "How much does VectoFix cost?" },
       {
         type: "p",
-        text: "VectoFix is a one-time purchase, €39, no subscription. The trial is fully functional — vectorization, damage map, magic brush, both modes, all unlimited — only the export is locked (lower resolution, watermark) until a license is activated. Windows, 100% local: no image is ever uploaded, at any point.",
+        text: "Defects, lost curves, and color bandings are pinpointed on an intuitive damage heatmap. You no longer have to spend 20 minutes inspecting artwork under a magnifying glass.",
+      },
+      {
+        type: "h3",
+        text: "Why is 100% offline, in-memory execution essential for professionals?",
+      },
+      {
+        type: "p",
+        text: "Web-based conversion platforms require uploading client logos to third-party servers, creating compliance risks under GDPR and violating non-disclosure agreements (NDAs).",
+      },
+      {
+        type: "p",
+        text: "VectoFix executes 100% locally on your Windows PC. Operating entirely in RAM without temporary disk writes, the tracing engine achieves a +38% speed boost, processing complex graphics in fractions of a second with total confidentiality.",
+      },
+      {
+        type: "h2",
+        text: "How does the four-step VectoFix workflow operate in practice?",
+      },
+      {
+        type: "h3",
+        text: "Step 1: Rapid ingestion via drag-and-drop and clipboard paste",
+      },
+      {
+        type: "p",
+        text: "There is no tedious file dialog requirement. Simply drag PNG, JPG, WebP, or SVG files into the window, or press Ctrl+V to paste screenshots directly from WhatsApp Web or your browser. The file opens and traces instantly.",
+      },
+      {
+        type: "h3",
+        text: "Step 2: Damage visualization and instant comparison",
+      },
+      {
+        type: "p",
+        text: "The damage heatmap illuminates problematic edges in vivid red. Hold down the Space bar or D key to instantly switch between the original bitmap and the vector trace, verifying accuracy at a glance.",
+      },
+      {
+        type: "h3",
+        text: "Step 3: Magic brush retouching and 1-click MobileSAM AI",
+      },
+      {
+        type: "p",
+        text: "Paint over flawed lines using keyboard brush resizing ([ and ]). Alternatively, click once with the integrated MobileSAM AI tool to isolate intricate shapes in under 35 milliseconds. Consecutive strokes fuse automatically to keep vector structure clean.",
+      },
+      {
+        type: "h3",
+        text: "Step 4: Ultra-HD export for professional fabrication",
+      },
+      {
+        type: "p",
+        text: "Export clean vector SVG files compatible with LightBurn, Cricut, Roland CutStudio, and Illustrator, or export Ultra-HD PNGs (> 2400 px / 4K) with pixel-perfect resolution for large-format print proofing.",
+      },
+      {
+        type: "h2",
+        text: "Frequently Asked Questions About VectoFix (FAQ)",
+      },
+      {
+        type: "h3",
+        text: "What are the computer requirements for running VectoFix?",
+      },
+      {
+        type: "p",
+        text: "VectoFix runs on Windows 10 and Windows 11 (64-bit). It is engineered as a lightweight, native desktop application that does not require heavy GPU hardware or an internet connection.",
+      },
+      {
+        type: "h3",
+        text: "How much does VectoFix cost and how does licensing work?",
+      },
+      {
+        type: "p",
+        text: "VectoFix Pro is available for a one-time payment of €39. There are zero recurring monthly subscriptions. Your purchase grants lifetime access, free version updates, and offline license validation with a 14-day grace period.",
+      },
+      {
+        type: "h3",
+        text: "What features are included in the free download?",
+      },
+      {
+        type: "p",
+        text: "The free trial provides unrestricted access to vectorization, damage heatmaps, the magic brush, AI selection, and 3 full-resolution HD exports without any watermark. After 3 exports, saving switches to a watermarked mode until you choose to unlock the full license.",
       },
     ],
   }),
 
   make({
     slug: "pourquoi-votre-svg-vectorise-a-perdu-du-detail",
-    title: "Pourquoi votre SVG vectorisé a perdu du détail (et aucun convertisseur ne vous le dit)",
+    title: "Pourquoi votre SVG vectorisé a perdu du détail (et pourquoi aucun convertisseur ne vous le dit)",
     description:
-      "Tout convertisseur image vers SVG simplifie votre image — et la simplification abîme toujours quelque chose. Voici pourquoi aucun outil ne vous dit ce qu'il a raté, et à quoi ressemble vraiment le fait de ne réparer que la partie abîmée.",
+      "Tout convertisseur image vers SVG simplifie les pixels en courbes, générant bavures, lettres déformées et perte de finesse. Découvrez pourquoi les outils traditionnels sont aveugles et comment la réparation vectorielle locale résout le problème.",
     date: "2026-08-12",
     author: "Équipe VectoFix",
     lang: "fr",
@@ -600,55 +830,132 @@ export const posts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "Vous avez tracé un logo, ou un client vous a envoyé un SVG tracé par quelqu'un d'autre, et quelque chose cloche. Une courbe qui devrait être lisse a un léger flottement. Un dégradé propre sur la photo d'origine s'est transformé en bandes visibles. Vous ne sauriez pas dire précisément quoi, mais à côté de l'image source, ça sonne légèrement faux.",
+        text: "La scène se répète quotidiennement dans les ateliers de marquage, de gravure et les agences : vous vectorisez le logo d'un client ou récupérez un SVG généré automatiquement, et le constat est sans appel. Les empattements de typographie sont arrondis, les lignes droites ondulent, et les dégradés subtils se sont transformés en marches d'escalier disgracieuses.",
       },
       {
         type: "p",
-        text: "Cette impression est juste, et ce n'est pas vos yeux. La vectorisation est une simplification : les pixels deviennent des courbes, et les courbes sont une approximation. Une part d'approximation est inévitable. Ce qui est évitable, c'est de ne pas savoir où elle s'est produite.",
-      },
-      { type: "h2", text: "Pourquoi aucun convertisseur ne vérifie-t-il son propre travail ?" },
-      {
-        type: "p",
-        text: "Voici la partie vraiment étrange une fois qu'on y prête attention : pas un seul outil image-vers-SVG du marché — gratuit ou payant, en ligne ou de bureau — ne rend son propre SVG en pixels pour le comparer à votre image d'origine. Ils tracent, vous remettent un fichier, et c'est tout. Que le résultat ressemble vraiment à votre source vous est entièrement laissé, à comparer deux fenêtres en plissant les yeux.",
+        text: "Cette déception est parfaitement normale. Vectoriser consiste par définition à simplifier : remplacer une grille de pixels par des équations géométriques de Bézier. Mais si une part de simplification est inévitable, accepter de travailler à l'aveugle sans savoir où les dégâts se sont produits ne l'est pas.",
       },
       {
-        type: "p",
-        text: "Ce n'est pas un détail. Ça veut dire que l'outil n'a aucune idée s'il a bien fait son travail. Il ne peut pas le savoir, puisqu'il ne regarde jamais ce qu'il a produit.",
+        type: "h2",
+        text: "Pourquoi la vectorisation déforme-t-elle les détails fins et les typographies ?",
       },
-      { type: "h2", text: "Pourquoi les réglages sont-ils globaux quand les défauts sont locaux ?" },
       {
-        type: "p",
-        text: "Le second angle mort aggrave le premier. Les réglages de tout vectoriseur — nombre de couleurs, seuil d'angle, débruitage — s'appliquent à toute l'image en même temps. Mais un défaut n'est presque jamais partout. C'est en général un dégradé, un pli ombré, un coin chargé où le détail s'est effondré pendant que le reste se traçait très bien.",
+        type: "h3",
+        text: "Que se passe-t-il réellement quand un pixel devient une courbe de Bézier ?",
       },
       {
         type: "p",
-        text: "Face à ça, vous n'avez qu'un seul levier : monter ou baisser un réglage global et retracer toute l'image, en espérant que la zone à problème s'améliore sans abîmer ce qui allait déjà bien. Un outil grossier pour un problème précis.",
-      },
-      { type: "h2", text: "Que veut vraiment dire « mesurer la perte » ?" },
-      {
-        type: "p",
-        text: "La solution n'est pas un algorithme global plus malin. C'est comparer le tracé à la source, pixel par pixel, pour que l'outil puisse dire exactement où le SVG s'est le plus écarté — pas « la vectorisation n'est peut-être pas parfaite », mais une carte : cette zone de 40×40 est celle où le détail s'est perdu, tout le reste va bien.",
+        text: "Une image matricielle (PNG, JPEG, WebP) enregistre des couleurs fixes dans une grille rigide. Un fichier SVG enregistre des formules mathématiques décrivant des formes, des points d'ancrage et des tangentes. Pour tracer un vecteur, le logiciel calcule une moyenne des transitions de contraste.",
       },
       {
         type: "p",
-        text: "Une fois qu'on sait où, la correction cesse d'être un pari sur toute l'image. Vous peignez sur cette seule zone, elle est retracée avec plus de finesse, et recollée dans le SVG que vous aviez déjà. Le reste du fichier — tout ce qui était déjà correct — ne bouge jamais.",
-      },
-      { type: "h2", text: "VectoFix est-il un vectoriseur ?" },
-      {
-        type: "p",
-        text: "VectoFix fait exactement ça, et rien d'autre. Il n'est pas conçu pour être votre premier réflexe pour transformer une photo brute en vectoriel — il sert pour le moment juste après : vous avez un SVG (le vôtre, ou exporté par un autre outil) globalement correct, et vous devez réparer la partie qui ne l'est pas. Il ouvre votre image, la trace automatiquement, mesure la fidélité par rapport à la source, vous montre une carte des dégâts, et vous laisse réparer ces zones au pinceau. Tout tourne sur votre machine — rien n'est envoyé.",
+        text: "Sur des contours flous ou des lissages d'anticrénelage, l'algorithme tranche arbitrairement. Les angles vifs sont gommés, les espaces négatifs fins (comme le centre d'un « e » ou d'un « a ») se bouchent, et l'identité visuelle de la marque se dégrade.",
       },
       {
+        type: "h3",
+        text: "Pourquoi les artefacts JPEG de WhatsApp détruisent-ils les tracés automatiques ?",
+      },
+      {
         type: "p",
-        text: "Achat unique, 39 €, essai complet avant d'acheter — seul l'export se verrouille tant que la licence n'est pas activée.",
+        text: "Les logos envoyés par les clients finaux proviennent presque toujours de captures d'écran ou de partages WhatsApp compressés. La compression JPEG injecte du bruit et des micro-blocs de pixels autour du lettrage.",
+      },
+      {
+        type: "p",
+        text: "Un vectoriseur standard ne sait pas distinguer le dessin authentique du bruit de compression : il trace fidèlement chaque imperfection, produisant des contours bosselés et des centaines de micro-nœuds inutiles qui bloquent les découpeuses vinyle et les lasers.",
+      },
+      {
+        type: "h2",
+        text: "Pourquoi aucun convertisseur en ligne ne vérifie-t-il son propre résultat ?",
+      },
+      {
+        type: "h3",
+        text: "L'angle mort des convertisseurs : l'absence totale de boucle de contrôle",
+      },
+      {
+        type: "p",
+        text: "Voici le paradoxe des outils de conversion actuels : aucun outil image-vers-SVG — qu'il soit gratuit, payant ou en ligne — ne re-rasterise son propre fichier SVG pour le comparer pixel par pixel à votre image de départ. Ils appliquent leur algorithme, génèrent un fichier, et s'arrêtent là.",
+      },
+      {
+        type: "p",
+        text: "L'outil ignore totalement s'il a réussi ou massacré votre visuel. La corvée d'inspection visuelle vous est entièrement déléguée, à comparer deux fenêtres côte à côte en plissant les yeux dans Illustrator.",
+      },
+      {
+        type: "h3",
+        text: "Pourquoi les curseurs de réglage globaux sont-ils inadaptés aux défauts locaux ?",
+      },
+      {
+        type: "p",
+        text: "Face à un tracé décevant, les logiciels traditionnels n'offrent que des curseurs globaux (seuil de détail, lissage, nombre de couleurs). Or, un défaut graphique est presque toujours localisé : un texte secondaire illisible alors que le blason principal est parfait.",
+      },
+      {
+        type: "p",
+        text: "Pousser un curseur global pour sauver un mot oblige l'algorithme à redessiner toute l'image : vous alourdissez inutilement les zones saines avec des milliers de nœuds supplémentaires, créant un fichier trop lourd et inexploitable.",
+      },
+      {
+        type: "h2",
+        text: "Comment la mesure d'écart et la réparation locale résolvent-elles l'impasse ?",
+      },
+      {
+        type: "h3",
+        text: "Comment la carte d'écart objective supprime-t-elle le doute ?",
+      },
+      {
+        type: "p",
+        text: "Au lieu d'avancer à l'aveugle, VectoFix recalcule le rendu matriciel de son tracé et effectue une soustraction pixel par pixel avec l'image source. Les zones divergentes s'affichent immédiatement sous forme d'une carte thermique rouge vif.",
+      },
+      {
+        type: "p",
+        text: "Vous voyez instantanément où se situent les pertes. Une pression sur la touche Espace affiche l'image originale en surimpression immédiate pour comparer sans quitter votre zone de travail.",
+      },
+      {
+        type: "h3",
+        text: "Comment le pinceau magique et l'IA MobileSAM rétablissent-ils la netteté ?",
+      },
+      {
+        type: "p",
+        text: "Il vous suffit de peindre sur la zone en rouge avec le pinceau magique (taille ajustable via les touches [ et ]) ou de cliquer pour détourer avec l'IA MobileSAM embarquée. VectoFix retrace localement avec une précision chirurgicale et recolle les courbes dans le document SVG sans créer de calques parasites.",
+      },
+      {
+        type: "p",
+        text: "Le résultat est sans appel : un gain immédiat de 60 à 80% de fidélité en moins d'une seconde, sans altérer les éléments déjà réussis.",
+      },
+      {
+        type: "h2",
+        text: "Questions fréquentes sur la perte de détail en vectorisation (FAQ)",
+      },
+      {
+        type: "h3",
+        text: "Pourquoi les textes d'un logo deviennent-ils illisibles après vectorisation ?",
+      },
+      {
+        type: "p",
+        text: "Les caractères typographiques comportent des courbes précises et des contreformes minuscules. Lorsque l'image source manque de résolution, le vectoriseur global fusionne les lettres entre elles. Dans VectoFix, peindre localement sur le texte force un calcul haute définition qui redéfinit les pleins et les déliés.",
+      },
+      {
+        type: "h3",
+        text: "Peut-on récupérer un logo client basse définition pour une impression grand format ?",
+      },
+      {
+        type: "p",
+        text: "Absolument. Grâce à l'ingestion directe par Ctrl+V ou glisser-déposer et au moteur d'export Ultra-HD (> 2400 px / 4K), vous pouvez vectoriser et corriger un logo basse définition pour l'exporter en SVG vectoriel pur, agrandissable à l'infini pour une banderole ou une enseigne sans pixellisation.",
+      },
+      {
+        type: "h3",
+        text: "Comment tester VectoFix gratuitement en conditions réelles de production ?",
+      },
+      {
+        type: "p",
+        text: "VectoFix propose un essai complet offrant 3 exports HD sans aucun filigrane ni carte bancaire. Vous pouvez tester directement vos fichiers de découpe ou d'impression. Au-delà, l'export reste accessible en mode dégradé avec filigrane jusqu'à l'acquisition de la licence à 39 € à vie.",
       },
     ],
   }),
+
   make({
     slug: "un-seul-curseur-ne-peut-pas-tout-reparer",
-    title: "Un seul curseur ne peut pas réparer toute une image : pourquoi la retouche vectorielle doit être locale",
+    title: "Pourquoi un seul curseur ne peut pas réparer un tracé : l'impératif de la retouche vectorielle locale",
     description:
-      "Monter un réglage global pour corriger un coin raté du tracé change aussi toutes les parties qui allaient déjà bien. Voici pourquoi la réparation locale — pas un meilleur algorithme global — est la vraie réponse.",
+      "Augmenter un réglage global pour corriger un détail dégrade et alourdit tout le reste du fichier. Découvrez pourquoi le contrôle du nombre de nœuds et la réparation chirurgicale locale sont indispensables pour la découpe, le laser et la broderie.",
     date: "2026-08-12",
     author: "Équipe VectoFix",
     lang: "fr",
@@ -660,51 +967,132 @@ export const posts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "Ouvrez le panneau de réglages de n'importe quel vectoriseur et vous trouverez les mêmes quelques curseurs : précision des couleurs, seuil d'angle, filtre parasites, lissage. Chacun est global. Le déplacer change toute l'image — pas seulement la partie qui vous gêne.",
+        text: "Dans tous les convertisseurs conventionnels, le panneau de configuration impose les mêmes curseurs : précision du tracé, seuil d'angle, réduction du bruit et lissage. Chacun de ces contrôles agit de manière monolithique sur l'intégralité du visuel.",
       },
       {
         type: "p",
-        text: "Ce serait sans conséquence si les défauts étaient globaux eux aussi. Ils ne le sont presque jamais.",
-      },
-      { type: "h2", text: "Un tracé rate-t-il partout, ou seulement par zones ?" },
-      {
-        type: "p",
-        text: "Regardez de près un tracé vectoriel médiocre et les défauts se regroupent : un pli ombré dans le ruban d'un logo, un dégradé doux derrière un texte, un coin chargé de détail fin. Le reste de l'image — le fond plat, le contour extérieur net — est en général très bien tracé par cette même passe.",
+        text: "Cette approche part du principe erroné qu'une image présente des caractéristiques uniformes. En pratique, une illustration ou un logo commercial est toujours hétérogène, mêlant grands aplats épurés et lettrages délicats.",
       },
       {
-        type: "p",
-        text: "La correction honnête pour « ce coin-là est raté » n'est donc pas « changer un réglage qui touche tous les coins ». C'est réparer ce coin.",
+        type: "h2",
+        text: "Pourquoi les réglages globaux aggravent-ils les défauts d'un tracé vectoriel ?",
       },
-      { type: "h2", text: "Que coûte vraiment le fait de monter un réglage global ?" },
       {
-        type: "p",
-        text: "Disons que le pli de votre logo a perdu son ombrage. Vous montez la précision des couleurs pour le récupérer. Ça marche — le pli est meilleur. Mais ça ajoute aussi des nœuds au fond plat qui n'en avait pas besoin, puisque le même réglage s'y applique désormais aussi. Votre fichier s'alourdit partout pour corriger un problème qui n'existait qu'à un seul endroit. Répétez ça plusieurs fois en chassant différents défauts, et vous obtenez un SVG à la fois imprécis par endroits et globalement trop lourd — le pire des deux mondes.",
-      },
-      { type: "h2", text: "Quels sont les deux chiffres qui comptent, et pourquoi ensemble ?" },
-      {
-        type: "p",
-        text: "Toute réparation — locale ou globale — échange de la fidélité contre des nœuds. Retracer une zone plus finement la rend plus juste et ajoute des points pour décrire cette justesse. Ce compromis est inévitable. Ce qui est évitable, c'est de ne pas le voir : un outil qui affiche la fidélité sans le nombre de nœuds (ou l'inverse) vous laisse optimiser à l'aveugle, en général vers un fichier qui a l'air bien dans l'aperçu et s'ouvre comme un cauchemar dans Illustrator.",
-      },
-      { type: "h2", text: "À quoi ressemble une réparation locale bien faite ?" },
-      {
-        type: "p",
-        text: "La carte des dégâts de VectoFix pointe les zones qui se sont réellement écartées de la source, mesurées pixel par pixel — pas devinées. Peindre sur l'une de ces zones ne retrace que cette zone et la recolle dans le SVG existant ; rien d'autre dans le fichier ne bouge. Fidélité et nombre de nœuds sont affichés ensemble après chaque coup de pinceau, pour que « est-ce que ça en valait la peine » soit un chiffre, pas une impression.",
+        type: "h3",
+        text: "Le piège de la précision globale : réparer un détail au détriment du poids",
       },
       {
         type: "p",
-        text: "Deux modes de traitement sont disponibles par coup de pinceau — Fidèle, qui récupère un maximum de détail au prix de plus de nœuds, et Léger, qui sacrifie un peu de fidélité pour un fichier plus léger — pour traiter un visage finement et un fond plat légèrement, dans le même document.",
+        text: "Imaginons un écusson d'artisan avec un fond uni et un outil finement gravé au centre. Le fond uni se vectorise parfaitement avec 30 nœuds. En revanche, les rainures de l'outil ont disparu.",
       },
       {
         type: "p",
-        text: "VectoFix est une application Windows, 100% locale, achat unique à 39 €. Essai complet avant d'acheter.",
+        text: "Si vous augmentez la précision globale pour faire réapparaître les rainures, le réglage s'applique aussi au fond uni. Ce dernier se retrouve subitement découpé en centaines de micro-facettes et 1 500 nœuds. Vous avez corrigé un détail en sabotant la légèreté de tout le fichier.",
+      },
+      {
+        type: "h3",
+        text: "Pourquoi les défauts de vectorisation sont-ils systématiquement localisés ?",
+      },
+      {
+        type: "p",
+        text: "Dans un logo d'entreprise, les anomalies de conversion se concentrent presque toujours dans les dégradés doux, les petites majuscules d'un slogan ou les croisements de lignes fines. Le contour principal et les formes géométriques de base sont déjà impeccables dès la première passe.",
+      },
+      {
+        type: "p",
+        text: "Vouloir réparer un problème local avec un outil global revient à utiliser un rouleau de peintre en bâtiment pour restaurer une enluminure : c'est un outil grossier pour une tâche de haute précision.",
+      },
+      {
+        type: "h2",
+        text: "Pourquoi le nombre de nœuds est-il aussi crucial que la fidélité visuelle ?",
+      },
+      {
+        type: "h3",
+        text: "Comment l'explosion du nombre de nœuds handicape-t-elle les machines laser ?",
+      },
+      {
+        type: "p",
+        text: "Dans les ateliers équipés de logiciels comme LightBurn ou RDWorks, chaque nœud vectoriel impose une consigne de calcul de trajectoire pour la tête laser. Un tracé surchargé de milliers de points microscopiques provoque des saccades mécaniques et des micro-pauses.",
+      },
+      {
+        type: "p",
+        text: "Ces arrêts infinitésimaux créent des brûlures sur les bords du bois ou de l'acrylique et réduisent considérablement la vitesse de coupe. Un vecteur professionnel doit être net mais sobre en points d'ancrage.",
+      },
+      {
+        type: "h3",
+        text: "Pourquoi les brodeuses professionnelles rejettent-elles les fichiers surchargés ?",
+      },
+      {
+        type: "p",
+        text: "En broderie industrielle (Wilcom, Tajima Pulse), les nœuds vectoriels déterminent les points de pénétration de l'aiguille et les changements de direction du fil. Un vecteur mal optimisé entraîne des casses de fil à répétition, une surépaisseur de tissu rigide et des bourrages machines coûteux.",
+      },
+      {
+        type: "p",
+        text: "Le ratio fidélité / nombre de nœuds doit être visible et maîtrisé en permanence pour garantir la fabricabilité du projet.",
+      },
+      {
+        type: "h2",
+        text: "Comment VectoFix réconcilie-t-il fidélité maximale et sobriété technique ?",
+      },
+      {
+        type: "h3",
+        text: "La retouche ciblée au pinceau : réparer sans toucher au reste",
+      },
+      {
+        type: "p",
+        text: "VectoFix affiche en temps réel la fidélité globale et le compteur exact de nœuds. Lorsque vous passez un coup de pinceau magique sur un détail flou, seule la zone couverte est recalculée à haute précision.",
+      },
+      {
+        type: "p",
+        text: "Les aplats et contours sains ne bougent pas d'un cheveu. Vous améliorez la lisibilité là où c'est nécessaire, sans ajouter un seul nœud superflu sur le reste du document.",
+      },
+      {
+        type: "h3",
+        text: "Qu'est-ce que la fusion automatique des tracés dans VectoFix ?",
+      },
+      {
+        type: "p",
+        text: "Si vous passez plusieurs coups de pinceau successifs pour peaufiner une zone, les vectoriseurs classiques superposent des calques et des masques de découpe. VectoFix intègre un moteur de fusion géométrique qui réunit automatiquement les coups se chevauchant à plus de 70%.",
+      },
+      {
+        type: "p",
+        text: "Le tracé reste unifié, sans empilement de calques ni balises XML redondantes, garantissant un SVG propre et immédiatement utilisable en CAO/DAO.",
+      },
+      {
+        type: "h2",
+        text: "Questions fréquentes sur les nœuds et la retouche locale (FAQ)",
+      },
+      {
+        type: "h3",
+        text: "Qu'apportent les modes « Fidèle » et « Léger » dans VectoFix ?",
+      },
+      {
+        type: "p",
+        text: "Le mode Fidèle privilégie la restitution maximale des micro-détails (idéal pour un blason ou une signature). Le mode Léger génère un tracé simplifié avec un minimum de nœuds (parfait pour le vinyle de découpe et le laser). Vous pouvez combiner les deux modes sur des zones distinctes d'un même fichier.",
+      },
+      {
+        type: "h3",
+        text: "Comment éviter que le laser ne passe deux fois sur la même ligne ?",
+      },
+      {
+        type: "p",
+        text: "Les doubles lignes apparaissent quand des calques vectoriels se superposent sans fusion. La fusion géométrique automatique de VectoFix supprime les tracés dupliqués sous-jacents, produisant des courbes fermées uniques prêtes pour LightBurn.",
+      },
+      {
+        type: "h3",
+        text: "Puis-je exporter un fichier de test pour ma machine avant de payer ?",
+      },
+      {
+        type: "p",
+        text: "Oui. L'essai gratuit de VectoFix inclut 3 exports HD complets et sans filigrane. Vous pouvez les charger directement dans votre traceur de découpe ou logiciel laser pour valider la fluidité du tracé avant tout engagement.",
       },
     ],
   }),
+
   make({
     slug: "presentation-vectofix",
-    title: "VectoFix : peignez sur ce qui s'est abîmé",
+    title: "Présentation de VectoFix : Le premier outil de réparation vectorielle locale assisté par IA",
     description:
-      "VectoFix est maintenant disponible : un outil de bureau qui mesure exactement où une vectorisation a perdu du détail, et vous laisse réparer cette seule zone d'un coup de pinceau.",
+      "VectoFix est une application Windows native qui mesure les défauts d'un tracé pixel par pixel et permet de réparer les zones critiques d'un coup de pinceau magique ou d'un clic IA MobileSAM.",
     date: "2026-08-12",
     author: "Équipe VectoFix",
     lang: "fr",
@@ -712,36 +1100,107 @@ export const posts: BlogPost[] = [
     content: [
       {
         type: "p",
-        text: "VectoFix est une application Windows qui mesure, pixel par pixel, où un SVG vectorisé a perdu du détail par rapport à son image source, et vous laisse réparer cette seule zone d'un coup de pinceau.",
+        text: "VectoFix est une application de bureau pour Windows qui mesure, pixel par pixel, où un SVG vectorisé a perdu du détail par rapport à son image source, et vous permet de réparer cette seule zone d'un coup de pinceau magique ou d'un clic assisté par IA.",
       },
       {
         type: "p",
-        text: "VectoFix est une nouvelle application Windows construite autour d'une idée : un vectoriseur qui ne compare jamais son propre résultat à l'image source ne peut pas vous dire ce qu'il a raté — donc il ne le fait jamais. VectoFix le fait, et vous laisse le corriger.",
+        text: "Pour les professionnels du marquage, de l'enseigne, de la gravure laser et du design graphique, la vectorisation d'images clients basse définition est souvent une corvée interminable. Les outils automatiques déforment les lettres et les contours, obligeant les graphistes à redessiner à la plume pendant 45 minutes par fichier.",
       },
-      { type: "h2", text: "Comment fonctionne VectoFix ?" },
-      {
-        type: "ul",
-        items: [
-          "Ouvrez un PNG, un JPG ou un SVG — il est tracé automatiquement, sans réglage à faire avant",
-          "VectoFix re-rasterise son propre résultat et le compare, pixel par pixel, à votre source",
-          "Une carte des dégâts signale exactement où le tracé s'est le plus écarté de l'original",
-          "Peignez sur une zone abîmée et elle se retrace elle-même, recollée dans le SVG — 60 à 80% d'écart en moins, en moins d'une seconde",
-        ],
-      },
-      { type: "h2", text: "Pour quoi VectoFix est-il pensé ?" },
       {
         type: "p",
-        text: "Les outils d'image-trace classiques sont conçus pour les logos plats et peinent sur les photos, les dégradés et les illustrations riches — le tracé se transforme en bandes ou en explosion de formes. C'est exactement le terrain que vise VectoFix : pas remplacer un vectoriseur généraliste, mais réparer les zones précises où n'importe quel vectoriseur — même un bon — perd du terrain.",
+        text: "VectoFix a été créé pour combler précisément ce vide : offrir un établi de retouche vectorielle ultra-rapide capable de transformer un logo imparfait en un tracé de production irréprochable en moins de deux minutes.",
       },
-      { type: "h2", text: "Y a-t-il quelque chose de caché ?" },
+      {
+        type: "h2",
+        text: "En quoi VectoFix est-il fondamentalement différent des autres vectoriseurs ?",
+      },
+      {
+        type: "h3",
+        text: "La mesure objective de fidélité : la fin de l'inspection à l'aveugle",
+      },
       {
         type: "p",
-        text: "Fidélité et nombre de nœuds sont affichés ensemble, en permanence, parce qu'ils s'opposent — retracer une zone la rend plus juste et plus lourde, jamais l'un sans l'autre. Deux modes de traitement, Fidèle et Léger, sont disponibles par coup de pinceau, pour qu'un visage et un fond plat dans la même image reçoivent chacun le bon niveau de détail.",
+        text: "Les vectoriseurs traditionnels ne comparent jamais leur résultat à l'image originale. VectoFix recalcule en mémoire vive le rendu exact de son vecteur, le compare à l'image source et génère un indice de fidélité objectif.",
       },
-      { type: "h2", text: "Combien coûte VectoFix ?" },
       {
         type: "p",
-        text: "VectoFix est en achat unique, 39 €, sans abonnement. L'essai est entièrement fonctionnel — vectorisation, carte des dégâts, pinceau magique, les deux modes, tout illimité — seul l'export est verrouillé (résolution réduite, filigrane) tant qu'une licence n'est pas activée. Windows, 100% local : aucune image n'est jamais envoyée, à aucun moment.",
+        text: "Les écarts de tracé apparaissent en surbrillance rouge sous forme d'une carte thermique interactive. Vous savez exactement où intervenir sans perdre de temps à inspecter chaque recoin.",
+      },
+      {
+        type: "h3",
+        text: "Pourquoi le traitement 100% local en mémoire vive est-il indispensable ?",
+      },
+      {
+        type: "p",
+        text: "Les convertisseurs web exigent de téléverser les fichiers de vos clients sur des serveurs distants non sécurisés, posant un risque majeur de non-conformité RGPD et de violation du secret d'affaires.",
+      },
+      {
+        type: "p",
+        text: "VectoFix s'exécute à 100% en local sur votre PC Windows. Son moteur optimisé travaille directement en mémoire vive sans écriture de fichiers temporaires sur disque (+38% de rapidité), garantissant une réactivité fluide et une confidentialité absolue de vos créations.",
+      },
+      {
+        type: "h2",
+        text: "Comment se déroule le workflow pas-à-pas dans VectoFix ?",
+      },
+      {
+        type: "h3",
+        text: "1. Ingestion instantanée par glisser-déposer ou Ctrl+V",
+      },
+      {
+        type: "p",
+        text: "Inutile d'enregistrer préalablement le fichier sur votre bureau : faites simplement glisser une image dans la fenêtre ou collez directement une capture d'écran du presse-papier avec Ctrl+V (depuis WhatsApp Web, un mail ou un navigateur). Le tracé s'effectue automatiquement.",
+      },
+      {
+        type: "h3",
+        text: "2. Visualisation des défauts et comparaison instantanée",
+      },
+      {
+        type: "p",
+        text: "La carte des écarts vous montre en rouge les zones à retoucher. Maintenez la touche Espace ou D enfoncée pour afficher immédiatement l'image originale et comparer le vecteur avec la source en un coup d'œil.",
+      },
+      {
+        type: "h3",
+        text: "3. Retouche au pinceau magique et détourage 1-clic par IA",
+      },
+      {
+        type: "p",
+        text: "Ajustez la taille du pinceau avec les touches [ et ] et peignez sur les détails dégradés : la zone est recalculée avec un gain immédiat de 60 à 80% de précision. Pour isoler un symbole ou une silhouette extérieure, cliquez simplement pour activer le détourage intelligent MobileSAM en 35 millisecondes.",
+      },
+      {
+        type: "h3",
+        text: "4. Export haute définition prêt pour la fabrication",
+      },
+      {
+        type: "p",
+        text: "Exportez en SVG vectoriel pur pour vos traceurs de découpe (Roland, Cricut), lasers (LightBurn) ou brodeuses (Wilcom), ou générez un PNG Ultra-HD (> 2400 px / 4K) pour vos BAT d'impression grand format.",
+      },
+      {
+        type: "h2",
+        text: "Questions fréquentes sur VectoFix (FAQ)",
+      },
+      {
+        type: "h3",
+        text: "Quelle est la configuration minimale requise pour utiliser VectoFix ?",
+      },
+      {
+        type: "p",
+        text: "VectoFix fonctionne sur tout PC équipé de Windows 10 ou Windows 11 (64 bits). L'application est native, légère et n'exige ni carte graphique haut de gamme ni connexion Internet permanente.",
+      },
+      {
+        type: "h3",
+        text: "Combien coûte VectoFix et comment fonctionne la licence ?",
+      },
+      {
+        type: "p",
+        text: "VectoFix Pro est proposé en achat unique à 39 €, sans aucun abonnement récurrent. Vous bénéficiez d'une utilisation à vie, de toutes les mises à jour futures et d'une activation flexible tolérant l'usage hors-ligne.",
+      },
+      {
+        type: "h3",
+        text: "Que contient la version d'essai gratuite ?",
+      },
+      {
+        type: "p",
+        text: "La version d'essai donne accès à l'ensemble des outils (vectorisation, carte thermique, pinceau magique, détourage IA) et inclut 3 exports HD complets sans filigrane pour tester la production sur vos propres machines. Ensuite, les exports continuent de fonctionner avec un filigrane de prévisualisation jusqu'à l'activation.",
       },
     ],
   }),

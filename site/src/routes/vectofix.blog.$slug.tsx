@@ -107,9 +107,15 @@ function VectoFixBlogPost() {
           {post.content.map((block, i) => {
             if (block.type === "h2")
               return (
-                <h2 key={i} className="mt-10 text-2xl font-semibold tracking-tight text-foreground">
+                <h2 key={i} className="mt-12 text-2xl md:text-3xl font-bold tracking-tight text-foreground">
                   {block.text}
                 </h2>
+              );
+            if (block.type === "h3")
+              return (
+                <h3 key={i} className="mt-8 text-xl md:text-2xl font-semibold tracking-tight text-foreground/95">
+                  {block.text}
+                </h3>
               );
             if (block.type === "p")
               return (
