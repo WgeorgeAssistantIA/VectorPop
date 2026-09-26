@@ -63,7 +63,7 @@ const t = {
   en: {
     metaTitle: "VectoFix — Fix Bad Vectorizations Without Starting Over",
     metaDesc:
-      "Your vectorizer got 95% right. VectoFix pinpoints where it drifted with a damage heatmap and lets you repair only the broken zones. 100% local Windows app.",
+      "Your vectorizer got most of the image right. VectoFix pinpoints where it drifted with a damage heatmap and lets you repair only the broken zones. 100% local Windows app.",
     nav: { how: "How it works", pricing: "Pricing", faq: "FAQ", cta: "Download" },
     hero: {
       title: "Fix bad vectorizations without starting over.",
@@ -216,7 +216,7 @@ const t = {
       title: "“A good SVG is not just visually faithful: it must be technically lightweight and machine-ready.”",
       subtitle:
         "Standard vectorizers leave you with a dangerous dilemma: either they over-simplify and distort your design, or they explode into 20,000 messy anchor points that choke your laser cutter or snap your embroidery needle.",
-      text: "VectoFix is the only tool that displays visual fidelity and real-time node count side-by-side, giving you absolute certainty before sending a file to production.",
+      text: "VectoFix combines visual fidelity and real-time node count side-by-side, giving you absolute certainty before sending a file to production.",
       metrics: [
         {
           value: "99.4%",
@@ -267,7 +267,7 @@ const t = {
           step: "STEP 3 · PRODUCE",
           title: "Physical Production",
           subtitle: "Fabrication in Atelier",
-          desc: "Adobe Illustrator · LightBurn Laser · Wilcom Hatch · Cricut. 0 machine stutter, 0 broken needles.",
+          desc: "Adobe Illustrator · LightBurn Laser · Wilcom Hatch · Cricut. Cleaner paths designed for smoother, stutter-free production.",
           action: "Physical Output",
         },
       ],
@@ -388,7 +388,7 @@ const t = {
   fr: {
     metaTitle: "VectoFix — Réparez les vectorisations imparfaites sans tout recommencer",
     metaDesc:
-      "Votre vectoriseur a réussi 95 % de l'image. VectoFix repère les tracés déviés avec une carte des écarts et vous laisse réparer uniquement les zones abîmées. App Windows 100% locale.",
+      "Votre vectoriseur a réussi l'essentiel de l'image. VectoFix repère les tracés déviés avec une carte des écarts et vous laisse réparer uniquement les zones abîmées. App Windows 100% locale.",
     nav: { how: "Comment ça marche", pricing: "Tarif", faq: "FAQ", cta: "Télécharger" },
     hero: {
       title: "Réparez les vectorisations imparfaites sans tout recommencer.",
@@ -541,7 +541,7 @@ const t = {
       title: "« Un bon SVG n'est pas seulement fidèle visuellement : il est techniquement léger et usinable. »",
       subtitle:
         "Les vectoriseurs classiques imposent un piège redoutable : soit ils simplifient trop et déforment votre visuel, soit ils créent 20 000 nœuds parasites qui font brouter votre découpeuse laser ou casser l'aiguille de votre brodeuse.",
-      text: "VectoFix est le seul outil à afficher simultanément le score de fidélité et le compteur de nœuds en temps réel, garantissant des fichiers irréprochables avant le lancement de la fabrication.",
+      text: "VectoFix associe simultanément le score de fidélité et le compteur de nœuds en temps réel, garantissant des fichiers irréprochables avant le lancement de la fabrication.",
       metrics: [
         {
           value: "99,4 %",
@@ -592,7 +592,7 @@ const t = {
           step: "ÉTAPE 3 · FABRIQUER SANS ERREUR",
           title: "Production d'Atelier",
           subtitle: "Machines & Logiciels de fabrication",
-          desc: "Adobe Illustrator · LightBurn Laser · Wilcom Hatch · Cricut. Zéro broutement machine, zéro fil cassé.",
+          desc: "Adobe Illustrator · LightBurn Laser · Wilcom Hatch · Cricut. Des tracés épurés conçus pour un usinage fluide et sans à-coups.",
           action: "Fabrication physique",
         },
       ],
