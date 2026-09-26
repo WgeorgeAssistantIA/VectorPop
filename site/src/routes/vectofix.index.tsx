@@ -68,11 +68,16 @@ const t = {
     hero: {
       title: "Fix bad vectorizations without starting over.",
       subtitle:
-        "Your vectorizer got 95% of the image right. VectoFix finds where it drifted and lets you repair only the damaged areas — with a precision brush or 1-click AI selection.",
+        "Did your vectorizer round off sharp angles, warp small text, or explode node counts? Don't spend 45 minutes manually retracing in Illustrator: VectoFix measures line drift pixel by pixel and repairs only the damaged zones — with a precision brush or 1-click AI.",
       btnPrimary: "Try it on your own file — free",
       smartscreenNote:
         "Windows may show a SmartScreen warning since the app is still new. Click “More info” then “Run anyway” to continue — the installer is safe.",
       subText: "Try everything for free. Export 3 production-ready HD files — no account, no credit card.",
+      useCases: [
+        { icon: "📱", label: "Low-res WhatsApp client logos & web captures" },
+        { icon: "🔥", label: "SVGs stalling or burning edges in LightBurn / Laser" },
+        { icon: "✒️", label: "Fine serifs & sharp angles lost to global tracing" },
+      ],
       badges: [
         "100% local — your images never leave your PC",
         "3 free production-ready HD exports included",
@@ -312,6 +317,32 @@ const t = {
       ],
       cta: "Get VectoFix — €39 →",
       trialNote: "After 3 full HD exports, trial exports switch to degraded watermarked mode so you can continue testing forever.",
+      comparisonTitle: "How does VectoFix compare?",
+      comparisonSubtitle: "No endless subscriptions. No server upload. One honest tool for your workshop.",
+      comparisonRows: [
+        {
+          name: "Cloud Vectorizers (Vectorizer.AI, etc.)",
+          model: "Recurring Subscription",
+          privacy: "Cloud Upload (Servers)",
+          price: "$9.99 / month ($120/yr)",
+          highlight: false,
+        },
+        {
+          name: "Vector Magic Desktop",
+          model: "Single Purchase",
+          privacy: "Local Windows / Mac",
+          price: "$295 one-time",
+          highlight: false,
+        },
+        {
+          name: "VectoFix Pro",
+          model: "Lifetime License (No sub)",
+          privacy: "100% Local in RAM (0 cloud)",
+          price: "€39 one-time",
+          highlight: true,
+        },
+      ],
+      roiNote: "Pays for itself on your very first salvaged client logo or saved laser workpiece.",
     },
     faq: {
       title: "Frequently asked questions",
@@ -362,11 +393,16 @@ const t = {
     hero: {
       title: "Réparez les vectorisations imparfaites sans tout recommencer.",
       subtitle:
-        "Votre vectoriseur a réussi 95 % de l'image. VectoFix repère exactement où les tracés ont dévié et vous permet de réparer uniquement les zones abîmées — au pinceau ou en 1 clic IA.",
+        "Votre vectoriseur a arrondi un angle, déformé un texte ou généré trop de nœuds ? Ne perdez plus 45 minutes à redessiner à la plume : VectoFix mesure les dérives au pixel près et répare chirurgicalement la zone abîmée — au pinceau ou en 1 clic IA.",
       btnPrimary: "Testez sur votre propre fichier — gratuit",
       smartscreenNote:
         "Windows peut afficher un avertissement SmartScreen car l'appli est encore peu téléchargée. Cliquez sur « Informations complémentaires » puis « Exécuter quand même » pour continuer — l'installeur est sûr.",
       subText: "Testez tout gratuitement. Exportez 3 fichiers HD prêts pour la production — sans compte ni carte bancaire.",
+      useCases: [
+        { icon: "📱", label: "Logos clients WhatsApp basse résolution & captures d'écran" },
+        { icon: "🔥", label: "Fichiers SVG qui saccadent ou brûlent sur découpeuse laser (LightBurn)" },
+        { icon: "✒️", label: "Détails fins & angles arrondis par les vectoriseurs automatiques" },
+      ],
       badges: [
         "100% local — vos images ne quittent jamais votre PC",
         "3 exports HD complets offerts pour tester",
@@ -606,6 +642,32 @@ const t = {
       ],
       cta: "Obtenir VectoFix — 39 € →",
       trialNote: "Après les 3 exports HD offerts, les exports basculent en mode filigrané pour vous permettre de continuer à tester sans limite de temps.",
+      comparisonTitle: "Comment se positionne VectoFix face au marché ?",
+      comparisonSubtitle: "Pas d'abonnement sans fin. Aucun transfert vers un serveur. Un outil d'atelier transparent.",
+      comparisonRows: [
+        {
+          name: "Vectoriseurs Cloud (ex: Vectorizer.AI)",
+          model: "Abonnement récurrent",
+          privacy: "Fichiers hébergés en ligne",
+          price: "9,99 $/mois (120 $/an)",
+          highlight: false,
+        },
+        {
+          name: "Vector Magic Desktop",
+          model: "Achat unique",
+          privacy: "Local sur machine",
+          price: "295 $",
+          highlight: false,
+        },
+        {
+          name: "VectoFix Pro",
+          model: "Licence à vie (Sans abonnement)",
+          privacy: "100 % Local en RAM (Zéro cloud)",
+          price: "39 € une seule fois",
+          highlight: true,
+        },
+      ],
+      roiNote: "Rentabilisé dès le premier logo client sauvé ou la première plaque d'usinage préservée.",
     },
     faq: {
       title: "Questions fréquentes",
@@ -862,6 +924,18 @@ function VectoFixPage() {
             <p className="mx-auto mt-6 max-w-2xl text-balance text-lg text-muted-foreground md:text-xl">
               {c.hero.subtitle}
             </p>
+            {/* Target Use-Case Trigger Pills */}
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+              {c.hero.useCases.map((uc) => (
+                <span
+                  key={uc.label}
+                  className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/60 px-3.5 py-1.5 text-xs font-medium text-foreground/90 shadow-sm backdrop-blur-sm hover:border-[#2563eb]/40 transition"
+                >
+                  <span className="text-sm">{uc.icon}</span>
+                  <span>{uc.label}</span>
+                </span>
+              ))}
+            </div>
           </Reveal>
           <Reveal delay={160}>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
@@ -1339,7 +1413,7 @@ function VectoFixPage() {
 
       {/* PRICING */}
       <section id="pricing" className="border-t border-border/50 py-24">
-        <div className="mx-auto max-w-md px-6">
+        <div className="mx-auto max-w-3xl px-6">
           <Reveal>
             <div className="mb-14 text-center">
               <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{c.pricing.title}</h2>
@@ -1347,7 +1421,7 @@ function VectoFixPage() {
             </div>
           </Reveal>
           <Reveal delay={100}>
-            <div className="relative flex flex-col rounded-2xl border-2 border-[#2563eb]/60 bg-gradient-to-br from-[#2563eb]/10 via-card to-card p-8 shadow-2xl shadow-blue-900/20">
+            <div className="mx-auto max-w-md relative flex flex-col rounded-2xl border-2 border-[#2563eb]/60 bg-gradient-to-br from-[#2563eb]/10 via-card to-card p-8 shadow-2xl shadow-blue-900/20">
               <h3 className="text-lg font-semibold">{c.pricing.name}</h3>
               <div className="mt-4 flex items-baseline gap-2">
                 <span className="text-5xl font-bold tracking-tight">{c.pricing.price}</span>
@@ -1374,6 +1448,63 @@ function VectoFixPage() {
                 {c.pricing.cta}
               </a>
               <p className="mt-4 text-center text-xs text-muted-foreground">{c.pricing.trialNote}</p>
+            </div>
+          </Reveal>
+
+          {/* Value Anchor & Market Comparison */}
+          <Reveal delay={150}>
+            <div className="mt-14 rounded-2xl border border-border/80 bg-card/40 p-6 sm:p-8 backdrop-blur-sm">
+              <div className="text-center mb-6">
+                <h3 className="text-lg font-bold text-foreground sm:text-xl">
+                  {c.pricing.comparisonTitle}
+                </h3>
+                <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                  {c.pricing.comparisonSubtitle}
+                </p>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs sm:text-sm">
+                  <thead>
+                    <tr className="border-b border-border/60 text-muted-foreground">
+                      <th className="pb-3 font-medium">{lang === "fr" ? "Solution" : "Solution"}</th>
+                      <th className="pb-3 font-medium">{lang === "fr" ? "Modèle" : "Model"}</th>
+                      <th className="pb-3 font-medium">{lang === "fr" ? "Confidentialité" : "Privacy"}</th>
+                      <th className="pb-3 font-medium text-right">{lang === "fr" ? "Tarif réel" : "True Cost"}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/40">
+                    {c.pricing.comparisonRows.map((row) => (
+                      <tr
+                        key={row.name}
+                        className={row.highlight ? "bg-[#2563eb]/10 font-semibold text-foreground" : "text-muted-foreground"}
+                      >
+                        <td className="py-3.5 pr-3">
+                          <div className="flex items-center gap-2">
+                            {row.highlight && <CheckCircle2 className="h-4 w-4 text-[#60a5fa] shrink-0" />}
+                            <span>{row.name}</span>
+                          </div>
+                        </td>
+                        <td className="py-3.5 pr-3">{row.model}</td>
+                        <td className="py-3.5 pr-3">{row.privacy}</td>
+                        <td className="py-3.5 text-right font-mono font-medium">
+                          {row.highlight ? (
+                            <span className="rounded-md bg-[#2563eb] px-2.5 py-1 text-xs font-bold text-white shadow-sm">
+                              {row.price}
+                            </span>
+                          ) : (
+                            row.price
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-6 rounded-xl border border-[#2563eb]/30 bg-[#2563eb]/5 p-4 text-center text-xs sm:text-sm text-foreground/90 font-medium">
+                💡 {c.pricing.roiNote}
+              </div>
             </div>
           </Reveal>
         </div>
