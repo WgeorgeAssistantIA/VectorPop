@@ -1012,58 +1012,58 @@ function VectoFixPage() {
               </div>
             </div>
 
-            {/* Visual Canvas Representation */}
-            <div className="relative mt-6 flex min-h-[260px] flex-col items-center justify-center rounded-xl border border-border/60 bg-background/80 p-8 text-center overflow-hidden">
-              {activeDemoStep === 0 && (
-                <div className="flex flex-col items-center">
-                  <div className="relative flex h-36 w-36 items-center justify-center rounded-2xl border-2 border-dashed border-muted-foreground/30 bg-muted/20 font-mono text-5xl font-black text-muted-foreground">
-                    <span className="blur-[1px] select-none">R</span>
-                    <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:8px_8px] opacity-25" />
-                  </div>
-                  <p className="mt-4 text-xs font-mono text-muted-foreground">Source: PNG 240x240 px · 72 DPI</p>
-                </div>
-              )}
-
-              {activeDemoStep === 1 && (
-                <div className="flex flex-col items-center">
-                  <div className="relative flex h-36 w-36 items-center justify-center rounded-2xl border border-border bg-muted/10 font-sans text-5xl font-black text-foreground">
-                    <span className="text-foreground/80 select-none">R</span>
-                    <span className="absolute -bottom-2 -right-2 rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-semibold text-amber-300 border border-amber-500/40">
-                      ⚠ Serifs rounded
+            {/* Visual Canvas Representation with Real App Screenshots */}
+            <div className="relative mt-6 flex min-h-[320px] sm:min-h-[420px] w-full flex-col items-center justify-center rounded-xl border border-border/60 bg-[#0c1017] p-4 sm:p-6 text-center overflow-hidden">
+              <div className="relative max-h-[360px] w-full max-w-[420px] aspect-square flex items-center justify-center">
+                {activeDemoStep === 0 && (
+                  <div className="relative w-full h-full flex flex-col items-center justify-center">
+                    <img
+                      src="/vectofix/demo/step-01-original.webp"
+                      alt={c.demo.steps[0].title}
+                      className="max-h-full max-w-full rounded-lg object-contain shadow-2xl transition-opacity duration-300"
+                    />
+                    <span className="absolute bottom-2 rounded-full bg-slate-900/95 px-3 py-1 text-[11px] font-mono font-medium text-slate-300 border border-slate-700/80 shadow-lg backdrop-blur-md">
+                      {lang === "fr" ? "PNG 1024×1024 · 72 DPI (Matriciel)" : "PNG 1024×1024 · 72 DPI (Raster Source)"}
                     </span>
                   </div>
-                  <p className="mt-4 text-xs font-mono text-amber-400/90">Global trace: sharp corner rounded off by automatic simplification</p>
-                </div>
-              )}
-
-              {activeDemoStep === 2 && (
-                <div className="flex flex-col items-center">
-                  <div className="relative flex h-36 w-36 items-center justify-center rounded-2xl border border-red-500/40 bg-red-950/20 font-sans text-5xl font-black text-foreground">
-                    <span className="select-none text-foreground/80">R</span>
-                    <div className="absolute bottom-6 right-6 h-8 w-8 rounded-full bg-red-500/60 blur-sm animate-pulse" />
-                    <div className="absolute bottom-7 right-7 h-6 w-6 rounded-full border-2 border-red-400 bg-red-500/40 flex items-center justify-center">
-                      <span className="text-[10px] text-white font-bold">!</span>
-                    </div>
-                  </div>
-                  <p className="mt-4 text-xs font-mono text-red-400">Heatmap delta: 18px deviation detected in lower corner</p>
-                </div>
-              )}
-
-              {activeDemoStep === 3 && (
-                <div className="flex flex-col items-center">
-                  <div className="relative flex h-36 w-36 items-center justify-center rounded-2xl border border-blue-500/60 bg-blue-950/20 font-sans text-5xl font-black text-blue-400 shadow-lg shadow-blue-500/10">
-                    <span className="select-none">R</span>
-                    <div className="absolute top-6 left-6 h-2 w-2 rounded-sm bg-[#60a5fa] ring-2 ring-background" />
-                    <div className="absolute top-6 right-6 h-2 w-2 rounded-sm bg-[#60a5fa] ring-2 ring-background" />
-                    <div className="absolute bottom-6 left-6 h-2 w-2 rounded-sm bg-[#60a5fa] ring-2 ring-background" />
-                    <div className="absolute bottom-6 right-6 h-2 w-2 rounded-sm bg-emerald-400 ring-2 ring-background" />
-                    <span className="absolute -top-2 -right-2 rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-semibold text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
-                      <Check className="h-3 w-3" /> Repaired
+                )}
+                {activeDemoStep === 1 && (
+                  <div className="relative w-full h-full flex flex-col items-center justify-center">
+                    <img
+                      src="/vectofix/demo/step-02-trace-drift.webp"
+                      alt={c.demo.steps[1].title}
+                      className="max-h-full max-w-full rounded-lg object-contain shadow-2xl transition-opacity duration-300"
+                    />
+                    <span className="absolute bottom-2 rounded-full bg-amber-950/95 px-3 py-1 text-[11px] font-mono font-medium text-amber-300 border border-amber-600/60 shadow-lg backdrop-blur-md">
+                      {lang === "fr" ? "⚠ Tracé brut · 6 218 nœuds · Dérive sur la roue crantée" : "⚠ Raw Trace · 6,218 nodes · Gear tooth contour drift"}
                     </span>
                   </div>
-                  <p className="mt-4 text-xs font-mono text-emerald-400">Clean SVG path: sharp serif restored · 0 superfluous nodes</p>
-                </div>
-              )}
+                )}
+                {activeDemoStep === 2 && (
+                  <div className="relative w-full h-full flex flex-col items-center justify-center">
+                    <img
+                      src="/vectofix/demo/step-03-damage-heatmap.webp"
+                      alt={c.demo.steps[2].title}
+                      className="max-h-full max-w-full rounded-lg object-contain shadow-2xl transition-opacity duration-300 ring-2 ring-red-500/30"
+                    />
+                    <span className="absolute bottom-2 rounded-full bg-red-950/95 px-3 py-1 text-[11px] font-mono font-medium text-red-300 border border-red-500/60 shadow-lg backdrop-blur-md animate-pulse">
+                      {lang === "fr" ? "🔴 Damage Heatmap · Dérives révélées au pixel près" : "🔴 Damage Heatmap · Pixel-exact drift highlighted"}
+                    </span>
+                  </div>
+                )}
+                {activeDemoStep === 3 && (
+                  <div className="relative w-full h-full flex flex-col items-center justify-center">
+                    <img
+                      src="/vectofix/demo/step-04-surgical-repair.webp"
+                      alt={c.demo.steps[3].title}
+                      className="max-h-full max-w-full rounded-lg object-contain shadow-2xl transition-opacity duration-300 ring-2 ring-emerald-500/30"
+                    />
+                    <span className="absolute bottom-2 rounded-full bg-emerald-950/95 px-3 py-1 text-[11px] font-mono font-medium text-emerald-300 border border-emerald-500/60 shadow-lg backdrop-blur-md">
+                      {lang === "fr" ? "✓ Pinceau magique · Erreur 29.7 ➔ 3.7 (+88 % de fidélité)" : "✓ Magic Brush · Error 29.7 ➔ 3.7 (+88% accuracy)"}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

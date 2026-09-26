@@ -267,6 +267,38 @@ elseif ($m.ventes -ne $null) {
 else { New-Card "Lemon Squeezy - ventes" "cart" "todo" "" ([ordered]@{}) "Ajoute 'lemonsqueezy.apiKey' (et 'storeId' optionnel) dans config.json (voir LISEZMOI)." }
 
 # ------------------------------------------------------------
+# 6b) POSTHOG (Product Analytics)
+# ------------------------------------------------------------
+if (Has $cfg.posthog.apiKey) {
+    try {
+        $phHost = if (Has $cfg.posthog.host) { $cfg.posthog.host } else { "https://eu.posthog.com" }
+        $phProj = if (Has $cfg.posthog.projectId) { $cfg.posthog.projectId } else { "267570" }
+        $phHeaders = @{
+            Authorization = "Bearer $($cfg.posthog.apiKey)"
+            "Content-Type" = "application/json"
+        }
+        $queryBody = @{
+            query = @{
+                kind = "HogQLQuery"
+                query = "SELECT count(distinct distinct_id), countIf(event = 'vectorize_completed'), countIf(event = 'paywall_viewed'), countIf(event = 'paywall_buy_clicked'), countIf(event = 'paywall_purchased') FROM events WHERE timestamp >= '$(& $fmt $startDate)' AND (properties.`$app_name = 'vectorpop' OR properties.app LIKE 'vectorpop%' OR properties.`$app_namespace = 'com.lafabriknumerique.vectorpop')"
+            }
+        } | ConvertTo-Json -Depth 5
+        $res = Invoke-RestMethod -Method Post -Uri "$phHost/api/projects/$phProj/query/" -Headers $phHeaders -Body $queryBody
+        $row = $res.results[0]
+        New-Card "PostHog - Usage In-App" "chart" "ok" "$windowDays derniers jours" ([ordered]@{
+            "Utilisateurs actifs"      = $row[0]
+            "Vectorisations reussies"  = $row[1]
+            "Vues Paywall"             = $row[2]
+            "Clics Acheter"            = $row[3]
+            "Achats confirmes"         = $row[4]
+        }) "Telemetrie produit in-app VectorPop (Android + Desktop). Mesure exacte des actions reelles."
+    }
+    catch {
+        New-Card "PostHog - Usage In-App" "chart" "error" "$windowDays j" ([ordered]@{}) "" $_.Exception.Message
+    }
+}
+
+# ------------------------------------------------------------
 # 7) TOTAL TELECHARGEMENTS (tous canaux, calcule a partir des cartes ci-dessus)
 # ------------------------------------------------------------
 if ($totalDownloads.Count -gt 0) {
