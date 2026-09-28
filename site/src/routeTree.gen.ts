@@ -13,10 +13,12 @@ import { Route as VectofixRouteImport } from './routes/vectofix'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LegalRouteImport } from './routes/legal'
+import { Route as EnRouteImport } from './routes/en'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VectofixIndexRouteImport } from './routes/vectofix.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as VectofixPrivacyRouteImport } from './routes/vectofix.privacy'
+import { Route as VectofixEnRouteImport } from './routes/vectofix.en'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as ApiTrackRouteImport } from './routes/api/track'
 import { Route as ApiSubscribeRouteImport } from './routes/api/subscribe'
@@ -44,6 +46,11 @@ const LegalRoute = LegalRouteImport.update({
   path: '/legal',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnRoute = EnRouteImport.update({
+  id: '/en',
+  path: '/en',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -62,6 +69,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
 const VectofixPrivacyRoute = VectofixPrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => VectofixRoute,
+} as any)
+const VectofixEnRoute = VectofixEnRouteImport.update({
+  id: '/en',
+  path: '/en',
   getParentRoute: () => VectofixRoute,
 } as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
@@ -97,6 +109,7 @@ const VectofixBlogSlugRoute = VectofixBlogSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/en': typeof EnRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -105,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/api/subscribe': typeof ApiSubscribeRoute
   '/api/track': typeof ApiTrackRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/vectofix/en': typeof VectofixEnRoute
   '/vectofix/privacy': typeof VectofixPrivacyRoute
   '/blog/': typeof BlogIndexRoute
   '/vectofix/': typeof VectofixIndexRoute
@@ -113,6 +127,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/en': typeof EnRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -120,6 +135,7 @@ export interface FileRoutesByTo {
   '/api/subscribe': typeof ApiSubscribeRoute
   '/api/track': typeof ApiTrackRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/vectofix/en': typeof VectofixEnRoute
   '/vectofix/privacy': typeof VectofixPrivacyRoute
   '/blog': typeof BlogIndexRoute
   '/vectofix': typeof VectofixIndexRoute
@@ -129,6 +145,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/en': typeof EnRoute
   '/legal': typeof LegalRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
@@ -137,6 +154,7 @@ export interface FileRoutesById {
   '/api/subscribe': typeof ApiSubscribeRoute
   '/api/track': typeof ApiTrackRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/vectofix/en': typeof VectofixEnRoute
   '/vectofix/privacy': typeof VectofixPrivacyRoute
   '/blog/': typeof BlogIndexRoute
   '/vectofix/': typeof VectofixIndexRoute
@@ -147,6 +165,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/en'
     | '/legal'
     | '/privacy'
     | '/terms'
@@ -155,6 +174,7 @@ export interface FileRouteTypes {
     | '/api/subscribe'
     | '/api/track'
     | '/blog/$slug'
+    | '/vectofix/en'
     | '/vectofix/privacy'
     | '/blog/'
     | '/vectofix/'
@@ -163,6 +183,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/en'
     | '/legal'
     | '/privacy'
     | '/terms'
@@ -170,6 +191,7 @@ export interface FileRouteTypes {
     | '/api/subscribe'
     | '/api/track'
     | '/blog/$slug'
+    | '/vectofix/en'
     | '/vectofix/privacy'
     | '/blog'
     | '/vectofix'
@@ -178,6 +200,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/en'
     | '/legal'
     | '/privacy'
     | '/terms'
@@ -186,6 +209,7 @@ export interface FileRouteTypes {
     | '/api/subscribe'
     | '/api/track'
     | '/blog/$slug'
+    | '/vectofix/en'
     | '/vectofix/privacy'
     | '/blog/'
     | '/vectofix/'
@@ -195,6 +219,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EnRoute: typeof EnRoute
   LegalRoute: typeof LegalRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
@@ -236,6 +261,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/en': {
+      id: '/en'
+      path: '/en'
+      fullPath: '/en'
+      preLoaderRoute: typeof EnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -262,6 +294,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/vectofix/privacy'
       preLoaderRoute: typeof VectofixPrivacyRouteImport
+      parentRoute: typeof VectofixRoute
+    }
+    '/vectofix/en': {
+      id: '/vectofix/en'
+      path: '/en'
+      fullPath: '/vectofix/en'
+      preLoaderRoute: typeof VectofixEnRouteImport
       parentRoute: typeof VectofixRoute
     }
     '/blog/$slug': {
@@ -310,6 +349,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface VectofixRouteChildren {
+  VectofixEnRoute: typeof VectofixEnRoute
   VectofixPrivacyRoute: typeof VectofixPrivacyRoute
   VectofixIndexRoute: typeof VectofixIndexRoute
   VectofixBlogSlugRoute: typeof VectofixBlogSlugRoute
@@ -317,6 +357,7 @@ interface VectofixRouteChildren {
 }
 
 const VectofixRouteChildren: VectofixRouteChildren = {
+  VectofixEnRoute: VectofixEnRoute,
   VectofixPrivacyRoute: VectofixPrivacyRoute,
   VectofixIndexRoute: VectofixIndexRoute,
   VectofixBlogSlugRoute: VectofixBlogSlugRoute,
@@ -329,6 +370,7 @@ const VectofixRouteWithChildren = VectofixRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EnRoute: EnRoute,
   LegalRoute: LegalRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,

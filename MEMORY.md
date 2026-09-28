@@ -95,6 +95,25 @@
   - 12 articles approfondis en production (6 EN + 6 FR) dont 3 nouveaux guides majeurs rédigés selon les standards SEO experts (guide décisionnel pour réparer sans tout refaire, guide atelier laser LightBurn, manifeste de création de catégorie Vector Repair & QA).
   - Validation du build Vite/Nitro et déploiement Vercel réussi (commit `d3c463e`).
 
+### 9. SEO International : Résolution du « Trou Noir » Anglophone (27 Septembre 2026)
+- **Problématique résolue :** Sur `vectorpop.fr` et `vectorpop.fr/vectofix`, le français était la langue par défaut et l'anglais n'existait que dans le `localStorage` du visiteur. Googlebot ne voyait jamais les landing pages en anglais, rendant impossible leur indexation sur les requêtes anglophones majeures (« image to SVG vectorizer », « fix bad vectorization », « repair vector AI »).
+- **Solutions déployées :**
+  1. **Routes anglaises dédiées :**
+     - Création de [`site/src/routes/en.tsx`](site/src/routes/en.tsx) pour VectorPop (`forceLang="en"`).
+     - Création de [`site/src/routes/vectofix.en.tsx`](site/src/routes/vectofix.en.tsx) pour VectoFix (`forceLang="en"`).
+  2. **Balises `hreflang` bidirectionnelles complètes :**
+     - Sur VectorPop (`/` et `/en`) :
+       * `hreflang="fr"` ➔ `https://www.vectorpop.fr/`
+       * `hreflang="en"` ➔ `https://www.vectorpop.fr/en`
+       * `hreflang="x-default"` ➔ `https://www.vectorpop.fr/`
+     - Sur VectoFix (`/vectofix` et `/vectofix/en`) :
+       * `hreflang="fr"` ➔ `https://www.vectorpop.fr/vectofix`
+       * `hreflang="en"` ➔ `https://www.vectorpop.fr/vectofix/en`
+       * `hreflang="x-default"` ➔ `https://www.vectorpop.fr/vectofix`
+  3. **Navigation & Maillage interne :** Les sélecteurs de langue des barres de navigation basculent désormais via des balises `<Link>` indexables entre `/` $\leftrightarrow$ `/en` et entre `/vectofix` $\leftrightarrow$ `/vectofix/en`.
+  4. **Sitemap XML :** Ajout de `/en` et `/vectofix/en` dans `site/public/sitemap.xml`.
+  5. **Validation :** Build TanStack Start exécuté avec succès.
+
 ---
 
 ## Prochaines Étapes / Backlog

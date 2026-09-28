@@ -70,7 +70,7 @@ function trackCrossLink(target: string) {
   track("cross_link_click", { target });
 }
 
-type Lang = "en" | "fr";
+export type Lang = "en" | "fr";
 
 function useDownloadCount() {
   const [total, setTotal] = useState<number | null>(null);
@@ -96,7 +96,7 @@ function DownloadCounter({ lang }: { lang: Lang }) {
   );
 }
 
-const t = {
+export const t = {
   en: {
     metaTitle: "VectorPop — Turn your PNG and JPEG logos into clean SVG",
     metaDesc:
@@ -512,17 +512,15 @@ const t = {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "VectorPop — Turn your PNG and JPEG logos into clean SVG" },
+      { title: t.fr.metaTitle },
       {
         name: "description",
-        content:
-          "Vectorize a pixelated logo into a clean, editable SVG. Runs entirely on your computer. Free Windows app, no subscription.",
+        content: t.fr.metaDesc,
       },
-      { property: "og:title", content: "VectorPop — Turn your PNG and JPEG logos into clean SVG" },
+      { property: "og:title", content: t.fr.metaTitle },
       {
         property: "og:description",
-        content:
-          "Vectorize a pixelated logo into a clean, editable SVG. Runs entirely on your computer. Free Windows app, no subscription.",
+        content: t.fr.metaDesc,
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.vectorpop.fr/" },
@@ -530,6 +528,9 @@ export const Route = createFileRoute("/")({
     links: [
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
       { rel: "canonical", href: "https://www.vectorpop.fr/" },
+      { rel: "alternate", hrefLang: "fr", href: "https://www.vectorpop.fr/" },
+      { rel: "alternate", hrefLang: "en", href: "https://www.vectorpop.fr/en" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://www.vectorpop.fr/" },
     ],
     scripts: [
       {
@@ -541,7 +542,7 @@ export const Route = createFileRoute("/")({
           applicationCategory: "DesignApplication",
           operatingSystem: "Windows",
           description:
-            "Vectorize PNG and JPEG images into clean, editable SVG. 100% local and private.",
+            "Vectorisez des images PNG et JPEG en SVG propre et éditable. 100% local et privé.",
           url: "https://www.vectorpop.fr/",
           image: "https://www.vectorpop.fr/vectorpop_logo.png",
           offers: {
@@ -570,7 +571,7 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          mainEntity: t.en.faq.items.map((item) => ({
+          mainEntity: t.fr.faq.items.map((item) => ({
             "@type": "Question",
             name: item.q,
             acceptedAnswer: {
@@ -582,7 +583,7 @@ export const Route = createFileRoute("/")({
       },
     ],
   }),
-  component: Index,
+  component: () => <Index forcedLang="fr" />,
 });
 
 function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
@@ -626,19 +627,20 @@ function Logo() {
   );
 }
 
-function LangToggle({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
+export function LangToggle({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
   return (
     <div className="inline-flex items-center rounded-full border border-border bg-card/60 p-0.5 text-xs font-medium">
-      {(["en", "fr"] as const).map((l) => (
-        <button
+      {(["fr", "en"] as const).map((l) => (
+        <Link
           key={l}
+          to={l === "en" ? "/en" : "/"}
           onClick={() => setLang(l)}
-          className={`rounded-full px-3 py-1 transition ${
-            lang === l ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+          className={`cursor-pointer rounded-full px-3 py-1 transition ${
+            lang === l ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
           }`}
         >
           {l.toUpperCase()}
-        </button>
+        </Link>
       ))}
     </div>
   );
@@ -781,8 +783,9 @@ function TraceDemo({ lang }: { lang: Lang }) {
   );
 }
 
-function Index() {
-  const [lang, setLangState] = useState<Lang>("en");
+export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
+  const [langState, setLangState] = useState<Lang>(forcedLang ?? "fr");
+  const lang = forcedLang ?? langState;
   const [email, setEmail] = useState("");
   const [subscribeStatus, setSubscribeStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [feedbackDismissed, setFeedbackDismissed] = useState(true);
@@ -812,15 +815,16 @@ function Index() {
   };
 
   useEffect(() => {
+    if (forcedLang) return;
     if (typeof window === "undefined") return;
     const saved = localStorage.getItem("vectorpop-lang") as Lang | null;
     if (saved === "en" || saved === "fr") {
       setLangState(saved);
     } else {
       const browserLang = navigator.language?.toLowerCase() ?? "";
-      if (browserLang.startsWith("fr")) setLangState("fr");
+      if (browserLang.startsWith("en")) setLangState("en");
     }
-  }, []);
+  }, [forcedLang]);
 
   useEffect(() => {
     document.documentElement.lang = lang;

@@ -57,9 +57,9 @@ function trackCrossLink(target: string) {
   track("cross_link_click", { source: "vectofix", target });
 }
 
-type Lang = "en" | "fr";
+export type Lang = "en" | "fr";
 
-const t = {
+export const t = {
   en: {
     metaTitle: "VectoFix — Fix Bad Vectorizations Without Starting Over",
     metaDesc:
@@ -715,17 +715,22 @@ const t = {
 export const Route = createFileRoute("/vectofix/")({
   head: () => ({
     meta: [
-      { title: t.en.metaTitle },
+      { title: t.fr.metaTitle },
       {
         name: "description",
-        content: t.en.metaDesc,
+        content: t.fr.metaDesc,
       },
-      { property: "og:title", content: t.en.metaTitle },
-      { property: "og:description", content: t.en.metaDesc },
+      { property: "og:title", content: t.fr.metaTitle },
+      { property: "og:description", content: t.fr.metaDesc },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://www.vectorpop.fr/vectofix" },
     ],
-    links: [{ rel: "canonical", href: "https://www.vectorpop.fr/vectofix" }],
+    links: [
+      { rel: "canonical", href: "https://www.vectorpop.fr/vectofix" },
+      { rel: "alternate", hrefLang: "fr", href: "https://www.vectorpop.fr/vectofix" },
+      { rel: "alternate", hrefLang: "en", href: "https://www.vectorpop.fr/vectofix/en" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://www.vectorpop.fr/vectofix" },
+    ],
     scripts: [
       {
         type: "application/ld+json",
@@ -736,7 +741,7 @@ export const Route = createFileRoute("/vectofix/")({
           applicationCategory: "DesignApplication",
           operatingSystem: "Windows 10, Windows 11",
           description:
-            "Desktop vector repair and quality control software. Pinpoints vectorization drift with a damage heatmap and enables surgical local re-tracing with precision brush and MobileSAM AI.",
+            "Logiciel de réparation et de contrôle qualité des vectorisations. Détecte les dérives avec une carte thermique et permet de re-tracer chirurgicalement avec un pinceau de précision et l'IA MobileSAM.",
           url: "https://www.vectorpop.fr/vectofix",
           offers: { "@type": "Offer", price: "39", priceCurrency: "EUR" },
         }),
@@ -746,7 +751,7 @@ export const Route = createFileRoute("/vectofix/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          mainEntity: t.en.faq.items.map((item) => ({
+          mainEntity: t.fr.faq.items.map((item) => ({
             "@type": "Question",
             name: item.q,
             acceptedAnswer: {
@@ -758,7 +763,7 @@ export const Route = createFileRoute("/vectofix/")({
       },
     ],
   }),
-  component: VectoFixPage,
+  component: () => <VectoFixPage forcedLang="fr" />,
 });
 
 function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
@@ -822,26 +827,28 @@ function Logo() {
   );
 }
 
-function LangToggle({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
+export function LangToggle({ lang, setLang }: { lang: Lang; setLang: (l: Lang) => void }) {
   return (
     <div className="inline-flex items-center rounded-full border border-border bg-card/60 p-0.5 text-xs font-medium">
-      {(["en", "fr"] as const).map((l) => (
-        <button
+      {(["fr", "en"] as const).map((l) => (
+        <Link
           key={l}
+          to={l === "en" ? "/vectofix/en" : "/vectofix"}
           onClick={() => setLang(l)}
-          className={`rounded-full px-3 py-1 transition ${
-            lang === l ? "bg-[#2563eb] text-white" : "text-muted-foreground hover:text-foreground"
+          className={`cursor-pointer rounded-full px-3 py-1 transition ${
+            lang === l ? "bg-[#2563eb] text-white shadow-sm" : "text-muted-foreground hover:text-foreground"
           }`}
         >
           {l.toUpperCase()}
-        </button>
+        </Link>
       ))}
     </div>
   );
 }
 
-function VectoFixPage() {
-  const [lang, setLangState] = useState<Lang>("en");
+export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
+  const [langState, setLangState] = useState<Lang>(forcedLang ?? "fr");
+  const lang = forcedLang ?? langState;
   const [reassuranceVariant, setReassuranceVariant] = useState<ReassuranceVariant>("a");
   const [activeDemoStep, setActiveDemoStep] = useState(0);
 
@@ -855,15 +862,16 @@ function VectoFixPage() {
   }, []);
 
   useEffect(() => {
+    if (forcedLang) return;
     if (typeof window === "undefined") return;
     const saved = localStorage.getItem("vectofix-lang") as Lang | null;
     if (saved === "en" || saved === "fr") {
       setLangState(saved);
     } else {
       const browserLang = navigator.language?.toLowerCase() ?? "";
-      if (browserLang.startsWith("fr")) setLangState("fr");
+      if (browserLang.startsWith("en")) setLangState("en");
     }
-  }, []);
+  }, [forcedLang]);
 
   useEffect(() => {
     document.title = t[lang].metaTitle;
