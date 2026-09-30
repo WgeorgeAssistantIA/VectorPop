@@ -114,6 +114,18 @@
   4. **Sitemap XML :** Ajout de `/en` et `/vectofix/en` dans `site/public/sitemap.xml`.
   5. **Validation :** Build TanStack Start exécuté avec succès.
 
+### 10. Vidéos Officielles de Démonstration VectoFix (30 Septembre 2026)
+- **Déploiement des médias dans `site/public/vectofix/`** :
+  - `vectofix-demo-fr.mp4` (2,43 Mo, 1080p, voix-off et sous-titres FR).
+  - `vectofix-demo-en.mp4` (2,46 Mo, 1080p, voix-off et sous-titres EN).
+  - `vectofix-demo-poster.png` (84 Ko).
+  - `subtitles_fr.vtt` & `subtitles_en.vtt` (sous-titres WebVTT pour le lecteur vidéo HTML5 du navigateur).
+- **Intégration du composant Vidéo** :
+  - Ajout d'une section responsive `Démonstration Vidéo` dans [`site/src/routes/vectofix.index.tsx`](site/src/routes/vectofix.index.tsx) active sur `/vectofix` et `/vectofix/en` avec détection automatique de langue, sous-titres et 3 badges de réassurance (RAM, 3 exports, 39€ à vie).
+- **Déploiement en production** :
+  - Compilation `npm run build` réussie en 7,3s.
+  - Poussé sur `origin/main` (commit `ce9b64d`) avec déploiement automatique Vercel.
+
 ---
 
 ## Prochaines Étapes / Backlog
