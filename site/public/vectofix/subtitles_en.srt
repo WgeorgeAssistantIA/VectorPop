@@ -1,0 +1,27 @@
+1
+00:00:00,000 --> 00:00:06,048
+VectoFix: Don't re-vectorize. Repair.
+
+2
+00:00:06,347 --> 00:00:13,571
+Instant Drag & Drop or Ctrl+V • 100% local in RAM
+
+3
+00:00:13,871 --> 00:00:21,647
+Standard converters smooth out angles and erase fine details
+
+4
+00:00:21,948 --> 00:00:29,076
+Objective diagnosis: Pixel-accurate Damage Heatmap
+
+5
+00:00:29,376 --> 00:00:35,832
+Local Magic Brush: surgical repair in a single stroke
+
+6
+00:00:36,131 --> 00:00:40,619
++80% fidelity restored • Optimized nodes for smooth production
+
+7
+00:00:40,919 --> 00:00:49,007
+Available on Microsoft Store • 3 free HD exports • vectorpop.fr/vectofix/en

@@ -110,6 +110,12 @@ export const t = {
         },
       },
     },
+    video: {
+      badge: "Video Demonstration",
+      title: "Watch VectoFix in action (48s)",
+      subtitle:
+        "See how the Damage Heatmap and Magic Brush pinpoint and repair flawed vector paths with surgical precision.",
+    },
     demo: {
       badge: "Interactive Inspection",
       title: "See surgical vector repair in action",
@@ -434,6 +440,12 @@ export const t = {
           ],
         },
       },
+    },
+    video: {
+      badge: "Démonstration Vidéo",
+      title: "Découvrez VectoFix en 48 secondes",
+      subtitle:
+        "Découvrez comment la Carte des Dégâts et le Pinceau Magique détectent et réparent un tracé vectoriel avec une précision chirurgicale.",
     },
     demo: {
       badge: "Démonstration Interactive",
@@ -1041,6 +1053,70 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
               </div>
             </Reveal>
           </div>
+        </div>
+      </section>
+
+      {/* VIDEO DEMO */}
+      <section className="border-t border-border/50 py-20 bg-gradient-to-b from-background via-card/20 to-background">
+        <div className="mx-auto max-w-4xl px-6">
+          <Reveal>
+            <div className="mb-10 text-center">
+              <span className="inline-block rounded-full bg-[#7c5cff]/10 px-3.5 py-1 text-xs font-semibold text-[#a78bfa] border border-[#7c5cff]/30 mb-4">
+                {c.video.badge}
+              </span>
+              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{c.video.title}</h2>
+              <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">{c.video.subtitle}</p>
+            </div>
+          </Reveal>
+          <Reveal delay={80}>
+            <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-card/60 shadow-2xl shadow-purple-950/20 ring-1 ring-violet-500/20">
+              <video
+                key={lang}
+                controls
+                playsInline
+                preload="metadata"
+                poster="/vectofix/vectofix-demo-poster.png"
+                className="aspect-video w-full object-cover"
+              >
+                <source
+                  src={lang === "fr" ? "/vectofix/vectofix-demo-fr.mp4" : "/vectofix/vectofix-demo-en.mp4"}
+                  type="video/mp4"
+                />
+                <track
+                  kind="subtitles"
+                  src="/vectofix/subtitles_fr.vtt"
+                  srcLang="fr"
+                  label="Français"
+                  default={lang === "fr"}
+                />
+                <track
+                  kind="subtitles"
+                  src="/vectofix/subtitles_en.vtt"
+                  srcLang="en"
+                  label="English"
+                  default={lang === "en"}
+                />
+                {lang === "fr"
+                  ? "Votre navigateur ne prend pas en charge la lecture vidéo."
+                  : "Your browser does not support the video tag."}
+              </video>
+            </div>
+            {/* Reassurance Badges under video */}
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                {lang === "fr" ? "100% Local en RAM (NDA respecté)" : "100% Local in RAM (NDA compliant)"}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                {lang === "fr" ? "3 exports HD complets offerts" : "3 free production HD exports"}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                {lang === "fr" ? "Licence à vie 39 € (aucun abonnement)" : "€39 Lifetime license (no subscription)"}
+              </span>
+            </div>
+          </Reveal>
         </div>
       </section>
 

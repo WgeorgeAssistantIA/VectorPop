@@ -1,0 +1,27 @@
+1
+00:00:00,000 --> 00:00:05,711
+VectoFix : Ne re-vectorisez pas. Réparez.
+
+2
+00:00:06,011 --> 00:00:13,187
+Glisser-déposer ou Ctrl+V instantané • 100% local en RAM
+
+3
+00:00:13,487 --> 00:00:20,399
+Les convertisseurs classiques déforment les angles et les détails
+
+4
+00:00:20,699 --> 00:00:27,611
+Diagnostic objectif : la Carte des Dégâts repère chaque écart
+
+5
+00:00:27,911 --> 00:00:33,911
+Pinceau Magique local : réparation chirurgicale en un geste
+
+6
+00:00:34,211 --> 00:00:39,491
++80% de fidélité regagnée • Nœuds optimisés pour la machine
+
+7
+00:00:39,791 --> 00:00:47,759
+Disponible sur le Microsoft Store • 3 exports HD offerts • vectorpop.fr/vectofix
