@@ -9,7 +9,7 @@ Précédent topo (release 2.0.0) : [HANDOFF_ANTIGRAVITY_24-09-2026.md](HANDOFF_A
 | | |
 |---|---|
 | **Version cible** | **2.1.0** (2.1.0.0 pour le MSIX). Actuellement 2.0.0 partout. |
-| **Contenu fonctionnel** | (a) correctif des dégradés + nouveau curseur « Seuil dégradés » ; (b) lien d'achat Pro migré vers `checkout.lafabriknumerique.fr` (déjà commité, voir §2) ; (c) correctif d'affichage : chiffres tronqués (1024 / 2048 / 4096) dans le dialogue « Taille du SVG ». |
+| **Contenu fonctionnel** | (a) correctif des dégradés + nouveau curseur « Seuil dégradés » ; (b) lien d'achat Pro migré vers `checkout.lafabriknumerique.fr` (déjà commité, voir §2) ; (c) correctif d'affichage : chiffres tronqués (1024 / 2048 / 4096) dans le dialogue « Taille du SVG » ; (d) **recette « Icône glossy / 3D » corrigée** : elle ne coche plus « Dégradés » ni « Affiner couleurs » (robot : erreur 5,9 → 3,1 ; icône : 13,1 → 3,5). Commit `8bf8c71`, notes de release déjà mises à jour (`433523e`). |
 | **Autre code desktop modifié depuis la 2.0.0** | Aucun (vérifié : `git diff --stat v2.0.0..HEAD -- vectorpop installer.iss msix_payload snap-build/snap build_linux.sh VectorPop.spec build_linux.spec requirements.txt` ne montre que `license.py`, 1 ligne). Les 24 commits entre `v2.0.0` et `HEAD` sont du site/blog/VectoFix, sans effet sur les binaires. |
 | **Tests** | `scripts/verify_v2.py --no-net` : **66/66 PASS** (voir §4). |
 | **Android** | Non touché. |
@@ -36,6 +36,8 @@ d1ff630 test(verify_v2): A12 accepte le domaine checkout.lafabriknumerique.fr
 
 (Git signale « LF will be replaced by CRLF » : avertissement `autocrlf` habituel, sans conséquence ; les diffs sont petits, pas de réécriture de fichiers entiers.)
 
+> ⚠️ **Mise à jour du 01/10 soir : le commit `8bf8c71` (recette glossy) a été ajouté APRÈS la construction des 6 premiers binaires.** Ces binaires ne le contiennent pas : il faut **tout rebuilder** (`recipes.py` et `i18n.py` sont embarqués), relancer `verify_v2.py --no-net` (66/66 attendu), puis seulement publier. Ajouter aussi la puce « Recette glossy plus fidèle » aux textes de `site/public/version.json` et du Microsoft Store (§7).
+
 ## 3. Ce qui change
 
 **Problème.** La case « Dégradés (lisse) » écrasait les images à dominante monochrome (mascotte bleue, icône violet/cyan) : yeux, reflets, pictogramme disparaissaient, tout l'objet devenait un seul dégradé. Cause : `gradients.gradientize_svg` regroupe les bandes voisines dont la distance RGB est ≤ `color_merge` (40 en dur), et ce regroupement est **transitif** (union-find) ; sur un objet d'une seule teinte, tout tombe dans un seul groupe qui reçoit UN dégradé linéaire. Le seuil n'était exposé nulle part dans l'interface.
@@ -46,6 +48,8 @@ d1ff630 test(verify_v2): A12 accepte le domaine checkout.lafabriknumerique.fr
 - Recettes « Icône glossy / 3D » et « Photo » : repositionnent le curseur à 12 (même logique que `apply_recipe`, qui contourne le piège `QSettings` déjà documenté).
 - Infobulle de la case « Dégradés » complétée + un conseil de dépannage dans l'aide (« Dégradés écrase les détails… »).
 - Il ne faut pas confondre ce curseur avec « Seuil fusion » (fusion des couleurs *avant* vtracer, mécanisme distinct, inchangé).
+
+**Recette « Icône glossy / 3D » (commit `8bf8c71`).** Mesuré avec vtracer « détaillé », 8 bits de couleur, sans fusion : de fines bandes plates **sans « Dégradés » ni « Affiner couleurs »** sont nettement plus fidèles que la recette précédente sur un robot 3D (5,86 → 3,09), une icône à halo (13,13 → 3,46) et sont en blocs visibles sur un dégradé 2D lisse (9,17 → 1,88, comme les bandes de Vector Magic). « Dégradés (lisse) » reste disponible. Recette « Photo » inchangée (non testée sur de vraies photos). Détail : `TOPO_PROBLEME_IMAGES_GLOSSY_01-10-2026.md` §10.
 
 **Aussi dans cette version** (commit `9d8c51f`, après la 2.0.0) : `license.CHECKOUT_URL` pointe maintenant vers `https://checkout.lafabriknumerique.fr/...` (au lieu de `voxcut-pro.lemonsqueezy.com`). À mentionner dans les notes si William le souhaite.
 
@@ -106,7 +110,7 @@ Rappel : 6 binaires dans `releases\v2.1.0\`.
 
 **`version.json`** : `notes_fr` : « Nouvelle version 2.1.0 : dégradés plus fidèles (les détails des images monochromes sont conservés) et nouveau curseur « Seuil dégradés ». » · `notes_en` : « New version 2.1.0: more faithful gradients (details of single-color images are kept) and a new 'Gradient thresh.' slider. »
 
-**Microsoft Store — Nouveautés** : FR « Dégradés plus fidèles : les mascottes et icônes d'une seule couleur gardent leurs détails. Nouveau curseur « Seuil dégradés » pour affiner le rendu. Correction d'affichage dans la fenêtre de taille d'export. » · EN « More faithful gradients: single-color mascots and icons keep their details. New "Gradient thresh." slider to fine-tune the result. Fixed truncated sizes in the export size dialog. »
+**Microsoft Store — Nouveautés** : FR « Dégradés plus fidèles : les mascottes et icônes d'une seule couleur gardent leurs détails. Nouveau curseur « Seuil dégradés » pour affiner le rendu. Recette « Icône glossy / 3D » plus fidèle aux reflets. Correction d'affichage dans la fenêtre de taille d'export. » · EN « More faithful gradients: single-color mascots and icons keep their details. New "Gradient thresh." slider to fine-tune the result. The "Glossy / 3D icon" recipe is now more faithful to highlights. Fixed truncated sizes in the export size dialog. »
 
 ## 8. Points d'attention
 
