@@ -355,9 +355,9 @@ STRINGS = {
         "recipe_flat_desc": "Aplats nets, peu de couleurs (le cas idéal : SVG propre et léger).",
         "recipe_glossy_title": "Icône glossy / 3D (dégradés, reflets)",
         "recipe_glossy_desc": (
-            "Beaucoup de dégradés et de reflets. Dégradés + Affiner couleurs pour un rendu "
-            "lisse ; monte Couleurs et décoche Fusion pour laisser des bandes fines à "
-            "reconstruire."
+            "Beaucoup de dégradés et de reflets. Couleurs au maximum, Fusion décochée : de "
+            "fines bandes de couleur, plus fidèles aux reflets que « Dégradés ». Coche "
+            "« Dégradés (lisse) » seulement pour un fond parfaitement lisse."
         ),
         "recipe_bw_title": "Noir & blanc / trait",
         "recipe_bw_desc": "Dessin au trait, tampon, signature : seuillage net en 2 couleurs.",
@@ -812,8 +812,9 @@ STRINGS = {
         "recipe_flat_desc": "Clean flats, few colors (the ideal case: a clean, light SVG).",
         "recipe_glossy_title": "Glossy / 3D icon (gradients, highlights)",
         "recipe_glossy_desc": (
-            "Lots of gradients and highlights. Gradients + Refine colors for a smooth "
-            "render; raise Colors and uncheck Merge to leave thin bands to rebuild."
+            "Lots of gradients and highlights. Max Colors, Merge unchecked: fine bands of "
+            "color, more faithful to highlights than 'Gradients'. Check 'Gradients "
+            "(smooth)' only for a perfectly smooth background."
         ),
         "recipe_bw_title": "Black & white / line art",
         "recipe_bw_desc": "Line drawing, stamp, signature: clean 2-color thresholding.",

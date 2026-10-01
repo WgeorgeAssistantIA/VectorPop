@@ -66,9 +66,13 @@ RECIPES = [
             merge_on=False,
             corner=40,
             speckle=6,
-            grad=True,
+            # Bandes de couleur fines SANS « Dégradés » ni « Affiner couleurs » : mesuré sur
+            # un robot 3D, une icône violet/cyan et un dégradé 2D, c'est nettement plus fidèle
+            # (erreur 5,9 -> 3,1 ; 13,1 -> 3,5) que Dégradés + Affiner, qui écrasent les
+            # reflets. « Dégradés (lisse) » reste disponible pour un fond parfaitement lisse.
+            grad=False,
             grad_merge=12,
-            refine=True,
+            refine=False,
             bg=False,
         ),
     ),
