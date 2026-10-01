@@ -30,7 +30,7 @@ declare function gtag(...args: unknown[]): void;
 const GITHUB_REPO = "https://github.com/WgeorgeAssistantIA/vectofix-downloads";
 const DOWNLOAD_EXE = `${GITHUB_REPO}/releases/download/v1.0.0/VectoFix-Setup-1.0.0.exe`;
 const CHECKOUT_URL =
-  "https://voxcut-pro.lemonsqueezy.com/checkout/buy/88a6adc5-28e1-43f1-9b15-99093a4dc0d4";
+  "https://checkout.lafabriknumerique.fr/checkout/buy/88a6adc5-28e1-43f1-9b15-99093a4dc0d4";
 const CONTACT_EMAIL = "contact@lafabriknumerique.fr";
 const MS_STORE_URL = "https://get.microsoft.com/installer/download/9NR382QJ8SBK?referrer=appbadge";
 

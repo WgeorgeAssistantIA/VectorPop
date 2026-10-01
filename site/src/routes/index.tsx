@@ -36,7 +36,7 @@ const LINUX_TAR_URL = `${GITHUB_REPO}/releases/download/v2.0.0/VectorPop_2.0.0_l
 const SNAP_URL = "https://snapcraft.io/vectorpop";
 const MS_STORE_URL = "https://get.microsoft.com/installer/download/9MT2XVDXX7DG?referrer=appbadge";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.lafabriknumerique.vectorpop";
-const CHECKOUT_URL = "https://voxcut-pro.lemonsqueezy.com/checkout/buy/6ea17f0e-5d89-4994-a83e-84060447bf67?checkout[discount_code]=LANCEMENT30";
+const CHECKOUT_URL = "https://checkout.lafabriknumerique.fr/checkout/buy/6ea17f0e-5d89-4994-a83e-84060447bf67?checkout[discount_code]=LANCEMENT30";
 const CONTACT_EMAIL = "contact@vectorpop.fr";
 
 function trackDownload(e: MouseEvent<HTMLAnchorElement>) {

@@ -50,7 +50,7 @@ WEBSITE_URL = "https://vectorpop.fr"
 UPGRADE_URL = f"{WEBSITE_URL}/#pricing"
 # Checkout Lemon Squeezy — a remplir apres creation du produit (cf. LS_STORE_ID).
 # Tant qu'il est vide, les boutons d'achat renvoient vers UPGRADE_URL.
-CHECKOUT_URL = "https://voxcut-pro.lemonsqueezy.com/checkout/buy/6ea17f0e-5d89-4994-a83e-84060447bf67?checkout[discount_code]=LANCEMENT30"
+CHECKOUT_URL = "https://checkout.lafabriknumerique.fr/checkout/buy/6ea17f0e-5d89-4994-a83e-84060447bf67?checkout[discount_code]=LANCEMENT30"
 
 
 def buy_url() -> str:
