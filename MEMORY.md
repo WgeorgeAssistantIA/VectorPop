@@ -1,11 +1,12 @@
 # Mémoire du Projet : VectorPop
 
-## État Actuel (Septembre 2026)
+## État Actuel (Octobre 2026)
 - **Application Desktop V2 (2.0.0)** : Production complète déployée le 24 Septembre 2026 :
   - **Snap Store (Canonical)** : Publié sur le canal `stable` (Révision 4).
   - **Windows Store** : Paquet MSIX 2.0.0 soumis sur Partner Center.
   - **GitHub Releases** : Release `v2.0.0` publiée avec 6 artefacts binaires (EXE, MSIX, ZIP, AppImage, Tar.gz, Snap).
   - **Site Web (`vectorpop.fr`)** : Mis à jour en 2.0.0 (`version.json` 2.0.0, liens v2.0.0, Freemium 2.0).
+  - **Paiements PC** : Liens de paiement unifiés sur le domaine officiel `checkout.lafabriknumerique.fr` (Store Lemon Squeezy 399927).
 - **Application Mobile (vectorpop_android)** : Version Flutter Android `1.0.3+5` passée en production sur le Play Store, avec moteur Rust VTracer embarqué (vectorisation 100% locale ultra-rapide).
 - **Fiche Google Play Store** : Visuels haute conversion (smartphone, tablette 7" et 10", feature graphic) et métadonnées bilingues (FR/EN) prêts pour la mise à jour de la fiche Play Store.
 
@@ -125,6 +126,17 @@
 - **Déploiement en production** :
   - Compilation `npm run build` réussie en 7,3s.
   - Poussé sur `origin/main` (commit `ce9b64d`) avec déploiement automatique Vercel.
+
+### 10. Migration Transversale des Paiements Lemon Squeezy (1er Octobre 2026)
+- **Domaine Officiel de Marque** : Remplacement de l'ancien sous-domaine `voxcut-pro.lemonsqueezy.com` par `https://checkout.lafabriknumerique.fr` (Store Lemon Squeezy 399927 « La Fabrik Numérique »).
+- **URLs de Paiement Mises à Jour** :
+  - VectorPop Pro (39 € à vie) : `https://checkout.lafabriknumerique.fr/checkout/buy/b7cbcf7d-e6b8-47bc-ad74-325b340156d8`
+  - VectoFix Pro (39 € à vie) : `https://checkout.lafabriknumerique.fr/checkout/buy/88a6adc5-28e1-43f1-9b15-99093a4dc0d4`
+- **Fichiers Mis à Jour** :
+  - Site Web : [`site/src/routes/index.tsx`](site/src/routes/index.tsx) (VectorPop) et [`site/src/routes/vectofix.index.tsx`](site/src/routes/vectofix.index.tsx) (VectoFix).
+  - Module Desktop : [`vectorpop/license.py`](vectorpop/license.py).
+- **Validation & Déploiement** : Build TanStack Start validé, commit `9d8c51f` poussé sur `origin/main`, déployé sur Vercel et vérifié en direct.
+- **Rappel Mobile** : L'application Android `vectorpop_android` utilise exclusivement Google Play In-App Billing (zéro Lemon Squeezy sur mobile).
 
 ---
 
