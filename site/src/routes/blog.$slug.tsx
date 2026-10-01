@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Clock, ArrowLeft, Download } from "lucide-react";
-import type { ReactNode } from "react";
+import { renderInline } from "@/lib/inline-links";
 import { getPost, posts, type BlogPost as BlogPostType } from "@/lib/blog-posts";
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -77,19 +77,6 @@ export const Route = createFileRoute("/blog/$slug")({
   ),
   component: BlogPost,
 });
-
-// Liens internes : [ancre](/chemin) dans les textes -> <Link>.
-function renderInline(text: string): ReactNode[] {
-  return text.split(/(\[[^\]]+\]\(\/[^)]*\))/g).map((part, i) => {
-    const m = part.match(/^\[([^\]]+)\]\((\/[^)]*)\)$/);
-    if (!m) return part;
-    return (
-      <a key={i} href={m[2]} className="text-primary underline underline-offset-2 hover:text-primary/80">
-        {m[1]}
-      </a>
-    );
-  });
-}
 
 function BlogPost() {
   const { post } = Route.useLoaderData() as { post: BlogPostType };
