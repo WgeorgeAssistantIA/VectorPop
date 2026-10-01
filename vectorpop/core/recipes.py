@@ -4,11 +4,17 @@ from ..gradients import gradientize_svg, refine_colors
 
 
 def _postprocess_svg(
-    svg_path: Path, src_path: Path, gradients: bool, refine: bool
+    svg_path: Path,
+    src_path: Path,
+    gradients: bool,
+    refine: bool,
+    gradient_merge: int | None = None,
 ) -> str | None:
     """Post-traitements optionnels du SVG à partir de l'image source (best-effort).
 
     Dégradés d'abord (zones lisses), puis affinage des couleurs (aplats restants).
+    `gradient_merge` = seuil de regroupement des dégradés (slider « Seuil dégradés ») ;
+    None = valeur par défaut de gradientize_svg.
     En cas d'échec le SVG brut (vtracer) est conservé ; on renvoie le message
     d'erreur pour que l'appelant puisse prévenir l'utilisateur au lieu de rester muet.
     """
@@ -18,7 +24,8 @@ def _postprocess_svg(
         src = Image.open(src_path).convert("RGB")
         svg = svg_path.read_text(encoding="utf-8")
         if gradients:
-            svg = gradientize_svg(svg, src)
+            kw = {} if gradient_merge is None else {"color_merge": gradient_merge}
+            svg = gradientize_svg(svg, src, **kw)
         if refine:
             svg = refine_colors(svg, src)
         svg_path.write_text(svg, encoding="utf-8")
@@ -60,6 +67,7 @@ RECIPES = [
             corner=40,
             speckle=6,
             grad=True,
+            grad_merge=12,
             refine=True,
             bg=False,
         ),
@@ -78,6 +86,7 @@ RECIPES = [
             merge_on=False,
             speckle=6,
             grad=True,
+            grad_merge=12,
             refine=True,
         ),
     ),
@@ -97,4 +106,5 @@ TIPS = [
     ("tip_colors_prob", "tip_colors_sol"),
     ("tip_bg_prob", "tip_bg_sol"),
     ("tip_blur_prob", "tip_blur_sol"),
+    ("tip_graddetail_prob", "tip_graddetail_sol"),
 ]

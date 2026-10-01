@@ -40,6 +40,11 @@ class VectorParams:
     ai_upscale: bool = False  # finition IA : upscale x4 (Real-ESRGAN) avant trace
     contrast: int = 0  # renforce/adoucit le contraste avant trace (-50..50)
     sharpen: int = 0  # nettete (unsharp mask) avant trace (0..100)
+    # Post-traitement "Degrades" (gradients.gradientize_svg), pas utilise par vtracer :
+    # distance RGB max entre bandes voisines pour les regrouper en un degrade (2-60).
+    # Bas = plus de details, plus de petits degrades ; haut = aplats lisses mais
+    # details ecrases (un objet monochrome tombe en un seul degrade).
+    gradient_merge: int = 12
 
 
 # Presets pretournes par l'UI selon le type de logo.

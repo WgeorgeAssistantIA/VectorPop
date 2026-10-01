@@ -300,6 +300,10 @@ class MainWindow(QMainWindow):
         self.s_merge = self._slider(0, 100, 24)
         self.s_contrast = self._slider(-50, 50, 0)  # retouche : contraste avant trace
         self.s_sharpen = self._slider(0, 100, 0)  # retouche : nettete avant trace
+        # Seuil de regroupement des bandes en degrade (case "Degrades") : bas =
+        # plus de details, haut = aplats lisses mais details ecrases. Defaut = 12.
+        self.s_grad_merge = self._slider(2, 60, 12)
+        self._tr_widget(self.s_grad_merge, None, "lbl_grad_merge_tooltip")
 
         self.chk_bg = self._tr_widget(QCheckBox(), "chk_bg", "chk_bg_tooltip")
         self.chk_bg_ai = self._tr_widget(QCheckBox(), "chk_bg_ai", "chk_bg_ai_tooltip")
@@ -379,6 +383,18 @@ class MainWindow(QMainWindow):
         controls2.addWidget(
             self._labeled("lbl_sharpen", self.s_sharpen, small=True, show_value=True)
         )
+        # Reglage de la case "Degrades" : grise tant qu'elle n'est pas cochee.
+        controls2.addSpacing(24)
+        self.grad_group = QWidget()
+        grad_lay = QHBoxLayout(self.grad_group)
+        grad_lay.setContentsMargins(0, 0, 0, 0)
+        grad_lay.addWidget(self._tr_widget(QLabel(), "label_grad_settings"))
+        grad_lay.addWidget(
+            self._labeled("lbl_grad_merge", self.s_grad_merge, small=True, show_value=True)
+        )
+        self.grad_group.setEnabled(self.chk_grad.isChecked())
+        self.chk_grad.toggled.connect(self.grad_group.setEnabled)
+        controls2.addWidget(self.grad_group)
         controls2.addStretch(1)
 
         # Apercu live : tout changement de reglage relance (en differe) la vectorisation.
@@ -390,6 +406,7 @@ class MainWindow(QMainWindow):
             self.s_merge,
             self.s_contrast,
             self.s_sharpen,
+            self.s_grad_merge,
         )
         for s in sliders:
             s.valueChanged.connect(self._schedule_live)
@@ -754,6 +771,7 @@ class MainWindow(QMainWindow):
         p.ai_upscale = self.chk_upscale.isChecked()
         p.contrast = self.s_contrast.value()
         p.sharpen = self.s_sharpen.value()
+        p.gradient_merge = self.s_grad_merge.value()
         return p
 
     def apply_preset(self, key):
@@ -933,6 +951,7 @@ class MainWindow(QMainWindow):
             "merge": self.s_merge,
             "contrast": self.s_contrast,
             "sharpen": self.s_sharpen,
+            "grad_merge": self.s_grad_merge,
         }
         for key, widget in sliders.items():
             if key in cfg:
@@ -1917,6 +1936,7 @@ class MainWindow(QMainWindow):
             "s_merge": self.s_merge,
             "s_contrast": self.s_contrast,
             "s_sharpen": self.s_sharpen,
+            "s_grad_merge": self.s_grad_merge,
         }
 
     def _chk_map(self):

@@ -39,7 +39,13 @@ class VectorizeWorker(QThread):
     def run(self):
         try:
             vectorize(self._src, self._out, self._params)
-            warn = _postprocess_svg(self._out, self._src, self._gradients, self._refine)
+            warn = _postprocess_svg(
+                self._out,
+                self._src,
+                self._gradients,
+                self._refine,
+                self._params.gradient_merge,
+            )
             if warn:
                 self.warning.emit(warn)
             self.done.emit(str(self._out))
@@ -159,7 +165,9 @@ class BatchWorker(QThread):
                 auto_refine(f, tmp, self._params)
             else:
                 vectorize(f, tmp, self._params)
-            warn = _postprocess_svg(tmp, f, self._gradients, self._refine)
+            warn = _postprocess_svg(
+                tmp, f, self._gradients, self._refine, self._params.gradient_merge
+            )
             txt = optimize_svg(tmp.read_text(encoding="utf-8"))
             tmp.write_text(txt, encoding="utf-8")
             for fmt in self._formats:

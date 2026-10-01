@@ -158,6 +158,14 @@ STRINGS = {
         "lbl_merge": "Seuil fusion",
         "lbl_contrast": "Contraste",
         "lbl_sharpen": "Netteté",
+        "label_grad_settings": "Dégradés :",
+        "lbl_grad_merge": "Seuil dégradés",
+        "lbl_grad_merge_tooltip": (
+            "Règle le niveau de détail gardé par « Dégradés (lisse) ».\n"
+            "Bas (8-12) : plus de détails, plus de petits dégradés.\n"
+            "Haut (16-30) : fonds plus lisses, mais les détails d'un objet "
+            "d'une seule couleur peuvent disparaître."
+        ),
         "chk_bg": "Enlever le fond",
         "chk_bg_tooltip": "Detecte le fond uni (depuis les coins) et le rend transparent.",
         "label_ai_finishes": "Finitions IA (pas d'aperçu live) :",
@@ -208,7 +216,8 @@ STRINGS = {
         "chk_grad": "Dégradés (lisse)",
         "chk_grad_tooltip": (
             "Reconstruit de vrais dégradés au lieu de bandes. Idéal images glossy/3D.\n"
-            "Meilleur avec « Couleurs » élevé et « Fusion » faible. Un peu plus lent."
+            "Meilleur avec « Couleurs » élevé et « Fusion » faible. Un peu plus lent.\n"
+            "Le curseur « Seuil dégradés » règle le niveau de détail conservé."
         ),
         "chk_refine": "Affiner couleurs",
         "chk_refine_tooltip": (
@@ -379,6 +388,11 @@ STRINGS = {
         ),
         "tip_blur_prob": "Image floue ou molle",
         "tip_blur_sol": "Monte « Netteté », voire « Contraste », pour des aplats mieux séparés.",
+        "tip_graddetail_prob": "« Dégradés » écrase les détails (ou laisse des plaques)",
+        "tip_graddetail_sol": (
+            "Détails qui disparaissent → baisse « Seuil dégradés » (8-12). "
+            "Plaques visibles dans les fonds → monte-le (16-24)."
+        ),
         # --- Licence / Pro ---
         "btn_pro": " Passer Pro",
         "btn_pro_tooltip": "Débloquer VectorPop Pro — {price} €, paiement unique, à vie.",
@@ -601,6 +615,14 @@ STRINGS = {
         "lbl_merge": "Merge thresh.",
         "lbl_contrast": "Contrast",
         "lbl_sharpen": "Sharpness",
+        "label_grad_settings": "Gradients:",
+        "lbl_grad_merge": "Gradient thresh.",
+        "lbl_grad_merge_tooltip": (
+            "Sets how much detail 'Gradients (smooth)' keeps.\n"
+            "Low (8-12): more detail, more small gradients.\n"
+            "High (16-30): smoother backgrounds, but details of a single-color "
+            "object may disappear."
+        ),
         "chk_bg": "Remove background",
         "chk_bg_tooltip": "Detects the flat background (from the corners) and makes it transparent.",
         "label_ai_finishes": "AI finishes (no live preview):",
@@ -651,7 +673,8 @@ STRINGS = {
         "chk_grad": "Gradients (smooth)",
         "chk_grad_tooltip": (
             "Rebuilds real gradients instead of banding. Great for glossy/3D images.\n"
-            "Works best with high 'Colors' and low 'Merge'. A bit slower."
+            "Works best with high 'Colors' and low 'Merge'. A bit slower.\n"
+            "The 'Gradient thresh.' slider sets how much detail is kept."
         ),
         "chk_refine": "Refine colors",
         "chk_refine_tooltip": (
@@ -821,6 +844,11 @@ STRINGS = {
         ),
         "tip_blur_prob": "Blurry or soft image",
         "tip_blur_sol": "Raise 'Sharpness', or 'Contrast', for better-separated flats.",
+        "tip_graddetail_prob": "'Gradients' wipes out details (or leaves patches)",
+        "tip_graddetail_sol": (
+            "Details disappearing → lower 'Gradient thresh.' (8-12). "
+            "Visible patches in backgrounds → raise it (16-24)."
+        ),
         # --- Licence / Pro ---
         "btn_pro": " Go Pro",
         "btn_pro_tooltip": "Unlock VectorPop Pro — €{price}, one-time, forever.",

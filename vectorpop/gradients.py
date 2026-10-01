@@ -184,7 +184,7 @@ def _fit_linear_gradient(xs, ys, cols, stops):
 def gradientize_svg(
     svg_text: str,
     source: Image.Image,
-    color_merge: int = 40,
+    color_merge: int = 12,
     stops: int = 5,
     max_samples: int = 5000,
 ) -> str:
@@ -192,6 +192,14 @@ def gradientize_svg(
 
     `source` = image d'origine (RGB) alignée sur les coordonnées du SVG vtracer
     (vtracer sort width/height = pixels image, coords en pixels : alignement direct).
+
+    `color_merge` = distance RGB max entre deux bandes voisines pour les regrouper
+    en un même dégradé. Le regroupement est transitif (union-find) : les bandes
+    s'enchaînent de proche en proche. Trop haut (40 jusqu'à la 2.0.0), un objet
+    presque monochrome (robot bleu, icône violet/cyan) tombe en un seul groupe qui
+    reçoit UN dégradé linéaire et perd tous ses détails (yeux, reflets, pictogramme).
+    12 = compromis mesuré sur 16 images x 3 recettes : détails conservés, fonds
+    dégradés lisses ; en dessous de ~8 les fonds se couvrent de plaques visibles.
     """
     # Aplatit les translate() de vtracer -> paths en coordonnées globales.
     orig_paths = _PATH.findall(svg_text)
