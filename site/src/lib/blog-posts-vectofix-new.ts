@@ -237,6 +237,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Prevention helps too: a cleaner source gives a better trace. See our [guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide) and [how to convert a JPG to SVG](/blog/convert-jpg-to-svg).",
       },
+      {
+        type: "p",
+        text: "Related reading: [what vector repair is](/vectofix/blog/what-is-vector-repair-guide-to-vector-qa); [how to check and prepare an SVG for laser cutting](/vectofix/blog/how-to-check-and-prepare-svg-for-laser-cutting-lightburn); [why a vectorized SVG loses detail](/vectofix/blog/why-your-vectorized-svg-lost-detail).",
+      },
     ],
   }),
 
@@ -435,6 +439,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "If your SVG comes from a bitmap, start with our [guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide); and for print or cutting, see [why printers ask for vector files](/blog/why-printers-ask-for-vector-files).",
       },
+      {
+        type: "p",
+        text: "Related reading: [how to fix a bad vectorization without starting over](/vectofix/blog/how-to-fix-a-bad-vectorization-without-starting-over); [what vector repair is](/vectofix/blog/what-is-vector-repair-guide-to-vector-qa); [why a vectorized SVG loses detail](/vectofix/blog/why-your-vectorized-svg-lost-detail).",
+      },
     ],
   }),
 
@@ -593,6 +601,10 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         type: "p",
         text: "For the vectorization step that comes before repair, read our [complete guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide).",
+      },
+      {
+        type: "p",
+        text: "Related reading: [what VectoFix is and what it repairs](/vectofix/blog/introducing-vectofix); [how to fix a bad vectorization without starting over](/vectofix/blog/how-to-fix-a-bad-vectorization-without-starting-over); [how to check and prepare an SVG for laser cutting](/vectofix/blog/how-to-check-and-prepare-svg-for-laser-cutting-lightburn).",
       },
     ],
   }),
@@ -819,6 +831,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "La prévention aide aussi : une meilleure source donne un meilleur tracé. Voyez notre [guide pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) et [comment convertir un JPG en SVG](/blog/convertir-jpg-en-svg).",
       },
+      {
+        type: "p",
+        text: "À lire aussi : [ce qu'est la réparation vectorielle](/vectofix/blog/qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa) ; [comment préparer un SVG pour la découpe laser](/vectofix/blog/comment-preparer-un-svg-pour-la-decoupe-laser-lightburn) ; [pourquoi un SVG vectorisé perd du détail](/vectofix/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail).",
+      },
     ],
   }),
 
@@ -1017,6 +1033,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Si votre SVG vient d'une image bitmap, commencez par notre [guide pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) ; et pour l'impression ou la découpe, voyez [pourquoi les imprimeurs demandent du vectoriel](/blog/pourquoi-imprimeurs-demandent-fichier-vectoriel).",
       },
+      {
+        type: "p",
+        text: "À lire aussi : [comment réparer une mauvaise vectorisation sans tout recommencer](/vectofix/blog/comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer) ; [ce qu'est la réparation vectorielle](/vectofix/blog/qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa) ; [pourquoi un SVG vectorisé perd du détail](/vectofix/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail).",
+      },
     ],
   }),
 
@@ -1175,6 +1195,10 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         type: "p",
         text: "Pour l'étape de vectorisation qui précède la réparation, lisez notre [guide complet pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet).",
+      },
+      {
+        type: "p",
+        text: "À lire aussi : [ce qu'est VectoFix et ce qu'il répare](/vectofix/blog/presentation-vectofix) ; [comment réparer une mauvaise vectorisation sans tout recommencer](/vectofix/blog/comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer) ; [comment préparer un SVG pour la découpe laser](/vectofix/blog/comment-preparer-un-svg-pour-la-decoupe-laser-lightburn).",
       },
     ],
   }),

@@ -596,6 +596,10 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "If you are still choosing how to trace in the first place, our [complete guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide) covers the methods and settings, and [how to convert a JPG to SVG](/blog/convert-jpg-to-svg) shows how to limit compression artifacts before the trace.",
       },
+      {
+        type: "p",
+        text: "Related reading: [how to fix a bad vectorization without starting over](/vectofix/blog/how-to-fix-a-bad-vectorization-without-starting-over); [why one slider cannot fix a whole trace](/vectofix/blog/one-slider-cant-fix-a-whole-image); [what vector repair is](/vectofix/blog/what-is-vector-repair-guide-to-vector-qa).",
+      },
     ],
   }),
 
@@ -738,6 +742,10 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "To understand what each tracing setting does before repairing, read our [guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide).",
       },
+      {
+        type: "p",
+        text: "Related reading: [why a vectorized SVG loses detail](/vectofix/blog/why-your-vectorized-svg-lost-detail); [how to fix a bad vectorization without starting over](/vectofix/blog/how-to-fix-a-bad-vectorization-without-starting-over); [what VectoFix is and what it repairs](/vectofix/blog/introducing-vectofix).",
+      },
     ],
   }),
 
@@ -859,6 +867,10 @@ export const posts: BlogPost[] = [
       {
         type: "p",
         text: "VectoFix repairs a trace; to create one from scratch, see our [complete guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide) and [how to convert a JPG to SVG](/blog/convert-jpg-to-svg).",
+      },
+      {
+        type: "p",
+        text: "Related reading: [what vector repair is](/vectofix/blog/what-is-vector-repair-guide-to-vector-qa); [why a vectorized SVG loses detail](/vectofix/blog/why-your-vectorized-svg-lost-detail); [why one slider cannot fix a whole trace](/vectofix/blog/one-slider-cant-fix-a-whole-image).",
       },
     ],
   }),
@@ -1002,6 +1014,10 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "Si vous hésitez encore sur la manière de tracer, notre [guide complet pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) détaille les méthodes et les réglages, et [convertir un JPG en SVG](/blog/convertir-jpg-en-svg) montre comment limiter les artefacts de compression avant le tracé.",
       },
+      {
+        type: "p",
+        text: "À lire aussi : [comment réparer une mauvaise vectorisation sans tout recommencer](/vectofix/blog/comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer) ; [pourquoi un seul curseur ne peut pas tout réparer](/vectofix/blog/un-seul-curseur-ne-peut-pas-tout-reparer) ; [ce qu'est la réparation vectorielle](/vectofix/blog/qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa).",
+      },
     ],
   }),
 
@@ -1144,6 +1160,10 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "Pour comprendre ce que fait chaque réglage de tracé avant de réparer, lisez notre [guide pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet).",
       },
+      {
+        type: "p",
+        text: "À lire aussi : [pourquoi un SVG vectorisé perd du détail](/vectofix/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail) ; [comment réparer une mauvaise vectorisation sans tout recommencer](/vectofix/blog/comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer) ; [ce qu'est VectoFix et ce qu'il répare](/vectofix/blog/presentation-vectofix).",
+      },
     ],
   }),
 
@@ -1265,6 +1285,10 @@ export const posts: BlogPost[] = [
       {
         type: "p",
         text: "VectoFix répare un tracé ; pour en créer un depuis zéro, voyez notre [guide complet pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) et [comment convertir un JPG en SVG](/blog/convertir-jpg-en-svg).",
+      },
+      {
+        type: "p",
+        text: "À lire aussi : [ce qu'est la réparation vectorielle](/vectofix/blog/qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa) ; [pourquoi un SVG vectorisé perd du détail](/vectofix/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail) ; [pourquoi un seul curseur ne peut pas tout réparer](/vectofix/blog/un-seul-curseur-ne-peut-pas-tout-reparer).",
       },
     ],
   }),
