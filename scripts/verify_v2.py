@@ -570,7 +570,8 @@ CHOICE["upsell"] = "buy"
 export_to("q2.svg", "SVG vectoriel (*.svg)")
 i_buy = ORDER.index("pro_buy_clicked") if "pro_buy_clicked" in ORDER else -1
 i_br = ORDER.index("BROWSER") if "BROWSER" in ORDER else -1
-check("A12", 0 <= i_buy < i_br and BROWSER and "lemonsqueezy" in BROWSER[-1],
+check("A12", 0 <= i_buy < i_br and BROWSER
+      and ("lemonsqueezy" in BROWSER[-1] or "checkout.lafabriknumerique.fr" in BROWSER[-1]),
       f"ordre={ORDER}")
 
 # A13 : J'ai une clé (le LicenseDialog est remplacé pour ne pas bloquer)
