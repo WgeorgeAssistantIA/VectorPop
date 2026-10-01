@@ -1,4 +1,5 @@
 import { vectofixNewPosts } from "./blog-posts-vectofix-new";
+import { seoFrDrafts } from "./blog-posts-seo-fr";
 
 export type BlogPost = {
   slug: string;
@@ -1208,6 +1209,8 @@ export const posts: BlogPost[] = [
   }),
 
   ...vectofixNewPosts,
+
+  ...seoFrDrafts.map(make),
 ];
 
 export const getPost = (slug: string) => posts.find((p) => p.slug === slug);

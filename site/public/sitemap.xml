@@ -67,6 +67,24 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://www.vectorpop.fr/blog/comment-vectoriser-une-image-guide-complet</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.vectorpop.fr/blog/convertir-jpg-en-svg</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.vectorpop.fr/blog/pourquoi-imprimeurs-demandent-fichier-vectoriel</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.vectorpop.fr/vectofix/blog</loc>
     <lastmod>2026-08-12</lastmod>
     <changefreq>weekly</changefreq>
