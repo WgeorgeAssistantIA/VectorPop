@@ -138,7 +138,23 @@
 - **Validation & Déploiement** : Build TanStack Start validé, commit `9d8c51f` poussé sur `origin/main`, déployé sur Vercel et vérifié en direct.
 - **Rappel Mobile** : L'application Android `vectorpop_android` utilise exclusivement Google Play In-App Billing (zéro Lemon Squeezy sur mobile).
 
+### 11. Vidéos de Démonstration 2.0, Voix Off Studio & Patch Vercel (1er Octobre 2026)
+- **Production Vidéo Produit** :
+  - Montage de 8 séquences 1080p (durée 1m05s) à partir de captures réelles du logiciel.
+  - Coupe avant le dialogue d'export pour éviter le bug d'affichage des chiffres (résolu en code par la suite).
+  - Génération de voix off neuronales studio : *Henri* (FR) et *Andrew* (EN).
+  - Sous-titres incrustés avec cartouche sombre moderne (*pill box*), positionnés à `MarginV=158` au-dessus de la barre d'action sans masquer aucun bouton.
+  - Vidéos générées : `video_presentation_vectorpop_fr.mp4` (6.9 Mo) et `video_presentation_vectorpop_en.mp4` (7.0 Mo).
+- **Intégration & Déploiement Web** :
+  - Fichiers déployés dans `site/public/` : `vectorpop-demo-fr.mp4`, `vectorpop-demo.mp4`, `vectorpop-demo-poster.jpg`, `subtitles-fr.vtt`, `subtitles-en.vtt`.
+  - Résolution du blocage Vercel : mise à jour de `@tanstack/react-start` vers `1.168.60` (patch XSS CVE) et ajout de `site/vercel.json`.
+- **Pack YouTube Studio** :
+  - Répertoire `Vidéo de présentation/pack_youtube/` contenant les 2 vidéos, les sous-titres `.srt` minutés, la miniature 16:9 et le guide `titres-descriptions-youtube.md` (titres SEO <70 car., chapitrage, descriptions).
+- **Mise à jour des Fichiers de Suivi** :
+  - `suivi_projets.xlsx` et `suivi_projets.html` mis à jour avec les versions 2.0.0/2.1.0, 24 articles de blog, 252 téléchargements et les nouvelles vidéos.
+
 ---
+
 
 ## Prochaines Étapes / Backlog
 - Suivre la validation de la soumission MSIX 2.0.0 sur le Microsoft Partner Center.

@@ -120,4 +120,25 @@ Ce fichier documente les décisions clés, les conventions, l'état de publicati
 * **Site Web (`vectorpop.fr`)** : ✅ Déployé en 2.0.0 (version.json 2.0.0, liens v2.0.0, modèle Freemium 2.0 aligné).
 * **Conformité RGPD & Analytics** : ✅ Politiques de confidentialité harmonisées et déployées sur **VectorPop** (`1c94965`), **InOneShot** (`69397e0`) et **VoxCut** (`b783869`) : transparence PostHog EU (Francfort), zéro donnée personnelle/fichier transmis, traitement 100% local.
 
+---
+
+## 🎬 Vidéos de Présentation & Pack Marketing (1er Octobre 2026)
+
+* **Vidéos de démonstration HD 1080p 30fps (65s)** produites à partir de captures d'écran réelles du logiciel :
+  - **Version FR** (`video_presentation_vectorpop_fr.mp4`, 6.9 Mo) : Voix off studio *Henri* + sous-titres FR incrustés dans un cartouche sombre moderne (*pill box*), calés au-dessus de la barre d'action sans masquer aucun bouton.
+  - **Version EN** (`video_presentation_vectorpop_en.mp4`, 7.0 Mo) : Voix off studio *Andrew* + sous-titres EN incrustés.
+  - **Master audio** : `voiceover_fr.wav` et `voiceover_en.wav` (48 kHz stéréo normalisé à -1.0 dB).
+* **Intégration sur le site web (`vectorpop.fr`)** :
+  - Déploiement en remplacement des anciennes vidéos 1.0 : `site/public/vectorpop-demo-fr.mp4` et `vectorpop-demo.mp4`.
+  - Nouvelle affiche poster `vectorpop-demo-poster.jpg` (comparatif Original bitmap vs SVG vectorisé net avec transparence).
+  - Sous-titres WebVTT inclus : `subtitles-fr.vtt` et `subtitles-en.vtt`.
+* **Pack YouTube Studio (`Vidéo de présentation/pack_youtube/`)** :
+  - Vidéos FR & EN, miniature HD 16:9 `miniature_youtube.jpg`.
+  - Sous-titres minutés `subtitles_fr.srt` et `subtitles_en.srt`.
+  - Fiche complète `titres-descriptions-youtube.md` (titres SEO <70 car., chapitrage minuté, liens, hashtags).
+* **Sécurité & Infrastructure Vercel** :
+  - Correction de l'alerte de sécurité TanStack Start : passage à `@tanstack/react-start@1.168.60` (patch XSS).
+  - Configuration de `site/vercel.json` pour autoriser le build en production.
+
+
 

@@ -96,3 +96,22 @@ Tu n'as pas accès au code : tout ce qu'il faut pour raisonner est dans les §2 
 5. Que fait **Vectormagic** (ou les vectoriseurs commerciaux comparables) différemment sur une image glossy comme le robot ? Merci de ne citer que ce dont tu es sûr.
 6. Les **pixels sous la transparence** gardent des couleurs sans signification : quelle est la bonne pratique (pré-multiplication, remplissage par dilatation de la couleur voisine) avant d'ajuster des dégradés ?
 7. Le compromis **fidélité / poids / vitesse** : quel ordre de grandeur est raisonnable pour un SVG « propre » de ce type d'image (formes, dégradés, Ko) ?
+
+## 10. Mise à jour après l'avis externe (même jour) — résultats mesurés
+
+L'avis externe soutenait que Vector Magic **ne fait pas de vrais dégradés** et que l'écart vient de la segmentation en bandes. La documentation officielle de Vector Magic le confirme (« les dégradés sont convertis en bandes de couleur constante »). Test correspondant (robot, icône, bulle ; vtracer « détaillé », 8 bits de couleur, sans fusion ; **sans « Dégradés » ni « Affiner couleurs »**) :
+
+| | Recette « glossy » actuelle (Dégradés + Affiner) | Bandes plates, anti-parasites 6 | Bandes plates, anti-parasites 2 |
+|---|---|---|---|
+| Robot | err 5,86 — 428 Ko | **3,09** — 363 Ko | **3,05** — 450 Ko |
+| Icône | err 13,13 — 563 Ko | **3,46** — 496 Ko | **3,37** — 573 Ko |
+| Bulle (dégradé 2D lisse) | err 9,17 — 47 Ko | 1,88 — 41 Ko | 1,88 — 41 Ko |
+
+Contrôle **visuel** : le robot et l'icône sont nettement meilleurs (brillance de la tête, bande sombre sous la tête, halo rose et éclat de l'étoile conservés ; le fond de l'icône garde de légères stries). La **bulle est en blocs visibles** (comme les bandes de Vector Magic) alors que le mode dégradés la rend lisse mais fausse en couleurs : compromis réel, pas un gain gratuit.
+
+Conséquences :
+- **Atteignable dès aujourd'hui sans modifier le code** : préréglage « Détaillé », Couleurs 8, « Fusion couleurs » décochée, « Dégradés » **décoché**, « Affiner couleurs » **décoché**, Anti-parasites 2 à 6.
+- La recette « Icône glossy / 3D » de l'application coche **justement** « Dégradés » et « Affiner couleurs » : sur le robot et l'icône elle est donc **moins bonne** que ces réglages simples. Correctif candidat : une ligne par recette (`grad=False, refine=False` pour `glossy` et `photo` dans `core/recipes.py`), avec mise à jour du texte `recipe_glossy_desc`.
+- « Dégradés » reste utile pour les dégradés lisses (bulle) : le garder en option.
+- **« Affiner couleurs » dégrade les PNG transparents** (robot 3,09 → 4,38 ; icône 3,46 → 5,42) tout en améliorant légèrement un PNG opaque (bulle 1,88 → 1,80). **Hypothèse testée et en grande partie réfutée** : ignorer les pixels transparents dans la moyenne ne corrige presque rien (4,38 → 4,28). **Cause inconnue.**
+- Les chantiers « calques de lueur » / « découpe adaptative » de la branche 2.2.0 deviennent **secondaires** : ils améliorent un mode (« Dégradés ») qui n'est pas le meilleur pour ces images.
