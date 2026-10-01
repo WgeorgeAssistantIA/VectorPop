@@ -1,6 +1,6 @@
 {
   "version": "2.1.0",
   "url": "https://vectorpop.fr/",
-  "notes_fr": "Nouvelle version 2.1.0 : dégradés plus fidèles (les détails des images monochromes sont conservés) et nouveau curseur « Seuil dégradés ».",
-  "notes_en": "New version 2.1.0: more faithful gradients (details of single-color images are kept) and a new 'Gradient thresh.' slider."
+  "notes_fr": "Nouvelle version 2.1.0 : dégradés plus fidèles (détails préservés), nouveau curseur « Seuil dégradés » et recette « Icône glossy / 3D » plus fidèle aux reflets.",
+  "notes_en": "New version 2.1.0: more faithful gradients (details preserved), new 'Gradient thresh.' slider and 'Glossy / 3D icon' recipe more faithful to highlights."
 }

@@ -104,11 +104,12 @@ Rappel : 6 binaires dans `releases\v2.1.0\`.
 > **Plateformes** : Windows (EXE, MSIX, portable), Linux (AppImage, tar.gz, Snap)
 > - **Dégradés plus fidèles** : les images à dominante d'une seule couleur (mascottes, icônes) ne perdent plus leurs détails — yeux, reflets, pictogrammes — quand « Dégradés (lisse) » est coché.
 > - **Nouveau curseur « Seuil dégradés »** pour régler finement le niveau de détail conservé (2 à 60, 12 par défaut ; actif seulement avec « Dégradés (lisse) »). Mémorisé, pris en compte par le traitement par lot, repositionné par les recettes « glossy » et « photo ».
+> - **Recette « Icône glossy / 3D » plus fidèle** : elle ne coche plus « Dégradés » ni « Affiner couleurs », qui écrasaient les reflets des images brillantes ; de fines bandes de couleur rendent mieux les mascottes 3D et les icônes à halo. « Dégradés (lisse) » reste disponible pour un fond parfaitement lisse.
 > - Nouveau conseil de dépannage dans l'aide.
 > - Correction d'affichage : les tailles 1024, 2048 et 4096 ne sont plus tronquées dans la fenêtre « Taille du SVG ».
 > - Le lien d'achat de VectorPop Pro passe par `checkout.lafabriknumerique.fr`.
 
-**`version.json`** : `notes_fr` : « Nouvelle version 2.1.0 : dégradés plus fidèles (les détails des images monochromes sont conservés) et nouveau curseur « Seuil dégradés ». » · `notes_en` : « New version 2.1.0: more faithful gradients (details of single-color images are kept) and a new 'Gradient thresh.' slider. »
+**`version.json`** : `notes_fr` : « Nouvelle version 2.1.0 : dégradés plus fidèles (détails préservés), nouveau curseur « Seuil dégradés » et recette « Icône glossy / 3D » plus fidèle aux reflets. » · `notes_en` : « New version 2.1.0: more faithful gradients (details preserved), new 'Gradient thresh.' slider and 'Glossy / 3D icon' recipe more faithful to highlights. »
 
 **Microsoft Store — Nouveautés** : FR « Dégradés plus fidèles : les mascottes et icônes d'une seule couleur gardent leurs détails. Nouveau curseur « Seuil dégradés » pour affiner le rendu. Recette « Icône glossy / 3D » plus fidèle aux reflets. Correction d'affichage dans la fenêtre de taille d'export. » · EN « More faithful gradients: single-color mascots and icons keep their details. New "Gradient thresh." slider to fine-tune the result. The "Glossy / 3D icon" recipe is now more faithful to highlights. Fixed truncated sizes in the export size dialog. »
 
