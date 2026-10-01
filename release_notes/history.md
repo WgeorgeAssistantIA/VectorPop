@@ -7,6 +7,7 @@ Ce fichier consolide l'historique de toutes les versions de VectorPop.
 **Plateformes** : Windows (EXE, MSIX, portable), Linux (AppImage, tar.gz, Snap)
 - **Dégradés plus fidèles** : les images à dominante d'une seule couleur (mascottes, icônes) ne perdent plus leurs détails — yeux, reflets, pictogrammes — quand « Dégradés (lisse) » est coché.
 - **Nouveau curseur « Seuil dégradés »** pour régler finement le niveau de détail conservé (2 à 60, 12 par défaut ; actif seulement avec « Dégradés (lisse) »). Mémorisé, pris en compte par le traitement par lot, repositionné par les recettes « glossy » et « photo ».
+- **Recette « Icône glossy / 3D » plus fidèle** : elle ne coche plus « Dégradés » ni « Affiner couleurs », qui écrasaient les reflets des images brillantes ; de fines bandes de couleur rendent mieux les mascottes 3D et les icônes à halo. « Dégradés (lisse) » reste disponible pour un fond parfaitement lisse.
 - Nouveau conseil de dépannage dans l'aide.
 - Correction d'affichage : les tailles 1024, 2048 et 4096 ne sont plus tronquées dans la fenêtre « Taille du SVG ».
 - Le lien d'achat de VectorPop Pro passe par `checkout.lafabriknumerique.fr`.
