@@ -1,6 +1,6 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "url": "https://vectorpop.fr/",
-  "notes_fr": "Nouvelle version 2.0.0 : Onboarding interactif, 4 modèles de démonstration, traitement par lot 2.0, zoom x12 000, et fonctions Pro accessibles en aperçu.",
-  "notes_en": "New version 2.0.0: Interactive onboarding, 4 demo models, batch processing 2.0, zoom up to 12,000x, and Pro features freely testable in preview."
+  "notes_fr": "Nouvelle version 2.1.0 : dégradés plus fidèles (les détails des images monochromes sont conservés) et nouveau curseur « Seuil dégradés ».",
+  "notes_en": "New version 2.1.0: more faithful gradients (details of single-color images are kept) and a new 'Gradient thresh.' slider."
 }

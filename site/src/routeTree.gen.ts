@@ -9,41 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VectofixRouteImport } from './routes/vectofix'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as LegalRouteImport } from './routes/legal'
-import { Route as EnRouteImport } from './routes/en'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as VectofixIndexRouteImport } from './routes/vectofix.index'
-import { Route as BlogIndexRouteImport } from './routes/blog.index'
-import { Route as VectofixPrivacyRouteImport } from './routes/vectofix.privacy'
-import { Route as VectofixEnRouteImport } from './routes/vectofix.en'
-import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
-import { Route as ApiTrackRouteImport } from './routes/api/track'
-import { Route as ApiSubscribeRouteImport } from './routes/api/subscribe'
+import { Route as EnRouteImport } from './routes/en'
+import { Route as LegalRouteImport } from './routes/legal'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as VectofixRouteImport } from './routes/vectofix'
 import { Route as ApiDownloadsRouteImport } from './routes/api/downloads'
+import { Route as ApiSubscribeRouteImport } from './routes/api/subscribe'
+import { Route as ApiTrackRouteImport } from './routes/api/track'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as VectofixIndexRouteImport } from './routes/vectofix.index'
+import { Route as VectofixEnRouteImport } from './routes/vectofix.en'
+import { Route as VectofixPrivacyRouteImport } from './routes/vectofix.privacy'
 import { Route as VectofixBlogIndexRouteImport } from './routes/vectofix.blog.index'
 import { Route as VectofixBlogSlugRouteImport } from './routes/vectofix.blog.$slug'
 
-const VectofixRoute = VectofixRouteImport.update({
-  id: '/vectofix',
-  path: '/vectofix',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LegalRoute = LegalRouteImport.update({
-  id: '/legal',
-  path: '/legal',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EnRoute = EnRouteImport.update({
@@ -51,39 +36,29 @@ const EnRoute = EnRouteImport.update({
   path: '/en',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const LegalRoute = LegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VectofixIndexRoute = VectofixIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => VectofixRoute,
-} as any)
-const BlogIndexRoute = BlogIndexRouteImport.update({
-  id: '/blog/',
-  path: '/blog/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VectofixPrivacyRoute = VectofixPrivacyRouteImport.update({
+const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
-  getParentRoute: () => VectofixRoute,
-} as any)
-const VectofixEnRoute = VectofixEnRouteImport.update({
-  id: '/en',
-  path: '/en',
-  getParentRoute: () => VectofixRoute,
-} as any)
-const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: '/blog/$slug',
-  path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiTrackRoute = ApiTrackRouteImport.update({
-  id: '/api/track',
-  path: '/api/track',
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VectofixRoute = VectofixRouteImport.update({
+  id: '/vectofix',
+  path: '/vectofix',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDownloadsRoute = ApiDownloadsRouteImport.update({
+  id: '/api/downloads',
+  path: '/api/downloads',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSubscribeRoute = ApiSubscribeRouteImport.update({
@@ -91,10 +66,35 @@ const ApiSubscribeRoute = ApiSubscribeRouteImport.update({
   path: '/api/subscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiDownloadsRoute = ApiDownloadsRouteImport.update({
-  id: '/api/downloads',
-  path: '/api/downloads',
+const ApiTrackRoute = ApiTrackRouteImport.update({
+  id: '/api/track',
+  path: '/api/track',
   getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VectofixIndexRoute = VectofixIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => VectofixRoute,
+} as any)
+const VectofixEnRoute = VectofixEnRouteImport.update({
+  id: '/en',
+  path: '/en',
+  getParentRoute: () => VectofixRoute,
+} as any)
+const VectofixPrivacyRoute = VectofixPrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => VectofixRoute,
 } as any)
 const VectofixBlogIndexRoute = VectofixBlogIndexRouteImport.update({
   id: '/blog/',
@@ -233,32 +233,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/vectofix': {
-      id: '/vectofix'
-      path: '/vectofix'
-      fullPath: '/vectofix'
-      preLoaderRoute: typeof VectofixRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/legal': {
-      id: '/legal'
-      path: '/legal'
-      fullPath: '/legal'
-      preLoaderRoute: typeof LegalRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/en': {
@@ -268,53 +247,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/legal': {
+      id: '/legal'
+      path: '/legal'
+      fullPath: '/legal'
+      preLoaderRoute: typeof LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/vectofix/': {
-      id: '/vectofix/'
-      path: '/'
-      fullPath: '/vectofix/'
-      preLoaderRoute: typeof VectofixIndexRouteImport
-      parentRoute: typeof VectofixRoute
-    }
-    '/blog/': {
-      id: '/blog/'
-      path: '/blog'
-      fullPath: '/blog/'
-      preLoaderRoute: typeof BlogIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/vectofix/privacy': {
-      id: '/vectofix/privacy'
+    '/privacy': {
+      id: '/privacy'
       path: '/privacy'
-      fullPath: '/vectofix/privacy'
-      preLoaderRoute: typeof VectofixPrivacyRouteImport
-      parentRoute: typeof VectofixRoute
-    }
-    '/vectofix/en': {
-      id: '/vectofix/en'
-      path: '/en'
-      fullPath: '/vectofix/en'
-      preLoaderRoute: typeof VectofixEnRouteImport
-      parentRoute: typeof VectofixRoute
-    }
-    '/blog/$slug': {
-      id: '/blog/$slug'
-      path: '/blog/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof BlogSlugRouteImport
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/track': {
-      id: '/api/track'
-      path: '/api/track'
-      fullPath: '/api/track'
-      preLoaderRoute: typeof ApiTrackRouteImport
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vectofix': {
+      id: '/vectofix'
+      path: '/vectofix'
+      fullPath: '/vectofix'
+      preLoaderRoute: typeof VectofixRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/downloads': {
+      id: '/api/downloads'
+      path: '/api/downloads'
+      fullPath: '/api/downloads'
+      preLoaderRoute: typeof ApiDownloadsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/subscribe': {
@@ -324,12 +289,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/downloads': {
-      id: '/api/downloads'
-      path: '/api/downloads'
-      fullPath: '/api/downloads'
-      preLoaderRoute: typeof ApiDownloadsRouteImport
+    '/api/track': {
+      id: '/api/track'
+      path: '/api/track'
+      fullPath: '/api/track'
+      preLoaderRoute: typeof ApiTrackRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vectofix/': {
+      id: '/vectofix/'
+      path: '/'
+      fullPath: '/vectofix/'
+      preLoaderRoute: typeof VectofixIndexRouteImport
+      parentRoute: typeof VectofixRoute
+    }
+    '/vectofix/en': {
+      id: '/vectofix/en'
+      path: '/en'
+      fullPath: '/vectofix/en'
+      preLoaderRoute: typeof VectofixEnRouteImport
+      parentRoute: typeof VectofixRoute
+    }
+    '/vectofix/privacy': {
+      id: '/vectofix/privacy'
+      path: '/privacy'
+      fullPath: '/vectofix/privacy'
+      preLoaderRoute: typeof VectofixPrivacyRouteImport
+      parentRoute: typeof VectofixRoute
     }
     '/vectofix/blog/': {
       id: '/vectofix/blog/'

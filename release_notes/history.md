@@ -2,6 +2,15 @@
 
 Ce fichier consolide l'historique de toutes les versions de VectorPop.
 
+## Version 2.1.0 (Desktop)
+**Date** : 1er Octobre 2026
+**Plateformes** : Windows (EXE, MSIX, portable), Linux (AppImage, tar.gz, Snap)
+- **Dégradés plus fidèles** : les images à dominante d'une seule couleur (mascottes, icônes) ne perdent plus leurs détails — yeux, reflets, pictogrammes — quand « Dégradés (lisse) » est coché.
+- **Nouveau curseur « Seuil dégradés »** pour régler finement le niveau de détail conservé (2 à 60, 12 par défaut ; actif seulement avec « Dégradés (lisse) »). Mémorisé, pris en compte par le traitement par lot, repositionné par les recettes « glossy » et « photo ».
+- Nouveau conseil de dépannage dans l'aide.
+- Correction d'affichage : les tailles 1024, 2048 et 4096 ne sont plus tronquées dans la fenêtre « Taille du SVG ».
+- Le lien d'achat de VectorPop Pro passe par `checkout.lafabriknumerique.fr`.
+
 ## Version 2.0.0 (Desktop)
 **Date** : 24 Septembre 2026
 **Plateformes** : Windows (EXE, MSIX, portable), Linux (AppImage, tar.gz, Snap)
