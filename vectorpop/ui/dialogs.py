@@ -153,15 +153,22 @@ class SizeDialog(QDialog):
             lay.addWidget(self.chk_original)
 
         presets_box = QHBoxLayout()
-        widest = max(self.PRESETS, key=lambda p: len(str(p)))
+        preset_btns = []
         for p in self.PRESETS:
             btn = QPushButton(str(p))
-            metrics = QFontMetrics(btn.font())
-            btn.setMinimumWidth(metrics.horizontalAdvance(str(widest)) + 28)
             if p == self.RECOMMENDED and recommended_tip:
                 btn.setToolTip(recommended_tip)
             btn.clicked.connect(lambda _=False, v=p: self._pick_preset(v))
             presets_box.addWidget(btn)
+            preset_btns.append(btn)
+        # Largeur minimale = taille réelle du bouton le plus large (feuille de style
+        # comprise : texte en gras + marges de 14 px). Calculée avec la police brute
+        # (QFontMetrics), elle était trop juste et coupait « 1024 », « 2048 », « 4096 ».
+        for btn in preset_btns:
+            btn.ensurePolished()
+        widest_w = max(btn.sizeHint().width() for btn in preset_btns)
+        for btn in preset_btns:
+            btn.setMinimumWidth(widest_w)
         lay.addLayout(presets_box)
         lay.addWidget(self.spin)
 
