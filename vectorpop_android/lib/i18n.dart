@@ -218,12 +218,12 @@ class L10n {
       'Aplats nets, peu de couleurs (le cas idéal : SVG propre et léger).',
       'Clean flats, few colors (the ideal case: a clean, light SVG).');
   String get recipeGlossyTitle =>
-      _t('Icône glossy / 3D (dégradés, reflets)', 'Glossy / 3D icon (gradients, highlights)');
+      _t('Icône glossy / 3D (reflets, nuances)', 'Glossy / 3D icon (highlights, shades)');
   String get recipeGlossyDesc => _t(
       'Beaucoup de dégradés et de reflets. Monte Couleurs et décoche Fusion '
-      'pour laisser des bandes fines à reconstruire.',
+      'pour préserver les reflets nets et les nuances fines.',
       'Lots of gradients and highlights. Raise Colors and uncheck Merge to '
-      'leave fine bands to reconstruct.');
+      'preserve sharp highlights and fine shades.');
   String get recipeBwTitle => presetBwTitle;
   String get recipeBwDesc => presetBwDesc;
   String get recipePhotoTitle => _t('Photo / image complexe', 'Photo / complex image');

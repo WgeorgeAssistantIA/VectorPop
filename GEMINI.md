@@ -8,9 +8,9 @@ Ce fichier documente les décisions clés, les conventions, l'état de publicati
 
 * **Statut de production** :
   - **Desktop (Windows / Linux)** : Version `2.1.0` publiée le 1er Octobre 2026 sur Snap Store (stable, rév. 5), GitHub Releases (6 paquets), Windows Store (MSIX 2.1.0 prêt) et site `vectorpop.fr`.
-  - **Mobile (Android)** : Version Flutter Android `1.0.3+5` en production sur Google Play Store.
+  - **Mobile (Android)** : Version Flutter Android `2.0.0+8` prête pour déploiement Google Play Store (bundle signé `VectorPop_Android_2.0.0+8.aab`).
 * **Fiche Play Store prête** : Métadonnées et visuels complets prêts pour mise à jour sur Google Play Console.
-* **Version Android** : `1.0.3+5` (définie dans `vectorpop_android/pubspec.yaml`).
+* **Version Android** : `2.0.0+8` (définie dans `vectorpop_android/pubspec.yaml`).
 * **Version Desktop** : `2.1.0` (définie dans `vectorpop/__init__.py`).
 * **Application ID / Namespace** : `com.lafabriknumerique.vectorpop`.
 * **Signature Release** : Keystore de production configuré (`android/vectorpop-release.jks` et `android/key.properties`).

@@ -40,6 +40,19 @@ Ce fichier consolide l'historique de toutes les versions de VectorPop.
   - **Site web (vectorpop.fr)** : Mise à jour en 2.0.0 (`version.json` 2.0.0, liens v2.0.0 et freemium 2.0).
 
 
+## Version 2.0.0 (Android build 8)
+**Date** : 2 Octobre 2026
+**Plateforme** : Android (AAB)
+- **Mise à niveau majeure V2 (Mobile & Tablettes)** :
+  - **Onboarding interactif** : découverte guidée en 5 étapes avec choix du profil d'usage (Logo, Mascotte, Trait/Gravure, Icône).
+  - **4 modèles démo intégrés** : test instantané de la vectorisation dès le premier lancement sans nécessiter d'image externe.
+  - **Recette « Icône glossy / 3D » plus fidèle** : préservation des reflets et des nuances fines sans écrasement des détails.
+  - **Expérience Pro unifiée** : nouvelle feuille de paiement Pro optimisée pour smartphone et tablette, avec protection anti-doublon et gestion réactive du cycle Google Play Billing.
+  - **Célébration du premier export** : écran d'encouragement et valorisation du premier tracé SVG réussi.
+  - **Zoom ultra-profond jusqu'à ×10 000** : inspection précise de la géométrie des courbes vectorielles.
+  - **Télémétrie et avis intégrés** : intégration PostHog anonymisée et invite In-App Review.
+- **Build de Production** : Génération du bundle signé `VectorPop_Android_2.0.0+8.aab` dans `releases/2.0.0+8/`.
+
 ## Version 1.0.4 (Android build 6)
 **Date** : 16 Septembre 2026
 **Plateforme** : Android (AAB, APK)
