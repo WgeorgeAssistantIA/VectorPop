@@ -1,14 +1,14 @@
 # Mémoire du Projet : VectorPop
 
 ## État Actuel (Octobre 2026)
-- **Application Desktop V2 (2.0.0)** : Production complète déployée le 24 Septembre 2026 :
-  - **Snap Store (Canonical)** : Publié sur le canal `stable` (Révision 4).
-  - **Windows Store** : Paquet MSIX 2.0.0 soumis sur Partner Center.
-  - **GitHub Releases** : Release `v2.0.0` publiée avec 6 artefacts binaires (EXE, MSIX, ZIP, AppImage, Tar.gz, Snap).
-  - **Site Web (`vectorpop.fr`)** : Mis à jour en 2.0.0 (`version.json` 2.0.0, liens v2.0.0, Freemium 2.0).
+- **Application Desktop V2.1 (2.1.0)** : Production complète déployée et EN LIGNE début Octobre 2026 :
+  - **Windows Store** : Paquet MSIX 2.1.0 validé et en ligne sur le Microsoft Store.
+  - **Snap Store (Canonical)** : Publié sur le canal `stable` (Révision 5).
+  - **GitHub Releases** : Release `v2.1.0` publiée avec 6 artefacts binaires (EXE, MSIX, ZIP, AppImage, Tar.gz, Snap).
+  - **Site Web (`vectorpop.fr`)** : Mis à jour en 2.1.0 (`version.json` 2.1.0, liens v2.1.0, Freemium 2.0/2.1).
   - **Paiements PC** : Liens de paiement unifiés sur le domaine officiel `checkout.lafabriknumerique.fr` (Store Lemon Squeezy 399927).
-- **Application Mobile (vectorpop_android)** : Version Flutter Android `1.0.3+5` passée en production sur le Play Store, avec moteur Rust VTracer embarqué (vectorisation 100% locale ultra-rapide).
-- **Fiche Google Play Store** : Visuels haute conversion (smartphone, tablette 7" et 10", feature graphic) et métadonnées bilingues (FR/EN) prêts pour la mise à jour de la fiche Play Store.
+- **Application Mobile (vectorpop_android)** : Version Flutter Android `2.0.0+8` validée et EN LIGNE sur le Google Play Store (bundle signé `VectorPop_Android_2.0.0+8.aab`), avec moteur Rust VTracer embarqué (vectorisation 100% locale ultra-rapide) et nouvelles recettes de vectorisation.
+- **Fiches Stores** : Fiches et visuels de haute conversion en ligne sur le Google Play Store et le Microsoft Store.
 
 
 ---
@@ -153,14 +153,19 @@
 - **Mise à jour des Fichiers de Suivi** :
   - `suivi_projets.xlsx` et `suivi_projets.html` mis à jour avec les versions 2.0.0/2.1.0, 24 articles de blog, 252 téléchargements et les nouvelles vidéos.
 
+### 12. Déploiement en Ligne Desktop 2.1.0 et Android V2 (2.0.0+8) sur les Stores (2 Octobre 2026)
+- **Validation Windows Store** : Paquet MSIX 2.1.0 ingéré et officiellement publié en production sur le Microsoft Store.
+- **Validation Google Play Store** : Bundle Android V2 (`VectorPop_Android_2.0.0+8.aab`) validé et officiellement publié en production sur le Google Play Store.
+- **Synchronisation Écosystème** :
+  - Desktop 2.1.0 en ligne sur tous les canaux : Microsoft Store (MSIX), Inno Setup EXE, ZIP portable, Linux AppImage, Tar.gz, Snap Store canal `stable` (révision 5), GitHub Releases `v2.1.0` et site officiel `vectorpop.fr`.
+  - Android 2.0.0+8 en ligne sur le Google Play Store (moteur Rust VTracer, recettes de vectorisation optimisées).
+  - Fichiers de suivi transverses (`suivi_projets.html` et `suivi_projets.xlsx`) et mémoires actualisés.
+
 ---
 
-
 ## Prochaines Étapes / Backlog
-- Suivre la validation de la soumission MSIX 2.0.0 sur le Microsoft Partner Center.
-- Suivre les premiers événements analytiques PostHog de la V2 desktop (`app: "vectorpop_desktop"`).
-- Côté Android : Mettre à jour la fiche Google Play Console avec les nouveaux textes et les visuels `capture d'écran/playstore/`, et ajuster le formulaire Data Safety (déclarer PostHog anonyme).
-- Évaluer les retours utilisateurs sur le profil gravure/découpe pour les fonctionnalités V2.1 (DXF, EPS, palette).
-- Suivre les premières retombées SEO et l'indexation Google des 12 articles de blog VectoFix.
+- Suivre les premiers retours utilisateurs et événements analytiques PostHog sur Desktop 2.1.0 et Android 2.0.0+8.
+- Évaluer les retours utilisateurs sur le profil gravure/découpe pour les fonctionnalités V2.2 (dégradés radiaux, DXF, EPS, palette).
+- Suivre les retombées SEO et l'indexation Google des guides et articles VectoFix.
 
 

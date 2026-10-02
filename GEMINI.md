@@ -7,9 +7,9 @@ Ce fichier documente les décisions clés, les conventions, l'état de publicati
 ## 🚀 État de Publication & Version Logicielle
 
 * **Statut de production** :
-  - **Desktop (Windows / Linux)** : Version `2.1.0` publiée le 1er Octobre 2026 sur Snap Store (stable, rév. 5), GitHub Releases (6 paquets), Windows Store (MSIX 2.1.0 prêt) et site `vectorpop.fr`.
-  - **Mobile (Android)** : Version Flutter Android `2.0.0+8` prête pour déploiement Google Play Store (bundle signé `VectorPop_Android_2.0.0+8.aab`).
-* **Fiche Play Store prête** : Métadonnées et visuels complets prêts pour mise à jour sur Google Play Console.
+  - **Desktop (Windows / Linux)** : Version `2.1.0` publiée et EN LIGNE sur le Windows Store (MSIX 2.1.0 validé), Snap Store (stable, rév. 5), GitHub Releases (6 paquets) et site `vectorpop.fr`.
+  - **Mobile (Android)** : Version Flutter Android `2.0.0+8` validée et EN LIGNE sur le Google Play Store (bundle signé `VectorPop_Android_2.0.0+8.aab`).
+* **Fiches Stores prêtes & en ligne** : Métadonnées et visuels complets validés sur Google Play Console et Microsoft Partner Center.
 * **Version Android** : `2.0.0+8` (définie dans `vectorpop_android/pubspec.yaml`).
 * **Version Desktop** : `2.1.0` (définie dans `vectorpop/__init__.py`).
 * **Application ID / Namespace** : `com.lafabriknumerique.vectorpop`.
@@ -113,9 +113,10 @@ Ce fichier documente les décisions clés, les conventions, l'état de publicati
      wsl -d Ubuntu-24.04 bash -l -c "export SNAPCRAFT_STORE_CREDENTIALS=\$(cat ~/snap-creds.txt); snapcraft upload --release=stable /mnt/c/Users/William/Documents/Entreprenariat/VectorPop/releases/v2.1.0/vectorpop_2.1.0_amd64.snap"
      ```
 
-### 🚀 Statut des Déploiements (1er Octobre 2026)
+### 🚀 Statut des Déploiements (02 Octobre 2026)
+* **Microsoft Store** : ✅ Publié en **production / en ligne** (MSIX 2.1.0 validé).
+* **Google Play Store** : ✅ Publié en **production / en ligne** (AAB 2.0.0+8 validé).
 * **Snap Store (Canonical)** : ✅ Publié en **stable** (Révision 5 pour la 2.1.0).
-* **Microsoft Store** : ⏳ Paquet `VectorPop-Setup-2.1.0.msix` prêt pour soumission sur Partner Center.
 * **GitHub Releases** : ✅ Release `v2.1.0` publiée avec les 6 binaires (EXE, MSIX, ZIP portable, AppImage, Tar.gz, Snap).
 * **Site Web (`vectorpop.fr`)** : ✅ Déployé en 2.1.0 (version.json 2.1.0, liens v2.1.0).
 * **Conformité RGPD & Analytics** : ✅ Politiques de confidentialité harmonisées et déployées sur **VectorPop** (`1c94965`), **InOneShot** (`69397e0`) et **VoxCut** (`b783869`) : transparence PostHog EU (Francfort), zéro donnée personnelle/fichier transmis, traitement 100% local.
