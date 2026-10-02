@@ -7,11 +7,11 @@ Ce fichier documente les décisions clés, les conventions, l'état de publicati
 ## 🚀 État de Publication & Version Logicielle
 
 * **Statut de production** :
-  - **Desktop (Windows / Linux)** : Version `2.0.0` publiée le 24 Septembre 2026 sur Snap Store (stable, rév. 4), GitHub Releases (6 paquets), Windows Store (MSIX soumis) et site `vectorpop.fr`.
+  - **Desktop (Windows / Linux)** : Version `2.1.0` publiée le 1er Octobre 2026 sur Snap Store (stable, rév. 5), GitHub Releases (6 paquets), Windows Store (MSIX 2.1.0 prêt) et site `vectorpop.fr`.
   - **Mobile (Android)** : Version Flutter Android `1.0.3+5` en production sur Google Play Store.
 * **Fiche Play Store prête** : Métadonnées et visuels complets prêts pour mise à jour sur Google Play Console.
 * **Version Android** : `1.0.3+5` (définie dans `vectorpop_android/pubspec.yaml`).
-* **Version Desktop** : `2.0.0` (définie dans `vectorpop/__init__.py`).
+* **Version Desktop** : `2.1.0` (définie dans `vectorpop/__init__.py`).
 * **Application ID / Namespace** : `com.lafabriknumerique.vectorpop`.
 * **Signature Release** : Keystore de production configuré (`android/vectorpop-release.jks` et `android/key.properties`).
 * **Moteur natif** : Moteur Rust VTracer compilé en local pour Android (vectorisation 100% hors-ligne et instantanée).
@@ -85,39 +85,39 @@ Ce fichier documente les décisions clés, les conventions, l'état de publicati
 
 ---
 
-## 🖥️ VectorPop Desktop V2 (Windows, Linux, Stores)
-
-* **Version Desktop** : `2.0.0` (définie dans `vectorpop/__init__.py`, `installer.iss`, `AppxManifest.xml`, `snapcraft.yaml`).
+## 🖥️ VectorPop Desktop (Windows, Linux, Stores)
+ 
+* **Version Desktop** : `2.1.0` (définie dans `vectorpop/__init__.py`, `installer.iss`, `AppxManifest.xml`, `snapcraft.yaml`).
 * **Validation qualité** : Suite de tests automatisés `scripts/verify_v2.py --no-net` (66/66 tests PASS).
 
-### 📦 Paquets & Distribution (`releases/v2.0.0/`)
-1. **Windows EXE** : Inno Setup compilé via `installer.iss` (`VectorPop-Setup-2.0.0.exe`).
-2. **Windows Portable** : Archive autonome zippée (`VectorPop-v2.0.0-portable.zip`).
+### 📦 Paquets & Distribution (`releases/v2.1.0/`)
+1. **Windows EXE** : Inno Setup compilé via `installer.iss` (`VectorPop-Setup-2.1.0.exe`).
+2. **Windows Portable** : Archive autonome zippée (`VectorPop-v2.1.0-portable.zip`).
 3. **Linux AppImage** : Standalone (`VectorPop-x86_64.AppImage`).
-4. **Linux Tar.gz** : Archive binaire (`VectorPop_2.0.0_linux_x86_64.tar.gz`).
+4. **Linux Tar.gz** : Archive binaire (`VectorPop_2.1.0_linux_x86_64.tar.gz`).
 5. **Windows MSIX (Microsoft Store)** :
-   * Fichier : `VectorPop-Setup-2.0.0.msix`.
+   * Fichier : `VectorPop-Setup-2.1.0.msix`.
    * Manifeste : `msix_payload/AppxManifest.xml`.
    * **Points critiques Partner Center** :
      - `MinVersion="10.0.17763.0"` obligatoire (attention aux regex de bump de version qui écrasaient `MinVersion`).
      - `PublisherDisplayName="La Fabrik Numérique"` en encodage strict UTF-8 sans double-encodage (mojibake).
      - **Pas de signature locale requise** : Microsoft signe automatiquement le paquet MSIX lors de l'ingestion dans le Store.
 6. **Linux Snap (Snap Store Canonical)** :
-   * **Binaire** : `snap-build/vectorpop_2.0.0_amd64.snap`.
+   * **Binaire** : `snap-build/vectorpop_2.1.0_amd64.snap` / `releases/v2.1.0/vectorpop_2.1.0_amd64.snap`.
    * **Compilation sous WSL** : Exécuter `snapcraft --destructive-mode` dans WSL Ubuntu en root (ne jamais utiliser `--use-lxd` sous WSL, échec de montage de boucle noyau pour `mesa-2404`).
    * **Upload Web impossible** : Le site `snapcraft.io` n'a **aucun bouton d'upload**. L'onglet *Builds* est réservé aux builds GitHub cloud, et l'onglet *Releases* aux promotions de canaux.
    * **Ne JAMAIS faire `snapcraft login` dans WSL** : Déclenche la pop-up graphique grise GNOME Keyring de WSLg (*Unlock Login Keyring*) qui attend le mot de passe Linux local et bloque le processus.
    * **Authentification par jeton sécurisé** : Utiliser `export SNAPCRAFT_STORE_CREDENTIALS=$(cat ~/snap-creds.txt)` (jeton valide jusqu'en juin 2027 pour `lafabriknumerique`).
    * **Commande de publication directe en stable** :
      ```bash
-     wsl -d Ubuntu-24.04 bash -l -c "export SNAPCRAFT_STORE_CREDENTIALS=\$(cat ~/snap-creds.txt); snapcraft upload --release=stable /mnt/c/Users/William/Documents/Entreprenariat/VectorPop/snap-build/vectorpop_2.0.0_amd64.snap"
+     wsl -d Ubuntu-24.04 bash -l -c "export SNAPCRAFT_STORE_CREDENTIALS=\$(cat ~/snap-creds.txt); snapcraft upload --release=stable /mnt/c/Users/William/Documents/Entreprenariat/VectorPop/releases/v2.1.0/vectorpop_2.1.0_amd64.snap"
      ```
 
-### 🚀 Statut des Déploiements V2 (24 Septembre 2026)
-* **Snap Store (Canonical)** : ✅ Publié en **stable** (Révision 4).
-* **Microsoft Store** : ✅ Paquet MSIX 2.0.0 soumis sur Partner Center.
-* **GitHub Releases** : ✅ Release `v2.0.0` publiée avec les 6 binaires (EXE, MSIX, ZIP portable, AppImage, Tar.gz, Snap).
-* **Site Web (`vectorpop.fr`)** : ✅ Déployé en 2.0.0 (version.json 2.0.0, liens v2.0.0, modèle Freemium 2.0 aligné).
+### 🚀 Statut des Déploiements (1er Octobre 2026)
+* **Snap Store (Canonical)** : ✅ Publié en **stable** (Révision 5 pour la 2.1.0).
+* **Microsoft Store** : ⏳ Paquet `VectorPop-Setup-2.1.0.msix` prêt pour soumission sur Partner Center.
+* **GitHub Releases** : ✅ Release `v2.1.0` publiée avec les 6 binaires (EXE, MSIX, ZIP portable, AppImage, Tar.gz, Snap).
+* **Site Web (`vectorpop.fr`)** : ✅ Déployé en 2.1.0 (version.json 2.1.0, liens v2.1.0).
 * **Conformité RGPD & Analytics** : ✅ Politiques de confidentialité harmonisées et déployées sur **VectorPop** (`1c94965`), **InOneShot** (`69397e0`) et **VoxCut** (`b783869`) : transparence PostHog EU (Francfort), zéro donnée personnelle/fichier transmis, traitement 100% local.
 
 ---
