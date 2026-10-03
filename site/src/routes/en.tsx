@@ -51,11 +51,24 @@ export const Route = createFileRoute("/en")({
           "@type": "Organization",
           name: "La Fabrik Numérique",
           url: "https://www.lafabriknumerique.fr",
+          founder: { "@type": "Person", name: "William GEORGE", jobTitle: "Founder", url: "https://www.lafabriknumerique.fr" },
           logo: "https://www.vectorpop.fr/vectorpop_logo.png",
           sameAs: [
             "https://play.google.com/store/apps/details?id=com.lafabriknumerique.vectorpop",
             "https://snapcraft.io/vectorpop",
           ],
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "VectorPop",
+          url: "https://www.vectorpop.fr/en",
+          inLanguage: "en",
+          description: "Turn a PNG or JPEG logo into a clean SVG, 100% local on Windows.",
+          publisher: { "@type": "Organization", name: "La Fabrik Numérique", url: "https://www.lafabriknumerique.fr" },
         }),
       },
       {

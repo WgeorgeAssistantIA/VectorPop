@@ -762,6 +762,28 @@ export const Route = createFileRoute("/vectofix/")({
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "La Fabrik Numérique",
+          url: "https://www.lafabriknumerique.fr",
+          founder: { "@type": "Person", name: "William GEORGE", jobTitle: "Founder", url: "https://www.lafabriknumerique.fr" },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "VectoFix",
+          url: "https://www.vectorpop.fr/vectofix",
+          inLanguage: "fr",
+          description: "Logiciel de réparation et de contrôle qualité des vectorisations.",
+          publisher: { "@type": "Organization", name: "La Fabrik Numérique", url: "https://www.lafabriknumerique.fr" },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
           "@type": "FAQPage",
           mainEntity: t.fr.faq.items.map((item) => ({
             "@type": "Question",
