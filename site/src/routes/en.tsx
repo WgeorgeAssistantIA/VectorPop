@@ -32,10 +32,16 @@ export const Route = createFileRoute("/en")({
           "@type": "SoftwareApplication",
           name: "VectorPop",
           applicationCategory: "DesignApplication",
-          operatingSystem: "Windows",
+          operatingSystem: "Windows, Linux, Android",
           description:
             "Vectorize PNG and JPEG images into clean, editable SVG. 100% local and private.",
           url: "https://www.vectorpop.fr/en",
+          sameAs: [
+            "https://www.wikidata.org/wiki/Q141656928",
+            "https://apps.microsoft.com/detail/9MT2XVDXX7DG",
+            "https://play.google.com/store/apps/details?id=com.lafabriknumerique.vectorpop",
+            "https://snapcraft.io/vectorpop",
+          ],
           image: "https://www.vectorpop.fr/vectorpop_logo.png",
           offers: {
             "@type": "Offer",

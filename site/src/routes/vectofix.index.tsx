@@ -755,6 +755,10 @@ export const Route = createFileRoute("/vectofix/")({
           description:
             "Logiciel de réparation et de contrôle qualité des vectorisations. Détecte les dérives avec une carte thermique et permet de re-tracer chirurgicalement avec un pinceau de précision et l'IA MobileSAM.",
           url: "https://www.vectorpop.fr/vectofix",
+          sameAs: [
+            "https://www.wikidata.org/wiki/Q141656936",
+            "https://apps.microsoft.com/detail/9NR382QJ8SBK",
+          ],
           offers: { "@type": "Offer", price: "39", priceCurrency: "EUR" },
         }),
       },

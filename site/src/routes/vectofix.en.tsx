@@ -32,6 +32,10 @@ export const Route = createFileRoute("/vectofix/en")({
           description:
             "Desktop vector repair and quality control software. Pinpoints vectorization drift with a damage heatmap and enables surgical local re-tracing with precision brush and MobileSAM AI.",
           url: "https://www.vectorpop.fr/vectofix/en",
+          sameAs: [
+            "https://www.wikidata.org/wiki/Q141656936",
+            "https://apps.microsoft.com/detail/9NR382QJ8SBK",
+          ],
           offers: { "@type": "Offer", price: "39", priceCurrency: "EUR" },
         }),
       },
