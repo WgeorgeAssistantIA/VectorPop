@@ -1420,7 +1420,7 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
             {/* 3-Step Connected Triptyque Diagram */}
             <div className="mt-14 grid gap-6 md:grid-cols-3 relative">
               {c.ecosystem.pipeline.map((item, idx) => {
-                const isVectoFix = item.isCurrent;
+                const isVectoFix = "isCurrent" in item && item.isCurrent;
                 return (
                   <div
                     key={item.step}
