@@ -241,6 +241,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Related reading: [what vector repair is](/vectofix/blog/what-is-vector-repair-guide-to-vector-qa); [how to check and prepare an SVG for laser cutting](/vectofix/blog/how-to-check-and-prepare-svg-for-laser-cutting-lightburn); [why a vectorized SVG loses detail](/vectofix/blog/why-your-vectorized-svg-lost-detail).",
       },
+      {
+        type: "p",
+        text: "Related reading: [how to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization), a checklist for the moment right after conversion.",
+      },
     ],
   }),
 
@@ -442,6 +446,10 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         type: "p",
         text: "Related reading: [how to fix a bad vectorization without starting over](/vectofix/blog/how-to-fix-a-bad-vectorization-without-starting-over); [what vector repair is](/vectofix/blog/what-is-vector-repair-guide-to-vector-qa); [why a vectorized SVG loses detail](/vectofix/blog/why-your-vectorized-svg-lost-detail).",
+      },
+      {
+        type: "p",
+        text: "Related reading: [why too many SVG nodes are a problem for cutting machines](/vectofix/blog/why-too-many-svg-nodes-are-a-problem-for-cutting-machines).",
       },
     ],
   }),
@@ -835,6 +843,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "À lire aussi : [ce qu'est la réparation vectorielle](/vectofix/blog/qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa) ; [comment préparer un SVG pour la découpe laser](/vectofix/blog/comment-preparer-un-svg-pour-la-decoupe-laser-lightburn) ; [pourquoi un SVG vectorisé perd du détail](/vectofix/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail).",
       },
+      {
+        type: "p",
+        text: "À lire aussi : [comment corriger un SVG après une vectorisation automatique](/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique), une checklist pour l'instant qui suit la conversion.",
+      },
     ],
   }),
 
@@ -1037,6 +1049,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "À lire aussi : [comment réparer une mauvaise vectorisation sans tout recommencer](/vectofix/blog/comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer) ; [ce qu'est la réparation vectorielle](/vectofix/blog/qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa) ; [pourquoi un SVG vectorisé perd du détail](/vectofix/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail).",
       },
+      {
+        type: "p",
+        text: "À lire aussi : [pourquoi trop de nœuds dans un SVG posent problème aux machines de découpe](/vectofix/blog/trop-de-noeuds-svg-probleme-machines-de-decoupe).",
+      },
     ],
   }),
 
@@ -1199,6 +1215,624 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         type: "p",
         text: "À lire aussi : [ce qu'est VectoFix et ce qu'il répare](/vectofix/blog/presentation-vectofix) ; [comment réparer une mauvaise vectorisation sans tout recommencer](/vectofix/blog/comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer) ; [comment préparer un SVG pour la découpe laser](/vectofix/blog/comment-preparer-un-svg-pour-la-decoupe-laser-lightburn).",
+      },
+    ],
+  }),
+  make({
+    slug: "how-to-fix-an-svg-after-automatic-vectorization",
+    title: "How to Fix an SVG After Automatic Vectorization: A Practical Checklist",
+    description:
+      "Your converter produced an SVG, but parts of it are wrong. Learn how to find what went wrong, choose between simplifying and re-tracing, and repair only the damaged zones.",
+    date: "2026-10-07",
+    author: "VectoFix Team",
+    lang: "en",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "To fix an SVG after automatic vectorization, first locate the damaged zones by comparing the SVG with your original image, then repair those zones locally instead of changing the settings for the whole image. Global settings rarely fix a local problem, which is why most people end up redoing the trace several times.",
+      },
+      {
+        type: "p",
+        text: "The converter finished, the file opens, and most of it looks fine. Then you zoom in: a thin letter has merged with its neighbour, a small counter is filled in, an edge is jagged. This article gives you a practical order of work, from checking the problem to choosing the right remedy. It builds on [how to fix a bad vectorization without starting over](/vectofix/blog/how-to-fix-a-bad-vectorization-without-starting-over), and focuses on the moment right after the conversion.",
+      },
+      { type: "h2", text: "How do you find out what the converter got wrong?" },
+      {
+        type: "p",
+        text: "Put the original and the SVG at the same size, zoom to 300 percent or more, and compare them area by area. Flicking between the two is more reliable than looking at them side by side, because differences jump out when the image swaps in the same place.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Thin strokes and small text: do they still have their gaps and counters?",
+          "Sharp corners: are they still sharp, or rounded off?",
+          "Gradients and shadows: has a smooth transition become visible bands?",
+          "Edges between two colours: are they clean, or ragged and doubled?",
+          "Isolated dots: have small clean details disappeared, or has dust from the source appeared?",
+        ],
+      },
+      {
+        type: "p",
+        text: "Most tools do not measure the difference for you, because they never compare their output to the source. VectoFix does: it re-renders the SVG, compares it with your image and shows the gaps as a damage map in red, so you can see where to work instead of hunting by eye.",
+      },
+      { type: "h2", text: "Why is changing the global settings usually not enough?" },
+      {
+        type: "p",
+        text: "Settings such as the colour count, the speckle filter or the corner threshold apply to the whole image, while a defect is almost always local. Raising precision to rescue one thin letter makes every other part heavier. Lowering it to clean one noisy area flattens the details you wanted to keep. You end up searching for a compromise that satisfies no part of the image. We explain the mechanism in [why one slider cannot fix a whole trace](/vectofix/blog/one-slider-cant-fix-a-whole-image).",
+      },
+      {
+        type: "p",
+        text: "Global settings are still the right tool in one case: when the whole image is wrong in the same way, for example the colour count is far too low for a detailed illustration. Fix that first with a different preset, then look at what remains.",
+      },
+      { type: "h2", text: "Should you simplify the paths or re-trace the zone?" },
+      {
+        type: "p",
+        text: "The two remedies solve different problems. Simplifying paths, as described in [Inkscape’s tracing tutorial](https://inkscape.org/doc/tutorials/tracing/tutorial-tracing.html), reduces the number of nodes and smooths curves, but it moves the outline away from the original. Re-tracing the damaged zone at a finer scale restores detail, but adds nodes.",
+      },
+      {
+        type: "p",
+        text: "The measurements behind VectoFix make the trade-off concrete. Re-tracing a damaged zone recovered about 70 percent of the gap in the measured tests, while cleaning pixels recovered between minus 1 and plus 12 percent. A post-processing simplification pass lost 12 to 33 percent of fidelity to save 23 to 42 percent of the nodes in all six contexts tested. Those figures come from the tool’s own tests on three images, so treat them as an indication, not a law, but they explain why the tool re-traces instead of simplifying.",
+      },
+      { type: "h2", text: "How do you repair only the damaged zones?" },
+      {
+        type: "p",
+        text: "The method is the same in any tool: select the damaged area, re-trace it at a higher resolution than the rest, and merge the result back. Doing it by hand in a vector editor means redrawing paths. In VectoFix the gesture is one movement: you paint over what is damaged and the zone is re-traced by itself, in about half a second to a second.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Open the image. It is vectorized immediately, then compared with the original in one to six seconds depending on its size.",
+          "Switch to the Damage view and note the bright red spots.",
+          "Go back to the Result view and paint over them. Painting a little wide is safe: re-tracing a zone never makes it less faithful, only more detailed.",
+          "Check the status line, which reports the gap before and after for the zone, for example from 34.4 to 12.5.",
+          "Undo any stroke that did not help, then export the SVG.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Several small strokes are faster and more effective than one very large one, because the re-tracing scale shrinks as the zone grows. You can also let the tool detect damaged zones and repair them all at once. Everything runs locally on your computer. The [introduction to VectoFix](/vectofix/blog/introducing-vectofix) describes the full workflow.",
+      },
+      { type: "h2", text: "What should you check before exporting the SVG?" },
+      {
+        type: "p",
+        text: "Look at the node count next to the fidelity score. Re-tracing makes a zone more faithful and heavier at the same time, and the number of nodes decides whether the file will stay comfortable to reopen in Illustrator, Figma or Inkscape. On a 900 px logo, seven brush strokes took the trace from about 49,000 to about 87,600 anchor points in the tool’s measurements, which is why it shows both numbers on the same line.",
+      },
+      {
+        type: "p",
+        text: "If the file is going to a cutting machine, also read [how to check and prepare an SVG for laser cutting](/vectofix/blog/how-to-check-and-prepare-svg-for-laser-cutting-lightburn). And if your source image is the real problem, our [complete guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide) explains how to prepare it before tracing.",
+      },
+      { type: "h2", text: "Conclusion: diagnose, then repair locally" },
+      {
+        type: "p",
+        text: "Find where the trace went wrong, decide whether the problem is global or local, and repair local problems locally. You can try VectoFix with 3 full-resolution HD exports before deciding, and Pro is a one-time purchase of €39. If you want to see where your own SVG lost detail, open it in [VectoFix](/vectofix/en) and look at the damage map.",
+      },
+      { type: "h2", text: "Frequently asked questions" },
+      { type: "h3", text: "Why does my SVG look different from the original image?" },
+      {
+        type: "p",
+        text: "Vectorization simplifies: it groups pixels into colour zones and fits curves to their edges, and that always loses something. Thin strokes, small counters and gradients are the usual casualties.",
+      },
+      { type: "h3", text: "Can I fix an SVG without redrawing it by hand?" },
+      {
+        type: "p",
+        text: "Yes. Re-tracing only the damaged zones restores detail without redrawing the paths. A tool that measures the gap against the source shows you which zones need it.",
+      },
+      { type: "h3", text: "Is it better to simplify paths or re-trace?" },
+      {
+        type: "p",
+        text: "Simplifying reduces nodes but moves the outline away from the original, while re-tracing restores detail but adds nodes. Choose according to whether file weight or fidelity matters more for your use.",
+      },
+      { type: "h3", text: "Does VectoFix upload my images?" },
+      {
+        type: "p",
+        text: "No. It runs on your computer and processes everything locally.",
+      },
+      { type: "h3", text: "How many free exports do I get in VectoFix?" },
+      {
+        type: "p",
+        text: "The first 3 SVG exports are in full HD resolution. After that, exports continue at a reduced resolution with rounded coordinates and a watermark, until you buy a Pro licence.",
+      },
+    ],
+  }),
+  make({
+    slug: "why-png-to-svg-conversion-doesnt-look-like-the-original",
+    title: "Why Your PNG to SVG Conversion Doesn't Look Like the Original",
+    description:
+      "A PNG-to-SVG conversion never matches the pixels exactly. Here are the five reasons it drifts from the original, which ones you can fix, and how.",
+    date: "2026-10-07",
+    author: "VectoFix Team",
+    lang: "en",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "A PNG to SVG conversion rarely looks identical to the original because converting is not copying: the software has to turn a grid of coloured pixels into shapes and curves, and every step of that translation simplifies something. Most differences come from five causes, and some of them you can fix.",
+      },
+      {
+        type: "p",
+        text: "You expected the SVG to be the PNG, only sharper. Instead the colours shifted, a thin line vanished or the edges look slightly wrong. This is normal, and it is not a sign that you did something wrong. This guide explains where the drift comes from and what to do about it. For the general method, see our [guide to converting a PNG logo to SVG](/blog/how-to-convert-a-png-logo-to-svg), and for the first diagnosis, [why a vectorized SVG loses detail](/vectofix/blog/why-your-vectorized-svg-lost-detail).",
+      },
+      { type: "h2", text: "Why can a PNG never be copied exactly into an SVG?" },
+      {
+        type: "p",
+        text: "A PNG stores every pixel. An SVG stores no pixels: it stores mathematical shapes, with a fill colour and an outline made of curves. To go from one to the other, a tracing algorithm groups similar pixels into zones, follows their boundaries and fits curves to them within a tolerance. The result is an approximation by design, and the tolerance decides how close it gets.",
+      },
+      {
+        type: "p",
+        text: "Tutorials for [converting a PNG to SVG with Inkscape](https://logosbynick.com/inkscape-convert-png-to-svg/) say the same thing in practice: the quality of the input matters, and complex or very small images give poor results. That is the algorithm working as designed, not a bug.",
+      },
+      { type: "h2", text: "What are the five most common causes of drift?" },
+      {
+        type: "ul",
+        items: [
+          "Colour reduction. The tracer merges similar shades into a limited palette. Subtle gradients become flat zones or visible bands, and a colour can shift slightly to the nearest palette entry.",
+          "Smoothing of edges. Curves are fitted through the pixel boundary, so jagged edges become smooth, and tiny irregularities that were part of the design disappear.",
+          "Loss of small features. Details smaller than the tolerance are treated as noise. Thin strokes, small counters in letters and fine dots are the usual victims.",
+          "Rounded corners. A fitting algorithm can read a sharp corner as a curve, so it softens points that should stay crisp.",
+          "A low-resolution source. If the PNG is small or compressed, the pixels already contain artefacts, and the tracer faithfully traces the dust and blur.",
+        ],
+      },
+      { type: "h2", text: "Which of these can you fix, and how?" },
+      {
+        type: "p",
+        text: "Start with the source. A larger, cleaner PNG with fewer compression artefacts always traces better. Then match the preset to the image: flat colours for logos, a detailed mode for photos and gradients, black and white for line art. Raising the colour count helps gradients but makes the file heavier.",
+      },
+      {
+        type: "p",
+        text: "What global settings cannot fix is a local defect, such as a single thin letter that merged or a small counter that filled in. Raising the precision for that one spot degrades the rest of the file. Repairing only the damaged zone is the clean answer, and we describe the method in [how to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization).",
+      },
+      { type: "h2", text: "How do you measure the drift instead of guessing?" },
+      {
+        type: "p",
+        text: "Compare the SVG and the PNG at the same zoom and flick between them. Or use a tool that does the comparison for you. VectoFix re-renders the SVG, compares it with your PNG and gives a fidelity score out of 100 with a red map of the gaps. Some images, such as painted renderings, gradients everywhere and photos, degrade uniformly, and the whole map turns red. That is not a fault of the tool: those images are simply a poor match for vectorization, and a raster format may suit them better. Our article on [SVG versus PNG](/blog/svg-vs-png-when-to-use-which) helps you decide.",
+      },
+      { type: "h2", text: "When should you accept the difference?" },
+      {
+        type: "p",
+        text: "If the SVG will be printed large, cut, embroidered or scaled, a small colour shift matters less than clean, scalable outlines, and the trade is worth it. If exact colour or photographic detail is the point, keep the PNG, or use the SVG only for the parts that are real shapes. Printers have their own reasons for preferring vectors, explained in [why printers ask for vector files](/blog/why-printers-ask-for-vector-files).",
+      },
+      { type: "h2", text: "Conclusion: expect an approximation, then improve it where it counts" },
+      {
+        type: "p",
+        text: "A converted SVG is an approximation, so judge it by the zones that matter for your use. Improve the source, pick the right preset, and repair what is still wrong locally. [VectoFix](/vectofix/en) shows the damage map and lets you paint over the problem, with 3 full-resolution HD exports to try and a Pro licence at a one-time €39.",
+      },
+      { type: "h2", text: "Frequently asked questions" },
+      { type: "h3", text: "Why are the colours different in my SVG?" },
+      {
+        type: "p",
+        text: "The tracer reduces the number of colours and merges similar shades. Raising the colour count brings you closer to the original, at the cost of a heavier file.",
+      },
+      { type: "h3", text: "Why did a thin line disappear?" },
+      {
+        type: "p",
+        text: "Details smaller than the tracing tolerance are treated as noise and removed. Painting over the area to re-trace it at a finer scale, or using a higher-resolution source, brings it back.",
+      },
+      { type: "h3", text: "Can an SVG be pixel-identical to a PNG?" },
+      {
+        type: "p",
+        text: "Not in general. An SVG describes shapes, not pixels, so it approximates the PNG. It can look the same at normal size and still differ when you zoom in.",
+      },
+      { type: "h3", text: "Is the problem my PNG or the converter?" },
+      {
+        type: "p",
+        text: "Often both. A small, compressed or noisy PNG limits any converter, and global settings limit how well a converter can adapt to different zones of one image.",
+      },
+      { type: "h3", text: "Does VectoFix change my original file?" },
+      {
+        type: "p",
+        text: "No. It reads your image, produces a separate SVG and processes everything locally on your computer.",
+      },
+    ],
+  }),
+  make({
+    slug: "why-too-many-svg-nodes-are-a-problem-for-cutting-machines",
+    title: "Why Too Many SVG Nodes Are a Problem for Cutting Machines",
+    description:
+      "A traced SVG can contain tens of thousands of nodes. Here is why that slows laser and vinyl cutting, how to check the node count, and how to reduce it safely.",
+    date: "2026-10-07",
+    author: "VectoFix Team",
+    lang: "en",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Too many nodes in an SVG make cutting machines work harder, because the controller has to follow every tiny segment: the result can be slow software, stuttering cuts and rough edges. The fix is to keep only the nodes the shape needs, and to check the count before the file goes to the machine.",
+      },
+      {
+        type: "p",
+        text: "A traced logo can look simple on screen and still hide a huge number of anchor points. A laser, a vinyl cutter or a CNC does not care how simple it looks, it cares how many instructions it gets. This article explains what a node is, why the count matters, how to check it, and how to reduce it without ruining the shape. If you work with a laser, our guide to [preparing an SVG for LightBurn](/vectofix/blog/how-to-check-and-prepare-svg-for-laser-cutting-lightburn) covers the rest of the checklist.",
+      },
+      { type: "h2", text: "What is a node, and why does a traced SVG have so many?" },
+      {
+        type: "p",
+        text: "A node, or anchor point, is a point on a path where the outline can change direction. A clean hand-drawn circle needs four. An automatic trace follows the pixel boundary and fits curves to it, so a rough source produces many small segments. A trace can reach tens of thousands of nodes for a single logo, and every refinement of the trace adds more.",
+      },
+      {
+        type: "p",
+        text: "In VectoFix’s own measurements, on a 900 px logo, seven brush strokes of local re-tracing moved the trace from about 49,000 to about 87,600 anchor points. That is the price of fidelity: a more faithful outline is a heavier one, and a node count that is fine for screen display can be a problem for a machine.",
+      },
+      { type: "h2", text: "How do too many nodes affect a laser, a vinyl cutter or a CNC?" },
+      {
+        type: "p",
+        text: "Cutting software converts curves into movement instructions, and the machine executes them one after another. A very high node count means a very large number of tiny moves.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Slow software: the editing program lags as the file grows heavier, a complaint that is common on laser software forums",
+          "Stuttering motion: the head slows down and speeds up on tiny segments instead of gliding along a curve",
+          "Rough edges: curves rendered as thousands of short straight lines can show faceting, and cuts or burns can look uneven",
+          "Long jobs: more instructions to read and plan before the machine even starts",
+        ],
+      },
+      {
+        type: "p",
+        text: "Reports of machines stuttering or losing their position on heavy imported files are common in laser and CNC communities, for example in [this LightBurn forum thread on too many nodes](https://forum.lightburnsoftware.com/t/too-many-nodes/191055). Results vary by machine and controller, so treat a very high count as a risk to check, not as a guaranteed failure.",
+      },
+      { type: "h2", text: "How do you check the node count of your SVG?" },
+      {
+        type: "p",
+        text: "Most vector editors display the number of nodes of a selected path, and many cutting programs show it too. Select the whole artwork and read the count. As a rule of thumb, compare a simple shape against its count: a plain logo with a few hundred nodes is comfortable, while one with tens of thousands deserves a closer look.",
+      },
+      {
+        type: "p",
+        text: "VectoFix shows the node count next to the fidelity score permanently, because the two pull in opposite directions. Before exporting, look at both, and decide which one matters more for the machine you are feeding.",
+      },
+      { type: "h2", text: "How do you reduce the node count without wrecking the shape?" },
+      {
+        type: "ul",
+        items: [
+          "Trace with the right preset. Flat colours for logos and fewer colours produce far fewer nodes than a detailed mode designed for photos.",
+          "Raise the speckle filter on a noisy source, so dust is not traced into thousands of useless tiny shapes.",
+          "Repair only the zones that are damaged instead of raising precision for the whole image. In VectoFix, undoing the least useful brush strokes brings the node count back down.",
+          "Use your cutting software’s own tools. LightBurn’s [Optimize Selected Shapes](https://docs.lightburnsoftware.com/1.7/Reference/OptimizeSelectedShapes/) can fit sections to lines or arcs and reduce nodes, and the same documentation suggests keeping the optimized shape as an SVG.",
+          "Be careful with blind simplification. In VectoFix’s tests, a post-processing simplification lost 12 to 33 percent of fidelity to save 23 to 42 percent of the nodes, so look at the result after every pass.",
+        ],
+      },
+      { type: "h2", text: "When is a high node count acceptable?" },
+      {
+        type: "p",
+        text: "For an image that is only displayed on screen, or an artwork with real detail such as a portrait or a complex illustration, a higher count can be the honest cost of fidelity. For anything that goes to a cutter or an embroidery machine, aim for the lowest count that still respects the shape. Test on a scrap piece when the job is expensive.",
+      },
+      { type: "h2", text: "Conclusion: count before you cut" },
+      {
+        type: "p",
+        text: "A node count is the first thing worth checking in a traced file. Keep what the shape needs, remove what it does not, and look at the fidelity while you do it. [VectoFix](/vectofix/en) shows both numbers on one line, repairs only the zones that need it, and gives you 3 full-resolution HD exports to try before a one-time €39 Pro licence. For the broader idea of controlling an SVG before production, read [what vector repair is](/vectofix/blog/what-is-vector-repair-guide-to-vector-qa).",
+      },
+      { type: "h2", text: "Frequently asked questions" },
+      { type: "h3", text: "How many nodes is too many for a laser cutter?" },
+      {
+        type: "p",
+        text: "There is no universal figure, because it depends on the software, the controller and the shape. As a practical rule, a simple logo with tens of thousands of nodes is worth simplifying or testing on scrap first.",
+      },
+      { type: "h3", text: "Why does my traced SVG have so many nodes?" },
+      {
+        type: "p",
+        text: "An automatic trace follows the pixel boundary and fits many small curves to it. A noisy or low-resolution source, a detailed preset and repeated refinement all add nodes.",
+      },
+      { type: "h3", text: "Does reducing nodes change the shape?" },
+      {
+        type: "p",
+        text: "It can. Removing nodes moves the outline away from the original, so check the result after each pass, and stop as soon as a visible detail changes.",
+      },
+      { type: "h3", text: "Does VectoFix reduce nodes automatically?" },
+      {
+        type: "p",
+        text: "No. It displays the count so you can keep it under control, lets you undo brush strokes that add weight, and offers settings such as the colour count and speckle filter. Its own tests found that blind post-simplification costs too much fidelity.",
+      },
+      { type: "h3", text: "Can I check the node count in LightBurn?" },
+      {
+        type: "p",
+        text: "LightBurn offers Optimize Selected Shapes in its Edit menu to simplify selected shapes, as described in its documentation.",
+      },
+    ],
+  }),
+  make({
+    slug: "corriger-un-svg-apres-vectorisation-automatique",
+    title: "Comment corriger un SVG après une vectorisation automatique : la checklist pratique",
+    description:
+      "Votre convertisseur a produit un SVG, mais certaines zones sont fausses. Repérez l'erreur, choisissez entre simplifier et retracer, et réparez uniquement les zones abîmées.",
+    date: "2026-10-07",
+    author: "L'équipe VectoFix",
+    lang: "fr",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Pour corriger un SVG après une vectorisation automatique, repérez d'abord les zones abîmées en comparant le SVG à votre image d'origine, puis réparez ces zones localement au lieu de changer les réglages de toute l'image. Les réglages globaux corrigent rarement un défaut local, ce qui explique pourquoi la plupart des gens refont le tracé plusieurs fois.",
+      },
+      {
+        type: "p",
+        text: "Le convertisseur a fini, le fichier s'ouvre et l'ensemble paraît correct. Puis vous zoomez : une lettre fine a fusionné avec sa voisine, une contreforme est bouchée, un bord est dentelé. Cet article vous donne un ordre de travail pratique, du constat jusqu'au bon remède. Il prolonge [comment réparer une mauvaise vectorisation sans tout recommencer](/vectofix/blog/comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer) et se concentre sur l'instant qui suit la conversion.",
+      },
+      { type: "h2", text: "Comment repérer ce que le convertisseur a raté ?" },
+      {
+        type: "p",
+        text: "Placez l'original et le SVG à la même taille, zoomez à 300 % ou plus et comparez zone par zone. Alterner entre les deux est plus fiable que de les regarder côte à côte, parce que les différences sautent aux yeux quand l'image change au même endroit.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Traits fins et petits textes : ont-ils conservé leurs espaces et leurs contreformes ?",
+          "Angles vifs : sont-ils restés vifs ou arrondis ?",
+          "Dégradés et ombres : une transition douce est-elle devenue des bandes visibles ?",
+          "Bords entre deux couleurs : sont-ils nets, ou irréguliers et dédoublés ?",
+          "Points isolés : de petits détails propres ont-ils disparu, ou de la poussière de la source est-elle apparue ?",
+        ],
+      },
+      {
+        type: "p",
+        text: "La plupart des outils ne mesurent pas l'écart à votre place, parce qu'ils ne comparent jamais leur résultat à la source. VectoFix le fait : il réaffiche le SVG, le compare à votre image et montre les écarts sur une carte des dégâts en rouge, pour que vous voyiez où intervenir au lieu de chercher à l'œil.",
+      },
+      { type: "h2", text: "Pourquoi changer les réglages globaux ne suffit-il généralement pas ?" },
+      {
+        type: "p",
+        text: "Des réglages comme le nombre de couleurs, le filtre de parasites ou le seuil d'angle s'appliquent à toute l'image, alors qu'un défaut est presque toujours local. Monter la précision pour sauver une lettre fine alourdit toutes les autres zones. La baisser pour nettoyer une zone bruitée écrase les détails que vous vouliez garder. Vous cherchez alors un compromis qui ne satisfait aucune partie de l'image. Nous expliquons le mécanisme dans [pourquoi un seul curseur ne peut pas tout réparer](/vectofix/blog/un-seul-curseur-ne-peut-pas-tout-reparer).",
+      },
+      {
+        type: "p",
+        text: "Les réglages globaux restent le bon outil dans un cas : quand toute l'image est fausse de la même façon, par exemple un nombre de couleurs bien trop bas pour une illustration détaillée. Corrigez-le d'abord avec un autre préréglage, puis regardez ce qui reste.",
+      },
+      { type: "h2", text: "Faut-il simplifier les tracés ou retracer la zone ?" },
+      {
+        type: "p",
+        text: "Les deux remèdes règlent des problèmes différents. Simplifier les tracés, comme dans l'approche décrite par le [tutoriel de vectorisation d'Inkscape](https://inkscape.org/doc/tutorials/tracing/tutorial-tracing.html), réduit le nombre de nœuds et lisse les courbes, mais éloigne le contour de l'original. Retracer la zone abîmée à une échelle plus fine restitue le détail, mais ajoute des nœuds.",
+      },
+      {
+        type: "p",
+        text: "Les mesures derrière VectoFix rendent ce compromis concret. Retracer une zone abîmée a récupéré environ 70 % de l'écart dans les tests mesurés, alors que nettoyer les pixels récupérait entre moins 1 et plus 12 %. Une simplification en post-traitement a perdu de 12 à 33 % de fidélité pour économiser de 23 à 42 % des nœuds dans les six contextes testés. Ces chiffres viennent des tests de l'outil sur trois images : prenez-les comme une indication, pas comme une loi, mais ils expliquent pourquoi l'outil retrace au lieu de simplifier.",
+      },
+      { type: "h2", text: "Comment réparer uniquement les zones abîmées ?" },
+      {
+        type: "p",
+        text: "La méthode est la même dans tout outil : sélectionner la zone abîmée, la retracer à une résolution plus élevée que le reste et fusionner le résultat. À la main dans un éditeur vectoriel, cela veut dire redessiner des tracés. Dans VectoFix, le geste tient en un mouvement : vous peignez sur ce qui est abîmé et la zone se retrace toute seule, en une demi-seconde à une seconde.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Ouvrez l'image. Elle est vectorisée immédiatement, puis comparée à l'original en une à six secondes selon sa taille.",
+          "Passez en vue Dégâts et repérez les taches rouge vif.",
+          "Revenez en vue Résultat et peignez dessus. Peindre un peu large est sans danger : retracer une zone ne la rend jamais moins fidèle, seulement plus détaillée.",
+          "Lisez le bandeau du bas, qui indique l'écart avant et après pour la zone, par exemple de 34,4 à 12,5.",
+          "Annulez tout coup de pinceau qui n'a pas aidé, puis exportez le SVG.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Plusieurs petits coups de pinceau sont plus rapides et plus efficaces qu'un seul très grand, car l'échelle du retracé diminue quand la zone grandit. Vous pouvez aussi laisser l'outil détecter les zones abîmées et toutes les réparer d'un coup. Tout se passe en local sur votre ordinateur. La [présentation de VectoFix](/vectofix/blog/presentation-vectofix) décrit le flux de travail complet.",
+      },
+      { type: "h2", text: "Que vérifier avant d'exporter le SVG ?" },
+      {
+        type: "p",
+        text: "Regardez le nombre de nœuds à côté du score de fidélité. Retracer rend une zone plus fidèle et plus lourde en même temps, et le nombre de nœuds décide si le fichier restera confortable à rouvrir dans Illustrator, Figma ou Inkscape. Sur un logo de 900 px, sept coups de pinceau ont fait passer le tracé d'environ 49 000 à environ 87 600 points d'ancrage dans les mesures de l'outil, ce qui explique pourquoi il affiche les deux chiffres sur la même ligne.",
+      },
+      {
+        type: "p",
+        text: "Si le fichier part vers une machine de découpe, lisez aussi [comment contrôler et préparer un SVG pour la découpe laser](/vectofix/blog/comment-preparer-un-svg-pour-la-decoupe-laser-lightburn). Et si c'est votre image source le vrai problème, notre [guide complet pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) explique comment la préparer avant de la tracer.",
+      },
+      { type: "h2", text: "Conclusion : diagnostiquer, puis réparer localement" },
+      {
+        type: "p",
+        text: "Trouvez où le tracé a échoué, décidez si le problème est global ou local, et réparez les problèmes locaux localement. Vous pouvez essayer VectoFix avec 3 exports HD en pleine résolution avant de décider, et Pro est un achat unique de 39 €. Pour voir où votre propre SVG a perdu du détail, ouvrez-le dans [VectoFix](/vectofix) et regardez la carte des dégâts.",
+      },
+      { type: "h2", text: "Questions fréquentes" },
+      { type: "h3", text: "Pourquoi mon SVG ne ressemble-t-il pas à l'image d'origine ?" },
+      {
+        type: "p",
+        text: "Vectoriser, c'est simplifier : on regroupe les pixels en zones de couleur et on ajuste des courbes à leurs bords, et cela fait toujours perdre quelque chose. Les traits fins, les petites contreformes et les dégradés sont les victimes habituelles.",
+      },
+      { type: "h3", text: "Peut-on corriger un SVG sans le redessiner à la main ?" },
+      {
+        type: "p",
+        text: "Oui. Retracer seulement les zones abîmées restitue le détail sans redessiner les tracés. Un outil qui mesure l'écart avec la source vous montre quelles zones le demandent.",
+      },
+      { type: "h3", text: "Vaut-il mieux simplifier les tracés ou retracer ?" },
+      {
+        type: "p",
+        text: "Simplifier réduit les nœuds mais éloigne le contour de l'original, alors que retracer restitue le détail mais ajoute des nœuds. Choisissez selon que le poids du fichier ou la fidélité compte le plus pour votre usage.",
+      },
+      { type: "h3", text: "VectoFix envoie-t-il mes images quelque part ?" },
+      {
+        type: "p",
+        text: "Non. Il fonctionne sur votre ordinateur et traite tout en local.",
+      },
+      { type: "h3", text: "Combien d'exports gratuits dans VectoFix ?" },
+      {
+        type: "p",
+        text: "Les 3 premiers exports SVG sont en pleine résolution HD. Ensuite, les exports continuent en résolution dégradée, avec coordonnées arrondies et filigrane, jusqu'à l'achat d'une licence Pro.",
+      },
+    ],
+  }),
+  make({
+    slug: "pourquoi-conversion-png-svg-ne-ressemble-pas-a-l-original",
+    title: "Pourquoi votre conversion PNG en SVG ne ressemble pas à l'original",
+    description:
+      "Une conversion PNG en SVG ne reproduit jamais les pixels à l'identique. Voici les cinq causes de l'écart, celles que vous pouvez corriger, et comment.",
+    date: "2026-10-07",
+    author: "L'équipe VectoFix",
+    lang: "fr",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Une conversion PNG en SVG ressemble rarement à l'original, parce que convertir n'est pas copier : le logiciel doit transformer une grille de pixels colorés en formes et en courbes, et chaque étape de cette traduction simplifie quelque chose. La plupart des écarts viennent de cinq causes, et certaines se corrigent.",
+      },
+      {
+        type: "p",
+        text: "Vous attendiez que le SVG soit le PNG, en plus net. À la place, les couleurs ont bougé, une ligne fine a disparu ou les bords semblent légèrement faux. C'est normal, et ce n'est pas le signe d'une erreur de votre part. Ce guide explique d'où vient l'écart et que faire. Pour la méthode générale, voyez notre [guide pour convertir un logo PNG en SVG](/blog/convertir-logo-png-en-svg), et pour le premier diagnostic, [pourquoi votre SVG vectorisé a perdu du détail](/vectofix/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail).",
+      },
+      { type: "h2", text: "Pourquoi un PNG ne peut-il jamais être copié exactement en SVG ?" },
+      {
+        type: "p",
+        text: "Un PNG stocke chaque pixel. Un SVG ne stocke aucun pixel : il stocke des formes mathématiques, avec une couleur de remplissage et un contour fait de courbes. Pour passer de l'un à l'autre, un algorithme de vectorisation regroupe les pixels semblables en zones, suit leurs frontières et leur ajuste des courbes avec une tolérance. Le résultat est une approximation par construction, et la tolérance décide de sa proximité.",
+      },
+      {
+        type: "p",
+        text: "Les tutoriels pour [convertir un PNG en SVG avec Inkscape](https://logosbynick.com/inkscape-convert-png-to-svg/) disent la même chose en pratique : la qualité de l'entrée compte, et les images complexes ou très petites donnent de mauvais résultats. C'est l'algorithme qui fonctionne comme prévu, pas un bogue.",
+      },
+      { type: "h2", text: "Quelles sont les cinq causes d'écart les plus courantes ?" },
+      {
+        type: "ul",
+        items: [
+          "La réduction des couleurs. Le vectoriseur fusionne les nuances voisines dans une palette limitée. Les dégradés subtils deviennent des aplats ou des bandes visibles, et une couleur peut glisser vers l'entrée de palette la plus proche.",
+          "Le lissage des bords. Les courbes sont ajustées sur la frontière des pixels, si bien que les bords dentelés deviennent lisses et que de minuscules irrégularités faisant partie du dessin disparaissent.",
+          "La perte des petits éléments. Les détails plus petits que la tolérance sont traités comme du bruit. Les traits fins, les petites contreformes de lettres et les points fins sont les victimes habituelles.",
+          "Les angles arrondis. Un algorithme d'ajustement peut lire un angle vif comme une courbe, et adoucir des pointes qui devraient rester nettes.",
+          "Une source basse résolution. Si le PNG est petit ou compressé, les pixels contiennent déjà des artefacts, et le vectoriseur trace fidèlement la poussière et le flou.",
+        ],
+      },
+      { type: "h2", text: "Lesquelles pouvez-vous corriger, et comment ?" },
+      {
+        type: "p",
+        text: "Commencez par la source. Un PNG plus grand et plus propre, avec moins d'artefacts de compression, se vectorise toujours mieux. Puis adaptez le préréglage à l'image : aplats pour les logos, mode détaillé pour les photos et les dégradés, noir et blanc pour le trait. Monter le nombre de couleurs aide les dégradés mais alourdit le fichier.",
+      },
+      {
+        type: "p",
+        text: "Ce que les réglages globaux ne corrigent pas, c'est un défaut local, comme une lettre fine fusionnée ou une petite contreforme bouchée. Monter la précision pour ce seul endroit dégrade le reste du fichier. Réparer uniquement la zone abîmée est la réponse propre, et nous décrivons la méthode dans [comment corriger un SVG après une vectorisation automatique](/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique).",
+      },
+      { type: "h2", text: "Comment mesurer l'écart au lieu de le deviner ?" },
+      {
+        type: "p",
+        text: "Comparez le SVG et le PNG au même zoom en alternant entre les deux. Ou utilisez un outil qui fait la comparaison à votre place. VectoFix réaffiche le SVG, le compare à votre PNG et donne un score de fidélité sur 100 avec une carte rouge des écarts. Certaines images, comme les rendus peints, les dégradés partout et les photos, se dégradent uniformément, et toute la carte devient rouge. Ce n'est pas un défaut de l'outil : ces images conviennent simplement mal à la vectorisation, et un format matriciel leur va peut-être mieux. Notre article sur [SVG ou PNG](/blog/svg-vs-png-lequel-choisir) vous aide à trancher.",
+      },
+      { type: "h2", text: "Quand faut-il accepter l'écart ?" },
+      {
+        type: "p",
+        text: "Si le SVG sera imprimé en grand, découpé, brodé ou redimensionné, un léger décalage de couleur compte moins que des contours nets et redimensionnables, et le compromis vaut la peine. Si la couleur exacte ou le détail photographique est l'enjeu, gardez le PNG, ou n'utilisez le SVG que pour les parties qui sont de vraies formes. Les imprimeurs ont leurs propres raisons de préférer les vecteurs, expliquées dans [pourquoi les imprimeurs demandent un fichier vectoriel](/blog/pourquoi-imprimeurs-demandent-fichier-vectoriel).",
+      },
+      { type: "h2", text: "Conclusion : attendez-vous à une approximation, puis améliorez-la là où ça compte" },
+      {
+        type: "p",
+        text: "Un SVG converti est une approximation : jugez-le sur les zones qui comptent pour votre usage. Améliorez la source, choisissez le bon préréglage et réparez localement ce qui reste faux. [VectoFix](/vectofix) montre la carte des dégâts et vous laisse peindre sur le problème, avec 3 exports HD en pleine résolution à essayer et une licence Pro à 39 € en achat unique.",
+      },
+      { type: "h2", text: "Questions fréquentes" },
+      { type: "h3", text: "Pourquoi les couleurs de mon SVG sont-elles différentes ?" },
+      {
+        type: "p",
+        text: "Le vectoriseur réduit le nombre de couleurs et fusionne les nuances voisines. Augmenter le nombre de couleurs vous rapproche de l'original, au prix d'un fichier plus lourd.",
+      },
+      { type: "h3", text: "Pourquoi une ligne fine a-t-elle disparu ?" },
+      {
+        type: "p",
+        text: "Les détails plus petits que la tolérance de vectorisation sont traités comme du bruit et supprimés. Peindre sur la zone pour la retracer à une échelle plus fine, ou partir d'une source de meilleure résolution, la fait revenir.",
+      },
+      { type: "h3", text: "Un SVG peut-il être identique pixel pour pixel à un PNG ?" },
+      {
+        type: "p",
+        text: "En général non. Un SVG décrit des formes, pas des pixels : il approxime donc le PNG. Il peut sembler identique à taille normale et différer quand on zoome.",
+      },
+      { type: "h3", text: "Le problème vient-il de mon PNG ou du convertisseur ?" },
+      {
+        type: "p",
+        text: "Souvent des deux. Un PNG petit, compressé ou bruité limite n'importe quel convertisseur, et les réglages globaux limitent la capacité d'un convertisseur à s'adapter aux différentes zones d'une même image.",
+      },
+      { type: "h3", text: "VectoFix modifie-t-il mon fichier d'origine ?" },
+      {
+        type: "p",
+        text: "Non. Il lit votre image, produit un SVG séparé et traite tout en local sur votre ordinateur.",
+      },
+    ],
+  }),
+  make({
+    slug: "trop-de-noeuds-svg-probleme-machines-de-decoupe",
+    title: "Pourquoi trop de nœuds dans un SVG posent problème aux machines de découpe",
+    description:
+      "Un SVG vectorisé peut contenir des dizaines de milliers de nœuds. Pourquoi cela ralentit la découpe laser et vinyle, comment vérifier le nombre de nœuds et le réduire sans risque.",
+    date: "2026-10-07",
+    author: "L'équipe VectoFix",
+    lang: "fr",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Trop de nœuds dans un SVG font travailler plus durement les machines de découpe, parce que le contrôleur doit suivre chaque minuscule segment : le résultat peut être un logiciel lent, des à-coups pendant la coupe et des bords rugueux. La solution est de ne garder que les nœuds dont la forme a besoin, et de vérifier leur nombre avant d'envoyer le fichier à la machine.",
+      },
+      {
+        type: "p",
+        text: "Un logo vectorisé peut sembler simple à l'écran et cacher un nombre énorme de points d'ancrage. Un laser, une découpeuse vinyle ou une CNC se moque de l'apparente simplicité : ce qui compte, c'est le nombre d'instructions reçues. Cet article explique ce qu'est un nœud, pourquoi leur nombre compte, comment le vérifier et comment le réduire sans abîmer la forme. Si vous travaillez avec un laser, notre guide pour [préparer un SVG pour LightBurn](/vectofix/blog/comment-preparer-un-svg-pour-la-decoupe-laser-lightburn) couvre le reste de la checklist.",
+      },
+      { type: "h2", text: "Qu'est-ce qu'un nœud, et pourquoi un SVG vectorisé en a-t-il autant ?" },
+      {
+        type: "p",
+        text: "Un nœud, ou point d'ancrage, est un point d'un tracé où le contour peut changer de direction. Un cercle dessiné proprement à la main en demande quatre. Une vectorisation automatique suit la frontière des pixels et lui ajuste des courbes : une source rugueuse produit donc beaucoup de petits segments. Un tracé peut atteindre des dizaines de milliers de nœuds pour un seul logo, et chaque affinage du tracé en ajoute.",
+      },
+      {
+        type: "p",
+        text: "Dans les mesures propres de VectoFix, sur un logo de 900 px, sept coups de pinceau de retracé local ont fait passer le tracé d'environ 49 000 à environ 87 600 points d'ancrage. C'est le prix de la fidélité : un contour plus fidèle est un contour plus lourd, et un nombre de nœuds acceptable pour l'affichage à l'écran peut poser problème à une machine.",
+      },
+      { type: "h2", text: "Quel effet trop de nœuds ont-ils sur un laser, une découpeuse vinyle ou une CNC ?" },
+      {
+        type: "p",
+        text: "Le logiciel de découpe convertit les courbes en instructions de déplacement, que la machine exécute l'une après l'autre. Un nombre de nœuds très élevé signifie un très grand nombre de minuscules déplacements.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Un logiciel lent : le programme de montage rame à mesure que le fichier s'alourdit, une plainte courante sur les forums de logiciels laser",
+          "Un mouvement saccadé : la tête ralentit et accélère sur de minuscules segments au lieu de glisser le long d'une courbe",
+          "Des bords rugueux : des courbes rendues par des milliers de petits segments droits peuvent montrer des facettes, et les coupes ou brûlures paraître irrégulières",
+          "Des travaux plus longs : plus d'instructions à lire et à planifier avant même que la machine démarre",
+        ],
+      },
+      {
+        type: "p",
+        text: "Les témoignages de machines qui saccadent ou perdent leur position avec de gros fichiers importés sont courants dans les communautés laser et CNC, par exemple dans [ce fil du forum LightBurn sur les trop nombreux nœuds](https://forum.lightburnsoftware.com/t/too-many-nodes/191055). Les résultats varient selon la machine et le contrôleur : voyez un nombre très élevé comme un risque à vérifier, pas comme un échec garanti.",
+      },
+      { type: "h2", text: "Comment vérifier le nombre de nœuds de votre SVG ?" },
+      {
+        type: "p",
+        text: "La plupart des éditeurs vectoriels affichent le nombre de nœuds d'un tracé sélectionné, et beaucoup de logiciels de découpe le montrent aussi. Sélectionnez tout le dessin et lisez le nombre. Comme règle pratique, comparez une forme simple à son nombre de nœuds : un logo sobre avec quelques centaines de nœuds est confortable, alors qu'un logo avec des dizaines de milliers mérite un second regard.",
+      },
+      {
+        type: "p",
+        text: "VectoFix affiche en permanence le nombre de nœuds à côté du score de fidélité, parce que les deux tirent en sens opposé. Avant d'exporter, regardez les deux et décidez lequel compte le plus pour la machine que vous alimentez.",
+      },
+      { type: "h2", text: "Comment réduire le nombre de nœuds sans abîmer la forme ?" },
+      {
+        type: "ul",
+        items: [
+          "Vectorisez avec le bon préréglage. Des aplats pour les logos et moins de couleurs produisent bien moins de nœuds qu'un mode détaillé conçu pour les photos.",
+          "Montez le filtre de parasites sur une source bruitée, pour que la poussière ne soit pas tracée en milliers de petites formes inutiles.",
+          "Réparez seulement les zones abîmées au lieu de monter la précision de toute l'image. Dans VectoFix, annuler les coups de pinceau les moins utiles fait redescendre le nombre de nœuds.",
+          "Utilisez les outils de votre logiciel de découpe. La fonction [Optimize Selected Shapes](https://docs.lightburnsoftware.com/1.7/Reference/OptimizeSelectedShapes/) de LightBurn peut ajuster des sections à des lignes ou des arcs et réduire les nœuds, et la même documentation conseille d'enregistrer la forme optimisée en SVG.",
+          "Méfiez-vous de la simplification à l'aveugle. Dans les tests de VectoFix, une simplification en post-traitement a perdu de 12 à 33 % de fidélité pour économiser de 23 à 42 % des nœuds : regardez le résultat après chaque passe.",
+        ],
+      },
+      { type: "h2", text: "Quand un nombre élevé de nœuds est-il acceptable ?" },
+      {
+        type: "p",
+        text: "Pour une image seulement affichée à l'écran, ou un dessin avec un vrai détail comme un portrait ou une illustration complexe, un nombre élevé peut être le coût honnête de la fidélité. Pour tout ce qui part vers une découpeuse ou une machine à broder, visez le nombre le plus bas qui respecte encore la forme. Testez sur une chute quand le travail coûte cher.",
+      },
+      { type: "h2", text: "Conclusion : comptez avant de couper" },
+      {
+        type: "p",
+        text: "Le nombre de nœuds est la première chose à vérifier dans un fichier vectorisé. Gardez ce dont la forme a besoin, retirez le reste, et surveillez la fidélité pendant ce temps. [VectoFix](/vectofix) montre les deux chiffres sur une même ligne, répare uniquement les zones qui le demandent et offre 3 exports HD en pleine résolution à essayer avant une licence Pro à 39 € en achat unique. Pour l'idée plus large de contrôler un SVG avant production, lisez [ce qu'est la réparation vectorielle](/vectofix/blog/qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa).",
+      },
+      { type: "h2", text: "Questions fréquentes" },
+      { type: "h3", text: "Combien de nœuds est-ce trop pour un laser ?" },
+      {
+        type: "p",
+        text: "Il n'y a pas de chiffre universel, car cela dépend du logiciel, du contrôleur et de la forme. En pratique, un logo simple avec des dizaines de milliers de nœuds mérite d'être simplifié ou testé d'abord sur une chute.",
+      },
+      { type: "h3", text: "Pourquoi mon SVG vectorisé a-t-il autant de nœuds ?" },
+      {
+        type: "p",
+        text: "Une vectorisation automatique suit la frontière des pixels et lui ajuste de nombreuses petites courbes. Une source bruitée ou basse résolution, un préréglage détaillé et des affinages répétés ajoutent tous des nœuds.",
+      },
+      { type: "h3", text: "Réduire les nœuds change-t-il la forme ?" },
+      {
+        type: "p",
+        text: "Cela peut arriver. Retirer des nœuds éloigne le contour de l'original : vérifiez le résultat après chaque passe, et arrêtez-vous dès qu'un détail visible change.",
+      },
+      { type: "h3", text: "VectoFix réduit-il les nœuds automatiquement ?" },
+      {
+        type: "p",
+        text: "Non. Il affiche le nombre pour que vous le gardiez sous contrôle, vous laisse annuler les coups de pinceau qui alourdissent et propose des réglages comme le nombre de couleurs et le filtre de parasites. Ses propres tests ont montré qu'une post-simplification à l'aveugle coûte trop de fidélité.",
+      },
+      { type: "h3", text: "Peut-on réduire les nœuds dans LightBurn ?" },
+      {
+        type: "p",
+        text: "Oui. LightBurn propose Optimize Selected Shapes pour simplifier les formes sélectionnées, comme décrit dans sa documentation.",
       },
     ],
   }),

@@ -600,6 +600,10 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "Related reading: [how to fix a bad vectorization without starting over](/vectofix/blog/how-to-fix-a-bad-vectorization-without-starting-over); [why one slider cannot fix a whole trace](/vectofix/blog/one-slider-cant-fix-a-whole-image); [what vector repair is](/vectofix/blog/what-is-vector-repair-guide-to-vector-qa).",
       },
+      {
+        type: "p",
+        text: "Going further: next, read [how to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization) and [why your PNG to SVG conversion does not look like the original](/vectofix/blog/why-png-to-svg-conversion-doesnt-look-like-the-original).",
+      },
     ],
   }),
 
@@ -745,6 +749,10 @@ export const posts: BlogPost[] = [
       {
         type: "p",
         text: "Related reading: [why a vectorized SVG loses detail](/vectofix/blog/why-your-vectorized-svg-lost-detail); [how to fix a bad vectorization without starting over](/vectofix/blog/how-to-fix-a-bad-vectorization-without-starting-over); [what VectoFix is and what it repairs](/vectofix/blog/introducing-vectofix).",
+      },
+      {
+        type: "p",
+        text: "Related reading: [how to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization).",
       },
     ],
   }),
@@ -1018,6 +1026,10 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "À lire aussi : [comment réparer une mauvaise vectorisation sans tout recommencer](/vectofix/blog/comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer) ; [pourquoi un seul curseur ne peut pas tout réparer](/vectofix/blog/un-seul-curseur-ne-peut-pas-tout-reparer) ; [ce qu'est la réparation vectorielle](/vectofix/blog/qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa).",
       },
+      {
+        type: "p",
+        text: "Pour aller plus loin : lisez ensuite [comment corriger un SVG après une vectorisation automatique](/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique) et [pourquoi votre conversion PNG en SVG ne ressemble pas à l'original](/vectofix/blog/pourquoi-conversion-png-svg-ne-ressemble-pas-a-l-original).",
+      },
     ],
   }),
 
@@ -1163,6 +1175,10 @@ export const posts: BlogPost[] = [
       {
         type: "p",
         text: "À lire aussi : [pourquoi un SVG vectorisé perd du détail](/vectofix/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail) ; [comment réparer une mauvaise vectorisation sans tout recommencer](/vectofix/blog/comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer) ; [ce qu'est VectoFix et ce qu'il répare](/vectofix/blog/presentation-vectofix).",
+      },
+      {
+        type: "p",
+        text: "À lire aussi : [comment corriger un SVG après une vectorisation automatique](/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique).",
       },
     ],
   }),

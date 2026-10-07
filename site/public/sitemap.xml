@@ -156,4 +156,40 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+  <url>
+    <loc>https://www.vectorpop.fr/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.vectorpop.fr/vectofix/blog/why-png-to-svg-conversion-doesnt-look-like-the-original</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.vectorpop.fr/vectofix/blog/why-too-many-svg-nodes-are-a-problem-for-cutting-machines</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.vectorpop.fr/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.vectorpop.fr/vectofix/blog/pourquoi-conversion-png-svg-ne-ressemble-pas-a-l-original</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.vectorpop.fr/vectofix/blog/trop-de-noeuds-svg-probleme-machines-de-decoupe</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>
