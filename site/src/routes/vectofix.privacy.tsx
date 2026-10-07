@@ -31,7 +31,7 @@ const CONTACT = "contact@lafabriknumerique.fr";
 const pp: Record<Lang, { title: string; updated: string; back: string; intro: string; sections: Section[] }> = {
   fr: {
     title: "Politique de confidentialité",
-    updated: "Dernière mise à jour : 23 août 2026",
+    updated: "Dernière mise à jour : 7 octobre 2026",
     back: "Retour à VectoFix",
     intro:
       "VectoFix est un logiciel de correction de tracés vectoriels (SVG) conçu pour fonctionner intégralement en local sur votre ordinateur. Le respect de votre vie privée est au cœur de sa conception. Cette politique explique quelles données sont — ou ne sont pas — traitées lorsque vous utilisez l'application VectoFix et la page vectorpop.fr/vectofix.",
@@ -60,13 +60,17 @@ const pp: Record<Lang, { title: string; updated: string; back: string; intro: st
             type: "ul",
             items: [
               "Aucune image ni aucun fichier SVG n'est téléversé ni stocké en ligne.",
-              "Aucune mesure d'audience (analytics), aucun mouchard ni télémétrie n'est intégré à l'application.",
+              "L'application envoie des statistiques d'usage anonymes (voir ci-dessous), que vous pouvez désactiver à tout moment dans les réglages avancés. Aucun mouchard publicitaire n'est intégré.",
               "L'application fonctionne sans connexion internet, à l'exception de la vérification de licence (voir section 3).",
             ],
           },
           {
             type: "p",
-            text: "L'application enregistre quelques fichiers techniques localement dans le dossier %APPDATA%\\VectoFix de votre ordinateur (clé de licence, préférences de langue et de thème). Ces fichiers restent sur votre machine et ne nous sont jamais transmis.",
+            text: "Statistiques d'usage anonymes : l'application envoie à notre outil de mesure (PostHog, hébergé dans l'Union européenne) de simples compteurs d'utilisation — ouverture de l'application, ouverture d'une image (format et dimensions uniquement), fin de la vectorisation et sa fidélité, coups de pinceau et leur gain, exports, version, système, langue et statut de la licence. Elles s'appuient sur un identifiant aléatoire stocké sur votre ordinateur, jamais relié à votre e-mail ni à votre clé de licence. Elles ne contiennent jamais vos images, leur contenu ni leur nom. Pour les désactiver : réglages avancés, décocher « Statistiques d'usage anonymes ».",
+          },
+          {
+            type: "p",
+            text: "L'application enregistre quelques fichiers techniques localement dans le dossier %APPDATA%\\VectoFix de votre ordinateur (clé de licence, identifiant anonyme de statistiques, préférences de langue et de thème). Ces fichiers restent sur votre machine et ne nous sont jamais transmis.",
           },
         ],
       },
@@ -170,7 +174,7 @@ const pp: Record<Lang, { title: string; updated: string; back: string; intro: st
   },
   en: {
     title: "Privacy Policy",
-    updated: "Last updated: August 23, 2026",
+    updated: "Last updated: October 7, 2026",
     back: "Back to VectoFix",
     intro:
       "VectoFix is a vector trace correction tool (SVG) designed to run entirely locally on your computer. Respect for your privacy is built into its design. This policy explains what data is — and is not — processed when you use the VectoFix application and the vectorpop.fr/vectofix page.",
@@ -199,13 +203,17 @@ const pp: Record<Lang, { title: string; updated: string; back: string; intro: st
             type: "ul",
             items: [
               "No image or SVG file is uploaded or stored online.",
-              "No analytics, tracker, or telemetry is built into the application.",
+              "The application sends anonymous usage statistics (see below), which you can turn off at any time in the advanced settings. No advertising tracker is built in.",
               "The application works without an internet connection, except for license verification (see section 3).",
             ],
           },
           {
             type: "p",
-            text: "The application stores a few technical files locally in the %APPDATA%\\VectoFix folder on your computer (license key, language and theme preferences). These files stay on your machine and are never transmitted to us.",
+            text: "Anonymous usage statistics: the application sends simple usage counters to our analytics tool (PostHog, hosted in the European Union) — app launch, opening an image (format and dimensions only), end of vectorization and its fidelity, brush strokes and their gain, exports, version, system, language and license status. They rely on a random identifier stored on your computer, never linked to your email or license key. They never contain your images, their content or their file names. To turn them off: advanced settings, untick “Anonymous usage statistics”.",
+          },
+          {
+            type: "p",
+            text: "The application stores a few technical files locally in the %APPDATA%\\VectoFix folder on your computer (license key, anonymous statistics identifier, language and theme preferences). These files stay on your machine and are never transmitted to us.",
           },
         ],
       },
