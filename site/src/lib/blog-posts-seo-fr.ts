@@ -155,6 +155,28 @@ export const seoFrDrafts: Draft[] = [
         text: "Vous avez un logo à convertir maintenant ? [Essayez VectorPop gratuitement](/) : les 5 premiers exports SVG sont inclus et tout se passe sur votre machine.",
       },
     ],
+    faq: [
+      {
+        q: "Que signifie vectoriser une image ?",
+        a: "C'est convertir une image en pixels, comme un PNG ou un JPG, en un fichier vectoriel décrit par des courbes et des formes, qui peut être agrandi à n'importe quelle taille sans perdre en netteté.",
+      },
+      {
+        q: "Toutes les images peuvent-elles être vectorisées ?",
+        a: "Pas aussi bien les unes que les autres. Les logos, icônes et illustrations simples en aplats donnent des résultats propres. Les photos et les images pleines de dégradés sont plus difficiles, et le résultat est une approximation plutôt qu'une copie exacte.",
+      },
+      {
+        q: "Vaut-il mieux vectoriser en ligne ou sur son ordinateur ?",
+        a: "Les outils en ligne sont rapides pour un travail ponctuel. Un outil installé sur votre ordinateur traite l'image sans l'envoyer à personne et fonctionne hors ligne, ce qui compte pour des logos de clients et des fichiers confidentiels.",
+      },
+      {
+        q: "Quels réglages comptent le plus pour un SVG propre ?",
+        a: "Le type de préréglage (logo en aplats ou image détaillée), le nombre de couleurs et le filtrage des petites taches. Un aperçu en direct permet de vérifier le résultat avant d'exporter.",
+      },
+      {
+        q: "VectorPop est-il gratuit ?",
+        a: "Vous pouvez l'essayer gratuitement : les 5 premiers exports SVG sont inclus sur les installations récentes et tout est traité sur votre propre machine. La version Pro est un paiement unique de 39 €.",
+      },
+    ],
   },
   {
     slug: "convertir-jpg-en-svg",
@@ -311,6 +333,28 @@ export const seoFrDrafts: Draft[] = [
         text: "Pour passer à l'action, [téléchargez VectorPop](/) : 5 exports SVG gratuits, un aperçu en temps réel et aucun fichier envoyé sur internet. Si votre imprimeur vous réclame un fichier précis, lisez aussi [pourquoi les imprimeurs exigent du vectoriel](/blog/pourquoi-imprimeurs-demandent-fichier-vectoriel).",
       },
     ],
+    faq: [
+      {
+        q: "Pourquoi un JPG est-il plus difficile à vectoriser qu'un PNG ?",
+        a: "La compression JPG ajoute des artefacts autour des bords et floute les couleurs. Un outil de vectorisation les traite comme de vraies formes : le résultat peut donc paraître bruité sans préparation de l'image ni ajustement des réglages.",
+      },
+      {
+        q: "Peut-on convertir une photo enregistrée en JPG en SVG propre ?",
+        a: "On peut la convertir, mais le résultat est une approximation faite de zones de couleur, pas une photographie. Un JPG de logo ou d'icône se convertit bien mieux qu'un JPG de photo.",
+      },
+      {
+        q: "Convertir un JPG en SVG améliore-t-il sa qualité ?",
+        a: "Non. La vectorisation trace ce qui est déjà dans l'image. Une source nette et en haute résolution donne un SVG propre, une source floue donne un SVG flou.",
+      },
+      {
+        q: "Comment obtenir le meilleur résultat à partir d'un JPG ?",
+        a: "Partez de la version la plus grande et la plus propre dont vous disposez, ajustez les réglages qui compensent la compression, et vérifiez l'aperçu avant d'exporter.",
+      },
+      {
+        q: "Dois-je envoyer mon JPG sur un site ?",
+        a: "Pas nécessairement. Un outil qui fonctionne sur votre ordinateur, comme VectorPop, convertit le fichier en local : l'image ne quitte jamais votre machine.",
+      },
+    ],
   },
   {
     slug: "pourquoi-imprimeurs-demandent-fichier-vectoriel",
@@ -441,6 +485,28 @@ export const seoFrDrafts: Draft[] = [
       {
         type: "p",
         text: "Vous n'avez qu'un PNG ? [Essayez VectorPop gratuitement](/) : 5 exports SVG inclus, aucun envoi en ligne, et une version Pro à 39 € en paiement unique si vous en avez besoin plus souvent.",
+      },
+    ],
+    faq: [
+      {
+        q: "Pourquoi les imprimeurs demandent-ils un fichier vectoriel ?",
+        a: "Un fichier vectoriel s'agrandit à n'importe quelle taille sans perdre en netteté, et les machines de découpe, de gravure ou de broderie suivent ses tracés. Une image en pixels devient floue quand on l'agrandit.",
+      },
+      {
+        q: "Tous les imprimeurs acceptent-ils le SVG ?",
+        a: "Pas toujours. Les imprimeurs n'attendent pas tous les mêmes formats : demandez le format exact souhaité. Dans la plupart des cas, un SVG propre ou un PDF vectoriel convient.",
+      },
+      {
+        q: "Puis-je envoyer un PNG à la place d'un fichier vectoriel ?",
+        a: "Parfois, pour de petits tirages en haute résolution, mais un PNG ne s'agrandit pas proprement. Si l'imprimeur demande du vectoriel, un PNG sera souvent refusé ou demandera une reprise.",
+      },
+      {
+        q: "Comment obtenir un fichier vectoriel quand je n'ai qu'un PNG ?",
+        a: "Vectorisez-le : un outil de vectorisation convertit le PNG en SVG. Plus le PNG est propre et grand, meilleur est le résultat.",
+      },
+      {
+        q: "Le logo de mon client est-il en sécurité si je le convertis avec VectorPop ?",
+        a: "VectorPop traite le fichier sur votre ordinateur et ne l'envoie pas sur Internet : un logo confidentiel reste sur votre machine.",
       },
     ],
   },

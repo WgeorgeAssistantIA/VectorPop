@@ -46,6 +46,22 @@ export const Route = createFileRoute("/vectofix/blog/$slug")({
             url: canonical,
           }),
         },
+        ...(post.faq?.length
+          ? [
+              {
+                type: "application/ld+json",
+                children: JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "FAQPage",
+                  mainEntity: post.faq.map((item) => ({
+                    "@type": "Question",
+                    name: item.q,
+                    acceptedAnswer: { "@type": "Answer", text: item.a },
+                  })),
+                }),
+              },
+            ]
+          : []),
       ],
     };
   },
@@ -127,12 +143,28 @@ function VectoFixBlogPost() {
             return (
               <ul key={i} className="list-disc space-y-2 pl-6 text-base md:text-lg marker:text-[#60a5fa]">
                 {block.items.map((it, j) => (
-                  <li key={j}>{it}</li>
+                  <li key={j}>{renderInline(it)}</li>
                 ))}
               </ul>
             );
           })}
         </div>
+
+        {post.faq && post.faq.length > 0 && (
+          <section className="mt-12">
+            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
+              {fr ? "Questions fréquentes" : "Frequently asked questions"}
+            </h2>
+            <div className="mt-6 space-y-6">
+              {post.faq.map((item, i) => (
+                <div key={i}>
+                  <h3 className="text-xl font-semibold tracking-tight text-foreground/95">{item.q}</h3>
+                  <p className="mt-2 text-base md:text-lg text-foreground/90 leading-relaxed">{item.a}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <div className="mt-16 rounded-2xl border border-[#2563eb]/30 bg-gradient-to-br from-[#2563eb]/10 to-transparent p-8 text-center">
           <h3 className="text-2xl font-bold">

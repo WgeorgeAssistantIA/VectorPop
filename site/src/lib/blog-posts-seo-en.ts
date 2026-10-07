@@ -143,6 +143,28 @@ export const seoEnDrafts: Draft[] = [
         text: "Got a logo to convert right now? [Try VectorPop for free](/): the first 5 SVG exports are included and everything happens on your machine.",
       },
     ],
+    faq: [
+      {
+        q: "What does it mean to vectorize an image?",
+        a: "It means converting a pixel-based image such as a PNG or JPG into a vector file described by curves and shapes, so that it can be scaled to any size without losing sharpness.",
+      },
+      {
+        q: "Can any image be vectorized?",
+        a: "Not equally well. Logos, icons and simple illustrations with flat colours give clean results. Photos and images with many gradients are harder, and the result is an approximation rather than an exact copy.",
+      },
+      {
+        q: "Is it better to vectorize online or on my computer?",
+        a: "Online tools are quick for a one-off job. A tool installed on your computer processes the image without sending it to anyone and works offline, which matters for client logos and confidential files.",
+      },
+      {
+        q: "Which settings matter most for a clean SVG?",
+        a: "The type of preset (flat logo or detailed image), the number of colours and the filtering of small specks. A live preview lets you check the result before you export.",
+      },
+      {
+        q: "Is VectorPop free?",
+        a: "You can try it for free: the first 5 SVG exports are included on recent installations and everything is processed on your own machine. The Pro version is a one-time payment of €39.",
+      },
+    ],
   },
   {
     slug: "convert-jpg-to-svg",
@@ -286,6 +308,28 @@ export const seoEnDrafts: Draft[] = [
         text: "Ready to act? [Download VectorPop](/): 5 free SVG exports, a live preview and no file sent over the internet. If your printer asks for something specific, also read [why printers ask for vector files](/blog/why-printers-ask-for-vector-files).",
       },
     ],
+    faq: [
+      {
+        q: "Why is a JPG harder to vectorize than a PNG?",
+        a: "JPG compression adds artefacts around edges and blurs colours. A tracing tool treats those artefacts as real shapes, so the result can look noisy unless you prepare the image or adjust the settings.",
+      },
+      {
+        q: "Can I convert a photo saved as JPG into a clean SVG?",
+        a: "You can convert it, but the result is an approximation made of colour zones, not a photograph. A JPG of a logo or an icon converts far better than a JPG of a photo.",
+      },
+      {
+        q: "Does converting a JPG to SVG improve its quality?",
+        a: "No. Vectorizing traces what is already in the image. A clean, high-resolution source gives a clean SVG, and a blurry source gives a blurry one.",
+      },
+      {
+        q: "How do I get the best result from a JPG?",
+        a: "Start with the largest and cleanest version you have, then adjust the settings that compensate for compression, and check the preview before exporting.",
+      },
+      {
+        q: "Do I need to upload my JPG to a website?",
+        a: "Not necessarily. A tool that runs on your computer, such as VectorPop, converts the file locally, so the image never leaves your machine.",
+      },
+    ],
   },
   {
     slug: "why-printers-ask-for-vector-files",
@@ -412,6 +456,28 @@ export const seoEnDrafts: Draft[] = [
       {
         type: "p",
         text: "Only have a PNG? [Try VectorPop for free](/): 5 SVG exports included, nothing uploaded online, and a Pro version at €39 as a one-time payment if you need it more often.",
+      },
+    ],
+    faq: [
+      {
+        q: "Why do printers ask for a vector file?",
+        a: "A vector file scales to any size without losing sharpness, and cutting, engraving or embroidery machines follow its paths. A pixel image blurs when enlarged.",
+      },
+      {
+        q: "Is SVG accepted by every printer?",
+        a: "Not always. Printers differ in the formats they expect, so ask which exact format they want. In most cases a clean SVG or a vector PDF will do.",
+      },
+      {
+        q: "Can I send a PNG instead of a vector file?",
+        a: "Sometimes, for small prints at high resolution, but a PNG cannot be enlarged cleanly. If the printer asks for vector, a PNG will usually be refused or require rework.",
+      },
+      {
+        q: "How do I get a vector file when I only have a PNG?",
+        a: "Vectorize it: a tracing tool converts the PNG into an SVG. The cleaner and larger the PNG, the better the result.",
+      },
+      {
+        q: "Is my client's logo safe if I convert it with VectorPop?",
+        a: "VectorPop processes the file on your computer and does not send it over the internet, so a confidential logo stays on your machine.",
       },
     ],
   },

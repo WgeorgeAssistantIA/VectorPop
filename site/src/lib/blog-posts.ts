@@ -13,6 +13,7 @@ export type BlogPost = {
   // (compat les articles existants) -- un article VectoFix ne doit pas finir
   // sur un CTA VectorPop hors sujet.
   app?: "vectorpop" | "vectofix";
+  faq?: Array<{ q: string; a: string }>; // section FAQ visible + JSON-LD FAQPage
   readingTime: number; // minutes
   // Content as array of blocks for simple rendering
   content: Array<
