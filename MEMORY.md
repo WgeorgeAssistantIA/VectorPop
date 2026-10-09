@@ -161,6 +161,21 @@
   - Android 2.0.0+8 en ligne sur le Google Play Store (moteur Rust VTracer, recettes de vectorisation optimisées).
   - Fichiers de suivi transverses (`suivi_projets.html` et `suivi_projets.xlsx`) et mémoires actualisés.
 
+### 13. Audit de Sécurité Portfolio, En-têtes OWASP & Assainissement Vercel (9 Octobre 2026)
+- **Suppression du Bypass XSS TanStack Start (`site/vercel.json`)** :
+  - Suppression de la variable `DANGEROUSLY_DEPLOY_VULNERABLE_TANSTACK_START_XSS: 1` qui avait été introduite temporairement avant la disponibilité du correctif officiel.
+  - `@tanstack/react-start` étant en version sécurisée `1.168.60`, le build s'exécute proprement sans contournement risqué.
+- **En-têtes de Sécurité HTTP OWASP (`site/vite.config.ts`)** :
+  - Configuration des `routeRules` Nitro pour injecter sur l'ensemble des routes (`/**`) :
+    * `X-Frame-Options: SAMEORIGIN` (protection anti-clickjacking)
+    * `X-Content-Type-Options: nosniff` (protection contre le reniflage MIME)
+    * `Referrer-Policy: strict-origin-when-cross-origin`
+    * `Permissions-Policy: camera=(), microphone=(), geolocation=()`
+- **Déploiement et Vérification en Direct** :
+  - Commit `fba8df6` poussé sur `origin/main`.
+  - Déploiement Vercel validé (`READY`).
+  - Vérification en direct sur `https://www.vectorpop.fr/` : HTTP 200 OK avec présence confirmée des 4 en-têtes de sécurité.
+
 ---
 
 ## Prochaines Étapes / Backlog
