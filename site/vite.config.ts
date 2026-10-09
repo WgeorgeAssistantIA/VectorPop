@@ -12,5 +12,17 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
-  nitro: { preset: "vercel" },
+  nitro: {
+    preset: "vercel",
+    routeRules: {
+      "/**": {
+        headers: {
+          "X-Content-Type-Options": "nosniff",
+          "X-Frame-Options": "SAMEORIGIN",
+          "Referrer-Policy": "strict-origin-when-cross-origin",
+          "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+        },
+      },
+    },
+  },
 });
