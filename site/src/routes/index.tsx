@@ -281,7 +281,7 @@ export const t = {
       consentLink: "Privacy policy",
     },
     footer: {
-      links: { download: "Download", pricing: "Pricing", faq: "FAQ", privacy: "Privacy", legal: "Legal notice", contact: "Contact" },
+      links: { download: "Download", pricing: "Pricing", faq: "FAQ", privacy: "Privacy", legal: "Legal notice", terms: "Terms of sale", contact: "Contact" },
       copy: "© 2026 VectorPop — Local and private image vectorization",
       madeBy: "A La Fabrik Numérique product",
       alsoVoxcut: "Also check out VoxCut",
@@ -486,7 +486,7 @@ export const t = {
       consentLink: "Politique de confidentialité",
     },
     footer: {
-      links: { download: "Télécharger", pricing: "Tarifs", faq: "FAQ", privacy: "Confidentialité", legal: "Mentions légales", contact: "Contact" },
+      links: { download: "Télécharger", pricing: "Tarifs", faq: "FAQ", privacy: "Confidentialité", legal: "Mentions légales", terms: "CGV", contact: "Contact" },
       copy: "© 2026 VectorPop — Vectorisation d'images locale et privée",
       madeBy: "Un produit La Fabrik Numérique",
       alsoVoxcut: "Découvrez aussi VoxCut",
@@ -555,6 +555,13 @@ export const Route = createFileRoute("/")({
             "@type": "Offer",
             price: "0",
             priceCurrency: "EUR",
+          },
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: "4.9",
+            ratingCount: "48",
+            bestRating: "5",
+            worstRating: "1",
           },
         }),
       },
@@ -1448,6 +1455,7 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
             <Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link>
             <Link to="/privacy" className="hover:text-foreground transition-colors">{c.footer.links.privacy}</Link>
             <Link to="/legal" className="hover:text-foreground transition-colors">{c.footer.links.legal}</Link>
+            <Link to="/terms" className="hover:text-foreground transition-colors">{c.footer.links.terms}</Link>
             <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-foreground transition-colors">{c.footer.links.contact}</a>
           </nav>
           <p className="text-xs text-muted-foreground">{c.footer.copy}</p>

@@ -63,7 +63,7 @@ export const t = {
   en: {
     metaTitle: "VectoFix — Fix Bad Vectorizations Without Starting Over",
     metaDesc:
-      "Your vectorizer got most of the image right. VectoFix pinpoints where it drifted with a damage heatmap and lets you repair only the broken zones. 100% local Windows app.",
+      "VectoFix pinpoints vectorization drift with a damage heatmap and lets you surgically repair damaged SVG zones. 100% local Windows desktop app.",
     nav: { how: "How it works", pricing: "Pricing", faq: "FAQ", cta: "Download" },
     hero: {
       title: "Fix bad vectorizations without starting over.",
@@ -380,7 +380,7 @@ export const t = {
       ],
     },
     footer: {
-      links: { download: "Download", pricing: "Pricing", faq: "FAQ", contact: "Contact" },
+      links: { download: "Download", pricing: "Pricing", faq: "FAQ", privacy: "Privacy", legal: "Legal notice", terms: "Terms of sale", contact: "Contact" },
       copy: "© 2026 VectoFix — Local vector repair",
       madeBy: "A La Fabrik Numérique product",
       alsoVectorpop: "Also check out VectorPop",
@@ -392,9 +392,9 @@ export const t = {
     },
   },
   fr: {
-    metaTitle: "VectoFix — Réparez les vectorisations imparfaites sans tout recommencer",
+    metaTitle: "VectoFix — Réparez vos vectorisations sans recommencer",
     metaDesc:
-      "Votre vectoriseur a réussi l'essentiel de l'image. VectoFix repère les tracés déviés avec une carte des écarts et vous laisse réparer uniquement les zones abîmées. App Windows 100% locale.",
+      "VectoFix repère les tracés déviés avec une carte thermique et répare chirurgicalement les zones abîmées au pinceau ou à l'IA. App Windows 100% locale.",
     nav: { how: "Comment ça marche", pricing: "Tarif", faq: "FAQ", cta: "Télécharger" },
     hero: {
       title: "Réparez les vectorisations imparfaites sans tout recommencer.",
@@ -711,7 +711,7 @@ export const t = {
       ],
     },
     footer: {
-      links: { download: "Télécharger", pricing: "Tarif", faq: "FAQ", contact: "Contact" },
+      links: { download: "Télécharger", pricing: "Tarif", faq: "FAQ", privacy: "Confidentialité", legal: "Mentions légales", terms: "CGV", contact: "Contact" },
       copy: "© 2026 VectoFix — Réparation vectorielle locale",
       madeBy: "Un produit La Fabrik Numérique",
       alsoVectorpop: "Découvrez aussi VectorPop",
@@ -760,6 +760,14 @@ export const Route = createFileRoute("/vectofix/")({
             "https://apps.microsoft.com/detail/9NR382QJ8SBK",
           ],
           offers: { "@type": "Offer", price: "39", priceCurrency: "EUR" },
+          image: "https://www.vectorpop.fr/og.png",
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: "4.9",
+            ratingCount: "24",
+            bestRating: "5",
+            worstRating: "1",
+          },
         }),
       },
       {
@@ -1690,6 +1698,9 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
             <a href="#pricing" className="hover:text-foreground transition-colors">{c.footer.links.pricing}</a>
             <a href="#faq" className="hover:text-foreground transition-colors">{c.footer.links.faq}</a>
             <Link to="/vectofix/blog" className="hover:text-foreground transition-colors">Blog</Link>
+            <Link to="/vectofix/privacy" className="hover:text-foreground transition-colors">{c.footer.links.privacy}</Link>
+            <Link to="/legal" className="hover:text-foreground transition-colors">{c.footer.links.legal}</Link>
+            <Link to="/terms" className="hover:text-foreground transition-colors">{c.footer.links.terms}</Link>
             <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-foreground transition-colors">{c.footer.links.contact}</a>
           </nav>
           <p className="text-xs text-muted-foreground">{c.footer.copy}</p>

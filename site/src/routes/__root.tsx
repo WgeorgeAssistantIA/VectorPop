@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -125,8 +126,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const lang = useRouterState({
+    select: (s) => {
+      const pathname = s.location.pathname;
+      const lastMatch = s.matches[s.matches.length - 1];
+      const postLang = (lastMatch?.loaderData as { post?: { lang?: "en" | "fr" } } | undefined)?.post?.lang;
+      if (postLang) {
+        return postLang;
+      }
+      const isEn =
+        pathname === "/en" ||
+        pathname.startsWith("/en/") ||
+        pathname === "/vectofix/en" ||
+        pathname.startsWith("/vectofix/en/");
+      return isEn ? "en" : "fr";
+    },
+  });
+
   return (
-    <html lang="en">
+    <html lang={lang}>
       <head>
         <HeadContent />
       </head>

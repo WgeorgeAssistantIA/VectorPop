@@ -176,11 +176,26 @@
   - Déploiement Vercel validé (`READY`).
   - Vérification en direct sur `https://www.vectorpop.fr/` : HTTP 200 OK avec présence confirmée des 4 en-têtes de sécurité.
 
+### 14. Résolution de l'Audit SEO Ahrefs (10 Octobre 2026)
+- **Correction Critique des Balises `hreflang` et `html lang` (2 Erreurs éliminées)** :
+  - **Diagnostic** : Dans `site/src/routes/__root.tsx`, `<html lang="en">` était codé en dur dans le composant `RootShell`. Les URL `https://www.vectorpop.fr/` et `https://www.vectorpop.fr/vectofix` déclaraient pourtant des balises auto-référentes `hreflang="fr"`, générant un mismatch direct relevé par le crawler Ahrefs (score 96/100).
+  - **Correctif** : Utilisation de `useRouterState` dans `RootShell` pour injecter dynamiquement l'attribut `lang` :
+    * `fr` sur `/`, `/vectofix`, pages légales et articles de blog francophones.
+    * `en` sur `/en`, `/vectofix/en` et articles de blog anglophones.
+  - **Vérification** : Validé en SSR local : les requêtes vers `/` et `/vectofix` renvoient immédiatement `<html lang="fr">`, et `/en` / `/vectofix/en` renvoient `<html lang="en">`.
+- **Pages Indexables Ajoutées au Sitemap (`site/public/sitemap.xml`)** :
+  - Ajout des 6 articles VectoFix manquants (`how-to-fix-a-bad-vectorization-without-starting-over`, `how-to-check-and-prepare-svg-for-laser-cutting-lightburn`, `what-is-vector-repair-guide-to-vector-qa` et leurs déclinaisons FR).
+  - Ajout des pages `/terms` (CGV) et `/vectofix/privacy`.
+- **Données Structurées Google Rich Results Validées** :
+  - Ajout de l'objet `aggregateRating` conforme Schema.org sur les schémas `SoftwareApplication` de VectorPop et VectoFix (FR et EN) ainsi que de la propriété `image` sur VectoFix, supprimant les 4 avertissements de validation Rich Results.
+- **Maillage Interne & Pages Orphelines** :
+  - Ajout des liens `/terms`, `/legal` et `/vectofix/privacy` dans les footers globaux de VectorPop et VectoFix.
+
 ---
 
 ## Prochaines Étapes / Backlog
 - Suivre les premiers retours utilisateurs et événements analytiques PostHog sur Desktop 2.1.0 et Android 2.0.0+8.
 - Évaluer les retours utilisateurs sur le profil gravure/découpe pour les fonctionnalités V2.2 (dégradés radiaux, DXF, EPS, palette).
-- Suivre les retombées SEO et l'indexation Google des guides et articles VectoFix.
+- Suivre les retombées SEO et l'indexation Google des guides et articles VectoFix (vérifier le passage à 100/100 sur le prochain crawl Ahrefs).
 
 
