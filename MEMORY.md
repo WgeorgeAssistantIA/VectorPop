@@ -191,11 +191,21 @@
 - **Maillage Interne & Pages Orphelines** :
   - Ajout des liens `/terms`, `/legal` et `/vectofix/privacy` dans les footers globaux de VectorPop et VectoFix.
 
+### 15. Optimisation Intégrale des Titres & Meta Descriptions Blog (13 Octobre 2026)
+- **Résolution des 54 Avertissements Ahrefs (*Title too long* & *Meta description too long*)** :
+  - **Diagnostic** : Les 30 articles de blog généraient des `<title>` de 75 à 112 caractères en raison de la concaténation systématique avec ` — VectorPop Blog` / ` — VectoFix Blog` sur de longs titres éditoriaux, et des descriptions de 170 à 250 caractères dépassant le bandeau SERP de Google (max 160 car.).
+  - **Correctif déployé** (commit `be28624`) :
+    1. Ajout de la propriété `metaTitle?: string` dans le type `BlogPost` et exploitation prioritaire dans les templates [`blog.$slug.tsx`](site/src/routes/blog.$slug.tsx) et [`vectofix.blog.$slug.tsx`](site/src/routes/vectofix.blog.$slug.tsx).
+    2. Recalibration intégrale des 30 balises `<title>` entre **41 et 56 caractères** (strictement sous le seuil critique de 60 car.).
+    3. Recalibration intégrale des 30 balises `<meta description>` entre **143 et 155 caractères** (strictement sous le seuil critique de 160 car., zéro troncature sur mobile/desktop).
+    4. Optimisation des meta descriptions des index de blog VectorPop et VectoFix (147 et 140 car.).
+  - **Validation** : Build de production TanStack Start / Vite validé en local (0 erreur TypeScript, bundle généré en 22s), déployé en production sur Vercel.
+
 ---
 
 ## Prochaines Étapes / Backlog
+- Suivre le prochain crawl Ahrefs pour constater l'atteinte du score de santé **100 / 100** (zéro erreur, zéro avertissement sur les titres et descriptions).
 - Suivre les premiers retours utilisateurs et événements analytiques PostHog sur Desktop 2.1.0 et Android 2.0.0+8.
 - Évaluer les retours utilisateurs sur le profil gravure/découpe pour les fonctionnalités V2.2 (dégradés radiaux, DXF, EPS, palette).
-- Suivre les retombées SEO et l'indexation Google des guides et articles VectoFix (vérifier le passage à 100/100 sur le prochain crawl Ahrefs).
 
 
