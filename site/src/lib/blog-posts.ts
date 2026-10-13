@@ -5,6 +5,7 @@ import { seoEnDrafts } from "./blog-posts-seo-en";
 export type BlogPost = {
   slug: string;
   title: string;
+  metaTitle?: string;
   description: string;
   date: string;
   author: string;
@@ -42,8 +43,10 @@ export const posts: BlogPost[] = [
   make({
     slug: "how-to-convert-a-png-logo-to-svg",
     title: "How to Convert a PNG Logo to SVG (and Why Your Printer Keeps Asking)",
+    metaTitle:
+      "Convert PNG Logo to SVG: Complete Guide — VectorPop",
     description:
-      "Your printer wants vector, you only have a PNG, and the source file is gone. Here's what vectorization actually does, when it works, and how to get a clean SVG without uploading your logo anywhere.",
+      "Need a clean SVG from a PNG logo for print? Learn how vectorization works, when tracing succeeds, and how to convert locally without uploading files.",
     date: "2026-07-17",
     author: "VectorPop Team",
     lang: "en",
@@ -132,8 +135,10 @@ export const posts: BlogPost[] = [
   make({
     slug: "svg-vs-png-when-to-use-which",
     title: "SVG vs PNG: Which One Do You Actually Need?",
+    metaTitle:
+      "SVG vs PNG: Which Format Do You Need? — VectorPop",
     description:
-      "SVG scales forever, PNG doesn't. But PNG isn't the bad guy — it's built for a different job. A plain-English guide to picking the right format for print, web and screens.",
+      "SVG scales infinitely while PNG is pixel-based. Understand key differences, ideal use cases, and how to choose the right format for web, print and logos.",
     date: "2026-07-17",
     author: "VectorPop Team",
     lang: "en",
@@ -207,8 +212,10 @@ export const posts: BlogPost[] = [
   make({
     slug: "vectorpop-now-available-on-android",
     title: "VectorPop Is Now Available on Android",
+    metaTitle:
+      "VectorPop Vectorizer on Android — VectorPop",
     description:
-      "VectorPop's PNG/JPEG-to-SVG tracing is now on mobile too: convert your images to vector straight from your phone or tablet, via Google Play.",
+      "VectorPop's local PNG/JPEG to SVG vectorization is now on Android: convert your logos and drawings directly on phone or tablet via Google Play Store.",
     date: "2026-08-08",
     author: "VectorPop Team",
     lang: "en",
@@ -250,8 +257,10 @@ export const posts: BlogPost[] = [
   make({
     slug: "convertir-logo-png-en-svg",
     title: "Comment convertir un logo PNG en SVG (et pourquoi votre imprimeur insiste)",
+    metaTitle:
+      "Convertir un logo PNG en SVG : Guide — VectorPop",
     description:
-      "Votre imprimeur réclame du vectoriel, vous n'avez qu'un PNG, et le fichier source a disparu. Ce que fait vraiment la vectorisation, quand elle fonctionne bien, et comment obtenir un SVG propre sans envoyer votre logo sur internet.",
+      "Votre imprimeur réclame du vectoriel ? Découvrez comment vectoriser un logo PNG en SVG net et éditable sur votre ordinateur, sans aucun upload en ligne.",
     date: "2026-07-17",
     author: "Équipe VectorPop",
     lang: "fr",
@@ -340,8 +349,10 @@ export const posts: BlogPost[] = [
   make({
     slug: "svg-vs-png-lequel-choisir",
     title: "SVG ou PNG : de quel format avez-vous vraiment besoin ?",
+    metaTitle:
+      "SVG ou PNG : quel format choisir ? — VectorPop",
     description:
-      "Le SVG s'agrandit à l'infini, le PNG non. Mais le PNG n'est pas le méchant de l'histoire — il est conçu pour un autre usage. Un guide simple pour choisir le bon format pour l'impression, le web et les écrans.",
+      "Le SVG s'agrandit à l'infini, le PNG reste figé en pixels. Découvrez les différences clés et choisissez le format adapté pour l'impression et le web.",
     date: "2026-07-17",
     author: "Équipe VectorPop",
     lang: "fr",
@@ -415,8 +426,10 @@ export const posts: BlogPost[] = [
   make({
     slug: "vectorpop-disponible-sur-android",
     title: "VectorPop est maintenant disponible sur Android",
+    metaTitle:
+      "VectorPop est disponible sur Android — VectorPop",
     description:
-      "La vectorisation PNG/JPEG vers SVG de VectorPop passe aussi sur mobile : convertissez vos images en vectoriel directement depuis votre téléphone ou votre tablette, via Google Play.",
+      "VectorPop arrive sur mobile Android : vectorisez vos logos et images en SVG pur directement depuis votre smartphone ou tablette, 100% hors-ligne.",
     date: "2026-08-08",
     author: "Équipe VectorPop",
     lang: "fr",
@@ -461,8 +474,10 @@ export const posts: BlogPost[] = [
   make({
     slug: "why-your-vectorized-svg-lost-detail",
     title: "Why Your Vectorized SVG Lost Detail (And Why No Converter Tells You)",
+    metaTitle:
+      "Why Vectorized SVGs Lose Detail — VectoFix",
     description:
-      "Every raster-to-SVG converter simplifies your image, causing blurry curves, wobbles, and lost letters. Discover why tools fail to self-check and how local vector repair restores crisp lines.",
+      "Raster-to-SVG tracing simplifies curves, causing distorted letters. Learn why converters drift and how local vector repair restores sharpness and accuracy.",
     date: "2026-08-12",
     author: "VectoFix Team",
     lang: "en",
@@ -611,8 +626,10 @@ export const posts: BlogPost[] = [
   make({
     slug: "one-slider-cant-fix-a-whole-image",
     title: "Why One Slider Can't Fix a Vector Trace: The Case for Local SVG Repair",
+    metaTitle:
+      "Why One Slider Can't Fix an SVG Trace — VectoFix",
     description:
-      "Turning up global vectorizer settings to fix one corner bloats your file everywhere else. Learn why node count control and localized repair are essential for clean cutting, laser, and print.",
+      "Global vectorizer settings bloat node count when fixing fine corners. Discover why localized SVG path repair is essential for laser and vinyl cutting.",
     date: "2026-08-12",
     author: "VectoFix Team",
     lang: "en",
@@ -761,8 +778,10 @@ export const posts: BlogPost[] = [
   make({
     slug: "introducing-vectofix",
     title: "Introducing VectoFix: The First Local Vector Repair Tool with AI Precision",
+    metaTitle:
+      "Introducing VectoFix: AI Vector Repair — VectoFix",
     description:
-      "VectoFix is a native Windows app that measures vectorization loss pixel by pixel and lets you repair damaged zones with a magic brush and local MobileSAM AI.",
+      "VectoFix is a local Windows app measuring tracing defects pixel by pixel. Repair damaged SVG paths surgically with a precision brush and MobileSAM AI.",
     date: "2026-08-12",
     author: "VectoFix Team",
     lang: "en",
@@ -887,8 +906,10 @@ export const posts: BlogPost[] = [
   make({
     slug: "pourquoi-votre-svg-vectorise-a-perdu-du-detail",
     title: "Pourquoi votre SVG vectorisé a perdu du détail (et pourquoi aucun convertisseur ne vous le dit)",
+    metaTitle:
+      "Pourquoi un SVG perd du détail — VectoFix",
     description:
-      "Tout convertisseur image vers SVG simplifie les pixels en courbes, générant bavures, lettres déformées et perte de finesse. Découvrez pourquoi les outils traditionnels sont aveugles et comment la réparation vectorielle locale résout le problème.",
+      "La vectorisation simplifie les pixels en courbes, déformant lettrages et finesses. Découvrez pourquoi les traceurs dérivent et comment réparer le SVG.",
     date: "2026-08-12",
     author: "Équipe VectoFix",
     lang: "fr",
@@ -1037,8 +1058,10 @@ export const posts: BlogPost[] = [
   make({
     slug: "un-seul-curseur-ne-peut-pas-tout-reparer",
     title: "Pourquoi un seul curseur ne peut pas réparer un tracé : l'impératif de la retouche vectorielle locale",
+    metaTitle:
+      "Retouche vectorielle locale vs curseur — VectoFix",
     description:
-      "Augmenter un réglage global pour corriger un détail dégrade et alourdit tout le reste du fichier. Découvrez pourquoi le contrôle du nombre de nœuds et la réparation chirurgicale locale sont indispensables pour la découpe, le laser et la broderie.",
+      "Pousser un réglage global dégrade tout le fichier SVG. Découvrez pourquoi le contrôle des nœuds et la réparation chirurgicale locale sauvent vos tracés.",
     date: "2026-08-12",
     author: "Équipe VectoFix",
     lang: "fr",
@@ -1187,8 +1210,10 @@ export const posts: BlogPost[] = [
   make({
     slug: "presentation-vectofix",
     title: "Présentation de VectoFix : Le premier outil de réparation vectorielle locale assisté par IA",
+    metaTitle:
+      "Présentation de VectoFix : Réparation SVG — VectoFix",
     description:
-      "VectoFix est une application Windows native qui mesure les défauts d'un tracé pixel par pixel et permet de réparer les zones critiques d'un coup de pinceau magique ou d'un clic IA MobileSAM.",
+      "VectoFix mesure les défauts d'un tracé vectoriel au pixel près. Réparez les zones abîmées d'un coup de pinceau magique ou à l'IA MobileSAM sur Windows.",
     date: "2026-08-12",
     author: "Équipe VectoFix",
     lang: "fr",

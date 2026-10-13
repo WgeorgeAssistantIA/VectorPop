@@ -9,8 +9,10 @@ export const seoEnDrafts: Draft[] = [
   {
     slug: "how-to-vectorize-an-image-complete-guide",
     title: "How to Vectorize an Image: A Complete Guide to Getting a Clean SVG",
+    metaTitle:
+      "How to Vectorize an Image into Clean SVG — VectorPop",
     description:
-      "Vectorizing an image means turning pixels into curves. The four methods (Inkscape, Illustrator, online tools, local software), the settings that matter, and which images actually work.",
+      "Vectorizing turns pixels into scalable curves. Compare 4 methods (Illustrator, Inkscape, online, local app), essential settings, and image requirements.",
     date: "2026-10-01",
     author: "VectorPop Team",
     lang: "en",
@@ -169,8 +171,10 @@ export const seoEnDrafts: Draft[] = [
   {
     slug: "convert-jpg-to-svg",
     title: "How to Convert a JPG to SVG Without Losing Quality",
+    metaTitle:
+      "Convert JPG to SVG Without Quality Loss — VectorPop",
     description:
-      "A JPG is a poor starting point for an SVG, yet it is often all you have. Here is how to get a clean vector file despite the compression, step by step.",
+      "JPG compression makes clean tracing tricky. Follow our step-by-step guide to eliminate compression artifacts and convert JPG to crisp, scalable SVG.",
     date: "2026-10-01",
     author: "VectorPop Team",
     lang: "en",
@@ -334,8 +338,10 @@ export const seoEnDrafts: Draft[] = [
   {
     slug: "why-printers-ask-for-vector-files",
     title: "Why Do Printers Ask for a Vector File?",
+    metaTitle:
+      "Why Printers Ask for Vector Files — VectorPop",
     description:
-      "Printing, embroidery, cutting, signage: why your printer rejects your PNG and wants SVG, PDF or EPS, and how to supply the right file without going back to a designer.",
+      "Screen printing, embroidery, signs: learn why print shops reject PNG files in favor of SVG or PDF vectors, and how to deliver production-ready files.",
     date: "2026-10-01",
     author: "VectorPop Team",
     lang: "en",

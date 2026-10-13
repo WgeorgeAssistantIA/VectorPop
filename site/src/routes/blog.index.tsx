@@ -9,7 +9,7 @@ export const Route = createFileRoute("/blog/")({
       {
         name: "description",
         content:
-          "Guides and tutorials on vectorization, SVG, and preparing logos for print, from the VectorPop team.",
+          "Guides, tutoriels et astuces sur la vectorisation d'images, le format SVG pur et la préparation de logos pour l'impression par l'équipe VectorPop.",
       },
       { property: "og:title", content: "Blog — VectorPop" },
       {

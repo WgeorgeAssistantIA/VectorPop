@@ -21,8 +21,10 @@ export const vectofixNewPosts: BlogPost[] = [
   make({
     slug: "how-to-fix-a-bad-vectorization-without-starting-over",
     title: "How to Fix a Bad Vectorization Without Starting Over: The Complete Decision Guide",
+    metaTitle:
+      "Fix Bad Vectorization Without Redrawing — VectoFix",
     description:
-      "Tired of spending 45 minutes manually redrawing bad vector traces in Illustrator? Learn how to diagnose vectorization errors, avoid global slider traps, and repair damaged SVG paths locally without starting from scratch.",
+      "Stop redrawing bad vector traces in Illustrator. Learn how to diagnose vectorization errors, avoid global slider traps, and repair SVG paths locally.",
     date: "2026-08-20",
     author: "VectoFix Team",
     lang: "en",
@@ -254,8 +256,10 @@ export const vectofixNewPosts: BlogPost[] = [
   make({
     slug: "how-to-check-and-prepare-svg-for-laser-cutting-lightburn",
     title: "How to Check and Prepare an SVG for Laser Cutting: The LightBurn Pre-Flight Guide",
+    metaTitle:
+      "Prepare SVG for Laser Cutting & LightBurn — VectoFix",
     description:
-      "An SVG that looks flawless on screen can ruin materials on a laser bed. Learn how to audit node density, detect open paths, eliminate duplicate lines, and prepare production-ready vector files for LightBurn and CNC.",
+      "A flawed SVG can ruin laser cutting materials. Learn how to audit node density, fix open paths, remove duplicates, and prepare clean vector files for CNC.",
     date: "2026-08-22",
     author: "VectoFix Team",
     lang: "en",
@@ -460,8 +464,10 @@ export const vectofixNewPosts: BlogPost[] = [
   make({
     slug: "what-is-vector-repair-guide-to-vector-qa",
     title: "What Is Vector Repair? The Missing Step Between Tracing and Production",
+    metaTitle:
+      "What Is Vector Repair? Complete QA Guide — VectoFix",
     description:
-      "For 35 years, vectorization was treated as an all-or-nothing black box. Discover Vector Repair: the quality assurance layer that diagnoses raster-to-vector drift and heals flawed paths without breaking the rest of your artwork.",
+      "Discover Vector Repair: the quality assurance step that pinpoints raster-to-vector drift with heatmaps and heals broken SVG paths before manufacturing.",
     date: "2026-08-25",
     author: "VectoFix Team",
     lang: "en",
@@ -623,8 +629,10 @@ export const vectofixNewPosts: BlogPost[] = [
   make({
     slug: "comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer",
     title: "Comment réparer une mauvaise vectorisation sans tout recommencer : Le guide pratique",
+    metaTitle:
+      "Réparer une vectorisation sans recommencer — VectoFix",
     description:
-      "Marre de passer 45 minutes à redessiner à la plume des tracés vectoriels déformés ? Découvrez comment diagnostiquer les erreurs de vectorisation, éviter le piège des curseurs globaux et réparer localement vos fichiers SVG sans repartir de zéro.",
+      "Ne perdez plus 45 min à redessiner à la plume des tracés vectoriels déformés. Diagnostiquez les dérives et réparez localement vos fichiers SVG sur Windows.",
     date: "2026-08-20",
     author: "Équipe VectoFix",
     lang: "fr",
@@ -856,8 +864,10 @@ export const vectofixNewPosts: BlogPost[] = [
   make({
     slug: "comment-preparer-un-svg-pour-la-decoupe-laser-lightburn",
     title: "Comment préparer un SVG pour la découpe laser : Le guide de contrôle LightBurn",
+    metaTitle:
+      "Préparer un SVG pour la découpe laser — VectoFix",
     description:
-      "Un fichier SVG parfait à l'écran peut ruiner vos matériaux sur un banc laser. Apprenez à auditer la densité de nœuds, repérer les tracés ouverts, supprimer les lignes doublées et préparer des fichiers vectoriels irréprochables pour LightBurn et CNC.",
+      "Un tracé SVG imparfait peut gâcher vos matériaux laser. Apprenez à auditer les nœuds, fermer les tracés et préparer vos fichiers pour LightBurn et CNC.",
     date: "2026-08-22",
     author: "Équipe VectoFix",
     lang: "fr",
@@ -1062,8 +1072,10 @@ export const vectofixNewPosts: BlogPost[] = [
   make({
     slug: "qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa",
     title: "Qu'est-ce que la réparation vectorielle ? L'étape manquante entre tracé et production",
+    metaTitle:
+      "Qu'est-ce que la réparation vectorielle ? — VectoFix",
     description:
-      "Pendant 35 ans, la vectorisation a été traitée comme une boîte noire du « tout ou rien ». Découvrez la réparation vectorielle : la couche de contrôle qualité qui diagnostique les dérives et rétablit les tracés sans altérer votre fichier.",
+      "Découvrez la réparation vectorielle : le contrôle qualité qui identifie les dérives de vectorisation et restaure les tracés sans altérer le reste du SVG.",
     date: "2026-08-25",
     author: "Équipe VectoFix",
     lang: "fr",
@@ -1221,8 +1233,10 @@ export const vectofixNewPosts: BlogPost[] = [
   make({
     slug: "how-to-fix-an-svg-after-automatic-vectorization",
     title: "How to Fix an SVG After Automatic Vectorization: A Practical Checklist",
+    metaTitle:
+      "Fix an SVG After Auto Vectorization — VectoFix",
     description:
-      "Your converter produced an SVG, but parts of it are wrong. Learn how to find what went wrong, choose between simplifying and re-tracing, and repair only the damaged zones.",
+      "Your auto tracer produced an imperfect SVG. Learn practical checklist steps to diagnose drift, simplify curves, and repair only damaged vector areas.",
     date: "2026-10-07",
     author: "VectoFix Team",
     lang: "en",
@@ -1333,8 +1347,10 @@ export const vectofixNewPosts: BlogPost[] = [
   make({
     slug: "why-png-to-svg-conversion-doesnt-look-like-the-original",
     title: "Why Your PNG to SVG Conversion Doesn't Look Like the Original",
+    metaTitle:
+      "Why PNG to SVG Doesn't Match Original — VectoFix",
     description:
-      "A PNG-to-SVG conversion never matches the pixels exactly. Here are the five reasons it drifts from the original, which ones you can fix, and how.",
+      "A PNG to SVG trace never matches pixels 100%. Discover the 5 main causes of vector drift, which errors can be repaired, and how to recover fidelity.",
     date: "2026-10-07",
     author: "VectoFix Team",
     lang: "en",
@@ -1419,8 +1435,10 @@ export const vectofixNewPosts: BlogPost[] = [
   make({
     slug: "why-too-many-svg-nodes-are-a-problem-for-cutting-machines",
     title: "Why Too Many SVG Nodes Are a Problem for Cutting Machines",
+    metaTitle:
+      "Why Too Many SVG Nodes Hurt Cutting — VectoFix",
     description:
-      "A traced SVG can contain tens of thousands of nodes. Here is why that slows laser and vinyl cutting, how to check the node count, and how to reduce it safely.",
+      "Bloated node counts stall laser and vinyl cutters. Discover why traced SVGs create excess nodes, how to inspect density, and how to reduce them safely.",
     date: "2026-10-07",
     author: "VectoFix Team",
     lang: "en",
@@ -1518,8 +1536,10 @@ export const vectofixNewPosts: BlogPost[] = [
   make({
     slug: "corriger-un-svg-apres-vectorisation-automatique",
     title: "Comment corriger un SVG après une vectorisation automatique : la checklist pratique",
+    metaTitle:
+      "Corriger un SVG après vectorisation — VectoFix",
     description:
-      "Votre convertisseur a produit un SVG, mais certaines zones sont fausses. Repérez l'erreur, choisissez entre simplifier et retracer, et réparez uniquement les zones abîmées.",
+      "Votre tracé SVG comporte des imperfections ? Suivez cette checklist pratique pour isoler les dérives, simplifier les nœuds et retoucher les zones abîmées.",
     date: "2026-10-07",
     author: "L'équipe VectoFix",
     lang: "fr",
@@ -1630,8 +1650,10 @@ export const vectofixNewPosts: BlogPost[] = [
   make({
     slug: "pourquoi-conversion-png-svg-ne-ressemble-pas-a-l-original",
     title: "Pourquoi votre conversion PNG en SVG ne ressemble pas à l'original",
+    metaTitle:
+      "Pourquoi le SVG ne ressemble pas au PNG — VectoFix",
     description:
-      "Une conversion PNG en SVG ne reproduit jamais les pixels à l'identique. Voici les cinq causes de l'écart, celles que vous pouvez corriger, et comment.",
+      "Une conversion PNG en SVG ne reproduit jamais les pixels à l'identique. Découvrez les 5 causes de dérive vectorielle et comment restaurer la fidélité.",
     date: "2026-10-07",
     author: "L'équipe VectoFix",
     lang: "fr",
@@ -1716,8 +1738,10 @@ export const vectofixNewPosts: BlogPost[] = [
   make({
     slug: "trop-de-noeuds-svg-probleme-machines-de-decoupe",
     title: "Pourquoi trop de nœuds dans un SVG posent problème aux machines de découpe",
+    metaTitle:
+      "Trop de nœuds SVG : impact en découpe — VectoFix",
     description:
-      "Un SVG vectorisé peut contenir des dizaines de milliers de nœuds. Pourquoi cela ralentit la découpe laser et vinyle, comment vérifier le nombre de nœuds et le réduire sans risque.",
+      "Un surplus de nœuds ralentit traceurs vinyle et lasers. Comprenez pourquoi la vectorisation crée trop de points et comment alléger le SVG sans déformation.",
     date: "2026-10-07",
     author: "L'équipe VectoFix",
     lang: "fr",

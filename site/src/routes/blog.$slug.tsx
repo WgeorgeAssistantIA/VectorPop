@@ -16,9 +16,9 @@ export const Route = createFileRoute("/blog/$slug")({
     const canonical = `https://www.vectorpop.fr/blog/${post.slug}`;
     return {
       meta: [
-        { title: `${post.title} — VectorPop Blog` },
+        { title: post.metaTitle ?? `${post.title} — VectorPop` },
         { name: "description", content: post.description },
-        { property: "og:title", content: post.title },
+        { property: "og:title", content: post.metaTitle ?? post.title },
         { property: "og:description", content: post.description },
         { property: "og:type", content: "article" },
         { property: "og:url", content: canonical },

@@ -13,7 +13,7 @@ export const Route = createFileRoute("/vectofix/blog/")({
       { title: "Blog — VectoFix" },
       {
         name: "description",
-        content: "Guides on vector repair, SVG fidelity, and getting a clean vector out of a damaged trace, from the VectoFix team.",
+        content: "Guides experts sur la réparation vectorielle, le contrôle qualité SVG et la retouche de tracés pour découpe et laser, par l'équipe VectoFix.",
       },
       { property: "og:title", content: "Blog — VectoFix" },
       { property: "og:url", content: "https://www.vectorpop.fr/vectofix/blog" },

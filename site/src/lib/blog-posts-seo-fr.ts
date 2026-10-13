@@ -9,8 +9,10 @@ export const seoFrDrafts: Draft[] = [
   {
     slug: "comment-vectoriser-une-image-guide-complet",
     title: "Comment vectoriser une image ? Guide complet pour obtenir un SVG propre",
+    metaTitle:
+      "Comment vectoriser une image en SVG ? — VectorPop",
     description:
-      "Vectoriser une image, c'est transformer des pixels en courbes. Les quatre méthodes (Inkscape, Illustrator, en ligne, logiciel local), les réglages qui comptent et les images qui s'y prêtent vraiment.",
+      "Vectoriser transforme des pixels en courbes éditables. Découvrez les 4 méthodes (Inkscape, Illustrator, local), les réglages clés et les pièges à éviter.",
     date: "2026-10-01",
     author: "Équipe VectorPop",
     lang: "fr",
@@ -181,8 +183,10 @@ export const seoFrDrafts: Draft[] = [
   {
     slug: "convertir-jpg-en-svg",
     title: "Comment convertir un JPG en SVG sans perdre en qualité ?",
+    metaTitle:
+      "Convertir un JPG en SVG proprement — VectorPop",
     description:
-      "Un JPG n'est pas un bon point de départ pour un SVG, mais c'est souvent tout ce qu'on a. Voici comment obtenir un fichier vectoriel propre malgré la compression, étape par étape.",
+      "Convertir un JPG compressé en SVG propre demande de bons réglages. Suivez notre méthode pas à pas pour obtenir un vectoriel net sans artefacts.",
     date: "2026-10-01",
     author: "Équipe VectorPop",
     lang: "fr",
@@ -359,8 +363,10 @@ export const seoFrDrafts: Draft[] = [
   {
     slug: "pourquoi-imprimeurs-demandent-fichier-vectoriel",
     title: "Pourquoi les imprimeurs demandent-ils un fichier vectoriel ?",
+    metaTitle:
+      "Pourquoi les imprimeurs veulent du vectoriel — VectorPop",
     description:
-      "Impression, broderie, découpe, enseigne : pourquoi votre imprimeur refuse votre PNG et réclame du SVG, du PDF ou de l'EPS, et comment lui fournir le bon fichier sans repasser par un graphiste.",
+      "Sérigraphie, broderie, enseignes : découvrez pourquoi les imprimeurs refusent les PNG et exigent du SVG ou PDF vectoriel, et comment leur fournir.",
     date: "2026-10-01",
     author: "Équipe VectorPop",
     lang: "fr",
