@@ -5,6 +5,7 @@ import 'dart:typed_data' show Uint8List;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart' show RootIsolateToken, BackgroundIsolateBinaryMessenger, rootBundle;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image/image.dart' as img;
@@ -13,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:open_filex/open_filex.dart';
 
 import 'ai_common.dart';
 import 'ai_detourage.dart';
@@ -29,11 +31,42 @@ import 'services/analytics_service.dart';
 import 'services/review_service.dart';
 import 'services/update_service.dart';
 import 'vectorizer_ffi.dart';
+import 'widgets/language_sheet.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AnalyticsService.instance.init();
-  runApp(const VectorPopApp());
+
+  final prefs = await SharedPreferences.getInstance();
+  final savedLang = prefs.getString('ui_lang') ?? prefs.getString('lang');
+  final deviceLocale = ui.PlatformDispatcher.instance.locale.languageCode;
+  final effectiveLang = savedLang ?? defaultLangFromLocale(deviceLocale);
+
+  AnalyticsService.instance.updateContext(
+    lang: effectiveLang,
+    deviceLocale: ui.PlatformDispatcher.instance.locale.toString(),
+    langSource: savedLang != null ? 'user_choice' : 'device_auto',
+    isRtl: isRtlLang(effectiveLang),
+  );
+
+  final supportedCodes = kLanguages.map((l) => l.code).toSet();
+  final deviceLangSupported = supportedCodes.contains(deviceLocale.toLowerCase());
+  final unsupportedTracked = prefs.getBool('unsupported_locale_tracked') ?? false;
+  if (!unsupportedTracked) {
+    if (!deviceLangSupported) {
+      AnalyticsService.instance.trackUnsupportedLocaleFallback(
+        rawLocale: ui.PlatformDispatcher.instance.locale.toString(),
+        fallbackLang: effectiveLang,
+      );
+      await prefs.setBool('unsupported_locale_tracked', true);
+    }
+  }
+
+  AnalyticsService.instance.trackAppOpened(
+    isRtl: isRtlLang(effectiveLang),
+    deviceLangSupported: deviceLangSupported,
+  );
+  runApp(VectorPopApp(initialLang: effectiveLang));
 }
 
 /// Top-level so the closure captured by [Isolate.run] only closes over its
@@ -187,13 +220,14 @@ class Brand {
 
   static const gradient = LinearGradient(
     colors: [accent1, accent2, accent3],
-    begin: Alignment.centerLeft,
-    end: Alignment.centerRight,
+    begin: AlignmentDirectional.centerStart,
+    end: AlignmentDirectional.centerEnd,
   );
 }
 
 class VectorPopApp extends StatefulWidget {
-  const VectorPopApp({super.key});
+  final String? initialLang;
+  const VectorPopApp({super.key, this.initialLang});
 
   @override
   State<VectorPopApp> createState() => _VectorPopAppState();
@@ -201,7 +235,7 @@ class VectorPopApp extends StatefulWidget {
 
 class _VectorPopAppState extends State<VectorPopApp> {
   ThemeMode _themeMode = ThemeMode.system;
-  AppLang _lang = AppLang.fr;
+  String _lang = 'en';
   bool _showOnboarding = false;
   bool _ready = false;
 
@@ -214,12 +248,13 @@ class _VectorPopAppState extends State<VectorPopApp> {
   Future<void> _initApp() async {
     final prefs = await SharedPreferences.getInstance();
     final seen = prefs.getBool('has_seen_onboarding') ?? false;
-    final savedLang = prefs.getString('lang');
-    if (savedLang != null) {
-      _lang = savedLang == 'en' ? AppLang.en : AppLang.fr;
-    }
+    final savedLang = prefs.getString('ui_lang') ?? prefs.getString('lang') ?? widget.initialLang;
+    final deviceLocale = ui.PlatformDispatcher.instance.locale.languageCode;
+    final effectiveLang = savedLang ?? defaultLangFromLocale(deviceLocale);
+
     if (mounted) {
       setState(() {
+        _lang = effectiveLang;
         _showOnboarding = !seen;
         _ready = true;
       });
@@ -235,8 +270,29 @@ class _VectorPopAppState extends State<VectorPopApp> {
     });
   }
 
+  Future<void> _setLang(String newLang) async {
+    final oldLang = _lang;
+    if (newLang == oldLang) return;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('ui_lang', newLang);
+    AnalyticsService.instance.updateContext(
+      lang: newLang,
+      langSource: 'user_choice',
+      isRtl: isRtlLang(newLang),
+    );
+    AnalyticsService.instance.trackLanguageChanged(
+      from: oldLang,
+      to: newLang,
+      source: _showOnboarding ? 'onboarding' : 'menu',
+    );
+    if (mounted) {
+      setState(() => _lang = newLang);
+    }
+  }
+
   void _toggleLang() {
-    setState(() => _lang = _lang == AppLang.fr ? AppLang.en : AppLang.fr);
+    final next = _lang == 'fr' ? 'en' : 'fr';
+    _setLang(next);
   }
 
   @override
@@ -244,6 +300,13 @@ class _VectorPopAppState extends State<VectorPopApp> {
     return MaterialApp(
       title: 'VectorPop',
       debugShowCheckedModeBanner: false,
+      locale: Locale(_lang),
+      supportedLocales: [for (final l in kLanguages) Locale(l.code)],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       themeMode: _themeMode,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -262,11 +325,19 @@ class _VectorPopAppState extends State<VectorPopApp> {
         scaffoldBackgroundColor: const Color(0xFF1B1C25),
         cardColor: const Color(0xFF242631),
       ),
+      builder: (context, child) {
+        final isRtl = isRtlLang(_lang);
+        return Directionality(
+          textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
       home: !_ready
           ? const Scaffold(body: Center(child: CircularProgressIndicator()))
           : _showOnboarding
               ? OnboardingScreen(
                   lang: _lang,
+                  onLangChanged: _setLang,
                   onFinish: () => setState(() => _showOnboarding = false),
                 )
               : VectorizeScreen(
@@ -274,6 +345,7 @@ class _VectorPopAppState extends State<VectorPopApp> {
                   themeMode: _themeMode,
                   lang: _lang,
                   onToggleLang: _toggleLang,
+                  onSelectLang: _setLang,
                 ),
     );
   }
@@ -335,22 +407,25 @@ class _Settings {
 class VectorizeScreen extends StatefulWidget {
   final VoidCallback onToggleTheme;
   final ThemeMode themeMode;
-  final AppLang lang;
-  final VoidCallback onToggleLang;
+  final dynamic lang;
+  final VoidCallback? onToggleLang;
+  final ValueChanged<String>? onSelectLang;
 
   const VectorizeScreen({
     super.key,
     required this.onToggleTheme,
     required this.themeMode,
     required this.lang,
-    required this.onToggleLang,
+    this.onToggleLang,
+    this.onSelectLang,
   });
 
   @override
   State<VectorizeScreen> createState() => _VectorizeScreenState();
 }
 
-class _VectorizeScreenState extends State<VectorizeScreen> {
+
+class _VectorizeScreenState extends State<VectorizeScreen> with WidgetsBindingObserver {
   File? _sourceFile;
   img.Image? _decoded;
   String? _svg;
@@ -368,15 +443,29 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
   bool _licenseLoaded = false;
   bool _aiUpscaleAvailable = false;
   bool _aiDetourageAvailable = false;
+  bool _reviewPendingOnResume = false;
 
   L10n get t => L10n(widget.lang);
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _transformationController.addListener(_onTransformationChanged);
     _initLicense();
     UpdateService.instance.checkForUpdate();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _reviewPendingOnResume) {
+      _reviewPendingOnResume = false;
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (mounted) {
+          ReviewService.instance.requestReview();
+        }
+      });
+    }
   }
 
   void _onTransformationChanged() {
@@ -418,6 +507,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _transformationController.removeListener(_onTransformationChanged);
     _transformationController.dispose();
     _controlsScrollController.dispose();
@@ -443,9 +533,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
       if (decoded == null) {
         if (mounted) {
           setState(() {
-            _error = t.lang == AppLang.fr
-                ? 'Format image non reconnu'
-                : 'Unrecognized image format';
+            _error = t.imageFormatUnrecognized;
           });
         }
         return;
@@ -494,7 +582,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
 
       AnalyticsService.instance.trackSampleModelSelected(
         model.id,
-        model.title(t.lang == AppLang.fr),
+        t.demoTitle(model.id),
       );
 
       _Preset targetPreset;
@@ -543,7 +631,6 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
 
   void _showDemoSamplesSheet() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isFr = t.lang == AppLang.fr;
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: isDark ? const Color(0xFF1E1834) : Colors.white,
@@ -585,8 +672,8 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
                       borderRadius: BorderRadius.circular(8),
                       child: Image.asset(m.assetPath, width: 44, height: 44, fit: BoxFit.cover),
                     ),
-                    title: Text(m.title(isFr), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
-                    subtitle: Text(m.desc(isFr), style: TextStyle(fontSize: 12, color: isDark ? Colors.white60 : Colors.black54)),
+                    title: Text(t.demoTitle(m.id), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                    subtitle: Text(t.demoDesc(m.id), style: TextStyle(fontSize: 12, color: isDark ? Colors.white60 : Colors.black54)),
                     onTap: () {
                       Navigator.pop(ctx);
                       _loadDemoModel(m);
@@ -681,7 +768,10 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
     }
   }
 
-  Future<void> _handlePostExportTriggers({ShareResult? shareResult}) async {
+  Future<void> _showExportSuccessDialog({
+    required File file,
+    required bool shouldAskReview,
+  }) async {
     if (!mounted) return;
     final total = _usage.totalExports();
 
@@ -692,27 +782,143 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
         lang: widget.lang,
         onDiscoverPro: () => _showPaywall(source: 'export_celebration'),
       );
-    }
-    // Export 3 (Nouveaux utilisateurs) : notification discrète pour le dernier essai gratuit
-    else if (total == 3 && !_license.isPro() && !_usage.isEarlyUser) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(t.lastFreeExportNotice),
-            action: SnackBarAction(
-              label: t.goPro,
-              onPressed: () => _showPaywall(source: 'last_free_export_snack'),
-            ),
-            duration: const Duration(seconds: 5),
+    } else if (total == 3 && !_license.isPro() && !_usage.isEarlyUser) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(t.lastFreeExportNotice),
+          action: SnackBarAction(
+            label: t.goPro,
+            onPressed: () => _showPaywall(source: 'last_free_export_snack'),
           ),
-        );
-      }
+          duration: const Duration(seconds: 5),
+        ),
+      );
     }
 
-    // Demande d'avis Play Store : uniquement sur signal réel de satisfaction (partage réussi sur export >= 2)
-    if (shareResult?.status == ShareResultStatus.success && total >= 2) {
-      await ReviewService.instance.requestReviewIfAppropriate();
-    }
+    if (!mounted) return;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: isDark ? const Color(0xFF1E1834) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white24 : Colors.black26,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 18),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check_circle_outline_rounded,
+                  color: Color(0xFF10B981),
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                t.exportSuccessTitle,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                t.exportSuccessBody,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: isDark ? Colors.white70 : Colors.black54,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                        if (shouldAskReview) {
+                          ReviewService.instance.requestReview();
+                        }
+                      },
+                      icon: const Icon(Icons.close_rounded, size: 18),
+                      label: Text(t.close),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () async {
+                        Navigator.pop(ctx);
+                        if (shouldAskReview) {
+                          _reviewPendingOnResume = true;
+                        }
+                        try {
+                          await OpenFilex.open(file.path);
+                        } catch (e) {
+                          debugPrint('OpenFilex error: $e');
+                        }
+                      },
+                      icon: const Icon(Icons.visibility_outlined, size: 18),
+                      label: Text(t.openFile),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: FilledButton.icon(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Brand.accent1,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () async {
+                        Navigator.pop(ctx);
+                        if (shouldAskReview) {
+                          _reviewPendingOnResume = true;
+                        }
+                        await Share.shareXFiles([XFile(file.path)]);
+                      },
+                      icon: const Icon(Icons.share_rounded, size: 18),
+                      label: Text(t.share),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _exportSvg() async {
@@ -729,8 +935,9 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
     await _usage.recordExport();
     AnalyticsService.instance.trackExportSvg();
     if (mounted) setState(() {});
-    final shareRes = await Share.shareXFiles([XFile(file.path)]);
-    await _handlePostExportTriggers(shareResult: shareRes);
+
+    final shouldAskReview = await ReviewService.instance.recordSuccessAndShouldAsk();
+    await _showExportSuccessDialog(file: file, shouldAskReview: shouldAskReview);
   }
 
   Future<void> _exportPng(int longSidePx) async {
@@ -767,8 +974,8 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
       await _usage.recordExport();
       AnalyticsService.instance.trackExportPng(longSidePx);
       if (!mounted) return;
-      final shareRes = await Share.shareXFiles([XFile(file.path)]);
-      await _handlePostExportTriggers(shareResult: shareRes);
+      final shouldAskReview = await ReviewService.instance.recordSuccessAndShouldAsk();
+      await _showExportSuccessDialog(file: file, shouldAskReview: shouldAskReview);
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = '$e');
@@ -997,11 +1204,52 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
         ),
         actions: [
           _buildProBadge(),
-          TextButton(
-            onPressed: widget.onToggleLang,
-            child: Text(
-              widget.lang == AppLang.fr ? 'FR' : 'EN',
-              style: const TextStyle(fontWeight: FontWeight.bold),
+          InkWell(
+            onTap: () {
+              final currentCode = widget.lang is AppLang
+                  ? (widget.lang as AppLang).code
+                  : widget.lang.toString();
+              LanguageSheet.show(
+                context,
+                currentLang: currentCode,
+                onLanguageSelected: (newLang) {
+                  widget.onSelectLang?.call(newLang);
+                },
+                source: 'menu',
+              );
+            },
+            borderRadius: BorderRadius.circular(16),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    kLanguages
+                        .firstWhere(
+                          (l) =>
+                              l.code ==
+                              (widget.lang is AppLang
+                                  ? (widget.lang as AppLang).code
+                                  : widget.lang.toString()),
+                          orElse: () => kLanguages.first,
+                        )
+                        .flag,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    (widget.lang is AppLang
+                            ? (widget.lang as AppLang).code
+                            : widget.lang.toString())
+                        .toUpperCase(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           IconButton(
@@ -1263,8 +1511,8 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               colors: [Color(0xFF7A52F5), Color(0xFFC92BC0), Color(0xFF3FD7FB)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+              begin: AlignmentDirectional.topStart,
+              end: AlignmentDirectional.bottomEnd,
             ),
             borderRadius: BorderRadius.circular(20),
           ),
@@ -1524,7 +1772,6 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
 
   Widget _buildEmptyStateWithSamples() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isFr = widget.lang == AppLang.fr;
     final theme = Theme.of(context);
 
     return LayoutBuilder(
@@ -1628,14 +1875,14 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                   childAspectRatio: 2.3,
-                  children: kDemoModels.map((m) => _buildDemoSampleCard(m, isDark, isFr)).toList(),
+                  children: kDemoModels.map((m) => _buildDemoSampleCard(m, isDark)).toList(),
                 )
               else
                 Column(
                   children: kDemoModels
                       .map((m) => Padding(
                             padding: const EdgeInsets.only(bottom: 8),
-                            child: _buildDemoSampleCard(m, isDark, isFr),
+                            child: _buildDemoSampleCard(m, isDark),
                           ))
                       .toList(),
                 ),
@@ -1646,7 +1893,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
     );
   }
 
-  Widget _buildDemoSampleCard(DemoModel model, bool isDark, bool isFr) {
+  Widget _buildDemoSampleCard(DemoModel model, bool isDark) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -1681,14 +1928,14 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      model.title(isFr),
+                      t.demoTitle(model.id),
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      model.desc(isFr),
+                      t.demoDesc(model.id),
                       style: TextStyle(
                         fontSize: 10,
                         color: isDark ? Colors.white60 : Colors.black54,
@@ -1761,13 +2008,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
                           )
                         : const Icon(Icons.play_arrow),
                     label: Text(
-                      _busy
-                          ? (t.lang == AppLang.fr
-                              ? 'Traitement en cours...'
-                              : 'Processing...')
-                          : (t.lang == AppLang.fr
-                              ? 'Lancer la vectorisation'
-                              : 'Start vectorization'),
+                      _busy ? t.processing : t.startVectorization,
                     ),
                     style: FilledButton.styleFrom(
                       minimumSize: const Size.fromHeight(44),
@@ -1876,7 +2117,10 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
               title: Text(t.removeBackground),
               subtitle: Text(t.removeBackgroundHelp, style: const TextStyle(fontSize: 11)),
               value: _settings.removeBackground,
-              onChanged: (v) => _update(() => _settings.removeBackground = v, immediate: true),
+              onChanged: (v) {
+                _update(() => _settings.removeBackground = v, immediate: true);
+                AnalyticsService.instance.trackBackgroundToggled(v);
+              },
             ),
             if (_settings.removeBackground)
               _slider(
@@ -2005,6 +2249,7 @@ class _VectorizeScreenState extends State<VectorizeScreen> {
             _preset = preset;
             _settings.applyPreset(preset);
           });
+          AnalyticsService.instance.trackPresetChanged(preset.name);
         },
         child: Container(
           padding: const EdgeInsets.all(10),

@@ -7,7 +7,7 @@ import 'services/analytics_service.dart';
 /// Félicite l'utilisateur, ancre la valeur perçue du tracé vectoriel local,
 /// et présente doucement l'offre Pro à vie sans bloquer l'usage gratuit.
 class ExportCelebrationSheet extends StatefulWidget {
-  final AppLang lang;
+  final dynamic lang;
   final VoidCallback onDiscoverPro;
 
   final bool isDialog;
@@ -21,7 +21,7 @@ class ExportCelebrationSheet extends StatefulWidget {
 
   static Future<void> show({
     required BuildContext context,
-    required AppLang lang,
+    required dynamic lang,
     required VoidCallback onDiscoverPro,
   }) {
     AnalyticsService.instance.trackFirstExportCelebrated();
@@ -68,8 +68,8 @@ class _ExportCelebrationSheetState extends State<ExportCelebrationSheet> {
 
   static const _gradient = LinearGradient(
     colors: [_accentViolet, _accentMagenta, _accentCyan],
-    begin: Alignment.centerLeft,
-    end: Alignment.centerRight,
+    begin: AlignmentDirectional.centerStart,
+    end: AlignmentDirectional.centerEnd,
   );
 
   @override

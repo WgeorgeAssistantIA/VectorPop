@@ -8,8 +8,13 @@ class AnalyticsService {
 
   static const String _apiKey = 'phc_yfH9dmW8EbueysuiXcL8yAam7yATkfFCfguT3e63bEcq';
   static const String _host = 'https://eu.i.posthog.com';
+  static const String _appName = 'vectorpop_android';
 
   bool _initialized = false;
+  String _currentLang = 'en';
+  String _deviceLocale = '';
+  String _langSource = 'device_auto';
+  bool _reviewSkipTracked = false;
 
   /// Initialise le SDK PostHog
   Future<void> init() async {
@@ -25,12 +30,41 @@ class AnalyticsService {
     }
   }
 
-  /// Capture générique d'un événement
+  /// Met à jour la langue active et la locale brute de l'appareil.
+  /// Ces valeurs sont automatiquement incluses dans chaque événement capturé.
+  /// [langSource] : `device_auto` (langue déduite de l'appareil) ou
+  /// `user_choice` (langue choisie par l'utilisateur dans le sélecteur).
+  void updateContext({
+    required String lang,
+    String? deviceLocale,
+    String? langSource,
+    bool isRtl = false,
+  }) {
+    _currentLang = lang;
+    if (deviceLocale != null && deviceLocale.isNotEmpty) {
+      _deviceLocale = deviceLocale;
+    }
+    if (langSource != null) _langSource = langSource;
+    Posthog().setPersonProperties(
+      userPropertiesToSet: {
+        'lang': _currentLang,
+        'lang_source': _langSource,
+        'is_rtl': isRtl,
+        if (_deviceLocale.isNotEmpty) 'device_locale': _deviceLocale,
+      },
+    ).catchError((_) {});
+  }
+
+  /// Capture générique d'un événement avec injection systématique de l'app,
+  /// de la langue et de la locale.
   Future<void> logEvent(String name, [Map<String, Object>? properties]) async {
     try {
       if (!_initialized) await init();
       final props = <String, Object>{
-        'app': 'vectorpop_android',
+        'app': _appName,
+        if (_currentLang.isNotEmpty) 'lang': _currentLang,
+        if (_deviceLocale.isNotEmpty) 'device_locale': _deviceLocale,
+        'lang_source': _langSource,
         ...?properties,
       };
       await Posthog().capture(
@@ -43,18 +77,80 @@ class AnalyticsService {
     }
   }
 
+  // ─── Cycle de vie & Session ────────────────────────────────────────────────
+
+  void trackAppOpened({
+    bool isRtl = false,
+    bool deviceLangSupported = true,
+  }) =>
+      logEvent('app_opened', {
+        'is_rtl': isRtl,
+        'device_lang_supported': deviceLangSupported,
+      });
+
+  // ─── Langues & I18n ────────────────────────────────────────────────────────
+
+  void trackLanguageChanged({
+    required String from,
+    required String to,
+    required String source,
+  }) =>
+      logEvent('language_changed', {
+        'from': from,
+        'to': to,
+        'source': source,
+      });
+
+  /// Le sélecteur de langue a été ouvert (`source` : `menu` ou `onboarding`).
+  void trackLanguagePickerOpened({
+    required String source,
+    required String current,
+  }) =>
+      logEvent('language_picker_opened', {
+        'source': source,
+        'current': current,
+      });
+
+  /// Le sélecteur a été fermé sans choisir de langue différente.
+  void trackLanguagePickerDismissed({
+    required String source,
+    required String current,
+  }) =>
+      logEvent('language_picker_dismissed', {
+        'source': source,
+        'current': current,
+      });
+
+  void trackUnsupportedLocaleFallback({
+    required String rawLocale,
+    required String fallbackLang,
+  }) =>
+      logEvent('unsupported_locale_fallback', {
+        'raw_locale': rawLocale,
+        'fallback_lang': fallbackLang,
+      });
+
   // ─── Onboarding Funnel ──────────────────────────────────────────────────────
 
   void trackOnboardingStarted() => logEvent('onboarding_started');
 
-  void trackOnboardingStep(int stepIndex, String stepTitle) => logEvent('onboarding_step_viewed', {
-    'step_index': stepIndex,
-    'step_title': stepTitle,
-  });
+  void trackOnboardingStepViewed({
+    required int step,
+    required String stepName,
+  }) =>
+      logEvent('onboarding_step_viewed', {
+        'step': step,
+        'step_name': stepName,
+      });
 
-  void trackOnboardingUsecaseSelected(String usecaseId) => logEvent('onboarding_usecase_selected', {
-    'usecase_id': usecaseId,
-  });
+  // Rétro-compatibilité pour l'onboarding existant
+  void trackOnboardingStep(int stepIndex, String stepTitle) =>
+      trackOnboardingStepViewed(step: stepIndex, stepName: stepTitle);
+
+  void trackOnboardingUsecaseSelected(String usecaseId) =>
+      logEvent('onboarding_usecase_selected', {
+        'usecase_id': usecaseId,
+      });
 
   void trackOnboardingCompleted({
     required String lang,
@@ -68,29 +164,38 @@ class AnalyticsService {
   }
 
   void trackOnboardingSkipped(int atStep) => logEvent('onboarding_skipped', {
-    'at_step': atStep,
-  });
+        'at_step': atStep,
+      });
 
   // ─── Modèles Démo & Galerie ─────────────────────────────────────────────────
 
-  void trackSampleModelSelected(String modelId, String title) => logEvent('sample_model_selected', {
-    'model_id': modelId,
-    'model_title': title,
-  });
+  void trackDemoModelLoaded(String id, String title) => logEvent('demo_model_loaded', {
+        'model_id': id,
+        'model_title': title,
+      });
+
+  void trackSampleModelSelected(String modelId, String title) {
+    trackDemoModelLoaded(modelId, title);
+    logEvent('sample_model_selected', {
+      'model_id': modelId,
+      'model_title': title,
+    });
+  }
 
   void trackImagePicked({
     required int width,
     required int height,
     required int sizeBytes,
     required bool hasAlpha,
-  }) => logEvent('image_picked', {
-    'width': width,
-    'height': height,
-    'size_kb': (sizeBytes / 1024).round(),
-    'has_alpha': hasAlpha,
-  });
+  }) =>
+      logEvent('image_picked', {
+        'width': width,
+        'height': height,
+        'size_kb': (sizeBytes / 1024).round(),
+        'has_alpha': hasAlpha,
+      });
 
-  // ─── Vectorisation & IA ─────────────────────────────────────────────────────
+  // ─── Vectorisation, Réglages & IA ──────────────────────────────────────────
 
   void trackVectorizeStarted({
     required String preset,
@@ -98,81 +203,105 @@ class AnalyticsService {
     required bool removeBg,
     required bool aiUpscale,
     required bool aiDetourage,
-  }) => logEvent('vectorize_started', {
-    'preset': preset,
-    'color_precision': colorPrecision,
-    'remove_bg': removeBg,
-    'ai_upscale': aiUpscale,
-    'ai_detourage': aiDetourage,
-  });
+  }) =>
+      logEvent('vectorize_started', {
+        'preset': preset,
+        'color_precision': colorPrecision,
+        'remove_bg': removeBg,
+        'ai_upscale': aiUpscale,
+        'ai_detourage': aiDetourage,
+      });
 
   void trackVectorizeCompleted({
     required String preset,
     required int durationMs,
     required int svgSizeBytes,
-  }) => logEvent('vectorize_completed', {
-    'preset': preset,
-    'duration_ms': durationMs,
-    'svg_size_kb': (svgSizeBytes / 1024).round(),
-  });
+  }) =>
+      logEvent('vectorize_completed', {
+        'preset': preset,
+        'duration_ms': durationMs,
+        'svg_size_kb': (svgSizeBytes / 1024).round(),
+      });
 
   void trackVectorizeFailed(String error) => logEvent('vectorize_failed', {
-    'error': error,
-  });
+        'error': error,
+      });
+
+  void trackPresetChanged(String preset) => logEvent('preset_changed', {
+        'preset': preset,
+      });
+
+  void trackBackgroundToggled(bool removeBg) => logEvent('background_toggled', {
+        'remove_bg': removeBg,
+      });
 
   // ─── Exports ────────────────────────────────────────────────────────────────
 
   void trackExportSvg() => logEvent('export_svg');
 
   void trackExportPng(int resolutionPx) => logEvent('export_png', {
-    'resolution_px': resolutionPx,
-  });
+        'resolution_px': resolutionPx,
+      });
 
   // ─── Monétisation & Paywall ─────────────────────────────────────────────────
 
   void trackPaywallViewed(String triggerSource) => logEvent('paywall_viewed', {
-    'source': triggerSource,
-  });
+        'source': triggerSource,
+      });
 
   void trackPaywallBuyClicked(String price) => logEvent('paywall_buy_clicked', {
-    'price': price,
-  });
+        'price': price,
+      });
 
   void trackPaywallPurchased(String price) => logEvent('paywall_purchased', {
-    'price': price,
-  });
+        'price': price,
+      });
 
   void trackPaywallCancelled() => logEvent('paywall_buy_cancelled');
 
   void trackPaywallError({
     required String errorCode,
     required String errorMessage,
-  }) => logEvent('paywall_buy_error', {
-    'error_code': errorCode,
-    'error_message': errorMessage,
-  });
+  }) =>
+      logEvent('paywall_buy_error', {
+        'error_code': errorCode,
+        'error_message': errorMessage,
+      });
 
   void trackDailyLimitReached({
     required int dailyExports,
-  }) => logEvent('daily_limit_reached', {
-    'daily_exports': dailyExports,
-  });
+  }) =>
+      logEvent('daily_limit_reached', {
+        'daily_exports': dailyExports,
+      });
 
   void trackQuotaReached({
     required int totalExports,
-  }) => logEvent('quota_reached', {
-    'total_exports': totalExports,
-  });
+  }) =>
+      logEvent('quota_reached', {
+        'total_exports': totalExports,
+      });
 
   void trackDesktopLinkOpened(String source) => logEvent('desktop_link_opened', {
-    'source': source,
-  });
+        'source': source,
+      });
 
   void trackReviewRequested() => logEvent('review_requested');
 
+  /// La demande d'avis n'a pas eu lieu. `reason` : `already_requested`
+  /// (au plus une fois par lancement), `unavailable` ou `error`.
+  void trackReviewSkipped(String reason) {
+    if (reason == 'already_requested') {
+      if (_reviewSkipTracked) return;
+      _reviewSkipTracked = true;
+    }
+    logEvent('review_skipped', {'reason': reason});
+  }
+
   void trackFirstExportCelebrated() => logEvent('first_export_celebrated');
 
-  void trackCelebrationProClicked() => logEvent('first_export_celebration_pro_clicked');
+  void trackCelebrationProClicked() =>
+      logEvent('first_export_celebration_pro_clicked');
 
   void trackZoomInteracted() => logEvent('preview_zoom_interacted');
 

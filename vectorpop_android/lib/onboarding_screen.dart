@@ -4,16 +4,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'i18n.dart';
 import 'services/analytics_service.dart';
+import 'widgets/language_sheet.dart';
 
 /// Écran d'onboarding immersif en 4 étapes avec profiling métier pour VectorPop.
 class OnboardingScreen extends StatefulWidget {
-  final AppLang lang;
+  final dynamic lang;
   final VoidCallback onFinish;
+  final ValueChanged<String>? onLangChanged;
 
   const OnboardingScreen({
     super.key,
     required this.lang,
     required this.onFinish,
+    this.onLangChanged,
   });
 
   @override
@@ -24,6 +27,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   String _selectedProfile = 'logo';
+  late String _currentLang;
 
   static const Color _accentViolet = Color(0xFF7A52F5);
   static const Color _accentMagenta = Color(0xFFC92BC0);
@@ -31,17 +35,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   static const LinearGradient _brandGradient = LinearGradient(
     colors: [_accentViolet, _accentMagenta, _accentCyan],
-    begin: Alignment.topLeft,
+    begin: AlignmentDirectional.topStart,
     end: Alignment.bottomRight,
   );
 
-  L10n get t => L10n(widget.lang);
+  L10n get t => L10n(_currentLang);
 
   @override
   void initState() {
     super.initState();
+    _currentLang = widget.lang is AppLang
+        ? (widget.lang as AppLang).code
+        : (widget.lang?.toString() ?? 'en');
     AnalyticsService.instance.trackOnboardingStarted();
-    AnalyticsService.instance.trackOnboardingStep(0, 'welcome');
+    AnalyticsService.instance.trackOnboardingStepViewed(
+      step: 0,
+      stepName: 'welcome',
+    );
   }
 
   @override
@@ -53,12 +63,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _onPageChanged(int index) {
     setState(() => _currentPage = index);
     final names = ['welcome', 'how_it_works', 'profiling', 'privacy_quota'];
-    AnalyticsService.instance.trackOnboardingStep(index, names[index]);
+    AnalyticsService.instance.trackOnboardingStepViewed(
+      step: index,
+      stepName: names[index],
+    );
   }
 
   Future<void> _completeOnboarding() async {
     AnalyticsService.instance.trackOnboardingCompleted(
-      lang: widget.lang == AppLang.fr ? 'fr' : 'en',
+      lang: _currentLang,
       usecase: _selectedProfile,
     );
     final prefs = await SharedPreferences.getInstance();
@@ -95,7 +108,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Top Bar: Skip Button
+            // Top Bar: Brand + Language Selector + Skip Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
@@ -125,19 +138,81 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                     ],
                   ),
-                  if (_currentPage < 3)
-                    TextButton(
-                      onPressed: _skipOnboarding,
-                      child: Text(
-                        t.onboardingSkip,
-                        style: TextStyle(
-                          color: isDark ? Colors.white60 : Colors.black54,
-                          fontWeight: FontWeight.w600,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Language Selector Pill
+                      InkWell(
+                        onTap: () {
+                          LanguageSheet.show(
+                            context,
+                            currentLang: _currentLang,
+                            onLanguageSelected: (newLang) {
+                              setState(() => _currentLang = newLang);
+                              widget.onLangChanged?.call(newLang);
+                            },
+                            source: 'onboarding',
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.08)
+                                : Colors.black.withValues(alpha: 0.05),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: isDark ? Colors.white12 : Colors.black12,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                kLanguages
+                                    .firstWhere(
+                                      (l) => l.code == _currentLang,
+                                      orElse: () => kLanguages.first,
+                                    )
+                                    .flag,
+                                style: const TextStyle(fontSize: 13),
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                _currentLang.toUpperCase(),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark ? Colors.white : Colors.black87,
+                                ),
+                              ),
+                              const SizedBox(width: 2),
+                              Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                size: 16,
+                                color: isDark ? Colors.white60 : Colors.black54,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    )
-                  else
-                    const SizedBox(height: 48),
+                      const SizedBox(width: 8),
+                      if (_currentPage < 3)
+                        TextButton(
+                          onPressed: _skipOnboarding,
+                          child: Text(
+                            t.onboardingSkip,
+                            style: TextStyle(
+                              color: isDark ? Colors.white60 : Colors.black54,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        )
+                      else
+                        const SizedBox(width: 16),
+                    ],
+                  ),
                 ],
               ),
             ),

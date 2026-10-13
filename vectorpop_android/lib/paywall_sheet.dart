@@ -27,7 +27,7 @@ class PaywallSheet extends StatelessWidget {
 
   static const LinearGradient _brandGradient = LinearGradient(
     colors: [_accentViolet, _accentMagenta, _accentCyan],
-    begin: Alignment.topLeft,
+    begin: AlignmentDirectional.topStart,
     end: Alignment.bottomRight,
   );
 
@@ -75,7 +75,7 @@ class PaywallSheet extends StatelessWidget {
                 ),
                 // Bouton Fermer
                 Align(
-                  alignment: Alignment.centerRight,
+                  alignment: AlignmentDirectional.centerEnd,
                   child: IconButton(
                     icon: const Icon(Icons.close_rounded),
                     iconSize: 20,
