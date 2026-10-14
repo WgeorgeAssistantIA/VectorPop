@@ -36,6 +36,8 @@ const DOWNLOAD_EXE = `${GITHUB_REPO}/releases/download/v2.1.0/VectorPop-Setup-2.
 const LINUX_URL = `${GITHUB_REPO}/releases/download/v2.1.0/VectorPop-x86_64.AppImage`;
 const LINUX_TAR_URL = `${GITHUB_REPO}/releases/download/v2.1.0/VectorPop_2.1.0_linux_x86_64.tar.gz`;
 const SNAP_URL = "https://snapcraft.io/vectorpop";
+// Windows CTAs use Microsoft's Store installer: signed by Microsoft, so no SmartScreen warning
+// (our .exe is unsigned and every new version restarts at zero reputation). The .exe stays as a fallback.
 const MS_STORE_URL = "https://get.microsoft.com/installer/download/9MT2XVDXX7DG?referrer=appbadge";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.lafabriknumerique.vectorpop";
 const CHECKOUT_URL = "https://checkout.lafabriknumerique.fr/checkout/buy/6ea17f0e-5d89-4994-a83e-84060447bf67?checkout[discount_code]=LANCEMENT30";
@@ -115,10 +117,10 @@ export const t = {
         "A logo that falls apart the moment you enlarge it? VectorPop retraces it into clean, editable vector — on your own machine. No cloud, no subscription.",
       btnPrimary: "Download free for Windows",
       smartscreenNote:
-        "Windows may show a SmartScreen warning since the app is still new. Click “More info” then “Run anyway” to continue — the installer is safe.",
+        "Installs through the Microsoft Store: signed by Microsoft, so Windows shows no security warning. Prefer the classic .exe? It's under “Also available on”.",
       btnLinux: "Linux (.AppImage)",
       btnLinuxTar: "Linux (.tar.gz)",
-      subText: "Windows installer — no credit card required",
+      subText: "Via the Microsoft Store — signed by Microsoft, no security warning, no credit card",
       badges: [
         "Your images never leave your computer",
         "One-time purchase — no subscription",
@@ -320,10 +322,10 @@ export const t = {
         "Un logo qui s'effondre dès que vous l'agrandissez ? VectorPop le retrace en vectoriel propre et éditable, sur votre machine. Pas de cloud, pas d'abonnement.",
       btnPrimary: "Télécharger gratuitement pour Windows",
       smartscreenNote:
-        "Windows peut afficher un avertissement SmartScreen car l'appli est encore peu téléchargée. Cliquez sur « Informations complémentaires » puis « Exécuter quand même » pour continuer — l'installeur est sûr.",
+        "S'installe via le Microsoft Store : signé par Microsoft, donc aucun avertissement de sécurité Windows. Vous préférez l'installeur .exe classique ? Il est dans « Aussi disponible sur ».",
       btnLinux: "Linux (.AppImage)",
       btnLinuxTar: "Linux (.tar.gz)",
-      subText: "Installeur Windows — pas de carte bancaire requise",
+      subText: "Via le Microsoft Store — signé par Microsoft, sans avertissement de sécurité ni carte bancaire",
       badges: [
         "Vos images ne quittent jamais votre ordinateur",
         "Achat unique — aucun abonnement",
@@ -908,8 +910,8 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
             <MobileNav>{navLinks}</MobileNav>
             <div className="group/win relative hidden sm:inline-flex">
               <a
-                href={DOWNLOAD_EXE}
-                onClick={onExeClick}
+                href={MS_STORE_URL}
+                onClick={trackStoreDownload}
                 className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
               >
                 <Download className="h-4 w-4" /> {c.nav.cta}
@@ -939,8 +941,8 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
             <div className="mt-10 flex justify-center">
               <div className="group/win relative inline-flex">
                 <a
-                  href={DOWNLOAD_EXE}
-                  onClick={onExeClick}
+                  href={MS_STORE_URL}
+                  onClick={trackStoreDownload}
                   className="group inline-flex items-center gap-2 rounded-lg bg-plume px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:shadow-primary/40 hover:brightness-110"
                 >
                   <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
@@ -958,20 +960,12 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
               </span>
               <div className="flex flex-wrap items-center justify-center gap-2.5">
                 <a
-                  href={MS_STORE_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={trackStoreDownload}
-                  aria-label={lang === "fr" ? "Télécharger VectorPop sur le Microsoft Store" : "Get VectorPop from the Microsoft Store"}
-                  className="inline-flex items-center transition-opacity hover:opacity-90"
+                  href={DOWNLOAD_EXE}
+                  onClick={onExeClick}
+                  className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-md border border-border px-3.5 text-xs font-semibold text-foreground transition hover:border-brand hover:text-brand-deep"
                 >
-                  <img
-                    src={`https://get.microsoft.com/images/${lang === "fr" ? "fr" : "en-us"}%20dark.svg`}
-                    width={138}
-                    height={40}
-                    alt={lang === "fr" ? "Disponible sur le Microsoft Store" : "Get it from Microsoft Store"}
-                    className="h-10 w-auto"
-                  />
+                  <Download className="h-3.5 w-3.5" />
+                  {lang === "fr" ? "Installeur .exe" : ".exe installer"}
                 </a>
                 <a
                   href={PLAY_STORE_URL}
@@ -1175,8 +1169,8 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
                 </ul>
                 <div className="group/win relative mt-auto inline-flex mt-8">
                   <a
-                    href={DOWNLOAD_EXE}
-                    onClick={onExeClick}
+                    href={MS_STORE_URL}
+                    onClick={trackStoreDownload}
                     className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-transparent px-6 py-3 text-sm font-semibold transition hover:border-primary/40 hover:bg-card"
                   >
                     <Download className="h-4 w-4" /> {c.pricing.free.cta}
@@ -1413,8 +1407,8 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
               </div>
               <div className="group/win relative inline-flex">
                 <a
-                  href={DOWNLOAD_EXE}
-                  onClick={onExeClick}
+                  href={MS_STORE_URL}
+                  onClick={trackStoreDownload}
                   className="inline-flex items-center justify-center gap-2 rounded-lg bg-plume px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:brightness-110"
                 >
                   <Download className="h-4 w-4" /> {c.big.cta}
@@ -1502,7 +1496,7 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 md:flex-row">
           <Logo />
           <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-            <a href={DOWNLOAD_EXE} onClick={onExeClick} className="hover:text-foreground transition-colors">{c.footer.links.download}</a>
+            <a href={MS_STORE_URL} onClick={trackStoreDownload} className="hover:text-foreground transition-colors">{c.footer.links.download}</a>
             <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer" onClick={trackPlayStoreDownload} className="hover:text-foreground transition-colors">Android</a>
             <a href="#pricing" className="hover:text-foreground transition-colors">{c.footer.links.pricing}</a>
             <a href="#faq" className="hover:text-foreground transition-colors">{c.footer.links.faq}</a>
