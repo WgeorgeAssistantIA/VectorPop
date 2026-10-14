@@ -37,6 +37,18 @@ function VectofixLayout() {
   return <Outlet />;
 }
 
+// Icone d'onglet et image de partage propres a VectoFix pour toute la
+// branche /vectofix : sans elles, l'onglet tombait sur /favicon.ico et les
+// partages (LinkedIn, X) affichaient l'og.png de VectorPop.
 export const Route = createFileRoute("/vectofix")({
+  head: () => ({
+    meta: [
+      { property: "og:image", content: "https://www.vectorpop.fr/vectofix/og.png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { name: "twitter:image", content: "https://www.vectorpop.fr/vectofix/og.png" },
+    ],
+    links: [{ rel: "icon", type: "image/svg+xml", href: "/vectofix/favicon.svg" }],
+  }),
   component: VectofixLayout,
 });

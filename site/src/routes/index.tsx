@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 import { subscribeNewsletter } from "@/lib/api/newsletter.functions";
+import { MobileNav } from "@/components/MobileNav";
 import { getReassuranceVariant, REASSURANCE_COPY, type ReassuranceVariant } from "@/lib/abtest";
 import {
   ArrowRight,
@@ -817,9 +818,25 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
   const [feedbackDismissed, setFeedbackDismissed] = useState(true);
   const [reassuranceVariant, setReassuranceVariant] = useState<ReassuranceVariant>("a");
 
+  const [feedbackReady, setFeedbackReady] = useState(false);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     setFeedbackDismissed(localStorage.getItem("vectorpop-feedback-dismissed") === "1");
+  }, []);
+
+  // Only offer the feedback pill once the visitor has scrolled past the hero,
+  // so it never covers the headline or the download buttons.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onScroll = () => {
+      if (window.scrollY > window.innerHeight * 1.5) {
+        setFeedbackReady(true);
+        window.removeEventListener("scroll", onScroll);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -876,6 +893,15 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
     wand: Wand2,
   };
 
+  const navLinks = (
+    <>
+      <a href="#how" className="hover:text-foreground transition-colors">{c.nav.features}</a>
+      <a href="#pricing" className="hover:text-foreground transition-colors">{c.nav.pricing}</a>
+      <a href="#faq" className="hover:text-foreground transition-colors">{c.nav.faq}</a>
+      <Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link>
+    </>
+  );
+
   return (
     <div className="min-h-screen">
       {/* NAV */}
@@ -904,13 +930,11 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
           <Logo />
           <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-            <a href="#how" className="hover:text-foreground transition-colors">{c.nav.features}</a>
-            <a href="#pricing" className="hover:text-foreground transition-colors">{c.nav.pricing}</a>
-            <a href="#faq" className="hover:text-foreground transition-colors">{c.nav.faq}</a>
-            <Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link>
+            {navLinks}
           </nav>
           <div className="flex items-center gap-3">
             <LangToggle lang={lang} setLang={setLang} />
+            <MobileNav>{navLinks}</MobileNav>
             <div className="group/win relative hidden sm:inline-flex">
               <a
                 href={DOWNLOAD_EXE}
@@ -1552,8 +1576,8 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
         </div>
       </footer>
 
-      {!feedbackDismissed && (
-        <div className="fixed top-32 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 rounded-full border border-border bg-background/95 py-1.5 pl-3 pr-1.5 shadow-lg backdrop-blur-sm animate-in fade-in slide-in-from-top-2">
+      {!feedbackDismissed && feedbackReady && (
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-border bg-background/95 py-1.5 pl-3 pr-1.5 shadow-lg backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2">
           <MessageCircle className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
           <a
             href={`mailto:${CONTACT_EMAIL}?subject=VectorPop%20feedback`}

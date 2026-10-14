@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
+import { MobileNav } from "@/components/MobileNav";
 import {
   ArrowRight,
   Brush,
@@ -936,6 +937,15 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
 
   const c = t[lang];
 
+  const navLinks = (
+    <>
+      <a href="#how" className="hover:text-foreground transition-colors">{c.nav.how}</a>
+      <a href="#pricing" className="hover:text-foreground transition-colors">{c.nav.pricing}</a>
+      <a href="#faq" className="hover:text-foreground transition-colors">{c.nav.faq}</a>
+      <Link to="/vectofix/blog" className="hover:text-foreground transition-colors">Blog</Link>
+    </>
+  );
+
   return (
     <div className="min-h-screen">
       {/* NAV */}
@@ -943,13 +953,11 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
           <Logo />
           <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-            <a href="#how" className="hover:text-foreground transition-colors">{c.nav.how}</a>
-            <a href="#pricing" className="hover:text-foreground transition-colors">{c.nav.pricing}</a>
-            <a href="#faq" className="hover:text-foreground transition-colors">{c.nav.faq}</a>
-            <Link to="/vectofix/blog" className="hover:text-foreground transition-colors">Blog</Link>
+            {navLinks}
           </nav>
           <div className="flex items-center gap-3">
             <LangToggle lang={lang} setLang={setLang} />
+            <MobileNav>{navLinks}</MobileNav>
             <div className="group/win relative hidden sm:inline-flex">
               <a
                 href={DOWNLOAD_EXE}
@@ -1607,7 +1615,7 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
                         <td className="py-3.5 pr-3">{row.privacy}</td>
                         <td className="py-3.5 text-right font-mono font-medium">
                           {row.highlight ? (
-                            <span className="rounded-md bg-[#2563eb] px-2.5 py-1 text-xs font-bold text-white shadow-sm">
+                            <span className="inline-block whitespace-nowrap rounded-md bg-[#2563eb] px-2.5 py-1 text-xs font-bold text-white shadow-sm">
                               {row.price}
                             </span>
                           ) : (
