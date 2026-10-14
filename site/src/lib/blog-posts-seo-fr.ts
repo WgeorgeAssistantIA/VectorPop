@@ -490,7 +490,7 @@ export const seoFrDrafts: Draft[] = [
       },
       {
         type: "p",
-        text: "Vous n'avez qu'un PNG ? [Essayez VectorPop gratuitement](/) : 5 exports SVG inclus, aucun envoi en ligne, et une version Pro à 39 € en paiement unique si vous en avez besoin plus souvent.",
+        text: "Vous n'avez qu'un PNG ? [Essayez VectorPop gratuitement](/) : 5 exports SVG inclus, aucun envoi en ligne, et une version Pro à 39 € en paiement unique si vous en avez besoin plus souvent. Un logo confidentiel ? Voyez comment [vectoriser un logo sans l'envoyer sur Internet](/blog/vectoriser-sans-envoyer-sur-internet).",
       },
     ],
     faq: [
@@ -513,6 +513,70 @@ export const seoFrDrafts: Draft[] = [
       {
         q: "Le logo de mon client est-il en sécurité si je le convertis avec VectorPop ?",
         a: "VectorPop traite le fichier sur votre ordinateur et ne l'envoie pas sur Internet : un logo confidentiel reste sur votre machine.",
+      },
+    ],
+  },
+  {
+    slug: "vectoriser-sans-envoyer-sur-internet",
+    title: "Vectoriser un logo sans l'envoyer sur Internet",
+    metaTitle:
+      "Vectoriser un logo sans l'envoyer sur Internet — VectorPop",
+    description:
+      "Pourquoi certains logos ne doivent pas quitter votre ordinateur, comment vérifier qu'un outil travaille en local et comment vectoriser hors connexion.",
+    date: "2026-10-14",
+    author: "Équipe VectorPop",
+    lang: "fr",
+    content: [
+      {
+        type: "p",
+        text: "Pour vectoriser sans envoyer le fichier sur Internet, utilisez un logiciel installé qui traite l'image sur votre ordinateur. VectorPop fonctionne ainsi : pas de compte, pas d'envoi de vos images, et il marche hors connexion. Vérifiez toujours la politique de confidentialité de l'outil que vous choisissez.",
+      },
+      { type: "h2", text: "Pourquoi éviter l'envoi ?" },
+      {
+        type: "p",
+        text: "Un logo de client non encore lancé, un document interne, une maquette : envoyer le fichier à un service tiers, c'est le confier. Même un service sérieux conserve parfois les fichiers un temps : lisez ses conditions.",
+      },
+      { type: "h2", text: "Comment vérifier qu'un outil est local ?" },
+      {
+        type: "ul",
+        items: [
+          "Il s'installe et fonctionne sans connexion",
+          "Sa politique de confidentialité dit où sont traités les fichiers",
+          "Vous pouvez le tester en coupant le réseau",
+        ],
+      },
+      { type: "h2", text: "Comment faire avec VectorPop ?" },
+      {
+        type: "p",
+        text: "Installez-le, ouvrez le logo, vectorisez, exportez : tout se passe sur la machine. Si vous partez d'un PNG, le [guide complet pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) détaille la méthode. Pour les données personnelles, consultez la [CNIL](https://www.cnil.fr).",
+      },
+      { type: "h2", text: "Limites" },
+      {
+        type: "p",
+        text: "Un outil local ne protège pas d'une fuite depuis votre propre ordinateur : protégez vos fichiers.",
+      },
+      { type: "h2", text: "Conclusion" },
+      {
+        type: "p",
+        text: "Pour un fichier sensible, le local évite la question. Pour préparer le fichier destiné à l'imprimeur, lisez [pourquoi les imprimeurs demandent un fichier vectoriel](/blog/pourquoi-imprimeurs-demandent-fichier-vectoriel).",
+      },
+      {
+        type: "p",
+        text: "Vous n'avez qu'un PNG ? [Essayez VectorPop gratuitement](/) : 5 exports SVG inclus, aucun envoi en ligne, et une version Pro à 39 € en paiement unique si vous en avez besoin plus souvent.",
+      },
+    ],
+    faq: [
+      {
+        q: "VectorPop envoie-t-il mes images ?",
+        a: "Non, le traitement est local.",
+      },
+      {
+        q: "Fonctionne-t-il hors ligne ?",
+        a: "Oui.",
+      },
+      {
+        q: "Faut-il un compte ?",
+        a: "Non.",
       },
     ],
   },

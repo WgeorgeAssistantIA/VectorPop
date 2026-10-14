@@ -461,7 +461,7 @@ export const seoEnDrafts: Draft[] = [
       },
       {
         type: "p",
-        text: "Only have a PNG? [Try VectorPop for free](/): 5 SVG exports included, nothing uploaded online, and a Pro version at €39 as a one-time payment if you need it more often.",
+        text: "Only have a PNG? [Try VectorPop for free](/): 5 SVG exports included, nothing uploaded online, and a Pro version at €39 as a one-time payment if you need it more often. A confidential logo? See how to [vectorize a logo without uploading it to the internet](/blog/vectorize-without-uploading-to-the-internet).",
       },
     ],
     faq: [
@@ -484,6 +484,70 @@ export const seoEnDrafts: Draft[] = [
       {
         q: "Is my client's logo safe if I convert it with VectorPop?",
         a: "VectorPop processes the file on your computer and does not send it over the internet, so a confidential logo stays on your machine.",
+      },
+    ],
+  },
+  {
+    slug: "vectorize-without-uploading-to-the-internet",
+    title: "Vectorize a Logo Without Uploading It to the Internet",
+    metaTitle:
+      "Vectorize a Logo Without Uploading It — VectorPop",
+    description:
+      "Why some logos should not leave your computer, how to check that a tool works locally and how to vectorize offline.",
+    date: "2026-10-14",
+    author: "VectorPop Team",
+    lang: "en",
+    content: [
+      {
+        type: "p",
+        text: "To vectorize without sending the file over the internet, use installed software that processes the image on your computer. VectorPop works this way: no account, no upload of your images, and it works offline. Always check the privacy policy of whichever tool you choose.",
+      },
+      { type: "h2", text: "Why avoid uploading?" },
+      {
+        type: "p",
+        text: "A client's logo not yet launched, an internal document, a mock-up: sending the file to a third-party service means entrusting it. Even a serious service sometimes keeps files for a while: read its terms.",
+      },
+      { type: "h2", text: "How do you check that a tool is local?" },
+      {
+        type: "ul",
+        items: [
+          "It installs and works without a connection",
+          "Its privacy policy says where files are processed",
+          "You can test it by cutting the network",
+        ],
+      },
+      { type: "h2", text: "How to do it with VectorPop?" },
+      {
+        type: "p",
+        text: "Install it, open the logo, vectorize, export: it all happens on the machine. If you start from a PNG, the [complete guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide) covers the method. For personal data, see the [CNIL](https://www.cnil.fr) if you are in France.",
+      },
+      { type: "h2", text: "Limits" },
+      {
+        type: "p",
+        text: "A local tool does not protect against a leak from your own computer: protect your files.",
+      },
+      { type: "h2", text: "Conclusion" },
+      {
+        type: "p",
+        text: "For a sensitive file, local avoids the question. To prepare the file for your printer, read [why printers ask for vector files](/blog/why-printers-ask-for-vector-files).",
+      },
+      {
+        type: "p",
+        text: "Only have a PNG? [Try VectorPop for free](/): 5 SVG exports included, nothing uploaded online, and a Pro version at €39 as a one-time payment if you need it more often.",
+      },
+    ],
+    faq: [
+      {
+        q: "Does VectorPop send my images?",
+        a: "No, processing is local.",
+      },
+      {
+        q: "Does it work offline?",
+        a: "Yes.",
+      },
+      {
+        q: "Do I need an account?",
+        a: "No.",
       },
     ],
   },

@@ -128,7 +128,7 @@ export const posts: BlogPost[] = [
       { type: "h2", text: "Going further" },
       {
         type: "p",
-        text: "Vectorization is not limited to logos. Our [complete guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide) covers the four methods and the settings that matter, and if your source is a JPG, read how to [convert a JPG to SVG](/blog/convert-jpg-to-svg). Wondering why your printer insists on vector? See [why printers ask for a vector file](/blog/why-printers-ask-for-vector-files).",
+        text: "Vectorization is not limited to logos. Our [complete guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide) covers the four methods and the settings that matter, and if your source is a JPG, read how to [convert a JPG to SVG](/blog/convert-jpg-to-svg). Wondering why your printer insists on vector? See [why printers ask for a vector file](/blog/why-printers-ask-for-vector-files). A confidential logo? See how to [vectorize a logo without uploading it to the internet](/blog/vectorize-without-uploading-to-the-internet).",
       },
     ],
   }),
@@ -342,7 +342,7 @@ export const posts: BlogPost[] = [
       { type: "h2", text: "Pour aller plus loin" },
       {
         type: "p",
-        text: "La vectorisation ne se limite pas aux logos. Notre [guide complet pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) détaille les quatre méthodes et les réglages qui comptent, et si votre source est un JPG, voyez comment [convertir un JPG en SVG](/blog/convertir-jpg-en-svg). Vous vous demandez pourquoi votre imprimeur insiste ? Lisez [pourquoi les imprimeurs demandent un fichier vectoriel](/blog/pourquoi-imprimeurs-demandent-fichier-vectoriel).",
+        text: "La vectorisation ne se limite pas aux logos. Notre [guide complet pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) détaille les quatre méthodes et les réglages qui comptent, et si votre source est un JPG, voyez comment [convertir un JPG en SVG](/blog/convertir-jpg-en-svg). Vous vous demandez pourquoi votre imprimeur insiste ? Lisez [pourquoi les imprimeurs demandent un fichier vectoriel](/blog/pourquoi-imprimeurs-demandent-fichier-vectoriel). Un logo confidentiel ? Voyez comment [vectoriser un logo sans l'envoyer sur Internet](/blog/vectoriser-sans-envoyer-sur-internet).",
       },
     ],
   }),
