@@ -1052,6 +1052,30 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
               })}
             </div>
           </Reveal>
+          {/* The heatmap is VectoFix's strongest argument: show it right away, not 4 sections down */}
+          <Reveal delay={240}>
+            <div className="mx-auto mt-12 grid max-w-3xl grid-cols-3 gap-2 sm:gap-4">
+              {[
+                { src: "/vectofix/demo/step-01-original.webp", fr: "Image d'origine", en: "Original image" },
+                { src: "/vectofix/demo/step-03-damage-heatmap.webp", fr: "Carte des écarts", en: "Damage heatmap" },
+                { src: "/vectofix/demo/step-04-surgical-repair.webp", fr: "Zone réparée", en: "Repaired area" },
+              ].map((step, i) => (
+                <figure key={step.src} className="relative">
+                  <img
+                    src={step.src}
+                    alt={lang === "fr" ? step.fr : step.en}
+                    width={946}
+                    height={946}
+                    className={`aspect-square w-full rounded-xl border object-cover ${i === 1 ? "border-red-500/50 shadow-lg shadow-red-900/30" : "border-border"}`}
+                  />
+                  <figcaption className={`mt-2 text-[11px] font-semibold uppercase tracking-wider sm:text-xs ${i === 1 ? "text-red-300" : i === 2 ? "text-[#60a5fa]" : "text-muted-foreground"}`}>
+                    {i > 0 && <span aria-hidden="true">→ </span>}
+                    {lang === "fr" ? step.fr : step.en}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -1125,7 +1149,7 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
                 controls
                 playsInline
                 preload="metadata"
-                poster="/vectofix/vectofix-demo-poster.png"
+                poster={lang === "fr" ? "/vectofix/vectofix-demo-poster-fr.jpg" : "/vectofix/vectofix-demo-poster-en.jpg"}
                 className="aspect-video w-full object-cover"
               >
                 <source
@@ -1348,195 +1372,6 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
                       <p className="mt-1 text-xs font-medium text-[#60a5fa]">{p.sub}</p>
                       <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
                     </div>
-                  </div>
-                </Reveal>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* PRODUCTION READINESS / FIDELITY & NODE METRICS */}
-      <section className="border-t border-border/50 py-24 bg-card/20">
-        <div className="mx-auto max-w-5xl px-6">
-          <Reveal>
-            <div className="rounded-3xl border border-border/80 bg-gradient-to-br from-card via-card/90 to-blue-950/20 p-8 md:p-12 shadow-2xl">
-              <div className="max-w-3xl">
-                <span className="inline-block rounded-full bg-[#2563eb]/15 px-3.5 py-1 text-xs font-semibold text-[#60a5fa] border border-[#2563eb]/30 mb-4">
-                  {c.readiness.badge}
-                </span>
-                <h3 className="text-2xl font-bold tracking-tight md:text-3xl text-foreground leading-snug">
-                  {c.readiness.title}
-                </h3>
-                <p className="mt-3 text-sm text-[#60a5fa] font-medium leading-relaxed">
-                  {c.readiness.subtitle}
-                </p>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  {c.readiness.text}
-                </p>
-              </div>
-
-              {/* Visual Dual Gauges & Metrics */}
-              <div className="mt-10 grid gap-6 sm:grid-cols-3 border-t border-border/60 pt-8">
-                {/* Metric 1: Visual Fidelity */}
-                <div className="rounded-2xl border border-border/60 bg-background/60 p-6 flex flex-col justify-between shadow-sm">
-                  <div>
-                    <span className="text-[11px] font-bold text-[#60a5fa] uppercase tracking-wider">{c.readiness.metrics[0].note}</span>
-                    <div className="mt-2 text-4xl font-black text-foreground">{c.readiness.metrics[0].value}</div>
-                    <div className="mt-2 h-2 w-full rounded-full bg-muted overflow-hidden">
-                      <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-emerald-400 w-[99.4%]" />
-                    </div>
-                    <div className="mt-3 text-sm font-semibold text-foreground">{c.readiness.metrics[0].label}</div>
-                    <div className="mt-1 text-xs text-muted-foreground">{c.readiness.metrics[0].sub}</div>
-                  </div>
-                </div>
-
-                {/* Metric 2: Streamlined Node Count */}
-                <div className="rounded-2xl border border-border/60 bg-background/60 p-6 flex flex-col justify-between shadow-sm">
-                  <div>
-                    <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">{c.readiness.metrics[1].note}</span>
-                    <div className="mt-2 text-4xl font-black text-emerald-400">{c.readiness.metrics[1].value}</div>
-                    <div className="mt-2 flex items-center gap-1.5">
-                      <span className="inline-block rounded-md bg-emerald-500/20 px-2 py-0.5 text-[11px] font-bold text-emerald-300 border border-emerald-500/30">
-                        -77% de nœuds parasites
-                      </span>
-                    </div>
-                    <div className="mt-3 text-sm font-semibold text-foreground">{c.readiness.metrics[1].label}</div>
-                    <div className="mt-1 text-xs text-muted-foreground">{c.readiness.metrics[1].sub}</div>
-                  </div>
-                </div>
-
-                {/* Metric 3: Watertight Closed Paths */}
-                <div className="rounded-2xl border border-border/60 bg-background/60 p-6 flex flex-col justify-between shadow-sm">
-                  <div>
-                    <span className="text-[11px] font-bold text-blue-400 uppercase tracking-wider">{c.readiness.metrics[2].note}</span>
-                    <div className="mt-2 text-4xl font-black text-blue-400">{c.readiness.metrics[2].value}</div>
-                    <div className="mt-2 flex items-center gap-1.5">
-                      <span className="inline-block rounded-md bg-blue-500/20 px-2 py-0.5 text-[11px] font-bold text-blue-300 border border-blue-500/30">
-                        Watertight / Étanche
-                      </span>
-                    </div>
-                    <div className="mt-3 text-sm font-semibold text-foreground">{c.readiness.metrics[2].label}</div>
-                    <div className="mt-1 text-xs text-muted-foreground">{c.readiness.metrics[2].sub}</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Summary Insight */}
-              <div className="mt-6 rounded-xl border border-[#2563eb]/20 bg-[#2563eb]/5 p-4 text-xs text-muted-foreground leading-relaxed">
-                💡 <span className="text-foreground font-semibold">{c.readiness.insight}</span>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ECOSYSTEM / BRAND ARCHITECTURE & FABRICATION TOOLCHAIN */}
-      <section className="border-t border-border/50 py-24 bg-gradient-to-b from-card/10 via-background to-card/10">
-        <div className="mx-auto max-w-6xl px-6 text-center">
-          <Reveal>
-            <span className="inline-block rounded-full bg-[#2563eb]/10 px-3.5 py-1 text-xs font-semibold text-[#60a5fa] border border-[#2563eb]/20 mb-4">
-              {c.ecosystem.badge}
-            </span>
-            <h3 className="text-3xl font-bold tracking-tight md:text-4xl">{c.ecosystem.title}</h3>
-            <p className="mx-auto mt-3 max-w-2xl text-base text-muted-foreground">{c.ecosystem.subtitle}</p>
-
-            {/* 3-Step Connected Triptyque Diagram */}
-            <div className="mt-14 grid gap-6 md:grid-cols-3 relative">
-              {c.ecosystem.pipeline.map((item, idx) => {
-                const isVectoFix = "isCurrent" in item && item.isCurrent;
-                return (
-                  <div
-                    key={item.step}
-                    className={`relative rounded-2xl border p-7 text-left flex flex-col justify-between transition-all ${
-                      isVectoFix
-                        ? "border-[#2563eb] bg-gradient-to-b from-[#2563eb]/15 to-card ring-2 ring-[#2563eb]/50 shadow-2xl shadow-blue-900/30 scale-[1.02] z-10"
-                        : "border-border bg-card/60 hover:border-border/80"
-                    }`}
-                  >
-                    {isVectoFix && (
-                      <span className="absolute -top-3 right-6 rounded-full bg-[#2563eb] px-3 py-0.5 text-[11px] font-bold text-white shadow-md">
-                        {lang === "fr" ? "Atelier de contrôle" : "Quality Control Hub"}
-                      </span>
-                    )}
-                    <div>
-                      <span className="text-[11px] font-mono font-bold tracking-wider text-[#60a5fa]">
-                        {item.step}
-                      </span>
-                      <h4 className="mt-2 text-xl font-bold text-foreground">{item.title}</h4>
-                      <p className="text-xs font-semibold text-muted-foreground mt-0.5">{item.subtitle}</p>
-                      <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
-                    </div>
-
-                    <div className="mt-6 pt-4 border-t border-border/50 flex items-center justify-between text-xs font-semibold">
-                      <span className={isVectoFix ? "text-[#60a5fa]" : "text-muted-foreground"}>{item.action}</span>
-                      {idx < 2 && (
-                        <div className="hidden md:flex items-center text-[#60a5fa] font-bold gap-1">
-                          <span>➔</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Anti-Cannibalization Reassurance Box */}
-            <div className="mt-10 mx-auto max-w-4xl rounded-2xl border border-border/80 bg-card/70 p-6 text-left shadow-lg backdrop-blur-sm">
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2563eb]/15 text-[#60a5fa] font-bold">
-                  ✓
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-foreground">
-                    {lang === "fr" ? "Pourquoi deux outils complémentaires ?" : "Why two complementary tools?"}
-                  </h4>
-                  <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed sm:text-sm">
-                    {c.ecosystem.cannibalizationNote}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Fabrication Compatibility Badges */}
-            <div className="mt-12">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-4">
-                {c.ecosystem.toolsTitle}
-              </p>
-              <div className="flex flex-wrap items-center justify-center gap-3">
-                {c.ecosystem.tools.map((tool) => (
-                  <span
-                    key={tool}
-                    className="rounded-lg border border-border bg-card/90 px-4 py-2 text-xs font-medium text-foreground shadow-sm hover:border-[#2563eb]/50 transition"
-                  >
-                    {tool}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* PILLARS */}
-      <section className="border-t border-border/50 py-24">
-        <div className="mx-auto max-w-6xl px-6">
-          <Reveal>
-            <div className="mb-16 text-center">
-              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">{c.pillars.title}</h2>
-            </div>
-          </Reveal>
-          <div className="grid gap-6 md:grid-cols-3">
-            {c.pillars.cards.map((card, i) => {
-              const Icon = card.icon;
-              return (
-                <Reveal key={card.title} delay={i * 100}>
-                  <div className="flex h-full flex-col rounded-2xl border border-border bg-card/50 p-8">
-                    <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#2563eb]/15 ring-1 ring-[#2563eb]/30">
-                      <Icon className="h-7 w-7 text-[#60a5fa]" />
-                    </div>
-                    <h3 className="text-lg font-semibold">{card.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">{card.desc}</p>
                   </div>
                 </Reveal>
               );
