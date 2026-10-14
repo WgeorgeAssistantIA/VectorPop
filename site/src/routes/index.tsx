@@ -1123,11 +1123,22 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
           <div className="grid gap-6 md:grid-cols-3">
             {[ImageIcon, Sliders, CheckCircle2].map((Icon, i) => (
               <Reveal key={i} delay={i * 100}>
-                <div className="flex flex-col items-center rounded-2xl border border-border bg-card/50 p-8 text-center transition hover:border-primary/40 hover:bg-card">
-                  <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15 ring-1 ring-primary/30">
-                    <Icon className="h-7 w-7 text-primary" />
+                <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card/50 transition hover:border-primary/40 hover:bg-card">
+                  {/* Real app screenshot for each step (public/steps/step-N.webp) */}
+                  <img
+                    src={`/steps/step-${i + 1}.webp`}
+                    alt={c.pain.steps[i]}
+                    width={960}
+                    height={600}
+                    loading="lazy"
+                    className="aspect-[16/10] w-full border-b border-border object-cover"
+                  />
+                  <div className="flex items-start gap-3 p-6">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 ring-1 ring-primary/30">
+                      <Icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <p className="text-sm font-medium leading-relaxed">{c.pain.steps[i]}</p>
                   </div>
-                  <p className="text-sm font-medium leading-relaxed">{c.pain.steps[i]}</p>
                 </div>
               </Reveal>
             ))}
