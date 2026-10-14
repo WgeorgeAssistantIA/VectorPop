@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 import { MobileNav } from "@/components/MobileNav";
+import { InstallHelp } from "@/components/InstallHelp";
 import {
   ArrowRight,
   Brush,
@@ -937,6 +938,13 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
 
   const c = t[lang];
 
+  // Installer isn't code-signed: show the Edge/SmartScreen steps right after the click
+  const [installHelp, setInstallHelp] = useState(false);
+  const onExeClick = () => {
+    trackDownload();
+    setInstallHelp(true);
+  };
+
   const navLinks = (
     <>
       <a href="#how" className="hover:text-foreground transition-colors">{c.nav.how}</a>
@@ -961,7 +969,7 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
             <div className="group/win relative hidden sm:inline-flex">
               <a
                 href={DOWNLOAD_EXE}
-                onClick={trackDownload}
+                onClick={onExeClick}
                 className="inline-flex items-center gap-2 rounded-md bg-[#2563eb] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#3b76f0]"
               >
                 <Download className="h-4 w-4" /> {c.nav.cta}
@@ -1004,7 +1012,7 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
               <div className="group/win relative inline-flex">
                 <a
                   href={DOWNLOAD_EXE}
-                  onClick={trackDownload}
+                  onClick={onExeClick}
                   className="group inline-flex items-center gap-2 rounded-lg bg-[#2563eb] px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 transition hover:brightness-110"
                 >
                   <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
@@ -1646,7 +1654,7 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
               <div className="group/win relative inline-flex">
                 <a
                   href={DOWNLOAD_EXE}
-                  onClick={trackDownload}
+                  onClick={onExeClick}
                   className="inline-flex items-center gap-2 rounded-lg bg-[#2563eb] px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 transition hover:brightness-110"
                 >
                   <Download className="h-4 w-4" /> {c.big.cta}
@@ -1702,7 +1710,7 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 md:flex-row">
           <Logo />
           <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-            <a href={DOWNLOAD_EXE} onClick={trackDownload} className="hover:text-foreground transition-colors">{c.footer.links.download}</a>
+            <a href={DOWNLOAD_EXE} onClick={onExeClick} className="hover:text-foreground transition-colors">{c.footer.links.download}</a>
             <a href="#pricing" className="hover:text-foreground transition-colors">{c.footer.links.pricing}</a>
             <a href="#faq" className="hover:text-foreground transition-colors">{c.footer.links.faq}</a>
             <Link to="/vectofix/blog" className="hover:text-foreground transition-colors">Blog</Link>
@@ -1759,6 +1767,9 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
           </a>
         </div>
       </footer>
+      {installHelp && (
+        <InstallHelp lang={lang} storeUrl={MS_STORE_URL} onClose={() => setInstallHelp(false)} />
+      )}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { type MouseEvent, useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 import { subscribeNewsletter } from "@/lib/api/newsletter.functions";
 import { MobileNav } from "@/components/MobileNav";
+import { InstallHelp } from "@/components/InstallHelp";
 import { getReassuranceVariant, REASSURANCE_COPY, type ReassuranceVariant } from "@/lib/abtest";
 import {
   ArrowRight,
@@ -690,51 +691,10 @@ function CompareCell({ status, note }: { status: string; note: string }) {
 }
 
 // --- Demo avant / apres ------------------------------------------------------
-// Une etoile definie une fois en polygone, rendue de deux facons dans le meme
-// viewBox : a gauche echantillonnee sur une grille grossiere (l'escalier d'un
-// PNG agrandi), a droite le polygone lui-meme (le SVG). Le « avant » est donc
-// un vrai sous-echantillonnage calcule, pas un dessin qui imite l'effet — et
-// rien a telecharger, ce qui est la moindre des choses pour un outil qui
-// fabrique des SVG.
-
-const VB = 200;
-const STAR: Array<[number, number]> = Array.from({ length: 10 }, (_, i) => {
-  const angle = (Math.PI / 5) * i - Math.PI / 2;
-  const radius = i % 2 ? 34 : 80;
-  return [100 + radius * Math.cos(angle), 100 + radius * Math.sin(angle)];
-});
-const STAR_POINTS = STAR.map(([x, y]) => `${x.toFixed(2)},${y.toFixed(2)}`).join(" ");
-
-function inStar(x: number, y: number): boolean {
-  let inside = false;
-  for (let i = 0, j = STAR.length - 1; i < STAR.length; j = i++) {
-    const [xi, yi] = STAR[i];
-    const [xj, yj] = STAR[j];
-    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
-  }
-  return inside;
-}
-
-const GRID = 16;
-const CELL = VB / GRID;
-const PIXELS: Array<[number, number]> = [];
-for (let row = 0; row < GRID; row++) {
-  for (let col = 0; col < GRID; col++) {
-    if (inStar(col * CELL + CELL / 2, row * CELL + CELL / 2)) PIXELS.push([col * CELL, row * CELL]);
-  }
-}
-
-function PlumeGradient({ id }: { id: string }) {
-  return (
-    <defs>
-      <linearGradient id={id} x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stopColor="#7A52F5" />
-        <stop offset="55%" stopColor="#C92BC0" />
-        <stop offset="100%" stopColor="#3FD7FB" />
-      </linearGradient>
-    </defs>
-  );
-}
+// Un vrai cas : l'icone d'exemple livree avec l'appli. A gauche le PNG reduit a
+// 28 px puis agrandi en pixels francs (le logo « recupere sur WhatsApp »), a
+// droite le SVG que VectorPop en tire (public/demo/, genere depuis
+// assets/samples/sample_icon.*). Remplace l'ancienne etoile de demonstration.
 
 function TraceDemo({ lang }: { lang: Lang }) {
   const c = t[lang].demo;
@@ -772,23 +732,26 @@ function TraceDemo({ lang }: { lang: Lang }) {
           dragging.current = true;
           moveTo(e.clientX);
         }}
-        className="relative aspect-square w-full cursor-ew-resize touch-none select-none overflow-hidden rounded-2xl border border-border bg-card/60"
+        className="relative aspect-square w-full cursor-ew-resize touch-none select-none overflow-hidden rounded-2xl border border-border bg-card"
       >
-        {/* AVANT : la grille grossiere */}
-        <svg viewBox={`0 0 ${VB} ${VB}`} className="absolute inset-0 h-full w-full" aria-hidden="true">
-          <PlumeGradient id="plume-raster" />
-          {PIXELS.map(([x, y], i) => (
-            <rect key={i} x={x} y={y} width={CELL} height={CELL} fill="url(#plume-raster)" opacity={0.85} />
-          ))}
-        </svg>
+        {/* AVANT : le PNG basse definition, agrandi sans lissage */}
+        <img
+          src="/demo/logo-raster.png"
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+          className="absolute inset-[12%] h-[76%] w-[76%]"
+          style={{ imageRendering: "pixelated" }}
+        />
 
-        {/* APRES : le trace vectoriel, revele par le curseur */}
-        <div className="absolute inset-0" style={{ clipPath: `inset(0 0 0 ${pos}%)` }}>
-          <svg viewBox={`0 0 ${VB} ${VB}`} className="h-full w-full" role="img">
-            <title>{c.after}</title>
-            <PlumeGradient id="plume-vector" />
-            <polygon points={STAR_POINTS} fill="url(#plume-vector)" />
-          </svg>
+        {/* APRES : le SVG produit par VectorPop, revele par le curseur */}
+        <div className="absolute inset-0 bg-card" style={{ clipPath: `inset(0 0 0 ${pos}%)` }}>
+          <img
+            src="/demo/logo-vector.svg"
+            alt={c.after}
+            draggable={false}
+            className="absolute inset-[12%] h-[76%] w-[76%]"
+          />
         </div>
 
         {/* Poignee */}
@@ -888,6 +851,13 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
 
   const c = t[lang];
 
+  // Installer isn't code-signed: show the Edge/SmartScreen steps right after the click
+  const [installHelp, setInstallHelp] = useState(false);
+  const onExeClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    trackDownload(e);
+    setInstallHelp(true);
+  };
+
   const pillarIcons: Record<string, React.ElementType> = {
     lock: Lock,
     payment: CreditCard,
@@ -939,7 +909,7 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
             <div className="group/win relative hidden sm:inline-flex">
               <a
                 href={DOWNLOAD_EXE}
-                onClick={trackDownload}
+                onClick={onExeClick}
                 className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
               >
                 <Download className="h-4 w-4" /> {c.nav.cta}
@@ -970,7 +940,7 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
               <div className="group/win relative inline-flex">
                 <a
                   href={DOWNLOAD_EXE}
-                  onClick={trackDownload}
+                  onClick={onExeClick}
                   className="group inline-flex items-center gap-2 rounded-lg bg-plume px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:shadow-primary/40 hover:brightness-110"
                 >
                   <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
@@ -1206,7 +1176,7 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
                 <div className="group/win relative mt-auto inline-flex mt-8">
                   <a
                     href={DOWNLOAD_EXE}
-                    onClick={trackDownload}
+                    onClick={onExeClick}
                     className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-transparent px-6 py-3 text-sm font-semibold transition hover:border-primary/40 hover:bg-card"
                   >
                     <Download className="h-4 w-4" /> {c.pricing.free.cta}
@@ -1330,7 +1300,52 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
             </div>
           </Reveal>
           <Reveal delay={80}>
-            <div className="overflow-x-auto rounded-2xl border border-border">
+            {/* Phones: one card per tool instead of a 640px-wide table that scrolls sideways */}
+            <div className="space-y-3 md:hidden">
+              {c.compare.rows.map((row, i) => (
+                <div
+                  key={i}
+                  className={`rounded-2xl border p-4 ${row.highlight ? "border-primary/60 bg-primary/10" : "border-border bg-card/40"}`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-semibold" translate="no">{row.name}</span>
+                        {row.badge && (
+                          <span className="rounded-md bg-primary px-2 py-0.5 text-[10px] font-medium text-primary-foreground">
+                            {row.badge}
+                          </span>
+                        )}
+                      </div>
+                      {row.sub && (
+                        <span className={`mt-0.5 block text-xs ${row.highlight ? "text-primary" : "text-muted-foreground"}`}>
+                          {row.sub}
+                        </span>
+                      )}
+                    </div>
+                    <span className={`shrink-0 text-sm ${row.highlight ? "font-semibold text-primary" : "text-muted-foreground"}`}>
+                      {row.price}
+                    </span>
+                  </div>
+                  <dl className="mt-3 grid grid-cols-3 gap-2 text-center text-xs">
+                    {[
+                      { label: c.compare.cols.local, s: row.local, n: row.localNote },
+                      { label: c.compare.cols.noSub, s: row.noSub, n: row.noSubNote },
+                      { label: c.compare.cols.simple, s: row.simple, n: row.simpleNote },
+                    ].map((cell) => (
+                      <div key={cell.label} className="rounded-lg bg-background/40 px-1 py-2">
+                        <dt className="text-muted-foreground">{cell.label}</dt>
+                        <dd className="mt-1 flex flex-col items-center">
+                          <StatusIcon s={cell.s} />
+                          {cell.n && <span className="mt-0.5 text-[11px] leading-tight text-muted-foreground">{cell.n}</span>}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              ))}
+            </div>
+            <div className="hidden overflow-x-auto rounded-2xl border border-border md:block">
               <table className="w-full min-w-[640px] text-sm">
                 <thead>
                   <tr className="border-b border-border bg-card/80">
@@ -1399,7 +1414,7 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
               <div className="group/win relative inline-flex">
                 <a
                   href={DOWNLOAD_EXE}
-                  onClick={trackDownload}
+                  onClick={onExeClick}
                   className="inline-flex items-center justify-center gap-2 rounded-lg bg-plume px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:brightness-110"
                 >
                   <Download className="h-4 w-4" /> {c.big.cta}
@@ -1487,7 +1502,7 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 md:flex-row">
           <Logo />
           <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-            <a href={DOWNLOAD_EXE} onClick={trackDownload} className="hover:text-foreground transition-colors">{c.footer.links.download}</a>
+            <a href={DOWNLOAD_EXE} onClick={onExeClick} className="hover:text-foreground transition-colors">{c.footer.links.download}</a>
             <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer" onClick={trackPlayStoreDownload} className="hover:text-foreground transition-colors">Android</a>
             <a href="#pricing" className="hover:text-foreground transition-colors">{c.footer.links.pricing}</a>
             <a href="#faq" className="hover:text-foreground transition-colors">{c.footer.links.faq}</a>
@@ -1591,7 +1606,7 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
         </div>
       </footer>
 
-      {!feedbackDismissed && feedbackReady && (
+      {!feedbackDismissed && feedbackReady && !installHelp && (
         <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full border border-border bg-background/95 py-1.5 pl-3 pr-1.5 shadow-lg backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2">
           <MessageCircle className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
           <a
@@ -1610,6 +1625,9 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
             <X className="h-3.5 w-3.5" />
           </button>
         </div>
+      )}
+      {installHelp && (
+        <InstallHelp lang={lang} storeUrl={MS_STORE_URL} onClose={() => setInstallHelp(false)} />
       )}
     </div>
   );
