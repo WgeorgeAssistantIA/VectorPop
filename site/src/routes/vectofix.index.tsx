@@ -34,7 +34,10 @@ const DOWNLOAD_EXE = `${GITHUB_REPO}/releases/download/v1.0.3/VectoFix-Setup-1.0
 const CHECKOUT_URL =
   "https://checkout.lafabriknumerique.fr/checkout/buy/88a6adc5-28e1-43f1-9b15-99093a4dc0d4";
 const CONTACT_EMAIL = "contact@lafabriknumerique.fr";
-const MS_STORE_URL = "https://get.microsoft.com/installer/download/9NR382QJ8SBK?referrer=appbadge";
+// Windows CTAs go to the Microsoft Store: the Store install is signed by Microsoft, so no
+// SmartScreen warning (our .exe is unsigned). Microsoft has no web installer for VectoFix
+// (get.microsoft.com/installer redirects to ms-windows-store://), hence the web listing.
+const MS_STORE_URL = "https://apps.microsoft.com/detail/9NR382QJ8SBK?mode=direct";
 
 function trackDownload() {
   track("vectofix_download", { platform: "windows" });
@@ -73,7 +76,7 @@ export const t = {
         "Did your vectorizer round off sharp angles, warp small text, or explode node counts? Don't spend 45 minutes manually retracing in Illustrator: VectoFix measures line drift pixel by pixel and repairs only the damaged zones — with a precision brush or 1-click AI.",
       btnPrimary: "Try it on your own file — free",
       smartscreenNote:
-        "Windows may show a SmartScreen warning since the app is still new. Click “More info” then “Run anyway” to continue — the installer is safe.",
+        "Opens VectoFix in the Microsoft Store: signed by Microsoft, so Windows shows no security warning. The classic .exe installer is right next to it.",
       subText: "Try everything for free. Export 3 production-ready HD files — no account, no credit card.",
       useCases: [
         { icon: "📱", label: "Low-res WhatsApp client logos & web captures" },
@@ -404,7 +407,7 @@ export const t = {
         "Votre vectoriseur a arrondi un angle, déformé un texte ou généré trop de nœuds ? Ne perdez plus 45 minutes à redessiner à la plume : VectoFix mesure les dérives au pixel près et répare chirurgicalement la zone abîmée — au pinceau ou en 1 clic IA.",
       btnPrimary: "Testez sur votre propre fichier — gratuit",
       smartscreenNote:
-        "Windows peut afficher un avertissement SmartScreen car l'appli est encore peu téléchargée. Cliquez sur « Informations complémentaires » puis « Exécuter quand même » pour continuer — l'installeur est sûr.",
+        "Ouvre VectoFix dans le Microsoft Store : signé par Microsoft, donc aucun avertissement de sécurité Windows. L'installeur .exe classique est juste à côté.",
       subText: "Testez tout gratuitement. Exportez 3 fichiers HD prêts pour la production — sans compte ni carte bancaire.",
       useCases: [
         { icon: "📱", label: "Logos clients WhatsApp basse résolution & captures d'écran" },
@@ -968,8 +971,10 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
             <MobileNav>{navLinks}</MobileNav>
             <div className="group/win relative hidden sm:inline-flex">
               <a
-                href={DOWNLOAD_EXE}
-                onClick={onExeClick}
+                href={MS_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={trackStoreDownload}
                 className="inline-flex items-center gap-2 rounded-md bg-[#2563eb] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#3b76f0]"
               >
                 <Download className="h-4 w-4" /> {c.nav.cta}
@@ -1011,8 +1016,10 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <div className="group/win relative inline-flex">
                 <a
-                  href={DOWNLOAD_EXE}
-                  onClick={onExeClick}
+                  href={MS_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={trackStoreDownload}
                   className="group inline-flex items-center gap-2 rounded-lg bg-[#2563eb] px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 transition hover:brightness-110"
                 >
                   <Download className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
@@ -1023,20 +1030,12 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
                 </div>
               </div>
               <a
-                href={MS_STORE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={trackStoreDownload}
-                aria-label={lang === "fr" ? "Télécharger VectoFix sur le Microsoft Store" : "Get VectoFix from the Microsoft Store"}
-                className="inline-flex items-center transition-opacity hover:opacity-90"
+                href={DOWNLOAD_EXE}
+                onClick={onExeClick}
+                className="inline-flex h-[52px] items-center gap-2 rounded-lg border border-border px-5 text-sm font-semibold transition hover:border-[#2563eb]/60 hover:bg-card"
               >
-                <img
-                  src="https://get.microsoft.com/images/en-US%20dark.svg"
-                  width={200}
-                  height={52}
-                  alt={lang === "fr" ? "Disponible sur le Microsoft Store" : "Get it from Microsoft Store"}
-                  className="h-[52px] w-auto"
-                />
+                <Download className="h-4 w-4" />
+                {lang === "fr" ? "Installeur .exe" : ".exe installer"}
               </a>
             </div>
             <p className="mt-3 text-xs text-muted-foreground">{c.hero.subText}</p>
@@ -1488,8 +1487,10 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <div className="group/win relative inline-flex">
                 <a
-                  href={DOWNLOAD_EXE}
-                  onClick={onExeClick}
+                  href={MS_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={trackStoreDownload}
                   className="inline-flex items-center gap-2 rounded-lg bg-[#2563eb] px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 transition hover:brightness-110"
                 >
                   <Download className="h-4 w-4" /> {c.big.cta}
@@ -1545,7 +1546,7 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 md:flex-row">
           <Logo />
           <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-            <a href={DOWNLOAD_EXE} onClick={onExeClick} className="hover:text-foreground transition-colors">{c.footer.links.download}</a>
+            <a href={MS_STORE_URL} target="_blank" rel="noopener noreferrer" onClick={trackStoreDownload} className="hover:text-foreground transition-colors">{c.footer.links.download}</a>
             <a href="#pricing" className="hover:text-foreground transition-colors">{c.footer.links.pricing}</a>
             <a href="#faq" className="hover:text-foreground transition-colors">{c.footer.links.faq}</a>
             <Link to="/vectofix/blog" className="hover:text-foreground transition-colors">Blog</Link>
