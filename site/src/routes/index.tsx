@@ -88,7 +88,8 @@ function useDownloadCount() {
 
 function DownloadCounter({ lang }: { lang: Lang }) {
   const total = useDownloadCount();
-  if (total === null || total < 20) return null; // pas assez de recul, évite un chiffre gênant
+  // Sous 1 000, le chiffre dessert plus qu'il ne rassure : on ne l'affiche qu'au-delà.
+  if (total === null || total < 1000) return null;
   const formatted = new Intl.NumberFormat(lang === "fr" ? "fr-FR" : "en-US").format(total);
   return (
     <p className="mt-3 text-xs text-muted-foreground">
@@ -953,12 +954,6 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
 
       {/* HERO */}
       <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute left-3 top-6 z-20 hidden items-center gap-1.5 rounded-full border border-primary/40 bg-primary/15 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-md sm:inline-flex md:left-6 md:top-8">
-          <Lock className="h-3.5 w-3.5" /> {c.hero.floating.left}
-        </div>
-        <div className="pointer-events-none absolute right-3 top-6 z-20 hidden items-center gap-1.5 rounded-full border border-brand/40 bg-brand/15 px-3 py-1.5 text-xs font-medium text-brand backdrop-blur-md sm:inline-flex md:right-6 md:top-8">
-          <FileImage className="h-3.5 w-3.5" /> {c.hero.floating.right}
-        </div>
         <div className="mx-auto max-w-5xl px-6 pt-20 pb-24 text-center md:pt-28 md:pb-32">
           <Reveal>
             <h1 className="text-balance text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl lg:text-7xl">
@@ -971,7 +966,7 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
             </p>
           </Reveal>
           <Reveal delay={160}>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-10 flex justify-center">
               <div className="group/win relative inline-flex">
                 <a
                   href={DOWNLOAD_EXE}
@@ -985,72 +980,81 @@ export function Index({ forcedLang }: { forcedLang?: Lang } = {}) {
                   {c.hero.smartscreenNote}
                 </div>
               </div>
-              <a
-                href={LINUX_URL}
-                onClick={trackLinuxDownload}
-                className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border px-6 py-3.5 text-sm font-semibold text-foreground transition hover:border-brand hover:text-brand-deep"
-              >
-                <Download className="h-4 w-4" />
-                {c.hero.btnLinux}
-              </a>
-              <a
-                href={LINUX_TAR_URL}
-                onClick={trackLinuxTarDownload}
-                className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border px-6 py-3.5 text-sm font-semibold text-foreground transition hover:border-brand hover:text-brand-deep"
-              >
-                <Download className="h-4 w-4" />
-                {c.hero.btnLinuxTar}
-              </a>
-              <a
-                href={SNAP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={trackSnapDownload}
-                aria-label={lang === "fr" ? "Télécharger VectorPop sur le Snap Store" : "Get VectorPop from the Snap Store"}
-                className="inline-flex items-center transition-opacity hover:opacity-90"
-              >
-                <img
-                  src="https://snapcraft.io/en/light/install.svg"
-                  width={204}
-                  height={60}
-                  alt={lang === "fr" ? "Disponible sur le Snap Store" : "Get it from the Snap Store"}
-                  className="h-[52px] w-auto"
-                />
-              </a>
-              <a
-                href={MS_STORE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={trackStoreDownload}
-                aria-label={lang === "fr" ? "Télécharger VectorPop sur le Microsoft Store" : "Get VectorPop from the Microsoft Store"}
-                className="inline-flex items-center transition-opacity hover:opacity-90"
-              >
-                <img
-                  src="https://get.microsoft.com/images/en-US%20dark.svg"
-                  width={200}
-                  height={52}
-                  alt={lang === "fr" ? "Disponible sur le Microsoft Store" : "Get it from Microsoft Store"}
-                  className="h-[52px] w-auto"
-                />
-              </a>
-              <a
-                href={PLAY_STORE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={trackPlayStoreDownload}
-                aria-label={lang === "fr" ? "Télécharger VectorPop sur Google Play" : "Get VectorPop on Google Play"}
-                className="inline-flex items-center transition-opacity hover:opacity-90"
-              >
-                <img
-                  src={`https://play.google.com/intl/en_us/badges/static/images/badges/${lang === "fr" ? "fr" : "en"}_badge_web_generic.png`}
-                  width={200}
-                  height={60}
-                  alt={lang === "fr" ? "Disponible sur Google Play" : "Get it on Google Play"}
-                  className="h-[52px] w-auto"
-                />
-              </a>
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">{c.hero.subText}</p>
+            <p className="mt-3 text-xs text-muted-foreground">{c.hero.subText}</p>
+            <div className="mt-6 flex flex-col items-center gap-3">
+              <span className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+                {lang === "fr" ? "Aussi disponible sur" : "Also available on"}
+              </span>
+              <div className="flex flex-wrap items-center justify-center gap-2.5">
+                <a
+                  href={MS_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={trackStoreDownload}
+                  aria-label={lang === "fr" ? "Télécharger VectorPop sur le Microsoft Store" : "Get VectorPop from the Microsoft Store"}
+                  className="inline-flex items-center transition-opacity hover:opacity-90"
+                >
+                  <img
+                    src={`https://get.microsoft.com/images/${lang === "fr" ? "fr" : "en-us"}%20dark.svg`}
+                    width={138}
+                    height={40}
+                    alt={lang === "fr" ? "Disponible sur le Microsoft Store" : "Get it from Microsoft Store"}
+                    className="h-10 w-auto"
+                  />
+                </a>
+                <a
+                  href={PLAY_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={trackPlayStoreDownload}
+                  aria-label={lang === "fr" ? "Télécharger VectorPop sur Google Play" : "Get VectorPop on Google Play"}
+                  className="inline-flex items-center transition-opacity hover:opacity-90"
+                >
+                  {/* Google's PNG badge has built-in transparent padding: scale it up so the
+                      visible badge matches the 40px height of the others */}
+                  <img
+                    src={`https://play.google.com/intl/en_us/badges/static/images/badges/${lang === "fr" ? "fr" : "en"}_badge_web_generic.png`}
+                    width={175}
+                    height={52}
+                    alt={lang === "fr" ? "Disponible sur Google Play" : "Get it on Google Play"}
+                    className="-my-2 h-[58px] w-auto"
+                  />
+                </a>
+                <a
+                  href={SNAP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={trackSnapDownload}
+                  aria-label={lang === "fr" ? "Télécharger VectorPop sur le Snap Store" : "Get VectorPop from the Snap Store"}
+                  className="inline-flex items-center transition-opacity hover:opacity-90"
+                >
+                  <img
+                    src="https://snapcraft.io/en/dark/install.svg"
+                    width={136}
+                    height={40}
+                    alt={lang === "fr" ? "Disponible sur le Snap Store" : "Get it from the Snap Store"}
+                    className="h-10 w-auto"
+                  />
+                </a>
+                <a
+                  href={LINUX_URL}
+                  onClick={trackLinuxDownload}
+                  className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-md border border-border px-3.5 text-xs font-semibold text-foreground transition hover:border-brand hover:text-brand-deep"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  {c.hero.btnLinux}
+                </a>
+                <a
+                  href={LINUX_TAR_URL}
+                  onClick={trackLinuxTarDownload}
+                  className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-md border border-border px-3.5 text-xs font-semibold text-foreground transition hover:border-brand hover:text-brand-deep"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  {c.hero.btnLinuxTar}
+                </a>
+              </div>
+            </div>
             <DownloadCounter lang={lang} />
             <div className="mt-5 flex justify-center">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan/40 bg-cyan/10 px-4 py-1.5 text-xs font-medium text-cyan">
