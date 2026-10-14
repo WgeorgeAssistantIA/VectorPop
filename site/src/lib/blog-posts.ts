@@ -7,6 +7,9 @@ export type BlogPost = {
   title: string;
   metaTitle?: string;
   description: string;
+  // Image de couverture : affichee sous le titre et utilisee comme image de
+  // partage (og:image) a la place de l'image generique du site.
+  image?: { src: string; alt: string };
   date: string;
   author: string;
   lang: "en" | "fr";

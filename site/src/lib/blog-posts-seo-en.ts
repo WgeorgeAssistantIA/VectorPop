@@ -494,6 +494,7 @@ export const seoEnDrafts: Draft[] = [
       "Vectorize a Logo Without Uploading It — VectorPop",
     description:
       "Why some logos should not leave your computer, how to check that a tool works locally and how to vectorize offline.",
+    image: { src: "/images/blog/vectorpop-vectoriser-sans-envoyer-en.png", alt: "Diagram: a pixel-based PNG image becomes a smooth SVG on your computer, with nothing uploaded to the internet" },
     date: "2026-10-14",
     author: "VectorPop Team",
     lang: "en",

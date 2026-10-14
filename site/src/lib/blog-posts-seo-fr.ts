@@ -523,6 +523,7 @@ export const seoFrDrafts: Draft[] = [
       "Vectoriser un logo sans l'envoyer sur Internet — VectorPop",
     description:
       "Pourquoi certains logos ne doivent pas quitter votre ordinateur, comment vérifier qu'un outil travaille en local et comment vectoriser hors connexion.",
+    image: { src: "/images/blog/vectorpop-vectoriser-sans-envoyer-fr.png", alt: "Schéma : une image PNG en pixels devient un SVG lisse sur votre ordinateur, sans aucun envoi sur Internet" },
     date: "2026-10-14",
     author: "Équipe VectorPop",
     lang: "fr",
