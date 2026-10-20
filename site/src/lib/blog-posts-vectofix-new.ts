@@ -241,7 +241,7 @@ export const vectofixNewPosts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "Related reading: [what vector repair is](/vectofix/blog/what-is-vector-repair-guide-to-vector-qa); [how to check and prepare an SVG for laser cutting](/vectofix/blog/how-to-check-and-prepare-svg-for-laser-cutting-lightburn); [why a vectorized SVG loses detail](/vectofix/blog/why-your-vectorized-svg-lost-detail).",
+        text: "Related reading: [what vector repair is](/vectofix/blog/what-is-vector-repair-guide-to-vector-qa); [how to check and prepare an SVG for laser cutting](/vectofix/blog/how-to-check-and-prepare-svg-for-laser-cutting-lightburn); [why a vectorized SVG loses detail](/vectofix/blog/why-your-vectorized-svg-lost-detail); [why a bad SVG can cause problems in laser cutting](/vectofix/blog/why-a-bad-svg-can-cause-problems-in-laser-cutting).",
       },
       {
         type: "p",
@@ -849,7 +849,7 @@ export const vectofixNewPosts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "À lire aussi : [ce qu'est la réparation vectorielle](/vectofix/blog/qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa) ; [comment préparer un SVG pour la découpe laser](/vectofix/blog/comment-preparer-un-svg-pour-la-decoupe-laser-lightburn) ; [pourquoi un SVG vectorisé perd du détail](/vectofix/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail).",
+        text: "À lire aussi : [ce qu'est la réparation vectorielle](/vectofix/blog/qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa) ; [comment préparer un SVG pour la découpe laser](/vectofix/blog/comment-preparer-un-svg-pour-la-decoupe-laser-lightburn) ; [pourquoi un SVG vectorisé perd du détail](/vectofix/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail) ; [pourquoi un mauvais SVG pose problème en découpe laser](/vectofix/blog/pourquoi-un-mauvais-svg-pose-probleme-en-decoupe-laser).",
       },
       {
         type: "p",
@@ -1502,7 +1502,7 @@ export const vectofixNewPosts: BlogPost[] = [
       { type: "h2", text: "When is a high node count acceptable?" },
       {
         type: "p",
-        text: "For an image that is only displayed on screen, or an artwork with real detail such as a portrait or a complex illustration, a higher count can be the honest cost of fidelity. For anything that goes to a cutter or an embroidery machine, aim for the lowest count that still respects the shape. Test on a scrap piece when the job is expensive.",
+        text: "For an image that is only displayed on screen, or an artwork with real detail such as a portrait or a complex illustration, a higher count can be the honest cost of fidelity. For anything that goes to a cutter or an embroidery machine, aim for the lowest count that still respects the shape. Test on a scrap piece when the job is expensive. Node count is only one of the defects that show up on the material: see [why a bad SVG can cause problems in laser cutting](/vectofix/blog/why-a-bad-svg-can-cause-problems-in-laser-cutting).",
       },
       { type: "h2", text: "Conclusion: count before you cut" },
       {
@@ -1530,6 +1530,92 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         q: "Can I check the node count in LightBurn?",
         a: "LightBurn offers Optimize Selected Shapes in its Edit menu to simplify selected shapes, as described in its documentation.",
+      },
+    ],
+  }),
+  make({
+    slug: "why-a-bad-svg-can-cause-problems-in-laser-cutting",
+    title: "Why a Bad SVG Can Cause Problems in Laser Cutting",
+    metaTitle:
+      "Why a Bad SVG Causes Laser Cutting Problems — VectoFix",
+    description:
+      "Open paths, duplicates, too many nodes, stray shapes: what each SVG defect causes on the machine, and how to spot it before you run the job.",
+    image: { src: "/images/blog/vectofix-mauvais-svg-decoupe-laser-en.jpg", alt: "Table of SVG defects and their effect on a laser: open path leaves a gap, duplicate shapes cut the same line twice, too many nodes slow the software and can cause stuttering, stray shapes leave unwanted marks, wrong scale gives a part of the wrong size" },
+    date: "2026-10-20",
+    author: "VectoFix Team",
+    lang: "en",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "A bad SVG causes laser problems because the machine does exactly what the file says. Open paths leave gaps in cuts, duplicate shapes cut twice, too many nodes slow or stutter the motion, and stray shapes burn marks where you did not want them. Most of these are visible in the file before you press start.",
+      },
+      {
+        type: "p",
+        text: "Laser cutters and engravers do not interpret your intention, they follow paths. A defect that looks harmless on screen becomes a real mark on the material. This article links each defect to its effect and to a way of checking for it. For the full pre-flight checklist, read [how to check and prepare an SVG for laser cutting](/vectofix/blog/how-to-check-and-prepare-svg-for-laser-cutting-lightburn).",
+      },
+      { type: "h2", text: "What happens with open paths?" },
+      {
+        type: "p",
+        text: "A path that does not close leaves a gap. For an engraving fill, the fill may not behave as expected; for a cut, the piece may stay attached to the sheet at the gap. Cutting software such as [LightBurn](https://docs.lightburnsoftware.com) can warn about open shapes, but only if you look. To repair it, join the two end points in your vector editor, then check again that the shape is closed.",
+      },
+      { type: "h2", text: "What happens with duplicate or overlapping shapes?" },
+      {
+        type: "p",
+        text: "Two identical shapes stacked on top of each other mean the laser traces the same line twice. The result is a deeper or burnt cut, more charring, more time. Duplicates often come from tracing and merging, and are invisible on screen because they sit exactly on each other.",
+      },
+      { type: "h2", text: "What happens with too many nodes?" },
+      {
+        type: "p",
+        text: "Each node and segment becomes motion instructions. Heavy files can make software slow, and users report stuttering or rough cuts with very dense paths, as in this [LightBurn forum thread on too many nodes](https://forum.lightburnsoftware.com/t/too-many-nodes/191055). Behaviour depends on machine and controller, so treat a very high count as a risk to check. We discuss it in [why too many SVG nodes are a problem for cutting machines](/vectofix/blog/why-too-many-svg-nodes-are-a-problem-for-cutting-machines).",
+      },
+      { type: "h2", text: "What happens with stray shapes and artefacts?" },
+      {
+        type: "p",
+        text: "Specks and micro-shapes become small marks, small cuts or time-consuming extra moves. On a clean cut they ruin the finish, and they are easy to overlook at normal zoom.",
+      },
+      { type: "h2", text: "What happens with wrong sizes and scales?" },
+      {
+        type: "p",
+        text: "An SVG imported at the wrong scale produces a part that is too big or too small. Always confirm dimensions in your cutting software and check a measurement on the first piece.",
+      },
+      { type: "h2", text: "How do you check before cutting?" },
+      {
+        type: "ul",
+        items: [
+          "Zoom in on corners, joins and small details",
+          "Fill shapes with a bright colour to expose gaps, overlaps and specks",
+          "Read the node count and compare it with how complex the shape is",
+          "Look for duplicates by selecting and nudging shapes, or by using your software's checks",
+          "Do a test cut on scrap, especially for an expensive material",
+        ],
+      },
+      { type: "h2", text: "Conclusion: the machine believes the file" },
+      {
+        type: "p",
+        text: "Everything wrong in the file will end up on the material. Check structure, weight and scale before you start. [VectoFix](/vectofix/en) helps with the trace quality side, showing fidelity and node count and repairing damaged zones, with 3 full-resolution exports to try; Pro is a one-time €39.",
+      },
+    ],
+    faq: [
+      {
+        q: "Why does my laser cut the same line twice?",
+        a: "Probably duplicate shapes stacked on each other in the file.",
+      },
+      {
+        q: "Why is my laser cut not closed?",
+        a: "The path is probably open; join its end points in an editor.",
+      },
+      {
+        q: "Can too many nodes cause stuttering?",
+        a: "It can on some machines and controllers; users report it, so check the count.",
+      },
+      {
+        q: "Should I test on scrap?",
+        a: "Yes, especially for costly material or complex files.",
+      },
+      {
+        q: "Does VectoFix check cutting files?",
+        a: "It shows trace fidelity and node count and repairs damaged zones; structural checks remain a job for your editor and cutting software.",
       },
     ],
   }),
@@ -1805,7 +1891,7 @@ export const vectofixNewPosts: BlogPost[] = [
       { type: "h2", text: "Quand un nombre élevé de nœuds est-il acceptable ?" },
       {
         type: "p",
-        text: "Pour une image seulement affichée à l'écran, ou un dessin avec un vrai détail comme un portrait ou une illustration complexe, un nombre élevé peut être le coût honnête de la fidélité. Pour tout ce qui part vers une découpeuse ou une machine à broder, visez le nombre le plus bas qui respecte encore la forme. Testez sur une chute quand le travail coûte cher.",
+        text: "Pour une image seulement affichée à l'écran, ou un dessin avec un vrai détail comme un portrait ou une illustration complexe, un nombre élevé peut être le coût honnête de la fidélité. Pour tout ce qui part vers une découpeuse ou une machine à broder, visez le nombre le plus bas qui respecte encore la forme. Testez sur une chute quand le travail coûte cher. Le nombre de nœuds n'est qu'un des défauts qui finissent sur le matériau : voyez [pourquoi un mauvais SVG pose problème en découpe laser](/vectofix/blog/pourquoi-un-mauvais-svg-pose-probleme-en-decoupe-laser).",
       },
       { type: "h2", text: "Conclusion : comptez avant de couper" },
       {
@@ -1833,6 +1919,92 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         q: "Peut-on réduire les nœuds dans LightBurn ?",
         a: "Oui. LightBurn propose Optimize Selected Shapes pour simplifier les formes sélectionnées, comme décrit dans sa documentation.",
+      },
+    ],
+  }),
+  make({
+    slug: "pourquoi-un-mauvais-svg-pose-probleme-en-decoupe-laser",
+    title: "Pourquoi un mauvais SVG pose problème en découpe laser",
+    metaTitle:
+      "Mauvais SVG et découpe laser : les défauts — VectoFix",
+    description:
+      "Tracés ouverts, doublons, trop de nœuds, formes parasites : ce que chaque défaut du SVG provoque sur la machine, et comment le repérer avant de lancer.",
+    image: { src: "/images/blog/vectofix-mauvais-svg-decoupe-laser-fr.jpg", alt: "Tableau des défauts d'un SVG et de leur effet au laser : tracé ouvert, la pièce reste attachée ; formes en double, la même ligne est coupée deux fois ; trop de nœuds, logiciel lent et saccades possibles ; formes parasites, marques non voulues ; mauvaise échelle, pièce à la mauvaise taille" },
+    date: "2026-10-20",
+    author: "L'équipe VectoFix",
+    lang: "fr",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Un mauvais SVG pose problème au laser parce que la machine fait exactement ce que dit le fichier. Les tracés ouverts laissent des trous dans la découpe, les formes en double coupent deux fois, trop de nœuds ralentissent ou saccadent le mouvement, et les formes parasites brûlent des marques là où vous n'en vouliez pas. La plupart de ces défauts sont visibles dans le fichier avant d'appuyer sur démarrer.",
+      },
+      {
+        type: "p",
+        text: "Les découpeuses et graveuses laser n'interprètent pas votre intention, elles suivent des tracés. Un défaut inoffensif à l'écran devient une vraie marque sur le matériau. Cet article relie chaque défaut à son effet et à une façon de le repérer. Pour la checklist complète avant lancement, lisez [comment contrôler et préparer un SVG pour la découpe laser](/vectofix/blog/comment-preparer-un-svg-pour-la-decoupe-laser-lightburn).",
+      },
+      { type: "h2", text: "Que se passe-t-il avec des tracés ouverts ?" },
+      {
+        type: "p",
+        text: "Un tracé qui ne se ferme pas laisse un trou. Pour un remplissage de gravure, le remplissage peut ne pas se comporter comme prévu ; pour une découpe, la pièce peut rester attachée à la plaque au niveau du trou. Un logiciel de découpe comme [LightBurn](https://docs.lightburnsoftware.com) peut signaler des formes ouvertes, mais seulement si on regarde. Pour réparer, reliez les deux extrémités dans votre éditeur vectoriel, puis vérifiez à nouveau que la forme est fermée.",
+      },
+      { type: "h2", text: "Que se passe-t-il avec des formes en double ou superposées ?" },
+      {
+        type: "p",
+        text: "Deux formes identiques empilées signifient que le laser parcourt deux fois la même ligne. Le résultat : une coupe plus profonde ou brûlée, plus de carbonisation, plus de temps. Les doublons viennent souvent de la vectorisation et de la fusion, et sont invisibles à l'écran puisqu'ils sont exactement l'un sur l'autre.",
+      },
+      { type: "h2", text: "Que se passe-t-il avec trop de nœuds ?" },
+      {
+        type: "p",
+        text: "Chaque nœud et chaque segment devient des instructions de mouvement. Les fichiers lourds peuvent ralentir le logiciel, et des utilisateurs signalent des saccades ou des coupes rugueuses avec des tracés très denses, comme dans ce [fil du forum LightBurn sur les trop nombreux nœuds](https://forum.lightburnsoftware.com/t/too-many-nodes/191055). Le comportement dépend de la machine et du contrôleur : voyez un nombre très élevé comme un risque à vérifier. Nous le traitons dans [pourquoi trop de nœuds dans un SVG posent problème aux machines de découpe](/vectofix/blog/trop-de-noeuds-svg-probleme-machines-de-decoupe).",
+      },
+      { type: "h2", text: "Que se passe-t-il avec des formes parasites et des artefacts ?" },
+      {
+        type: "p",
+        text: "Les taches et micro-formes deviennent de petites marques, de petites découpes ou des déplacements supplémentaires qui prennent du temps. Sur une découpe propre, elles gâchent la finition, et elles sont faciles à manquer à un zoom normal.",
+      },
+      { type: "h2", text: "Que se passe-t-il avec de mauvaises tailles et échelles ?" },
+      {
+        type: "p",
+        text: "Un SVG importé à la mauvaise échelle donne une pièce trop grande ou trop petite. Confirmez toujours les dimensions dans votre logiciel de découpe et vérifiez une mesure sur la première pièce.",
+      },
+      { type: "h2", text: "Comment vérifier avant de couper ?" },
+      {
+        type: "ul",
+        items: [
+          "Zoomez sur les coins, les jonctions et les petits détails",
+          "Remplissez les formes d'une couleur vive pour révéler trous, chevauchements et taches",
+          "Lisez le nombre de nœuds et comparez-le à la complexité de la forme",
+          "Cherchez les doublons en sélectionnant et en déplaçant légèrement les formes, ou avec les contrôles de votre logiciel",
+          "Faites un essai sur une chute, surtout pour un matériau coûteux",
+        ],
+      },
+      { type: "h2", text: "Conclusion : la machine croit le fichier" },
+      {
+        type: "p",
+        text: "Tout ce qui est faux dans le fichier finira sur le matériau. Vérifiez la structure, le poids et l'échelle avant de lancer. [VectoFix](/vectofix) aide côté qualité de vectorisation, en montrant la fidélité et le nombre de nœuds et en réparant les zones abîmées, avec 3 exports en pleine résolution à essayer ; Pro est un achat unique de 39 €.",
+      },
+    ],
+    faq: [
+      {
+        q: "Pourquoi mon laser coupe-t-il deux fois la même ligne ?",
+        a: "Probablement des formes en double empilées dans le fichier.",
+      },
+      {
+        q: "Pourquoi ma découpe laser n'est-elle pas fermée ?",
+        a: "Le tracé est probablement ouvert ; reliez ses extrémités dans un éditeur.",
+      },
+      {
+        q: "Trop de nœuds peuvent-ils provoquer des saccades ?",
+        a: "Cela peut arriver sur certaines machines et contrôleurs ; des utilisateurs le signalent, vérifiez donc le nombre.",
+      },
+      {
+        q: "Faut-il tester sur une chute ?",
+        a: "Oui, surtout pour un matériau coûteux ou un fichier complexe.",
+      },
+      {
+        q: "VectoFix contrôle-t-il les fichiers de découpe ?",
+        a: "Il montre la fidélité et le nombre de nœuds et répare les zones abîmées ; les contrôles de structure restent le travail de votre éditeur et de votre logiciel de découpe.",
       },
     ],
   }),
