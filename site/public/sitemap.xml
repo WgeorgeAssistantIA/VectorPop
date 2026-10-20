@@ -25,6 +25,18 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://www.vectorpop.fr/vectofix/audit-svg</loc>
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.vectorpop.fr/vectofix/decoupe-laser-cricut</loc>
+    <lastmod>2026-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://www.vectorpop.fr/blog</loc>
     <lastmod>2026-08-12</lastmod>
     <changefreq>weekly</changefreq>

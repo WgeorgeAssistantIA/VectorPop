@@ -21,6 +21,8 @@ import { Route as ApiTrackRouteImport } from './routes/api/track'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as VectofixIndexRouteImport } from './routes/vectofix.index'
+import { Route as VectofixAuditSvgRouteImport } from './routes/vectofix.audit-svg'
+import { Route as VectofixDecoupeLaserCricutRouteImport } from './routes/vectofix.decoupe-laser-cricut'
 import { Route as VectofixEnRouteImport } from './routes/vectofix.en'
 import { Route as VectofixPrivacyRouteImport } from './routes/vectofix.privacy'
 import { Route as VectofixBlogIndexRouteImport } from './routes/vectofix.blog.index'
@@ -86,6 +88,17 @@ const VectofixIndexRoute = VectofixIndexRouteImport.update({
   path: '/',
   getParentRoute: () => VectofixRoute,
 } as any)
+const VectofixAuditSvgRoute = VectofixAuditSvgRouteImport.update({
+  id: '/audit-svg',
+  path: '/audit-svg',
+  getParentRoute: () => VectofixRoute,
+} as any)
+const VectofixDecoupeLaserCricutRoute =
+  VectofixDecoupeLaserCricutRouteImport.update({
+    id: '/decoupe-laser-cricut',
+    path: '/decoupe-laser-cricut',
+    getParentRoute: () => VectofixRoute,
+  } as any)
 const VectofixEnRoute = VectofixEnRouteImport.update({
   id: '/en',
   path: '/en',
@@ -118,6 +131,8 @@ export interface FileRoutesByFullPath {
   '/api/subscribe': typeof ApiSubscribeRoute
   '/api/track': typeof ApiTrackRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/vectofix/audit-svg': typeof VectofixAuditSvgRoute
+  '/vectofix/decoupe-laser-cricut': typeof VectofixDecoupeLaserCricutRoute
   '/vectofix/en': typeof VectofixEnRoute
   '/vectofix/privacy': typeof VectofixPrivacyRoute
   '/blog/': typeof BlogIndexRoute
@@ -135,6 +150,8 @@ export interface FileRoutesByTo {
   '/api/subscribe': typeof ApiSubscribeRoute
   '/api/track': typeof ApiTrackRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/vectofix/audit-svg': typeof VectofixAuditSvgRoute
+  '/vectofix/decoupe-laser-cricut': typeof VectofixDecoupeLaserCricutRoute
   '/vectofix/en': typeof VectofixEnRoute
   '/vectofix/privacy': typeof VectofixPrivacyRoute
   '/blog': typeof BlogIndexRoute
@@ -154,6 +171,8 @@ export interface FileRoutesById {
   '/api/subscribe': typeof ApiSubscribeRoute
   '/api/track': typeof ApiTrackRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/vectofix/audit-svg': typeof VectofixAuditSvgRoute
+  '/vectofix/decoupe-laser-cricut': typeof VectofixDecoupeLaserCricutRoute
   '/vectofix/en': typeof VectofixEnRoute
   '/vectofix/privacy': typeof VectofixPrivacyRoute
   '/blog/': typeof BlogIndexRoute
@@ -174,6 +193,8 @@ export interface FileRouteTypes {
     | '/api/subscribe'
     | '/api/track'
     | '/blog/$slug'
+    | '/vectofix/audit-svg'
+    | '/vectofix/decoupe-laser-cricut'
     | '/vectofix/en'
     | '/vectofix/privacy'
     | '/blog/'
@@ -191,6 +212,8 @@ export interface FileRouteTypes {
     | '/api/subscribe'
     | '/api/track'
     | '/blog/$slug'
+    | '/vectofix/audit-svg'
+    | '/vectofix/decoupe-laser-cricut'
     | '/vectofix/en'
     | '/vectofix/privacy'
     | '/blog'
@@ -209,6 +232,8 @@ export interface FileRouteTypes {
     | '/api/subscribe'
     | '/api/track'
     | '/blog/$slug'
+    | '/vectofix/audit-svg'
+    | '/vectofix/decoupe-laser-cricut'
     | '/vectofix/en'
     | '/vectofix/privacy'
     | '/blog/'
@@ -317,6 +342,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VectofixIndexRouteImport
       parentRoute: typeof VectofixRoute
     }
+    '/vectofix/audit-svg': {
+      id: '/vectofix/audit-svg'
+      path: '/audit-svg'
+      fullPath: '/vectofix/audit-svg'
+      preLoaderRoute: typeof VectofixAuditSvgRouteImport
+      parentRoute: typeof VectofixRoute
+    }
+    '/vectofix/decoupe-laser-cricut': {
+      id: '/vectofix/decoupe-laser-cricut'
+      path: '/decoupe-laser-cricut'
+      fullPath: '/vectofix/decoupe-laser-cricut'
+      preLoaderRoute: typeof VectofixDecoupeLaserCricutRouteImport
+      parentRoute: typeof VectofixRoute
+    }
     '/vectofix/en': {
       id: '/vectofix/en'
       path: '/en'
@@ -349,6 +388,8 @@ declare module '@tanstack/react-router' {
 }
 
 interface VectofixRouteChildren {
+  VectofixAuditSvgRoute: typeof VectofixAuditSvgRoute
+  VectofixDecoupeLaserCricutRoute: typeof VectofixDecoupeLaserCricutRoute
   VectofixEnRoute: typeof VectofixEnRoute
   VectofixPrivacyRoute: typeof VectofixPrivacyRoute
   VectofixIndexRoute: typeof VectofixIndexRoute
@@ -357,6 +398,8 @@ interface VectofixRouteChildren {
 }
 
 const VectofixRouteChildren: VectofixRouteChildren = {
+  VectofixAuditSvgRoute: VectofixAuditSvgRoute,
+  VectofixDecoupeLaserCricutRoute: VectofixDecoupeLaserCricutRoute,
   VectofixEnRoute: VectofixEnRoute,
   VectofixPrivacyRoute: VectofixPrivacyRoute,
   VectofixIndexRoute: VectofixIndexRoute,

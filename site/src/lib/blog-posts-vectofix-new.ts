@@ -1552,7 +1552,7 @@ export const vectofixNewPosts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "Laser cutters and engravers do not interpret your intention, they follow paths. A defect that looks harmless on screen becomes a real mark on the material. This article links each defect to its effect and to a way of checking for it. For the full pre-flight checklist, read [how to check and prepare an SVG for laser cutting](/vectofix/blog/how-to-check-and-prepare-svg-for-laser-cutting-lightburn).",
+        text: "Laser cutters and engravers do not interpret your intention, they follow paths. A defect that looks harmless on screen becomes a real mark on the material. This article links each defect to its effect and to a way of checking for it. You can instantly test your file using our free [SVG node counter and path audit tool](/vectofix/audit-svg), or follow our complete guide on [cleaning and preparing SVGs for laser cutting](/vectofix/decoupe-laser-cricut). For the full pre-flight checklist, read [how to check and prepare an SVG for laser cutting](/vectofix/blog/how-to-check-and-prepare-svg-for-laser-cutting-lightburn).",
       },
       { type: "h2", text: "What happens with open paths?" },
       {
@@ -1941,7 +1941,7 @@ export const vectofixNewPosts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "Les découpeuses et graveuses laser n'interprètent pas votre intention, elles suivent des tracés. Un défaut inoffensif à l'écran devient une vraie marque sur le matériau. Cet article relie chaque défaut à son effet et à une façon de le repérer. Pour la checklist complète avant lancement, lisez [comment contrôler et préparer un SVG pour la découpe laser](/vectofix/blog/comment-preparer-un-svg-pour-la-decoupe-laser-lightburn).",
+        text: "Les découpeuses et graveuses laser n'interprètent pas votre intention, elles suivent des tracés. Un défaut inoffensif à l'écran devient une vraie marque sur le matériau. Cet article relie chaque défaut à son effet et à une façon de le repérer. Vous pouvez tester votre fichier en ligne gratuitement avec notre [compteur de nœuds et audit SVG laser](/vectofix/audit-svg), ou consulter notre guide dédié pour [nettoyer et réparer un SVG pour découpe laser et Cricut](/vectofix/decoupe-laser-cricut). Pour la checklist complète avant lancement, lisez [comment contrôler et préparer un SVG pour la découpe laser](/vectofix/blog/comment-preparer-un-svg-pour-la-decoupe-laser-lightburn).",
       },
       { type: "h2", text: "Que se passe-t-il avec des tracés ouverts ?" },
       {

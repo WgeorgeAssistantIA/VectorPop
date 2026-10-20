@@ -385,7 +385,7 @@ export const t = {
       ],
     },
     footer: {
-      links: { download: "Download", pricing: "Pricing", faq: "FAQ", privacy: "Privacy", legal: "Legal notice", terms: "Terms of sale", contact: "Contact" },
+      links: { download: "Download", pricing: "Pricing", faq: "FAQ", auditSvg: "SVG Node Counter", laserCutting: "Laser & Cricut SVG", privacy: "Privacy", legal: "Legal notice", terms: "Terms of sale", contact: "Contact" },
       copy: "© 2026 VectoFix — Local vector repair",
       madeBy: "A La Fabrik Numérique product",
       alsoVectorpop: "Also check out VectorPop",
@@ -716,7 +716,7 @@ export const t = {
       ],
     },
     footer: {
-      links: { download: "Télécharger", pricing: "Tarif", faq: "FAQ", privacy: "Confidentialité", legal: "Mentions légales", terms: "CGV", contact: "Contact" },
+      links: { download: "Télécharger", pricing: "Tarif", faq: "FAQ", auditSvg: "Audit SVG & Nœuds", laserCutting: "Découpe Laser & Cricut", privacy: "Confidentialité", legal: "Mentions légales", terms: "CGV", contact: "Contact" },
       copy: "© 2026 VectoFix — Réparation vectorielle locale",
       madeBy: "Un produit La Fabrik Numérique",
       alsoVectorpop: "Découvrez aussi VectorPop",
@@ -1549,6 +1549,8 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
             <a href={MS_STORE_URL} target="_blank" rel="noopener noreferrer" onClick={trackStoreDownload} className="hover:text-foreground transition-colors">{c.footer.links.download}</a>
             <a href="#pricing" className="hover:text-foreground transition-colors">{c.footer.links.pricing}</a>
             <a href="#faq" className="hover:text-foreground transition-colors">{c.footer.links.faq}</a>
+            <Link to="/vectofix/audit-svg" className="hover:text-foreground transition-colors">{c.footer.links.auditSvg}</Link>
+            <Link to="/vectofix/decoupe-laser-cricut" className="hover:text-foreground transition-colors">{c.footer.links.laserCutting}</Link>
             <Link to="/vectofix/blog" className="hover:text-foreground transition-colors">Blog</Link>
             <Link to="/vectofix/privacy" className="hover:text-foreground transition-colors">{c.footer.links.privacy}</Link>
             <Link to="/legal" className="hover:text-foreground transition-colors">{c.footer.links.legal}</Link>
