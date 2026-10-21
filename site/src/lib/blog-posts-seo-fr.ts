@@ -490,7 +490,7 @@ export const seoFrDrafts: Draft[] = [
       },
       {
         type: "p",
-        text: "Vous n'avez qu'un PNG ? [Essayez VectorPop gratuitement](/) : 5 exports SVG inclus, aucun envoi en ligne, et une version Pro à 39 € en paiement unique si vous en avez besoin plus souvent. Un logo confidentiel ? Voyez comment [vectoriser un logo sans l'envoyer sur Internet](/blog/vectoriser-sans-envoyer-sur-internet).",
+        text: "Vous n'avez qu'un PNG ? [Essayez VectorPop gratuitement](/) : 5 exports SVG inclus, aucun envoi en ligne, et une version Pro à 39 € en paiement unique si vous en avez besoin plus souvent. Un logo confidentiel ? Voyez comment [vectoriser un logo sans l'envoyer sur Internet](/blog/vectoriser-sans-envoyer-sur-internet). Votre logo devient flou à l'agrandissement ? Lisez [pourquoi, et comment obtenir un logo net](/blog/logo-flou-a-l-agrandissement).",
       },
     ],
     faq: [
@@ -578,6 +578,154 @@ export const seoFrDrafts: Draft[] = [
       {
         q: "Faut-il un compte ?",
         a: "Non.",
+      },
+    ],
+  },
+  {
+    slug: "logo-flou-a-l-agrandissement",
+    title: "Logo flou à l'agrandissement : pourquoi, et comment obtenir un logo net",
+    metaTitle:
+      "Logo flou quand on l'agrandit : causes et solutions — VectorPop",
+    description:
+      "Votre logo devient flou ou pixelisé dès qu'on l'agrandit ? Pourquoi un PNG ne peut pas grandir, comment vérifier votre fichier et les 3 solutions pour un logo net.",
+    image: { src: "/images/blog/vectorpop-logo-flou-agrandissement-fr.jpg", alt: "Le même logo agrandi 15 fois : à gauche un PNG de 28 × 28 pixels devenu flou, à droite sa version SVG vectorielle restée nette" },
+    date: "2026-10-21",
+    author: "Équipe VectorPop",
+    lang: "fr",
+    content: [
+      {
+        type: "p",
+        text: "Un logo devient flou à l'agrandissement parce qu'il est enregistré en pixels (PNG, JPG) : une image de 300 pixels de large contient 300 pixels, pas un de plus. Quand on l'agrandit, le logiciel étire ces pixels et invente des couleurs intermédiaires, d'où des bords mous ou en escalier. Pour obtenir un logo net à toute taille, il faut un fichier vectoriel (SVG, AI, EPS ou PDF vectoriel) : soit l'original du créateur, soit une version vectorisée du PNG.",
+      },
+      {
+        type: "p",
+        text: "Le problème apparaît presque toujours au pire moment : le logo est parfait sur le site, puis l'imprimeur, le brodeur ou le fabricant de la bâche répond qu'il est « inutilisable ». Cet article explique d'où vient le flou, comment savoir en deux minutes quel fichier vous avez réellement, et quelle solution choisir selon votre situation.",
+      },
+      { type: "h2", text: "Pourquoi un logo devient-il flou quand on l'agrandit ?" },
+      {
+        type: "p",
+        text: "Une image PNG ou JPG est une grille de petits carrés de couleur, les pixels. Chacun a une position et une couleur fixes. À sa taille d'origine, l'œil ne les distingue pas. Mais si vous doublez la taille, chaque pixel doit couvrir quatre fois plus de surface : le logiciel n'a aucune information nouvelle, il calcule des couleurs de transition entre les pixels voisins. C'est ce qu'on appelle l'interpolation, et c'est elle qui rend les contours flous.",
+      },
+      {
+        type: "p",
+        text: "Un ordre de grandeur aide à comprendre l'écart. Imprimé à 10 cm de large en qualité standard (300 points par pouce), un logo demande environ 1 200 pixels de large. Le même logo de 300 pixels étiré sur une bâche de 2 mètres, c'est un pixel pour presque 7 millimètres : chaque carré devient visible à l'œil nu.",
+      },
+      {
+        type: "p",
+        text: "Le JPG ajoute un défaut de plus : sa compression crée des petites taches et des halos autour des contours nets, exactement là où un logo en a le plus. Agrandi, un JPG de logo cumule donc le flou et les artefacts. Pour la différence entre les formats, voyez [SVG ou PNG : de quel format avez-vous vraiment besoin](/blog/svg-vs-png-lequel-choisir).",
+      },
+      { type: "h2", text: "Comment savoir si votre logo est un vrai fichier vectoriel ?" },
+      {
+        type: "p",
+        text: "Un fichier vectoriel ne contient pas de pixels mais des formes décrites par des points et des courbes. Le logiciel les redessine à chaque taille, c'est pourquoi le contour reste net à 2 cm comme à 2 mètres. Trois vérifications simples :",
+      },
+      {
+        type: "ul",
+        items: [
+          "L'extension : .svg, .ai, .eps ou .pdf peuvent être vectoriels ; .png, .jpg, .webp et .gif ne le sont jamais.",
+          "Le test du zoom : ouvrez le fichier et zoomez à 800 %. Si les bords restent lisses, c'est du vectoriel ; s'ils deviennent des marches d'escalier ou du flou, ce sont des pixels.",
+          "Le piège du faux SVG : un fichier .svg peut simplement contenir une image PNG. Ouvrez-le dans un éditeur de texte : si vous voyez une balise <image> suivie d'une longue suite de caractères, c'est un PNG emballé, pas un vrai vectoriel. Même chose pour un PDF qui contient seulement une photo du logo.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Renommer un PNG en .svg ne change rien au contenu : c'est l'erreur la plus fréquente, et l'imprimeur la repère tout de suite. C'est aussi pour cela qu'il insiste, comme expliqué dans [pourquoi les imprimeurs demandent un fichier vectoriel](/blog/pourquoi-imprimeurs-demandent-fichier-vectoriel).",
+      },
+      { type: "h2", text: "Quelles sont les solutions pour obtenir un logo net ?" },
+      {
+        type: "p",
+        text: "Il en existe trois, de la plus fiable à la plus rapide. Le bon choix dépend de ce que vous avez sous la main.",
+      },
+      { type: "h3", text: "1. Récupérer le fichier source" },
+      {
+        type: "p",
+        text: "Si le logo a été créé par un graphiste, une agence ou un imprimeur, il existe presque toujours un original vectoriel (.ai, .eps, .svg ou .pdf). Demandez-le : c'est gratuit, immédiat et parfaitement fidèle. Pensez aussi à vos anciens échanges de mails et aux dossiers de livraison du graphiste.",
+      },
+      { type: "h3", text: "2. Vectoriser le PNG" },
+      {
+        type: "p",
+        text: "Si vous n'avez que l'image, un logiciel de vectorisation retrace automatiquement les contours en courbes. Sur un logo simple (aplats de couleur, texte lisible, formes nettes), le résultat est généralement bon en quelques secondes. La méthode complète est détaillée dans [comment convertir un logo PNG en SVG](/blog/convertir-logo-png-en-svg).",
+      },
+      { type: "h3", text: "3. Faire redessiner le logo" },
+      {
+        type: "p",
+        text: "Si le logo est minuscule, très compressé, ou plein de détails fins, un graphiste peut le redessiner à la main. C'est plus long et payant, mais c'est la seule façon de retrouver des détails que le fichier ne contient plus.",
+      },
+      { type: "h2", text: "Comment vectoriser son logo pour qu'il reste net ?" },
+      {
+        type: "p",
+        text: "Quelques réflexes font la différence entre un SVG propre et un SVG approximatif :",
+      },
+      {
+        type: "ul",
+        items: [
+          "Partez de la plus grande version disponible : un logo récupéré en 1 000 pixels donnera toujours un meilleur tracé que sa miniature de 100 pixels.",
+          "Retirez le fond s'il est uni, pour ne pas vectoriser un rectangle blanc autour du logo.",
+          "Choisissez le réglage adapté au type de logo : aplats de couleur, logo détaillé ou noir et blanc. Un réglage pour photo sur un logo simple produit des milliers de formes inutiles.",
+          "Vérifiez le résultat au zoom, surtout les lettres fines, les petits textes et les angles.",
+          "Exportez en SVG, puis en PDF ou EPS seulement si votre prestataire le demande.",
+        ],
+      },
+      {
+        type: "p",
+        text: "VectorPop a été conçu pour ce cas précis. Vous déposez le PNG, choisissez « Logo plat (couleur) », « Logo couleur détaillé » ou « Noir & blanc / trait », le fond uni peut être retiré automatiquement, et l'aperçu montre le résultat avant l'export. Tout se passe sur votre ordinateur, sans envoyer le logo en ligne : voyez [vectoriser un logo sans l'envoyer sur Internet](/blog/vectoriser-sans-envoyer-sur-internet).",
+      },
+      { type: "h2", text: "Et les agrandisseurs d'image à l'IA ?" },
+      {
+        type: "p",
+        text: "Les outils d'agrandissement par IA produisent un PNG plus grand en inventant des détails plausibles. Pour une photo destinée à un écran, le résultat peut être bluffant. Pour un logo, c'est plus risqué : les lettres peuvent être légèrement déformées, les couleurs modifiées, les angles arrondis. Et surtout, le fichier obtenu reste une image en pixels : plus grande, mais toujours limitée à sa taille, et toujours refusée pour la découpe, la broderie ou la sérigraphie, qui ont besoin de contours.",
+      },
+      {
+        type: "p",
+        text: "Un agrandisseur peut dépanner pour une utilisation ponctuelle à l'écran. Pour un logo qui sera imprimé, découpé ou décliné à plusieurs tailles, le vectoriel reste la bonne réponse.",
+      },
+      { type: "h2", text: "Que faire si le logo est minuscule ou très compressé ?" },
+      {
+        type: "p",
+        text: "C'est la vraie limite de la vectorisation : elle redessine ce qu'elle voit, elle n'invente pas ce qui manque. Un logo de 50 pixels de large ne contient pas assez d'information pour que les lettres fines restent séparées. Attendez-vous alors à des lettres fusionnées, des bords irréguliers ou des petits détails disparus.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Cherchez d'abord une version plus grande : site web de l'entreprise, signature de mail, document PDF, réseaux sociaux.",
+          "Vectorisez quand même pour obtenir une base, puis faites corriger les zones abîmées.",
+          "Si le logo doit être fidèle au détail près (marque déposée, impression haut de gamme), confiez le redessin à un graphiste.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Pour les zones abîmées d'un tracé, [VectoFix](/vectofix), de la même équipe, compare le SVG à l'image d'origine, montre en rouge ce qui a été perdu et retrace uniquement les zones que vous peignez.",
+      },
+      { type: "h2", text: "Conclusion : le flou vient des pixels, la netteté vient des formes" },
+      {
+        type: "p",
+        text: "Un logo flou n'est pas un logo raté : c'est un logo enregistré dans un format qui ne peut pas grandir. Vérifiez d'abord ce que vous avez réellement, demandez l'original s'il existe, sinon vectorisez à partir de la plus grande version possible. Pour une vue d'ensemble de la méthode, le [guide complet pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) reprend chaque étape.",
+      },
+      {
+        type: "p",
+        text: "Vous n'avez qu'un PNG ? [Essayez VectorPop gratuitement](/) : 5 exports SVG inclus, traitement local sur Windows, Linux ou Android, et une version Pro à 39 € en paiement unique si vous en avez besoin plus souvent.",
+      },
+    ],
+    faq: [
+      {
+        q: "Pourquoi mon logo est-il flou quand je l'agrandis ?",
+        a: "Parce qu'il est enregistré en pixels (PNG, JPG). Agrandir étire ces pixels sans créer de détail, ce qui rend les contours flous ou en escalier.",
+      },
+      {
+        q: "Comment rendre un logo net à toutes les tailles ?",
+        a: "En utilisant un fichier vectoriel (SVG, AI, EPS ou PDF vectoriel) : récupérez l'original auprès du créateur, ou vectorisez le PNG.",
+      },
+      {
+        q: "Renommer mon PNG en .svg suffit-il ?",
+        a: "Non. Le contenu reste une image en pixels ; seule une vectorisation transforme les pixels en formes.",
+      },
+      {
+        q: "Un agrandisseur d'image à l'IA peut-il remplacer la vectorisation ?",
+        a: "Pour un usage ponctuel à l'écran, parfois. Pour l'impression, la découpe ou la broderie, non : le résultat reste en pixels et peut déformer les lettres.",
+      },
+      {
+        q: "Peut-on vectoriser un logo très petit ?",
+        a: "Oui, mais avec des limites : la vectorisation ne retrouve pas les détails absents. Partez de la plus grande version possible, ou faites redessiner le logo.",
       },
     ],
   },
