@@ -449,7 +449,7 @@ export const vectofixNewPosts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "Related reading: [how to fix a bad vectorization without starting over](/vectofix/blog/how-to-fix-a-bad-vectorization-without-starting-over); [what vector repair is](/vectofix/blog/what-is-vector-repair-guide-to-vector-qa); [why a vectorized SVG loses detail](/vectofix/blog/why-your-vectorized-svg-lost-detail).",
+        text: "Related reading: [how to fix a bad vectorization without starting over](/vectofix/blog/how-to-fix-a-bad-vectorization-without-starting-over); [what vector repair is](/vectofix/blog/what-is-vector-repair-guide-to-vector-qa); [why a vectorized SVG loses detail](/vectofix/blog/why-your-vectorized-svg-lost-detail); [the 10-point checklist before laser cutting](/vectofix/blog/how-to-fix-an-svg-before-sending-it-to-a-laser-cutter).",
       },
       {
         type: "p",
@@ -1057,7 +1057,7 @@ export const vectofixNewPosts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "À lire aussi : [comment réparer une mauvaise vectorisation sans tout recommencer](/vectofix/blog/comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer) ; [ce qu'est la réparation vectorielle](/vectofix/blog/qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa) ; [pourquoi un SVG vectorisé perd du détail](/vectofix/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail).",
+        text: "À lire aussi : [comment réparer une mauvaise vectorisation sans tout recommencer](/vectofix/blog/comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer) ; [ce qu'est la réparation vectorielle](/vectofix/blog/qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa) ; [pourquoi un SVG vectorisé perd du détail](/vectofix/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail) ; [la checklist en 10 points avant la découpe laser](/vectofix/blog/checklist-corriger-un-svg-avant-de-l-envoyer-a-la-decoupe-laser).",
       },
       {
         type: "p",
@@ -1509,6 +1509,7 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "A node count is the first thing worth checking in a traced file. Keep what the shape needs, remove what it does not, and look at the fidelity while you do it. [VectoFix](/vectofix/en) shows both numbers on one line, repairs only the zones that need it, and gives you 3 full-resolution HD exports to try before a one-time €39 Pro licence. For the broader idea of controlling an SVG before production, read [what vector repair is](/vectofix/blog/what-is-vector-repair-guide-to-vector-qa).",
       },
+      { type: "p", text: "Related reading: [the 10-point checklist before laser cutting](/vectofix/blog/how-to-fix-an-svg-before-sending-it-to-a-laser-cutter)." },
     ],
     faq: [
       {
@@ -1595,6 +1596,7 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Everything wrong in the file will end up on the material. Check structure, weight and scale before you start. [VectoFix](/vectofix/en) helps with the trace quality side, showing fidelity and node count and repairing damaged zones, with 3 full-resolution exports to try; Pro is a one-time €39.",
       },
+      { type: "p", text: "Related reading: [the 10-point checklist before laser cutting](/vectofix/blog/how-to-fix-an-svg-before-sending-it-to-a-laser-cutter)." },
     ],
     faq: [
       {
@@ -1898,6 +1900,7 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Le nombre de nœuds est la première chose à vérifier dans un fichier vectorisé. Gardez ce dont la forme a besoin, retirez le reste, et surveillez la fidélité pendant ce temps. [VectoFix](/vectofix) montre les deux chiffres sur une même ligne, répare uniquement les zones qui le demandent et offre 3 exports HD en pleine résolution à essayer avant une licence Pro à 39 € en achat unique. Pour l'idée plus large de contrôler un SVG avant production, lisez [ce qu'est la réparation vectorielle](/vectofix/blog/qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa).",
       },
+      { type: "p", text: "À lire aussi : [la checklist en 10 points avant la découpe laser](/vectofix/blog/checklist-corriger-un-svg-avant-de-l-envoyer-a-la-decoupe-laser)." },
     ],
     faq: [
       {
@@ -1984,6 +1987,7 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Tout ce qui est faux dans le fichier finira sur le matériau. Vérifiez la structure, le poids et l'échelle avant de lancer. [VectoFix](/vectofix) aide côté qualité de vectorisation, en montrant la fidélité et le nombre de nœuds et en réparant les zones abîmées, avec 3 exports en pleine résolution à essayer ; Pro est un achat unique de 39 €.",
       },
+      { type: "p", text: "À lire aussi : [la checklist en 10 points avant la découpe laser](/vectofix/blog/checklist-corriger-un-svg-avant-de-l-envoyer-a-la-decoupe-laser)." },
     ],
     faq: [
       {
@@ -2005,6 +2009,220 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         q: "VectoFix contrôle-t-il les fichiers de découpe ?",
         a: "Il montre la fidélité et le nombre de nœuds et répare les zones abîmées ; les contrôles de structure restent le travail de votre éditeur et de votre logiciel de découpe.",
+      },
+    ],
+  }),
+  make({
+    slug: "how-to-fix-an-svg-before-sending-it-to-a-laser-cutter",
+    title: "How to Fix an SVG Before Laser Cutting (LightBurn, Double Lines & Nodes Checklist)",
+    metaTitle:
+      "SVG Checklist Before Laser Cutting (LightBurn) — VectoFix",
+    description:
+      "A ten-point checklist for a cut-ready SVG in LightBurn or your laser software: scale, closed paths, double lines, nodes, stray shapes, layers, text and a scrap test.",
+    image: { src: "/images/blog/vectofix-checklist-svg-laser-en.jpg", alt: "Ten-point checklist before laser cutting an SVG, in four stages: structure (scale, closed paths, duplicates), weight (node count, stray shapes), job setup (layers, line weights, text as paths, overlaps), then a scrap test" },
+    date: "2026-10-23",
+    author: "VectoFix Team",
+    lang: "en",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Before sending an SVG to LightBurn or another laser program, check ten things: scale, closed paths, duplicate (double) lines, node count, stray shapes, layers, line weights, text converted to paths, parts that touch or overlap, and a scrap test. Ten minutes with this list saves material, machine time and failed pieces.",
+      },
+      {
+        type: "p",
+        text: "This is the short, printable version. For the full method with explanations and screenshots of each step, read our guide to [checking and preparing an SVG for laser cutting in LightBurn](/vectofix/blog/how-to-check-and-prepare-svg-for-laser-cutting-lightburn). For what each defect actually does on the machine, see [why a bad SVG can cause problems in laser cutting](/vectofix/blog/why-a-bad-svg-can-cause-problems-in-laser-cutting).",
+      },
+      { type: "h2", text: "How should you use this checklist?" },
+      {
+        type: "p",
+        text: "Go through the points in order, on every file that goes to the machine, even one you have cut before: a re-exported file can pick up new defects. The list is grouped in four stages: structure, weight, job setup, then a test. Each point says what to check and how to fix it. The tool names below are LightBurn's; other laser programs have equivalents under similar names.",
+      },
+      { type: "h2", text: "Stage 1: is the structure of the file sound?" },
+      {
+        type: "ul",
+        items: [
+          "1. Scale. Check the dimensions in your cutting software, not only in the SVG: some editors export at a different unit or resolution. After import, measure a feature whose size you know, such as a hole or the overall width.",
+          "2. Closed paths. Every shape that must be cut out or filled has to be a closed loop, otherwise the piece stays attached or the fill does nothing. In LightBurn, Close Path joins a shape's start and end when they are within 0.5 mm, and Auto-Join Selected Shapes joins many segments whose ends almost touch (within 0.05 mm).",
+          "3. Duplicates (double lines). Identical shapes stacked on top of each other make the laser cut the same line twice, which widens the kerf and can burn the edge. Select everything and use Edit > Delete Duplicates in LightBurn: it removes objects with identical shape, size and position, so check by eye for near-duplicates it leaves behind.",
+        ],
+      },
+      { type: "h2", text: "Stage 2: is the file too heavy?" },
+      {
+        type: "ul",
+        items: [
+          "4. Node count. Read it, do not guess. A simple logo with tens of thousands of nodes is a warning sign: the software slows down and some controllers stutter on long runs of tiny segments. LightBurn's [Optimize Selected Shapes](https://docs.lightburnsoftware.com/1.7/Reference/OptimizeSelectedShapes/) can reduce it; zoom in on the result afterwards, because optimisation can soften fine corners. Our article on [why too many SVG nodes are a problem for cutting machines](/vectofix/blog/why-too-many-svg-nodes-are-a-problem-for-cutting-machines) explains where to draw the line.",
+          "5. Stray shapes. Zoom in and look for specks, tiny islands and leftover fragments around the design. Each one is a separate move and burn: they waste time and leave marks. Select them with a selection box and delete them, then check the node count again.",
+        ],
+      },
+      { type: "h2", text: "Stage 3: is the job set up the way the machine expects?" },
+      {
+        type: "ul",
+        items: [
+          "6. Layers and colours. Put cut, score and engrave operations on distinct layers or colours, the way your software assigns settings. A cut line left on an engrave layer will not go through; an engrave area on a cut layer will be outlined instead of filled.",
+          "7. Line weights. Make sure stroke widths are set the way your software reads them, so thin outlines are not treated as fills, or the reverse. When in doubt, look at the preview rather than the design view.",
+          "8. Text as paths. Convert text to outlines before export, so a missing font on the machine's computer cannot change the shape or the spacing.",
+          "9. Parts that touch or overlap. Overlapping parts may be cut together, cut twice, or merged into a single shape. Leave a small gap if the design allows it, or merge them on purpose with a weld or union in your editor.",
+        ],
+      },
+      { type: "h2", text: "Stage 4: what should you test before the real piece?" },
+      {
+        type: "ul",
+        items: [
+          "10. A scrap test. Run the job, or a small part of it with the finest details, on a scrap of the same material. It checks the file and the settings together, and it is the only point on this list that catches a power or speed problem.",
+        ],
+      },
+      {
+        type: "p",
+        text: "LightBurn's own [guide to getting a design laser ready](https://docs.lightburnsoftware.com/2.1/Collections/GettingADesignLaserReady/) and its [Edit menu reference](https://docs.lightburnsoftware.com/2.1/Reference/UI/EditMenu/) describe these tools in detail for your version.",
+      },
+      { type: "h2", text: "What if the file came from an automatic trace?" },
+      {
+        type: "p",
+        text: "Files produced by automatic vectorization (from a PNG or a JPG) tend to have rough edges, many nodes and stray shapes, so points 4 and 5 deserve extra care. The reflex of raising the precision everywhere usually makes things worse: more nodes, and the damaged zone is often still wrong. It is better to repair the damaged zones locally, as explained in [how to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization).",
+      },
+      {
+        type: "p",
+        text: "That is what [VectoFix](/vectofix/en) is built for: you paint over a damaged zone and it is retraced. The app shows fidelity and node count together on one line, because they pull in opposite directions: retracing a zone makes it more accurate and heavier, and seeing both stops you from optimising blindly. VectoFix does not check layers, stroke settings or duplicates; those stay with your editor and your cutting software.",
+      },
+      { type: "h2", text: "Why does the order matter?" },
+      {
+        type: "p",
+        text: "Fix structure first (scale, closed paths, duplicates), then weight (nodes, stray shapes), then job setup (layers, line weights, text, overlaps), and test last. That way you never spend time optimising a shape you will delete later, and deleting duplicates before counting nodes gives you a real figure instead of a doubled one.",
+      },
+      { type: "h2", text: "Conclusion: ten minutes before, a lot of material saved" },
+      {
+        type: "p",
+        text: "A checklist beats memory, especially at the end of a long day in the workshop. Run it on every file that goes to the machine and keep it next to the laser. You can try VectoFix with 3 free HD exports; Pro is a one-time €39 purchase, with no subscription.",
+      },
+    ],
+    faq: [
+      {
+        q: "What should I check before laser cutting an SVG?",
+        a: "Scale, closed paths, duplicates, node count, stray shapes, layers, line weights, text as paths, overlapping parts, then a scrap test.",
+      },
+      {
+        q: "How do I remove double lines in LightBurn?",
+        a: "Select everything and use Edit > Delete Duplicates. It only removes exact copies (same shape, size and position), so check the result by eye.",
+      },
+      {
+        q: "Why convert text to paths?",
+        a: "So the shape does not change if the font is missing on the computer that drives the laser.",
+      },
+      {
+        q: "Do I need to test on scrap?",
+        a: "It is strongly advised for expensive material or fine details: it checks the file and the power and speed settings together.",
+      },
+      {
+        q: "Does VectoFix check all of this?",
+        a: "No. It helps with trace quality and node count by repairing damaged zones; the other checks are done in your editor and cutting software.",
+      },
+    ],
+  }),
+  make({
+    slug: "checklist-corriger-un-svg-avant-de-l-envoyer-a-la-decoupe-laser",
+    title: "Checklist : corriger un SVG avant la découpe laser (LightBurn, traits doubles, nœuds)",
+    metaTitle:
+      "Checklist SVG avant découpe laser (LightBurn) — VectoFix",
+    description:
+      "Une checklist en dix points pour un SVG prêt à couper dans LightBurn ou votre logiciel laser : échelle, tracés fermés, traits doubles, nœuds, formes parasites, calques et essai sur chute.",
+    image: { src: "/images/blog/vectofix-checklist-svg-laser-fr.jpg", alt: "Checklist en dix points avant la découpe laser d'un SVG, en quatre étapes : structure (échelle, tracés fermés, doublons), poids (nœuds, formes parasites), préparation (calques, épaisseurs, texte en tracés, chevauchements), puis essai sur chute" },
+    date: "2026-10-23",
+    author: "L'équipe VectoFix",
+    lang: "fr",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Avant d'envoyer un SVG dans LightBurn ou un autre logiciel laser, vérifiez dix points : l'échelle, les tracés fermés, les traits doubles (doublons), le nombre de nœuds, les formes parasites, les calques, les épaisseurs de ligne, le texte converti en tracés, les pièces qui se touchent ou se chevauchent, et un essai sur chute. Dix minutes avec cette liste économisent de la matière, du temps machine et des pièces ratées.",
+      },
+      {
+        type: "p",
+        text: "C'est la version courte, à imprimer. Pour la méthode complète, étape par étape, lisez notre guide pour [contrôler et préparer un SVG pour la découpe laser dans LightBurn](/vectofix/blog/comment-preparer-un-svg-pour-la-decoupe-laser-lightburn). Pour ce que chaque défaut provoque réellement sur la machine, voyez [pourquoi un mauvais SVG pose problème en découpe laser](/vectofix/blog/pourquoi-un-mauvais-svg-pose-probleme-en-decoupe-laser).",
+      },
+      { type: "h2", text: "Comment utiliser cette checklist ?" },
+      {
+        type: "p",
+        text: "Passez les points dans l'ordre, sur chaque fichier qui part vers la machine, même un fichier déjà découpé : un fichier réexporté peut avoir récupéré de nouveaux défauts. La liste est regroupée en quatre étapes : la structure, le poids, la préparation du travail, puis l'essai. Chaque point dit quoi vérifier et comment corriger. Les noms d'outils cités sont ceux de LightBurn, dont l'interface est en anglais ; les autres logiciels laser ont des équivalents sous des noms proches.",
+      },
+      { type: "h2", text: "Étape 1 : la structure du fichier est-elle saine ?" },
+      {
+        type: "ul",
+        items: [
+          "1. L'échelle. Vérifiez les dimensions dans votre logiciel de découpe, pas seulement dans le SVG : certains éditeurs exportent dans une autre unité ou une autre résolution. Après l'import, mesurez un élément dont vous connaissez la taille, un trou ou la largeur totale par exemple.",
+          "2. Les tracés fermés. Toute forme à découper ou à remplir doit être une boucle fermée, sinon la pièce reste attachée ou le remplissage ne fait rien. Dans LightBurn, Close Path relie le début et la fin d'une forme s'ils sont à moins de 0,5 mm, et Auto-Join Selected Shapes relie d'un coup de nombreux segments dont les extrémités se touchent presque (moins de 0,05 mm).",
+          "3. Les doublons (traits doubles). Des formes identiques empilées font couper deux fois la même ligne, ce qui élargit la saignée et peut brûler le bord. Sélectionnez tout et utilisez Edit > Delete Duplicates dans LightBurn : l'outil supprime les objets de forme, de taille et de position identiques. Vérifiez à l'œil les quasi-doublons qu'il laisse passer.",
+        ],
+      },
+      { type: "h2", text: "Étape 2 : le fichier est-il trop lourd ?" },
+      {
+        type: "ul",
+        items: [
+          "4. Le nombre de nœuds. Lisez-le, ne le devinez pas. Un logo simple avec des dizaines de milliers de nœuds est un signal d'alerte : le logiciel ralentit et certains contrôleurs saccadent sur de longues suites de minuscules segments. La fonction [Optimize Selected Shapes](https://docs.lightburnsoftware.com/1.7/Reference/OptimizeSelectedShapes/) de LightBurn peut le réduire ; zoomez ensuite sur le résultat, car l'optimisation peut adoucir des angles fins. Notre article sur [le problème des SVG avec trop de nœuds pour les machines de découpe](/vectofix/blog/trop-de-noeuds-svg-probleme-machines-de-decoupe) aide à fixer la limite.",
+          "5. Les formes parasites. Zoomez et cherchez les points, petits îlots et fragments restés autour du dessin. Chacun est un déplacement et une brûlure de plus : ils coûtent du temps et laissent des marques. Sélectionnez-les avec un cadre de sélection, supprimez-les, puis relisez le nombre de nœuds.",
+        ],
+      },
+      { type: "h2", text: "Étape 3 : le travail est-il préparé comme l'attend la machine ?" },
+      {
+        type: "ul",
+        items: [
+          "6. Les calques et couleurs. Placez découpe, marquage et gravure sur des calques ou couleurs distincts, selon la façon dont votre logiciel attribue les réglages. Une ligne de coupe restée sur un calque de gravure ne traversera pas ; une zone de gravure sur un calque de coupe sera détourée au lieu d'être remplie.",
+          "7. Les épaisseurs de ligne. Vérifiez que les largeurs de trait sont réglées comme votre logiciel les lit, pour que les contours fins ne soient pas traités comme des remplissages, ou l'inverse. En cas de doute, fiez-vous à l'aperçu plutôt qu'à la vue de conception.",
+          "8. Le texte en tracés. Convertissez le texte en contours avant l'export, pour qu'une police absente sur l'ordinateur de la machine ne change ni la forme ni l'espacement.",
+          "9. Les pièces qui se touchent ou se chevauchent. Des pièces qui se chevauchent peuvent être coupées ensemble, deux fois, ou fusionnées en une seule forme. Laissez un petit écart si le dessin le permet, ou fusionnez-les volontairement dans votre éditeur.",
+        ],
+      },
+      { type: "h2", text: "Étape 4 : que tester avant la vraie pièce ?" },
+      {
+        type: "ul",
+        items: [
+          "10. Un essai sur chute. Lancez le travail, ou la partie qui contient les détails les plus fins, sur une chute du même matériau. L'essai contrôle le fichier et les réglages ensemble : c'est le seul point de la liste qui détecte un problème de puissance ou de vitesse.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Le [guide de LightBurn pour préparer un dessin à la découpe](https://docs.lightburnsoftware.com/2.1/Collections/GettingADesignLaserReady/) et sa [référence du menu Edit](https://docs.lightburnsoftware.com/2.1/Reference/UI/EditMenu/) détaillent ces outils pour votre version (documentation en anglais).",
+      },
+      { type: "h2", text: "Et si le fichier vient d'une vectorisation automatique ?" },
+      {
+        type: "p",
+        text: "Les fichiers issus d'une vectorisation automatique (depuis un PNG ou un JPG) ont tendance à avoir des bords rugueux, beaucoup de nœuds et des formes parasites : les points 4 et 5 méritent donc un soin particulier. Le réflexe de monter la précision partout aggrave souvent les choses : plus de nœuds, et la zone abîmée reste fausse. Mieux vaut réparer les zones abîmées localement, comme l'explique [comment corriger un SVG après une vectorisation automatique](/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique).",
+      },
+      {
+        type: "p",
+        text: "C'est le rôle de [VectoFix](/vectofix) : vous peignez sur une zone abîmée, elle est retracée. L'application affiche la fidélité et le nombre de nœuds ensemble, sur une même ligne, parce qu'ils s'opposent : retracer une zone la rend plus juste et plus lourde, et voir les deux évite d'optimiser à l'aveugle. VectoFix ne contrôle ni les calques, ni les réglages de trait, ni les doublons : ils restent du ressort de votre éditeur et de votre logiciel de découpe.",
+      },
+      { type: "h2", text: "Pourquoi l'ordre compte-t-il ?" },
+      {
+        type: "p",
+        text: "Corrigez d'abord la structure (échelle, tracés fermés, doublons), puis le poids (nœuds, formes parasites), puis la préparation (calques, épaisseurs, texte, chevauchements), et testez en dernier. Vous n'optimisez ainsi jamais une forme que vous supprimerez ensuite, et supprimer les doublons avant de compter les nœuds vous donne un vrai chiffre plutôt qu'un chiffre doublé.",
+      },
+      { type: "h2", text: "Conclusion : dix minutes avant, beaucoup de matière économisée" },
+      {
+        type: "p",
+        text: "Une checklist vaut mieux que la mémoire, surtout en fin de journée à l'atelier. Appliquez-la à chaque fichier qui part vers la machine et gardez-la à côté du laser. Vous pouvez essayer VectoFix avec 3 exports HD offerts ; la version Pro est un achat unique de 39 €, sans abonnement.",
+      },
+    ],
+    faq: [
+      {
+        q: "Que vérifier avant de découper un SVG au laser ?",
+        a: "L'échelle, les tracés fermés, les doublons, le nombre de nœuds, les formes parasites, les calques, les épaisseurs, le texte en tracés, les chevauchements, puis un essai sur chute.",
+      },
+      {
+        q: "Comment supprimer les traits doubles dans LightBurn ?",
+        a: "Sélectionnez tout et utilisez Edit > Delete Duplicates. L'outil ne supprime que les copies exactes (même forme, taille et position) : vérifiez le résultat à l'œil.",
+      },
+      {
+        q: "Pourquoi convertir le texte en tracés ?",
+        a: "Pour que la forme ne change pas si la police manque sur l'ordinateur qui pilote le laser.",
+      },
+      {
+        q: "Faut-il tester sur une chute ?",
+        a: "C'est vivement conseillé pour un matériau coûteux ou des détails fins : l'essai contrôle le fichier et les réglages de puissance et de vitesse ensemble.",
+      },
+      {
+        q: "VectoFix vérifie-t-il tout cela ?",
+        a: "Non. Il aide sur la qualité de vectorisation et le nombre de nœuds en réparant les zones abîmées ; les autres contrôles se font dans votre éditeur et votre logiciel de découpe.",
       },
     ],
   }),

@@ -193,6 +193,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.vectorpop.fr/vectofix/blog/how-to-fix-an-svg-before-sending-it-to-a-laser-cutter</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://www.vectorpop.fr/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique</loc>
     <lastmod>2026-10-07</lastmod>
     <changefreq>monthly</changefreq>
@@ -261,6 +267,12 @@
   <url>
     <loc>https://www.vectorpop.fr/vectofix/blog/pourquoi-un-mauvais-svg-pose-probleme-en-decoupe-laser</loc>
     <lastmod>2026-10-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.vectorpop.fr/vectofix/blog/checklist-corriger-un-svg-avant-de-l-envoyer-a-la-decoupe-laser</loc>
+    <lastmod>2026-10-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

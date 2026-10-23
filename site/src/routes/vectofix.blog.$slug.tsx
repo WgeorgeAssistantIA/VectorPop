@@ -24,6 +24,13 @@ export const Route = createFileRoute("/vectofix/blog/$slug")({
         { property: "og:type", content: "article" },
         { property: "og:url", content: canonical },
         { property: "article:author", content: post.author },
+        ...(post.image
+          ? [
+              { property: "og:image", content: `https://www.vectorpop.fr${post.image.src}` },
+              { property: "og:image:alt", content: post.image.alt },
+              { name: "twitter:image", content: `https://www.vectorpop.fr${post.image.src}` },
+            ]
+          : []),
       ],
       links: [{ rel: "canonical", href: canonical }],
       scripts: [
@@ -42,6 +49,7 @@ export const Route = createFileRoute("/vectofix/blog/$slug")({
               "@type": "Organization",
               name: "VectoFix",
             },
+            image: post.image ? `https://www.vectorpop.fr${post.image.src}` : "https://www.vectorpop.fr/vectofix/og.png",
             mainEntityOfPage: canonical,
             url: canonical,
           }),
@@ -119,6 +127,16 @@ function VectoFixBlogPost() {
           </h1>
           <p className="mt-4 text-lg text-muted-foreground">{post.description}</p>
         </header>
+
+        {post.image && (
+          <img
+            src={post.image.src}
+            alt={post.image.alt}
+            width={1200}
+            height={630}
+            className="mb-10 w-full rounded-xl border border-border"
+          />
+        )}
 
         <div className="space-y-6 text-foreground/90 leading-relaxed">
           {post.content.map((block, i) => {
