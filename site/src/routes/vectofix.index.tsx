@@ -763,6 +763,7 @@ export const Route = createFileRoute("/vectofix/")({
           sameAs: [
             "https://www.wikidata.org/wiki/Q141656936",
             "https://apps.microsoft.com/detail/9NR382QJ8SBK",
+            "https://vectofix-vectorization-repair-tool.en.uptodown.com/windows",
           ],
           offers: { "@type": "Offer", price: "39", priceCurrency: "EUR" },
           image: "https://www.vectorpop.fr/og.png",
@@ -1516,6 +1517,14 @@ export function VectoFixPage({ forcedLang }: { forcedLang?: Lang } = {}) {
                 />
               </a>
             </div>
+            <a
+              href="https://vectofix-vectorization-repair-tool.en.uptodown.com/windows"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-block text-xs text-muted-foreground underline hover:text-foreground"
+            >
+              {lang === "fr" ? "Aussi disponible sur Uptodown" : "Also available on Uptodown"}
+            </a>
           </Reveal>
         </div>
       </section>

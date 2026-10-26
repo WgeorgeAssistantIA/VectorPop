@@ -35,6 +35,7 @@ export const Route = createFileRoute("/vectofix/en")({
           sameAs: [
             "https://www.wikidata.org/wiki/Q141656936",
             "https://apps.microsoft.com/detail/9NR382QJ8SBK",
+            "https://vectofix-vectorization-repair-tool.en.uptodown.com/windows",
           ],
           offers: { "@type": "Offer", price: "39", priceCurrency: "EUR" },
           image: "https://www.vectorpop.fr/og.png",
