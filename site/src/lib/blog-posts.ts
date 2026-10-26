@@ -623,6 +623,10 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "Going further: next, read [how to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization) and [why your PNG to SVG conversion does not look like the original](/vectofix/blog/why-png-to-svg-conversion-doesnt-look-like-the-original).",
       },
+      {
+        type: "p",
+        text: "Related reading: the opposite problem, when a trace adds specks instead of losing detail, is covered in [how to fix tiny shapes and artifacts in an SVG](/vectofix/blog/how-to-fix-tiny-shapes-and-artifacts-in-an-svg).",
+      },
     ],
   }),
 
@@ -1054,6 +1058,10 @@ export const posts: BlogPost[] = [
       {
         type: "p",
         text: "Pour aller plus loin : lisez ensuite [comment corriger un SVG après une vectorisation automatique](/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique) et [pourquoi votre conversion PNG en SVG ne ressemble pas à l'original](/vectofix/blog/pourquoi-conversion-png-svg-ne-ressemble-pas-a-l-original).",
+      },
+      {
+        type: "p",
+        text: "À lire aussi : le problème inverse, quand la vectorisation ajoute des taches au lieu d'en perdre, est traité dans [comment corriger les petites formes et les artefacts dans un SVG](/vectofix/blog/corriger-les-petites-formes-et-artefacts-dans-un-svg).",
       },
     ],
   }),

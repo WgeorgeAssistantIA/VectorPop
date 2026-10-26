@@ -1510,6 +1510,10 @@ export const vectofixNewPosts: BlogPost[] = [
         text: "A node count is the first thing worth checking in a traced file. Keep what the shape needs, remove what it does not, and look at the fidelity while you do it. [VectoFix](/vectofix/en) shows both numbers on one line, repairs only the zones that need it, and gives you 3 full-resolution HD exports to try before a one-time €39 Pro licence. For the broader idea of controlling an SVG before production, read [what vector repair is](/vectofix/blog/what-is-vector-repair-guide-to-vector-qa).",
       },
       { type: "p", text: "Related reading: [the 10-point checklist before laser cutting](/vectofix/blog/how-to-fix-an-svg-before-sending-it-to-a-laser-cutter)." },
+      {
+        type: "p",
+        text: "Related reading: many of the extra nodes come from tiny stray shapes. See [how to fix tiny shapes and artifacts in an SVG](/vectofix/blog/how-to-fix-tiny-shapes-and-artifacts-in-an-svg).",
+      },
     ],
     faq: [
       {
@@ -1901,6 +1905,10 @@ export const vectofixNewPosts: BlogPost[] = [
         text: "Le nombre de nœuds est la première chose à vérifier dans un fichier vectorisé. Gardez ce dont la forme a besoin, retirez le reste, et surveillez la fidélité pendant ce temps. [VectoFix](/vectofix) montre les deux chiffres sur une même ligne, répare uniquement les zones qui le demandent et offre 3 exports HD en pleine résolution à essayer avant une licence Pro à 39 € en achat unique. Pour l'idée plus large de contrôler un SVG avant production, lisez [ce qu'est la réparation vectorielle](/vectofix/blog/qu-est-ce-que-la-reparation-vectorielle-guide-vector-qa).",
       },
       { type: "p", text: "À lire aussi : [la checklist en 10 points avant la découpe laser](/vectofix/blog/checklist-corriger-un-svg-avant-de-l-envoyer-a-la-decoupe-laser)." },
+      {
+        type: "p",
+        text: "À lire aussi : une bonne partie des nœuds en trop vient de minuscules formes parasites. Voyez [comment corriger les petites formes et les artefacts dans un SVG](/vectofix/blog/corriger-les-petites-formes-et-artefacts-dans-un-svg).",
+      },
     ],
     faq: [
       {
@@ -2052,7 +2060,7 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "ul",
         items: [
           "4. Node count. Read it, do not guess. A simple logo with tens of thousands of nodes is a warning sign: the software slows down and some controllers stutter on long runs of tiny segments. LightBurn's [Optimize Selected Shapes](https://docs.lightburnsoftware.com/1.7/Reference/OptimizeSelectedShapes/) can reduce it; zoom in on the result afterwards, because optimisation can soften fine corners. Our article on [why too many SVG nodes are a problem for cutting machines](/vectofix/blog/why-too-many-svg-nodes-are-a-problem-for-cutting-machines) explains where to draw the line.",
-          "5. Stray shapes. Zoom in and look for specks, tiny islands and leftover fragments around the design. Each one is a separate move and burn: they waste time and leave marks. Select them with a selection box and delete them, then check the node count again.",
+          "5. Stray shapes. Zoom in and look for specks, tiny islands and leftover fragments around the design. Each one is a separate move and burn: they waste time and leave marks. Select them with a selection box and delete them, then check the node count again. Where these shapes come from and how to prevent them at trace time: see [how to fix tiny shapes and artifacts in an SVG](/vectofix/blog/how-to-fix-tiny-shapes-and-artifacts-in-an-svg).",
         ],
       },
       { type: "h2", text: "Stage 3: is the job set up the way the machine expects?" },
@@ -2159,7 +2167,7 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "ul",
         items: [
           "4. Le nombre de nœuds. Lisez-le, ne le devinez pas. Un logo simple avec des dizaines de milliers de nœuds est un signal d'alerte : le logiciel ralentit et certains contrôleurs saccadent sur de longues suites de minuscules segments. La fonction [Optimize Selected Shapes](https://docs.lightburnsoftware.com/1.7/Reference/OptimizeSelectedShapes/) de LightBurn peut le réduire ; zoomez ensuite sur le résultat, car l'optimisation peut adoucir des angles fins. Notre article sur [le problème des SVG avec trop de nœuds pour les machines de découpe](/vectofix/blog/trop-de-noeuds-svg-probleme-machines-de-decoupe) aide à fixer la limite.",
-          "5. Les formes parasites. Zoomez et cherchez les points, petits îlots et fragments restés autour du dessin. Chacun est un déplacement et une brûlure de plus : ils coûtent du temps et laissent des marques. Sélectionnez-les avec un cadre de sélection, supprimez-les, puis relisez le nombre de nœuds.",
+          "5. Les formes parasites. Zoomez et cherchez les points, petits îlots et fragments restés autour du dessin. Chacun est un déplacement et une brûlure de plus : ils coûtent du temps et laissent des marques. Sélectionnez-les avec un cadre de sélection, supprimez-les, puis relisez le nombre de nœuds. D'où viennent ces formes et comment les éviter dès la vectorisation : voyez [comment corriger les petites formes et les artefacts dans un SVG](/vectofix/blog/corriger-les-petites-formes-et-artefacts-dans-un-svg).",
         ],
       },
       { type: "h2", text: "Étape 3 : le travail est-il préparé comme l'attend la machine ?" },
@@ -2223,6 +2231,262 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         q: "VectoFix vérifie-t-il tout cela ?",
         a: "Non. Il aide sur la qualité de vectorisation et le nombre de nœuds en réparant les zones abîmées ; les autres contrôles se font dans votre éditeur et votre logiciel de découpe.",
+      },
+    ],
+  }),
+  make({
+    slug: "how-to-fix-tiny-shapes-and-artifacts-in-an-svg",
+    title: "How to Fix Tiny Shapes and Artifacts in an SVG",
+    metaTitle:
+      "Fix Tiny Shapes and Specks in an SVG — VectoFix",
+    description:
+      "Dust, specks and micro-shapes after a trace: where they come from, how to find and remove them and how to stop them coming back, with real speckle-filter numbers.",
+    image: { src: "/images/blog/vectofix-tiny-shapes-speckle-filter-en.jpg", alt: "The same heavily compressed JPG logo traced twice, shown in outline view: 2,045 shapes with the speckle filter at 0, full of tiny specks, against 168 shapes with the filter at 4" },
+    date: "2026-10-26",
+    author: "VectoFix Team",
+    lang: "en",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Tiny shapes and artefacts in a traced SVG are almost always noise from the source image that the tracer faithfully turned into shapes. Prevent them with a cleaner source and a sensible speckle filter, find them by zooming in and checking the node count, and delete only the ones that carry no meaning. If a whole area is affected, re-trace that area rather than cleaning it by hand.",
+      },
+      {
+        type: "p",
+        text: "You zoom in on a clean-looking logo and find hundreds of tiny dots, specks along the edges or microscopic shapes hidden inside larger ones. They add nodes, make the file heavier and cause trouble when it is cut or embroidered: a laser or a vinyl cutter treats each speck as a path to follow. This article explains where they come from, how to spot them, how to stop them and how to remove the ones that remain. For their effect on cutting machines, see [why too many SVG nodes are a problem for cutting machines](/vectofix/blog/why-too-many-svg-nodes-are-a-problem-for-cutting-machines).",
+      },
+      { type: "h2", text: "Where do tiny shapes come from?" },
+      {
+        type: "p",
+        text: "A tracer does not know what is dirt and what is design: it outlines every patch of colour that is large enough to pass its filter. The usual sources are:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Compression dust: JPG blocks and stray pixels around edges, invisible at normal size",
+          "Anti-aliasing fringes: the faint in-between pixels along every edge, traced as thin slivers of an intermediate colour",
+          "Scan noise: paper grain, dust and dirt from scanned artwork",
+          "Colour splitting: a gradient or soft shadow broken into many small patches of near-identical colours",
+          "Overly detailed settings: a very low speckle filter or a very high number of colours, which ask the tracer to follow every pixel",
+        ],
+      },
+      {
+        type: "p",
+        text: "The scale of the problem is easy to underestimate. In our own tests, re-tracing a damaged area of one image with VectoFix's speckle filter at 0 produced 17,608 curves, against 1,122 with the filter at 2: fifteen times the weight, for a barely visible gain in faithfulness. Most of those extra curves were exactly the kind of specks this article is about. The image above shows the same effect on our demo logo saved as a heavily compressed JPG: 2,045 shapes with the filter at 0, 168 with the filter at 4.",
+      },
+      { type: "h2", text: "How do you find them?" },
+      {
+        type: "ul",
+        items: [
+          "Zoom to 400 percent and scan the edges and the empty areas, where specks hide best",
+          "Fill shapes with a bright colour or switch to outline view in your vector editor, so small objects stand out against the background",
+          "Separate the pieces: in [Inkscape](https://inkscape.org) 1.3 and later, Path > Split Path breaks a compound shape into its separate parts, which makes small islands selectable on their own",
+          "Watch the node count: a simple-looking logo with thousands of nodes is a warning sign. VectoFix shows fidelity, node count and file size side by side after each trace, so a jump in nodes is visible at once",
+        ],
+      },
+      { type: "h2", text: "How do you prevent them?" },
+      {
+        type: "p",
+        text: "Prevention is cheaper than cleaning, and it starts before the trace.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Use a clean, large source, preferably a PNG rather than a recompressed JPG",
+          "Raise the speckle filter on noisy sources. In VectoFix it runs from 0 to 20 and removes small isolated spots. The default is 4 for the Flat and Black and white presets and 2 for the Detailed preset, which keeps more fine texture",
+          "Lower the number of colours for flat artwork: the Flat preset works with 64 colours, the Detailed one with 256; a two-colour logo does not need either",
+          "Raise colour merging (0 to 100, 24 by default in the Flat preset) when near-identical shades produce many small patches",
+        ],
+      },
+      {
+        type: "p",
+        text: "How far should you push the filter? We measured it by re-tracing damaged areas on three images, comparing the fidelity gained in those areas against the nodes added to the whole file:",
+      },
+      {
+        type: "ul",
+        items: [
+          "filter 0: +76 % fidelity, but +67 % nodes",
+          "filter 2: +70 % fidelity, +27 % nodes",
+          "filter 4: +68 % fidelity, +23 % nodes",
+          "filter 8: +62 % fidelity, +14 % nodes",
+        ],
+      },
+      {
+        type: "p",
+        text: "Between 2 and 4 you lose almost nothing visible and save nodes; beyond 8 you start losing real detail. Always check the preview after each change, because too high a filter removes small parts of the design too, as explained in [why your vectorized SVG lost detail](/vectofix/blog/why-your-vectorized-svg-lost-detail).",
+      },
+      { type: "h2", text: "How do you remove the ones that are left?" },
+      {
+        type: "p",
+        text: "Two approaches, depending on how many there are.",
+      },
+      {
+        type: "p",
+        text: "A few isolated specks: select them and delete them in your vector editor. Work carefully near real details, such as the dot of an i, a registered mark or the gap in a letter, and keep what carries meaning. Note that a Simplify command reduces the nodes inside each shape but does not delete the shapes themselves: a speck stays a speck, just with fewer points.",
+      },
+      {
+        type: "p",
+        text: "Hundreds of specks, or one dirty area: do not clean by hand. Re-trace instead. Raising the global filter works when the noise is everywhere, but it also thins out the clean parts of the image. That is the limit of one setting for the whole image, explained in [why one slider can't fix a whole vector trace](/vectofix/blog/one-slider-cant-fix-a-whole-image). In VectoFix you paint over the affected area and only that area is re-traced with its own settings; the Light mode uses a stronger speckle filter (8 instead of 4) and roughly halves the nodes of the repaired area. The method is detailed in [how to fix a bad vectorization without starting over](/vectofix/blog/how-to-fix-a-bad-vectorization-without-starting-over).",
+      },
+      { type: "h2", text: "What if specks are part of a deliberate texture?" },
+      {
+        type: "p",
+        text: "Some artwork, such as a stipple effect, halftone dots or a deliberately grainy illustration, is made of small dots. In that case the filter is the enemy: lower it, accept the higher node count and keep the texture where it belongs. Then ask what the file is for. On screen or in print, thousands of dots are fine. On a cutter, an engraver or an embroidery machine, they can mean hours of machine time or tiny pieces that tear. A practical middle ground is to keep the texture in one area and trace the rest of the image with the usual filter. Before sending such a file to a laser, run through [this checklist for fixing an SVG before a laser cutter](/vectofix/blog/how-to-fix-an-svg-before-sending-it-to-a-laser-cutter).",
+      },
+      { type: "h2", text: "Conclusion: clean the source, filter sensibly, delete the rest" },
+      {
+        type: "p",
+        text: "Tiny shapes are a trace-quality problem with a simple order of fixes: a cleaner source first, a speckle filter between 2 and 4 for most images, then local re-tracing or manual deletion for what remains. Check the node count at each step: it tells you more than your eyes at normal zoom. [VectoFix](/vectofix/en) lets you try this on your own files with 3 full-resolution exports; Pro is a one-time €39.",
+      },
+    ],
+    faq: [
+      {
+        q: "Why does my SVG have tiny dots I cannot see in the original?",
+        a: "Compression dust, scan noise or faint edge pixels were traced as shapes. They are invisible at normal size in the image but become real objects in the SVG.",
+      },
+      {
+        q: "How do I stop specks appearing?",
+        a: "Use a cleaner source, raise the speckle filter on noisy images and reduce the number of colours for flat artwork.",
+      },
+      {
+        q: "Will the speckle filter remove real details?",
+        a: "If set too high, yes. In our measurements, going from 4 to 8 cut the extra nodes from 23 % to 14 % but lost 6 points of fidelity gain. Check the preview after each change.",
+      },
+      {
+        q: "Do tiny shapes matter for cutting?",
+        a: "Yes. Each one is a path the machine has to follow, which adds time and can produce pieces too small to hold.",
+      },
+      {
+        q: "Can I delete them in bulk?",
+        a: "Splitting compound paths makes small pieces selectable; for large numbers, re-trace the affected area with a stronger filter rather than deleting by hand.",
+      },
+    ],
+  }),
+  make({
+    slug: "corriger-les-petites-formes-et-artefacts-dans-un-svg",
+    title: "Comment corriger les petites formes et les artefacts dans un SVG",
+    metaTitle:
+      "Petites formes et artefacts dans un SVG — VectoFix",
+    description:
+      "Poussières, taches et micro-formes après une vectorisation : d'où elles viennent, comment les trouver, les supprimer et éviter qu'elles reviennent, avec les vrais chiffres du filtre de parasites.",
+    image: { src: "/images/blog/vectofix-petites-formes-filtre-parasites-fr.jpg", alt: "Le même logo en JPG très compressé vectorisé deux fois, en vue contours : 2 045 formes avec le filtre de parasites à 0, pleines de petites taches, contre 168 formes avec le filtre à 4" },
+    date: "2026-10-26",
+    author: "L'équipe VectoFix",
+    lang: "fr",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Les petites formes et les artefacts d'un SVG vectorisé sont presque toujours du bruit de l'image source, que le vectoriseur a fidèlement transformé en formes. Prévenez-les avec une source plus propre et un filtre de parasites bien réglé, repérez-les en zoomant et en surveillant le nombre de nœuds, et ne supprimez que celles qui n'ont aucun sens. Si toute une zone est touchée, retracez cette zone plutôt que de la nettoyer à la main.",
+      },
+      {
+        type: "p",
+        text: "Vous zoomez sur un logo d'apparence propre et vous trouvez des centaines de petits points, des taches le long des bords ou de microscopiques formes cachées dans de plus grandes. Elles ajoutent des nœuds, alourdissent le fichier et posent problème à la découpe ou à la broderie : un laser ou une découpeuse vinyle traite chaque tache comme un tracé à suivre. Cet article explique d'où elles viennent, comment les repérer, comment les éviter et comment retirer celles qui restent. Pour leur effet sur les machines, voyez [pourquoi trop de nœuds posent problème aux machines de découpe](/vectofix/blog/trop-de-noeuds-svg-probleme-machines-de-decoupe).",
+      },
+      { type: "h2", text: "D'où viennent les petites formes ?" },
+      {
+        type: "p",
+        text: "Un vectoriseur ne sait pas distinguer la saleté du dessin : il contourne chaque tache de couleur assez grande pour passer son filtre. Les sources habituelles sont :",
+      },
+      {
+        type: "ul",
+        items: [
+          "La poussière de compression : blocs JPG et pixels isolés autour des bords, invisibles en taille normale",
+          "Les franges de lissage : les pixels intermédiaires, plus pâles, le long de chaque bord, tracés comme de fines lamelles d'une couleur intermédiaire",
+          "Le bruit de numérisation : grain du papier, poussières et salissures d'un dessin scanné",
+          "Le découpage des couleurs : un dégradé ou une ombre douce brisé en nombreuses petites taches de couleurs presque identiques",
+          "Des réglages trop fins : un filtre de parasites très bas ou un très grand nombre de couleurs, qui demandent au vectoriseur de suivre chaque pixel",
+        ],
+      },
+      {
+        type: "p",
+        text: "L'ampleur du problème se sous-estime facilement. Lors de nos propres tests, retracer une zone abîmée d'une image avec le filtre de parasites de VectoFix à 0 a produit 17 608 courbes, contre 1 122 avec le filtre à 2 : quinze fois plus lourd, pour un gain de fidélité à peine visible. La plupart de ces courbes en trop étaient exactement les taches dont parle cet article. L'image ci-dessus montre le même effet sur notre logo de démonstration enregistré en JPG très compressé : 2 045 formes avec le filtre à 0, 168 avec le filtre à 4.",
+      },
+      { type: "h2", text: "Comment les trouver ?" },
+      {
+        type: "ul",
+        items: [
+          "Zoomez à 400 % et parcourez les bords et les zones vides, là où les taches se cachent le mieux",
+          "Remplissez les formes d'une couleur vive ou passez en affichage contour dans votre éditeur vectoriel, pour que les petits objets ressortent sur le fond",
+          "Séparez les morceaux : dans [Inkscape](https://inkscape.org) 1.3 et suivants, Chemin > Séparer découpe une forme composée en ses parties, ce qui rend les petits îlots sélectionnables un par un",
+          "Surveillez le nombre de nœuds : un logo d'aspect simple avec des milliers de nœuds est un signal d'alerte. VectoFix affiche côte à côte la fidélité, le nombre de nœuds et le poids du fichier après chaque tracé, si bien qu'un bond du nombre de nœuds se voit tout de suite",
+        ],
+      },
+      { type: "h2", text: "Comment les prévenir ?" },
+      {
+        type: "p",
+        text: "Prévenir coûte moins cher que nettoyer, et cela commence avant le tracé.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Partez d'une source propre et grande, de préférence un PNG plutôt qu'un JPG recompressé",
+          "Montez le filtre de parasites sur les sources bruitées. Dans VectoFix, il va de 0 à 20 et supprime les petites taches isolées. Il vaut 4 par défaut dans les préréglages Aplats et Noir et blanc, et 2 dans le préréglage Détaillé, qui garde plus de texture fine",
+          "Baissez le nombre de couleurs pour un dessin en aplats : le préréglage Aplats travaille avec 64 couleurs, le Détaillé avec 256 ; un logo en deux couleurs n'a besoin ni de l'un ni de l'autre",
+          "Montez la fusion des teintes (de 0 à 100, 24 par défaut dans le préréglage Aplats) quand des nuances presque identiques produisent beaucoup de petites taches",
+        ],
+      },
+      {
+        type: "p",
+        text: "Jusqu'où pousser le filtre ? Nous l'avons mesuré en retraçant des zones abîmées sur trois images, en comparant la fidélité gagnée dans ces zones et les nœuds ajoutés au fichier entier :",
+      },
+      {
+        type: "ul",
+        items: [
+          "filtre 0 : +76 % de fidélité, mais +67 % de nœuds",
+          "filtre 2 : +70 % de fidélité, +27 % de nœuds",
+          "filtre 4 : +68 % de fidélité, +23 % de nœuds",
+          "filtre 8 : +62 % de fidélité, +14 % de nœuds",
+        ],
+      },
+      {
+        type: "p",
+        text: "Entre 2 et 4, on ne perd presque rien de visible et on économise des nœuds ; au-delà de 8, on commence à perdre de vrais détails. Vérifiez toujours l'aperçu après chaque changement, car un filtre trop haut retire aussi de petites parties du dessin, comme expliqué dans [pourquoi votre SVG vectorisé a perdu du détail](/vectofix/blog/pourquoi-votre-svg-vectorise-a-perdu-du-detail).",
+      },
+      { type: "h2", text: "Comment supprimer celles qui restent ?" },
+      {
+        type: "p",
+        text: "Deux approches, selon leur nombre.",
+      },
+      {
+        type: "p",
+        text: "Quelques taches isolées : sélectionnez-les et supprimez-les dans votre éditeur vectoriel. Travaillez avec soin près des vrais détails, comme le point d'un i, un symbole de marque déposée ou l'ouverture d'une lettre, et gardez ce qui a du sens. Attention : une commande Simplifier réduit les nœuds à l'intérieur de chaque forme, mais ne supprime pas les formes elles-mêmes. Une tache reste une tache, simplement avec moins de points.",
+      },
+      {
+        type: "p",
+        text: "Des centaines de taches, ou une zone sale : ne nettoyez pas à la main, retracez. Monter le filtre global fonctionne quand le bruit est partout, mais cela appauvrit aussi les parties propres de l'image. C'est la limite d'un seul réglage pour toute l'image, expliquée dans [pourquoi un seul curseur ne peut pas réparer un tracé](/vectofix/blog/un-seul-curseur-ne-peut-pas-tout-reparer). Dans VectoFix, vous peignez la zone touchée et seule cette zone est retracée, avec ses propres réglages ; le mode Léger utilise un filtre de parasites plus fort (8 au lieu de 4) et divise à peu près par deux les nœuds de la zone réparée. La méthode est détaillée dans [comment réparer une mauvaise vectorisation sans tout recommencer](/vectofix/blog/comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer).",
+      },
+      { type: "h2", text: "Et si les taches font partie d'une texture voulue ?" },
+      {
+        type: "p",
+        text: "Certains dessins, comme un effet de pointillé, une trame de points ou une illustration volontairement granuleuse, sont faits de petits points. Dans ce cas, le filtre est l'ennemi : baissez-le, acceptez un nombre de nœuds plus élevé et gardez la texture là où elle a sa place. Demandez-vous ensuite à quoi servira le fichier. À l'écran ou à l'impression, des milliers de points ne gênent pas. Sur une découpeuse, un graveur ou une brodeuse, ils peuvent coûter des heures de machine ou donner des pièces minuscules qui se déchirent. Un bon compromis consiste à garder la texture dans une seule zone et à tracer le reste de l'image avec le filtre habituel. Avant d'envoyer un tel fichier au laser, passez par [cette checklist pour corriger un SVG avant la découpe laser](/vectofix/blog/checklist-corriger-un-svg-avant-de-l-envoyer-a-la-decoupe-laser).",
+      },
+      { type: "h2", text: "Conclusion : nettoyer la source, filtrer avec bon sens, supprimer le reste" },
+      {
+        type: "p",
+        text: "Les petites formes sont un problème de qualité de vectorisation avec un ordre simple de corrections : une source plus propre d'abord, un filtre de parasites entre 2 et 4 pour la plupart des images, puis un retraçage local ou une suppression à la main pour ce qui reste. Surveillez le nombre de nœuds à chaque étape : il en dit plus que vos yeux en zoom normal. [VectoFix](/vectofix) permet d'essayer sur vos propres fichiers avec 3 exports en pleine résolution ; la version Pro est un achat unique de 39 €.",
+      },
+    ],
+    faq: [
+      {
+        q: "Pourquoi mon SVG a-t-il de petits points absents de l'original ?",
+        a: "De la poussière de compression, du bruit de numérisation ou de faibles pixels de bord ont été tracés comme des formes. Invisibles en taille normale dans l'image, ils deviennent de vrais objets dans le SVG.",
+      },
+      {
+        q: "Comment éviter l'apparition de taches ?",
+        a: "Partez d'une source plus propre, montez le filtre de parasites sur les images bruitées et réduisez le nombre de couleurs pour les dessins en aplats.",
+      },
+      {
+        q: "Le filtre de parasites supprime-t-il de vrais détails ?",
+        a: "S'il est trop haut, oui. Dans nos mesures, passer de 4 à 8 a ramené les nœuds ajoutés de 23 % à 14 %, mais a fait perdre 6 points de gain de fidélité. Vérifiez l'aperçu après chaque changement.",
+      },
+      {
+        q: "Les petites formes comptent-elles pour la découpe ?",
+        a: "Oui. Chacune est un tracé que la machine doit suivre, ce qui rallonge le travail et peut produire des pièces trop petites pour tenir.",
+      },
+      {
+        q: "Peut-on les supprimer en bloc ?",
+        a: "Séparer les chemins composés rend les petits morceaux sélectionnables ; s'il y en a beaucoup, retracez la zone touchée avec un filtre plus fort plutôt que de supprimer à la main.",
       },
     ],
   }),
