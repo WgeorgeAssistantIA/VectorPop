@@ -699,7 +699,7 @@ export const seoFrDrafts: Draft[] = [
       { type: "h2", text: "Conclusion : le flou vient des pixels, la netteté vient des formes" },
       {
         type: "p",
-        text: "Un logo flou n'est pas un logo raté : c'est un logo enregistré dans un format qui ne peut pas grandir. Vérifiez d'abord ce que vous avez réellement, demandez l'original s'il existe, sinon vectorisez à partir de la plus grande version possible. Pour une vue d'ensemble de la méthode, le [guide complet pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) reprend chaque étape.",
+        text: "Un logo flou n'est pas un logo raté : c'est un logo enregistré dans un format qui ne peut pas grandir. Vérifiez d'abord ce que vous avez réellement, demandez l'original s'il existe, sinon vectorisez à partir de la plus grande version possible. Pour une vue d'ensemble de la méthode, le [guide complet pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) reprend chaque étape, et le tutoriel [vectoriser un logo PNG pas à pas](/blog/vectoriser-un-logo-png-pas-a-pas) détaille les réglages un par un.",
       },
       {
         type: "p",
@@ -726,6 +726,161 @@ export const seoFrDrafts: Draft[] = [
       {
         q: "Peut-on vectoriser un logo très petit ?",
         a: "Oui, mais avec des limites : la vectorisation ne retrouve pas les détails absents. Partez de la plus grande version possible, ou faites redessiner le logo.",
+      },
+    ],
+  },
+  {
+    slug: "vectoriser-un-logo-png-pas-a-pas",
+    title: "Vectoriser un logo PNG pas à pas : les réglages qui comptent",
+    metaTitle:
+      "Vectoriser un logo PNG pas à pas (tutoriel) — VectorPop",
+    description:
+      "Tutoriel concret pour transformer un logo PNG en SVG propre : choisir le fichier, le préréglage, les couleurs et le fond, contrôler les lettres au zoom, puis exporter et vérifier.",
+    date: "2026-10-28",
+    author: "Équipe VectorPop",
+    lang: "fr",
+    content: [
+      {
+        type: "p",
+        text: "Pour vectoriser un logo PNG : partez de la plus grande version du fichier, ouvrez-la dans un vectoriseur, choisissez un préréglage « logo en aplats », réduisez le nombre de couleurs tant que le logo reste fidèle, enlevez le fond blanc, vérifiez les lettres et les angles en zoomant fort, puis exportez en SVG et ouvrez le fichier dans un logiciel de dessin pour le contrôler. Pour un logo simple, cela prend quelques minutes.",
+      },
+      {
+        type: "p",
+        text: "Les tutoriels qu'on trouve en ligne décrivent surtout un logiciel précis (Inkscape, Illustrator, Canva) ou renvoient vers un graphiste. Ce guide suit les étapes dans VectorPop, avec les noms exacts des réglages, mais la logique vaut pour n'importe quel outil : un bon fichier de départ, peu de couleurs, un contrôle visuel au zoom. Si vous voulez d'abord comprendre ce que fait la vectorisation, lisez [comment convertir un logo PNG en SVG](/blog/convertir-logo-png-en-svg).",
+      },
+      { type: "h2", text: "Quel fichier choisir avant de commencer ?" },
+      {
+        type: "p",
+        text: "La qualité du SVG dépend d'abord de l'image de départ. Un vectoriseur redessine les frontières de couleur qu'il voit : si les bords sont flous ou entourés de taches de compression, il les redessine aussi. Prenez donc le temps de retrouver la meilleure version du logo.",
+      },
+      {
+        type: "ul",
+        items: [
+          "La plus grande possible : site web de l'entreprise, PDF d'une plaquette, signature de mail, page de réseau social. Une capture d'écran de 150 pixels donnera un tracé approximatif.",
+          "De préférence un PNG plutôt qu'un JPG : le JPG ajoute des halos autour des contours, exactement là où un logo est le plus exigeant.",
+          "Le logo seul : si l'image contient du texte autour ou une photo, rognez-la avant de vectoriser (bouton « Rogner la sélection » dans VectorPop : tracez un rectangle sur l'image d'origine).",
+        ],
+      },
+      {
+        type: "p",
+        text: "Inutile en revanche de chercher un fichier géant : VectorPop travaille sur 2 048 pixels au maximum pour le côté le plus long, et réduit les images plus grandes avant le tracé. Pour un logo, c'est largement suffisant. Si vous n'avez qu'une version minuscule et floue, commencez par [pourquoi un logo devient flou à l'agrandissement](/blog/logo-flou-a-l-agrandissement) : il explique ce qu'on peut récupérer et ce qu'on ne peut pas.",
+      },
+      { type: "h2", text: "Comment ouvrir l'image et choisir le bon préréglage ?" },
+      {
+        type: "p",
+        text: "Glissez le fichier dans la fenêtre, cliquez sur la zone d'accueil pour le choisir, ou collez une image copiée avec Ctrl+V. VectorPop accepte les formats PNG, JPEG, BMP et WebP. Le tracé démarre tout seul et l'aperçu SVG s'affiche à côté de l'original.",
+      },
+      {
+        type: "p",
+        text: "Choisissez ensuite le préréglage, qui donne un point de départ à tous les curseurs :",
+      },
+      {
+        type: "ul",
+        items: [
+          "« Logo plat (couleur) » : pour un logo en quelques couleurs unies, le cas le plus courant. Couleurs à 6, anti-parasites à 4, coins à 60.",
+          "« Logo couleur détaillé » : pour un logo avec dégradés, ombres ou petits détails. Plus de couleurs (8), un filtrage plus léger (2) et des courbes plus souples (coins à 40).",
+          "« Noir & blanc / trait » : pour un logo monochrome, un tampon ou une signature. L'image est seuillée en deux couleurs nettes.",
+        ],
+      },
+      {
+        type: "p",
+        text: "En cas de doute, le bouton « Aide réglages » propose des recettes selon la situation (logo plat, icône brillante, logo sur fond uni à retirer…) et les applique en un clic. Ensuite, chaque mouvement de curseur relance l'aperçu automatiquement, environ une demi-seconde après que vous l'avez lâché : vous voyez l'effet de chaque réglage avant d'exporter quoi que ce soit.",
+      },
+      { type: "h2", text: "Comment régler les couleurs et enlever le fond ?" },
+      {
+        type: "p",
+        text: "C'est l'étape qui décide si le SVG sera propre ou encombré. Un logo de trois couleurs ne doit pas sortir avec quarante teintes presque identiques, qui deviennent autant de formes à manipuler.",
+      },
+      {
+        type: "ul",
+        items: [
+          "« Couleurs » (de 1 à 8) : c'est un niveau de précision, pas un nombre exact de teintes. Baissez-le tant que le logo reste fidèle ; remontez-le si des nuances disparaissent ou si un dégradé se transforme en bandes.",
+          "« Fusion couleurs » et « Seuil fusion » : regroupent les teintes très proches pour obtenir des aplats francs et un fichier plus léger. Montez le seuil si vous voyez encore des variantes de la même couleur.",
+          "« Contours nets » : supprime les liserés de pixels intermédiaires le long des bords (l'anticrénelage), qui sinon deviennent de fines bandes de couleur autour de chaque lettre.",
+          "« Affiner couleurs » : recale chaque aplat sur la couleur réelle de l'original, utile quand le bleu de la marque ressort légèrement faux.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Pour le fond, cochez « Enlever le fond » : VectorPop détecte la couleur unie des quatre coins de l'image et la rend transparente. Si des bords blancs restent autour du logo, montez « Tol. fond » ; si des parties claires du logo disparaissent, baissez-le. Un fond photo ou en dégradé demande le « Détourage IA », plus lent et réservé à la version Pro pour l'export. Et si vous préférez un fond blanc dans le fichier final, l'option « Fond blanc à l'export » l'ajoute au moment d'enregistrer.",
+      },
+      { type: "h2", text: "Comment vérifier les lettres et les détails ?" },
+      {
+        type: "p",
+        text: "Un SVG peut sembler parfait en petit et décevoir une fois imprimé. Le contrôle se fait donc au zoom : molette pour zoomer, glisser pour vous déplacer, double-clic pour revenir à l'image entière, et le bouton plein écran pour inspecter de près. Regardez en priorité :",
+      },
+      {
+        type: "ul",
+        items: [
+          "Les lettres : intérieurs des « a », « e » et « o » bien ouverts, empattements et points des « i » présents.",
+          "Les angles : un coin qui devrait être net ne doit pas être arrondi, une courbe ne doit pas être en escalier.",
+          "Les traits fins : un filet ou un contour fin doit rester continu.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Trois curseurs corrigent la plupart des défauts. Des petits points parasites apparaissent ? Montez « Anti-parasites ». Un détail fin a disparu ? Baissez-le, ou passez au préréglage détaillé. Des bords en escalier ? Baissez « Coins » vers 20 à 40 pour des courbes plus douces ; montez-le au contraire si des angles vifs sont arrondis. Le bouton « Comparer » ouvre enfin une vue avant/après à glissière qui superpose l'original et le SVG : c'est le moyen le plus rapide de repérer une lettre déformée.",
+      },
+      {
+        type: "p",
+        text: "Sous l'aperçu, VectorPop affiche aussi le nombre de tracés et le poids du SVG. Si le fichier est très lourd pour un logo simple, baissez « Couleurs », cochez « Fusion couleurs » et montez « Seuil fusion » : un logo propre tient généralement en peu de formes.",
+      },
+      { type: "h2", text: "Comment exporter le SVG et le contrôler ?" },
+      {
+        type: "p",
+        text: "Cliquez sur « Exporter… » et choisissez le format SVG. Le SVG reste net à toutes les tailles ; VectorPop vous demande seulement sa taille « native », celle à laquelle il s'ouvrira par défaut. Dans la version gratuite, vous disposez de 5 exports SVG au total pour essayer, et copier le code SVG dans le presse-papiers compte comme un export. L'export en PDF vectoriel ou en PNG haute définition fait partie de la version Pro.",
+      },
+      {
+        type: "p",
+        text: "Ouvrez ensuite le fichier dans un logiciel de dessin, par exemple [Inkscape](https://inkscape.org), qui est gratuit. Cliquez sur une lettre ou sur un élément : il doit s'agir d'une forme que vous pouvez sélectionner, déplacer ou recolorer, et non d'une image intégrée. Agrandissez-le fortement : les bords doivent rester nets. Si c'est le cas, le fichier est prêt pour l'imprimeur, le brodeur ou le site web. Pour savoir ce que les professionnels attendent exactement, voyez [pourquoi les imprimeurs demandent un fichier vectoriel](/blog/pourquoi-imprimeurs-demandent-fichier-vectoriel).",
+      },
+      { type: "h2", text: "Et si le résultat n'est pas parfait ?" },
+      {
+        type: "p",
+        text: "Une source floue ou très compressée donnera toujours un SVG imparfait : la vectorisation reconstruit des formes, elle ne retrouve pas les détails absents. Plusieurs options existent avant de tout recommencer.",
+      },
+      {
+        type: "ul",
+        items: [
+          "« Finition IA (×4) » redessine une petite image ou un JPG compressé en quatre fois plus grand avant le tracé, pour des bords plus francs.",
+          "« Optimiser (plus long) » teste plusieurs réglages, compare chaque rendu à l'original et garde le plus fidèle.",
+          "« Supprimer un aplat » retire d'un clic un élément du SVG, par exemple un rond de fond.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Ces trois fonctions s'essaient gratuitement dans l'aperçu ; l'export d'un rendu qui les utilise demande la version Pro, mais vous pouvez toujours exporter une version sans elles. Si seules quelques zones sont abîmées, [VectoFix](/vectofix), de la même équipe, compare le SVG à l'image d'origine, montre ce qui a été perdu et retrace uniquement les zones que vous peignez ; voyez aussi [comment corriger les petites formes et artefacts d'un SVG](/vectofix/blog/corriger-les-petites-formes-et-artefacts-dans-un-svg). Enfin, pour un logo qui doit être fidèle au détail près, un redessin par un graphiste reste la solution la plus sûre.",
+      },
+      { type: "h2", text: "Conclusion : un bon fichier, peu de couleurs, un contrôle au zoom" },
+      {
+        type: "p",
+        text: "Vectoriser un logo PNG tient en cinq gestes : choisir la meilleure source, partir du bon préréglage, réduire les couleurs et enlever le fond, vérifier les lettres au zoom, puis exporter et ouvrir le SVG pour le contrôler. Le traitement se fait sur votre ordinateur, ce qui compte pour un logo client, comme l'explique [vectoriser un logo sans l'envoyer sur Internet](/blog/vectoriser-sans-envoyer-sur-internet). Pour les autres types d'images, le [guide complet pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) reprend la méthode.",
+      },
+      {
+        type: "p",
+        text: "Vous avez un logo à convertir ? [Essayez VectorPop gratuitement](/) : 5 exports SVG inclus, sur Windows, Linux ou Android, et une version Pro à 39 € en paiement unique si vous en avez besoin plus souvent.",
+      },
+    ],
+    faq: [
+      {
+        q: "Quel préréglage choisir pour un logo ?",
+        a: "« Logo plat (couleur) » pour un logo en quelques couleurs unies, « Logo couleur détaillé » s'il comporte des dégradés ou des ombres, « Noir & blanc / trait » pour un logo monochrome ou un tampon.",
+      },
+      {
+        q: "Combien de couleurs garder ?",
+        a: "Le moins possible tant que le logo reste fidèle. Moins de couleurs donne un SVG plus léger, avec moins de formes à manipuler.",
+      },
+      {
+        q: "Comment enlever le fond blanc du logo ?",
+        a: "Cochez « Enlever le fond » : le fond uni détecté dans les coins devient transparent. Ajustez « Tol. fond » si des bords blancs restent.",
+      },
+      {
+        q: "Le logo reste-t-il sur mon ordinateur ?",
+        a: "Oui. Tout le traitement est fait localement, aucune image n'est envoyée sur un serveur.",
+      },
+      {
+        q: "Puis-je modifier le SVG ensuite ?",
+        a: "Oui, dans Inkscape, Illustrator ou Figma : chaque zone de couleur est une forme que vous pouvez sélectionner, déplacer ou recolorer.",
       },
     ],
   },

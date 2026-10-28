@@ -670,7 +670,7 @@ export const seoEnDrafts: Draft[] = [
       { type: "h2", text: "Conclusion: blur comes from pixels, sharpness comes from shapes" },
       {
         type: "p",
-        text: "A blurry logo is not a failed logo: it is a logo saved in a format that cannot grow. First check what you really have, ask for the original if it exists, otherwise vectorize from the largest version you can find. For an overview of the method, the [complete guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide) covers every step.",
+        text: "A blurry logo is not a failed logo: it is a logo saved in a format that cannot grow. First check what you really have, ask for the original if it exists, otherwise vectorize from the largest version you can find. For an overview of the method, the [complete guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide) covers every step, and the tutorial [vectorize a PNG logo step by step](/blog/vectorize-a-png-logo-step-by-step) walks through the settings one by one.",
       },
       {
         type: "p",
@@ -697,6 +697,161 @@ export const seoEnDrafts: Draft[] = [
       {
         q: "Can you vectorize a very small logo?",
         a: "Yes, with limits: vectorization does not recover missing details. Start from the largest version possible, or have the logo redrawn.",
+      },
+    ],
+  },
+  {
+    slug: "vectorize-a-png-logo-step-by-step",
+    title: "Vectorize a PNG Logo Step by Step: the Settings That Matter",
+    metaTitle:
+      "Vectorize a PNG Logo Step by Step (Tutorial) — VectorPop",
+    description:
+      "A hands-on tutorial for turning a PNG logo into a clean SVG: pick the file, the preset, the colours and the background, check the letters at high zoom, then export and verify.",
+    date: "2026-10-28",
+    author: "VectorPop Team",
+    lang: "en",
+    content: [
+      {
+        type: "p",
+        text: "To vectorize a PNG logo: start from the largest version of the file, open it in a vectorizer, pick a flat logo preset, lower the colour count while the logo stays faithful, remove the white background, check the letters and corners at high zoom, then export as SVG and open the file in a drawing program to check it. For a simple logo, it takes a few minutes.",
+      },
+      {
+        type: "p",
+        text: "Most tutorials online either describe one specific program (Inkscape, Illustrator, Canva) or point you to a designer. This guide follows the steps in VectorPop, with the exact names of the settings, but the logic works with any tool: a good source file, few colours, a visual check at high zoom. If you first want to understand what vectorization does, read [how to convert a PNG logo to SVG](/blog/how-to-convert-a-png-logo-to-svg).",
+      },
+      { type: "h2", text: "Which file should you start from?" },
+      {
+        type: "p",
+        text: "The quality of the SVG depends first on the source image. A vectorizer redraws the colour boundaries it sees: if the edges are blurry or surrounded by compression specks, it redraws those too. So take the time to find the best version of the logo.",
+      },
+      {
+        type: "ul",
+        items: [
+          "The largest you can find: the company website, a brochure PDF, an email signature, a social media page. A 150-pixel screenshot will give a rough trace.",
+          "Preferably a PNG rather than a JPG: JPG adds halos around edges, exactly where a logo is most demanding.",
+          "The logo alone: if the image includes surrounding text or a photo, crop it before vectorizing (the 'Crop selection' button in VectorPop: draw a rectangle on the original image).",
+        ],
+      },
+      {
+        type: "p",
+        text: "There is no need to hunt for a huge file, though: VectorPop works at 2,048 pixels at most on the longest side and scales larger images down before tracing. For a logo, that is plenty. If all you have is a tiny, blurry version, start with [why a logo gets blurry when enlarged](/blog/blurry-logo-when-enlarged): it explains what can and cannot be recovered.",
+      },
+      { type: "h2", text: "How do you open the image and pick the right preset?" },
+      {
+        type: "p",
+        text: "Drag the file into the window, click the welcome area to choose it, or paste a copied image with Ctrl+V. VectorPop accepts PNG, JPEG, BMP and WebP. Tracing starts on its own and the SVG preview appears next to the original.",
+      },
+      {
+        type: "p",
+        text: "Then choose the preset, which gives every slider a starting point:",
+      },
+      {
+        type: "ul",
+        items: [
+          "'Flat logo (color)': for a logo with a few solid colours, the most common case. Colours at 6, denoise at 4, corners at 60.",
+          "'Detailed color logo': for a logo with gradients, shadows or small details. More colours (8), lighter filtering (2) and softer curves (corners at 40).",
+          "'Black & white / line art': for a single-colour logo, a stamp or a signature. The image is thresholded into two clean colours.",
+        ],
+      },
+      {
+        type: "p",
+        text: "If in doubt, the 'Settings help' button offers recipes by situation (flat logo, glossy icon, logo on a plain background to remove…) and applies them in one click. After that, every slider move refreshes the preview automatically, about half a second after you let go: you see the effect of each setting before exporting anything.",
+      },
+      { type: "h2", text: "How do you set the colours and remove the background?" },
+      {
+        type: "p",
+        text: "This is the step that decides whether the SVG will be clean or cluttered. A three-colour logo should not come out with forty nearly identical shades, each one a separate shape to handle.",
+      },
+      {
+        type: "ul",
+        items: [
+          "'Colors' (1 to 8): this is a precision level, not an exact number of shades. Lower it while the logo stays faithful; raise it if shades disappear or a gradient turns into bands.",
+          "'Merge colors' and 'Merge thresh.': group very close shades into clean flat areas and a lighter file. Raise the threshold if you still see variants of the same colour.",
+          "'Clean edges': removes the fringes of in-between pixels along edges (anti-aliasing), which otherwise become thin colour bands around every letter.",
+          "'Refine colors': snaps each flat area back to the real colour of the original, useful when the brand blue comes out slightly off.",
+        ],
+      },
+      {
+        type: "p",
+        text: "For the background, tick 'Remove background': VectorPop detects the plain colour in the four corners of the image and makes it transparent. If white edges remain around the logo, raise 'Bg tol.'; if light parts of the logo disappear, lower it. A photo or gradient background needs 'AI background removal', which is slower and requires Pro to export. And if you want a white background in the final file, the 'White background on export' option adds it when saving.",
+      },
+      { type: "h2", text: "How do you check the letters and details?" },
+      {
+        type: "p",
+        text: "An SVG can look perfect when small and disappoint once printed. So the check happens at high zoom: mouse wheel to zoom, drag to move around, double-click to fit the whole image again, and the full-screen button to inspect closely. Look first at:",
+      },
+      {
+        type: "ul",
+        items: [
+          "The letters: the insides of 'a', 'e' and 'o' clearly open, serifs and the dots on the 'i' present.",
+          "The corners: a corner that should be sharp must not be rounded, a curve must not look like a staircase.",
+          "Thin strokes: a fine line or outline must stay continuous.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Three sliders fix most defects. Small stray dots? Raise 'Denoise'. A fine detail is gone? Lower it, or switch to the detailed preset. Jagged edges? Lower 'Corners' to around 20 to 40 for softer curves; raise it instead if sharp corners get rounded. Finally, the 'Compare' button opens a before/after slider view that overlays the original and the SVG: it is the quickest way to spot a distorted letter.",
+      },
+      {
+        type: "p",
+        text: "Below the preview, VectorPop also shows the number of paths and the SVG file size. If the file is very heavy for a simple logo, lower 'Colors', tick 'Merge colors' and raise 'Merge thresh.': a clean logo usually fits in few shapes.",
+      },
+      { type: "h2", text: "How do you export the SVG and check it?" },
+      {
+        type: "p",
+        text: "Click 'Export…' and choose SVG. The SVG stays sharp at any size; VectorPop only asks for its 'native' size, the one it opens at by default. The free version gives you 5 SVG exports in total to try it, and copying the SVG code to the clipboard counts as an export. Vector PDF and high-resolution PNG export are part of Pro.",
+      },
+      {
+        type: "p",
+        text: "Then open the file in a drawing program, for example [Inkscape](https://inkscape.org), which is free. Click a letter or an element: it should be a shape you can select, move or recolour, not an embedded image. Zoom in a lot: the edges must stay sharp. If they do, the file is ready for the printer, the embroiderer or the website. To see what professionals expect exactly, read [why printers ask for a vector file](/blog/why-printers-ask-for-vector-files).",
+      },
+      { type: "h2", text: "What if the result is not perfect?" },
+      {
+        type: "p",
+        text: "A blurry or heavily compressed source will always give an imperfect SVG: vectorization rebuilds shapes, it does not recover missing detail. You have a few options before starting over.",
+      },
+      {
+        type: "ul",
+        items: [
+          "'AI finishing (×4)' redraws a small image or a compressed JPG at four times the size before tracing, for crisper edges.",
+          "'Optimize (slower)' tries several settings, compares each result with the original and keeps the most faithful one.",
+          "'Remove a shape' removes an element of the SVG in one click, for example a background circle.",
+        ],
+      },
+      {
+        type: "p",
+        text: "These three features can be tried for free in the preview; exporting a result that uses them requires Pro, but you can always export a version without them. If only a few areas are damaged, [VectoFix](/vectofix/en), from the same team, compares the SVG with the original image, shows what was lost and retraces only the areas you paint; see also [how to fix tiny shapes and artifacts in an SVG](/vectofix/blog/how-to-fix-tiny-shapes-and-artifacts-in-an-svg). And for a logo that must be faithful down to the last detail, having a designer redraw it remains the safest option.",
+      },
+      { type: "h2", text: "Conclusion: a good file, few colours, a check at high zoom" },
+      {
+        type: "p",
+        text: "Vectorizing a PNG logo comes down to five moves: pick the best source, start from the right preset, reduce the colours and remove the background, check the letters at high zoom, then export and open the SVG to check it. Processing happens on your computer, which matters for a client logo, as explained in [vectorize a logo without uploading it to the internet](/blog/vectorize-without-uploading-to-the-internet). For other kinds of images, the [complete guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide) covers the method.",
+      },
+      {
+        type: "p",
+        text: "Got a logo to convert? [Try VectorPop for free](/): 5 SVG exports included, on Windows, Linux or Android, and a Pro version at €39, paid once, if you need it more often.",
+      },
+    ],
+    faq: [
+      {
+        q: "Which preset should I use for a logo?",
+        a: "'Flat logo (color)' for a logo with a few solid colours, 'Detailed color logo' if it has gradients or shadows, 'Black & white / line art' for a single-colour logo or a stamp.",
+      },
+      {
+        q: "How many colours should I keep?",
+        a: "As few as possible while the logo stays faithful. Fewer colours give a lighter SVG with fewer shapes to handle.",
+      },
+      {
+        q: "How do I remove the logo's white background?",
+        a: "Tick 'Remove background': the plain background detected in the corners becomes transparent. Adjust 'Bg tol.' if white edges remain.",
+      },
+      {
+        q: "Does the logo stay on my computer?",
+        a: "Yes. All processing is done locally; no image is sent to a server.",
+      },
+      {
+        q: "Can I edit the SVG afterwards?",
+        a: "Yes, in Inkscape, Illustrator or Figma: each colour area is a shape you can select, move or recolour.",
       },
     ],
   },
