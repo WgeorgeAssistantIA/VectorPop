@@ -1514,6 +1514,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Related reading: many of the extra nodes come from tiny stray shapes. See [how to fix tiny shapes and artifacts in an SVG](/vectofix/blog/how-to-fix-tiny-shapes-and-artifacts-in-an-svg).",
       },
+      {
+        type: "p",
+        text: "Related reading: [SVG for Cricut, common vectorization problems and their fixes](/vectofix/blog/svg-for-cricut-common-vectorization-problems).",
+      },
     ],
     faq: [
       {
@@ -1601,6 +1605,10 @@ export const vectofixNewPosts: BlogPost[] = [
         text: "Everything wrong in the file will end up on the material. Check structure, weight and scale before you start. [VectoFix](/vectofix/en) helps with the trace quality side, showing fidelity and node count and repairing damaged zones, with 3 full-resolution exports to try; Pro is a one-time €39.",
       },
       { type: "p", text: "Related reading: [the 10-point checklist before laser cutting](/vectofix/blog/how-to-fix-an-svg-before-sending-it-to-a-laser-cutter)." },
+      {
+        type: "p",
+        text: "Cutting with a blade rather than a laser? See [common vectorization problems in an SVG for Cricut](/vectofix/blog/svg-for-cricut-common-vectorization-problems).",
+      },
     ],
     faq: [
       {
@@ -1909,6 +1917,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "À lire aussi : une bonne partie des nœuds en trop vient de minuscules formes parasites. Voyez [comment corriger les petites formes et les artefacts dans un SVG](/vectofix/blog/corriger-les-petites-formes-et-artefacts-dans-un-svg).",
       },
+      {
+        type: "p",
+        text: "À lire aussi : [SVG pour Cricut, les problèmes de vectorisation courants et leurs corrections](/vectofix/blog/svg-pour-cricut-problemes-de-vectorisation-courants).",
+      },
     ],
     faq: [
       {
@@ -1996,6 +2008,10 @@ export const vectofixNewPosts: BlogPost[] = [
         text: "Tout ce qui est faux dans le fichier finira sur le matériau. Vérifiez la structure, le poids et l'échelle avant de lancer. [VectoFix](/vectofix) aide côté qualité de vectorisation, en montrant la fidélité et le nombre de nœuds et en réparant les zones abîmées, avec 3 exports en pleine résolution à essayer ; Pro est un achat unique de 39 €.",
       },
       { type: "p", text: "À lire aussi : [la checklist en 10 points avant la découpe laser](/vectofix/blog/checklist-corriger-un-svg-avant-de-l-envoyer-a-la-decoupe-laser)." },
+      {
+        type: "p",
+        text: "Vous découpez à la lame plutôt qu'au laser ? Voyez [les problèmes de vectorisation courants d'un SVG pour Cricut](/vectofix/blog/svg-pour-cricut-problemes-de-vectorisation-courants).",
+      },
     ],
     faq: [
       {
@@ -2338,6 +2354,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Tiny shapes are a trace-quality problem with a simple order of fixes: a cleaner source first, a speckle filter between 2 and 4 for most images, then local re-tracing or manual deletion for what remains. Check the node count at each step: it tells you more than your eyes at normal zoom. [VectoFix](/vectofix/en) lets you try this on your own files with 3 full-resolution exports; Pro is a one-time €39.",
       },
+      {
+        type: "p",
+        text: "Going further: [common vectorization problems in an SVG for Cricut](/vectofix/blog/svg-for-cricut-common-vectorization-problems), and how to fix them before cutting vinyl.",
+      },
     ],
     faq: [
       {
@@ -2466,6 +2486,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Les petites formes sont un problème de qualité de vectorisation avec un ordre simple de corrections : une source plus propre d'abord, un filtre de parasites entre 2 et 4 pour la plupart des images, puis un retraçage local ou une suppression à la main pour ce qui reste. Surveillez le nombre de nœuds à chaque étape : il en dit plus que vos yeux en zoom normal. [VectoFix](/vectofix) permet d'essayer sur vos propres fichiers avec 3 exports en pleine résolution ; la version Pro est un achat unique de 39 €.",
       },
+      {
+        type: "p",
+        text: "Pour aller plus loin : [les problèmes de vectorisation courants d'un SVG pour Cricut](/vectofix/blog/svg-pour-cricut-problemes-de-vectorisation-courants), et comment les corriger avant la découpe vinyle.",
+      },
     ],
     faq: [
       {
@@ -2487,6 +2511,368 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         q: "Peut-on les supprimer en bloc ?",
         a: "Séparer les chemins composés rend les petits morceaux sélectionnables ; s'il y en a beaucoup, retracez la zone touchée avec un filtre plus fort plutôt que de supprimer à la main.",
+      },
+    ],
+  }),
+  make({
+    slug: "svg-for-cricut-common-vectorization-problems",
+    title: "SVG for Cricut: Common Vectorization Problems and How to Fix Them",
+    metaTitle:
+      "SVG for Cricut: 6 Vectorization Problems and Their Fixes — VectoFix",
+    description:
+      "Vinyl, paper or iron-on: the defects in a traced SVG that spoil a Cricut or Silhouette cut (tiny shapes, thin bridges, jagged edges, too many pieces, stacked layers), and how to fix each one.",
+    date: "2026-10-30",
+    author: "VectoFix Team",
+    lang: "en",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "A traced SVG often cuts badly on a Cricut because of six defects: tiny shapes, bridges too thin to survive, jagged outlines, too many separate pieces, colours stacked instead of placed side by side, and a size that changes on import. Almost all of them come from the trace itself, not from the machine. The fix: trace in flat colours with few colours and a speckle filter, delete or merge what remains, thicken what is too thin, then check the result in Design Space and cut a small test.",
+      },
+      {
+        type: "p",
+        text: "Cutting machines for vinyl, paper and iron-on follow outlines with a blade, not a beam. A blade has a thickness and a cutting angle, and it pulls on the material at every change of direction: it is far less forgiving of small details than a screen. This article covers the defects that matter when you trace a logo or drawing for a Cricut, and it applies just as well to a Silhouette Cameo or a similar plotter. For laser-specific issues (open paths, duplicates, engraving time), see [why a bad SVG can cause problems in laser cutting](/vectofix/blog/why-a-bad-svg-can-cause-problems-in-laser-cutting).",
+      },
+      {
+        type: "h2",
+        text: "Why does a traced SVG cut badly?",
+      },
+      {
+        type: "p",
+        text: "Because automatic tracing follows pixels, not physical constraints. It faithfully reproduces everything in the image: JPG compression noise, the slight blur of anti-aliased edges, dust from a scan. Every speck becomes a shape, every pixel staircase becomes a run of tiny segments. On screen, none of it shows. Under a blade, every shape is a path to cut and every small segment a change of direction.",
+      },
+      {
+        type: "p",
+        text: "The effect is huge, even on a clean image. We traced the VectoFix demo logo, rendered sharply at 600 pixels, with the speckle filter turned off: 2,063 shapes. With the filter at 4, the default setting, the same logo gives 5 shapes, one per colour. The 2,058 extra shapes came only from the transition pixels along the edges, invisible to the naked eye. Sent to a Cricut, they would have been that many bits of confetti to cut and remove.",
+      },
+      {
+        type: "h2",
+        text: "What are the most common problems?",
+      },
+      {
+        type: "h3",
+        text: "1. Tiny shapes and specks",
+      },
+      {
+        type: "p",
+        text: "Each small speck is cut as a separate piece. On vinyl, this confetti stays stuck to the backing and makes weeding (removing the unwanted vinyl) endless; on paper, it tears out and leaves holes. It is the most frequent defect and the easiest to avoid.",
+      },
+      {
+        type: "h3",
+        text: "2. Bridges and strokes that are too thin",
+      },
+      {
+        type: "p",
+        text: "A trace keeps the thin strokes of the image as they are: the inside of an “e”, a letter's serif, the outline of a line drawing. If those parts are thinner than the material can hold, the blade tears them, or they lift during weeding and transfer. The limit depends on the material (vinyl, iron-on, card): only a test will tell you.",
+      },
+      {
+        type: "h3",
+        text: "3. Jagged or wobbly outlines",
+      },
+      {
+        type: "p",
+        text: "A source that is too small or too compressed gives stair-stepped or wavy edges. The blade follows every irregularity: the cut edge is rough, and the many changes of direction can snag or tear thin materials.",
+      },
+      {
+        type: "h3",
+        text: "4. Too many separate pieces",
+      },
+      {
+        type: "p",
+        text: "A design cut into dozens of pieces that almost touch (the letters of a word, the parts of a pattern) multiplies weeding time and the risk of losing a piece during transfer. Often those pieces should form a single one.",
+      },
+      {
+        type: "h3",
+        text: "5. Stacked colours",
+      },
+      {
+        type: "p",
+        text: "Many tracers stack colours: a large background, then a shape on top, then another. On screen, the result is perfect. But cutting software usually puts each colour on its own mat and cuts the whole shape, including the hidden part. You get pieces that overlap instead of fitting together, and double thickness in places with iron-on.",
+      },
+      {
+        type: "h3",
+        text: "6. Wrong size on import",
+      },
+      {
+        type: "p",
+        text: "Depending on the unit and dimensions declared in the SVG, the file may arrive larger or smaller than expected. An 8 cm logo arriving at 30 cm, or the other way round, changes everything: thin parts become impossible to cut, or the design no longer fits the material.",
+      },
+      {
+        type: "h2",
+        text: "How should you trace an image for a Cricut?",
+      },
+      {
+        type: "p",
+        text: "The best fix is the one you do not have to make. Before you even trace, a few choices remove most defects:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Start from the largest, cleanest image you have: a PNG rather than a compressed JPG, the original rather than a screenshot.",
+          "Trace in flat colours (in VectoFix, the “Flat (logo, illustration)” preset) or in black and white for a single-colour design. The “Detailed” preset is for images with gradients, which do not cut.",
+          "Keep the colour count low: each colour is a layer of material to cut, weed and stack. Two to four colours remain reasonable for a vinyl project.",
+          "Leave the speckle filter on: it is what removes tiny shapes. Only lower it if real details disappear.",
+          "Prefer “Curves” mode over “Polygons”: an outline made of curves gives a smoother cut than a run of straight segments.",
+        ],
+      },
+      {
+        type: "p",
+        text: "For details on the filter setting and its effects, see [how to fix tiny shapes and artifacts in an SVG](/vectofix/blog/how-to-fix-tiny-shapes-and-artifacts-in-an-svg), which gives measured figures at 0, 2, 4 and 8.",
+      },
+      {
+        type: "h2",
+        text: "How do you fix an SVG before sending it to the Cricut?",
+      },
+      {
+        type: "p",
+        text: "If the file is already traced, here are the fixes, in the order to do them:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Delete the remaining tiny shapes. If there are hundreds, re-trace the area with a stronger filter instead: deleting by hand takes longer.",
+          "Merge shapes that touch and share a colour. In Design Space, that is what the Weld tool does; in Inkscape, Union. The letters of a script word then become a single piece.",
+          "Thicken or remove parts that are too thin. A vector editor lets you add a stroke to the shape or offset it outwards; if the detail adds nothing at the final size, remove it.",
+          "Remove the hidden parts of stacked colours, so each colour exists only where it is visible. In an editor, subtracting or cutting one shape with another does this cleanly.",
+          "Add a weeding box if the design has many small pieces: a rectangle cut around the design, which peels off in one go.",
+          "Check the dimensions after import, then cut a small test on an offcut of the intended material first.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Node count matters too: an outline loaded with useless nodes slows the machine down and causes micro-jerks. We explain why in [why too many SVG nodes are a problem for cutting machines](/vectofix/blog/why-too-many-svg-nodes-are-a-problem-for-cutting-machines). And most points of our [checklist before a laser cutter](/vectofix/blog/how-to-fix-an-svg-before-sending-it-to-a-laser-cutter) apply to a blade as well: closed shapes, no duplicates, checked scale.",
+      },
+      {
+        type: "p",
+        text: "The exact names and locations of tools change from one Design Space version to the next: for the current procedure, refer to the [Cricut help centre](https://help.cricut.com). In Silhouette Studio, the logic is the same with equivalent tools.",
+      },
+      {
+        type: "h2",
+        text: "How does VectoFix help with cutting?",
+      },
+      {
+        type: "p",
+        text: "VectoFix works upstream: it traces your image and shows you where the result departs from the original. The “Damage map” view colours the damaged areas, and a fidelity score out of 100 is shown with the node count and file size. Holding the space bar shows the original for comparison. When an area has gone wrong, a thin letter cut in two or a wobbly outline, you paint over it with the brush and it re-traces itself.",
+      },
+      {
+        type: "p",
+        text: "The “Light” treatment mode is useful for cutting: according to our measurements, it adds half as many nodes as “Faithful” mode, for 6 fewer fidelity points in the repaired area. The advanced settings (colours, colour merging, speckle filter, corner threshold, curves or polygons) let you adjust the trace before you start.",
+      },
+      {
+        type: "p",
+        text: "What VectoFix does not do: it does not thicken thin parts, weld shapes together or add a weeding box. Those steps remain for your editor or the machine's software. Our page on [cleaning an SVG for laser cutting and Cricut](/vectofix/decoupe-laser-cricut) sums up what it brings to both uses.",
+      },
+      {
+        type: "h2",
+        text: "Conclusion: design for the blade, not the pixel",
+      },
+      {
+        type: "p",
+        text: "A file that looks perfect on screen can fail under a blade. Trace in flat colours with few colours and the speckle filter on, remove the confetti, weld what should be welded, thicken what is too thin, then test on an offcut before the real cut. [VectoFix](/vectofix/en) works offline on Windows; it gives you 3 full-resolution exports to try it, then the Pro version is a one-time €39.",
+      },
+    ],
+    faq: [
+      {
+        q: "Why does my traced SVG cut badly on my Cricut?",
+        a: "Because the trace reproduces the image's noise: tiny shapes, strokes that are too thin, jagged edges and stacked colours. A blade is far less tolerant of these defects than a screen.",
+      },
+      {
+        q: "How can I make weeding easier?",
+        a: "Remove tiny shapes, weld pieces that touch, keep the design bold and add a weeding box around it.",
+      },
+      {
+        q: "Which trace settings should I use for a Cricut?",
+        a: "Flat colours, few colours, the speckle filter on, and curves rather than polygons.",
+      },
+      {
+        q: "Why do my colours overlap after cutting?",
+        a: "Because the tracer stacked the colours instead of placing them side by side: each layer is cut whole, including the hidden part. Remove the covered parts before import.",
+      },
+      {
+        q: "Does VectoFix prepare files for Cricut?",
+        a: "It improves trace quality and repairs failed areas; welding, thickening and layout are then done in your editor or in Design Space.",
+      },
+    ],
+  }),
+  make({
+    slug: "svg-pour-cricut-problemes-de-vectorisation-courants",
+    title: "SVG pour Cricut : problèmes de vectorisation courants et comment les corriger",
+    metaTitle:
+      "SVG pour Cricut : 6 problèmes de vectorisation et leurs corrections — VectoFix",
+    description:
+      "Vinyle, papier ou flex : les défauts d'un SVG vectorisé qui gâchent une découpe Cricut ou Silhouette (micro-formes, ponts trop fins, bords en escalier, trop de pièces, calques empilés), et comment corriger chacun.",
+    date: "2026-10-30",
+    author: "L'équipe VectoFix",
+    lang: "fr",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Un SVG vectorisé se découpe souvent mal sur une Cricut à cause de six défauts : des formes minuscules, des ponts trop fins qui se déchirent, des contours en escalier, trop de pièces séparées, des couleurs empilées au lieu de juxtaposées et une taille faussée à l'import. Presque tous viennent de la vectorisation elle-même, pas de la machine. La solution : vectoriser en aplats avec peu de couleurs et un filtre de parasites, supprimer ou fusionner ce qui reste, épaissir ce qui est trop fin, puis vérifier le résultat dans Design Space et couper un petit essai.",
+      },
+      {
+        type: "p",
+        text: "Les machines de découpe pour vinyle, papier et flex thermocollant suivent des contours avec une lame, pas avec un faisceau. Une lame a une épaisseur, un angle d'attaque, et elle tire sur la matière à chaque changement de direction : elle pardonne beaucoup moins les petits détails qu'un écran. Cet article passe en revue les défauts qui comptent quand on vectorise un logo ou un dessin pour une Cricut, et vaut aussi pour une Silhouette Cameo ou un plotter équivalent. Pour les problèmes propres au laser (tracés ouverts, doublons, temps de gravure), voyez [pourquoi un mauvais SVG pose problème en découpe laser](/vectofix/blog/pourquoi-un-mauvais-svg-pose-probleme-en-decoupe-laser).",
+      },
+      {
+        type: "h2",
+        text: "Pourquoi un SVG vectorisé se découpe-t-il mal ?",
+      },
+      {
+        type: "p",
+        text: "Parce qu'une vectorisation automatique suit des pixels, pas des contraintes physiques. Elle reproduit fidèlement tout ce que contient l'image : le bruit de compression d'un JPG, le léger flou du lissage des bords, les poussières d'un scan. Chaque tache devient une forme, chaque escalier de pixels devient une suite de petits segments. À l'écran, tout cela est invisible. Sous une lame, chaque forme est un tracé à découper et chaque petit segment un changement de direction.",
+      },
+      {
+        type: "p",
+        text: "Le phénomène est massif, même sur une image propre. Nous avons vectorisé le logo de démonstration de VectoFix, rendu net à 600 pixels, avec le filtre de parasites désactivé : 2 063 formes. Avec le filtre à 4, le réglage par défaut, le même logo donne 5 formes, une par couleur. Les 2 058 formes en trop venaient uniquement des pixels de transition sur les bords, invisibles à l'œil nu. Envoyées à une Cricut, elles auraient été autant de confettis à découper et à retirer.",
+      },
+      {
+        type: "h2",
+        text: "Quels sont les problèmes les plus courants ?",
+      },
+      {
+        type: "h3",
+        text: "1. Les micro-formes et les taches",
+      },
+      {
+        type: "p",
+        text: "Chaque petite tache est découpée comme une pièce séparée. Sur du vinyle, ces confettis restent collés au support et rendent l'échenillage (le retrait du vinyle inutile) interminable ; sur du papier, ils s'arrachent et laissent des trous. C'est le défaut le plus fréquent et le plus simple à éviter.",
+      },
+      {
+        type: "h3",
+        text: "2. Les ponts et les traits trop fins",
+      },
+      {
+        type: "p",
+        text: "Une vectorisation garde les traits fins de l'image tels quels : l'intérieur d'un « e », l'empattement d'une lettre, le contour d'un dessin au trait. Si ces parties sont plus fines que ce que la matière supporte, la lame les déchire, ou elles se soulèvent à l'échenillage et au transfert. Le seuil dépend de la matière (vinyle, flex, carton) : seul un essai le dira.",
+      },
+      {
+        type: "h3",
+        text: "3. Les contours en escalier ou ondulés",
+      },
+      {
+        type: "p",
+        text: "Une source trop petite ou trop compressée donne des bords en escalier ou qui ondulent. La lame suit fidèlement chaque irrégularité : le bord découpé est rugueux, et les multiples changements de direction peuvent accrocher ou déchirer les matières fines.",
+      },
+      {
+        type: "h3",
+        text: "4. Trop de pièces séparées",
+      },
+      {
+        type: "p",
+        text: "Un dessin découpé en dizaines de morceaux qui se touchent presque (lettres d'un mot, éléments d'un motif) multiplie le temps d'échenillage et le risque de perdre une pièce au transfert. Souvent, ces morceaux devraient former une seule pièce.",
+      },
+      {
+        type: "h3",
+        text: "5. Les couleurs empilées",
+      },
+      {
+        type: "p",
+        text: "Beaucoup de vectoriseurs empilent les couleurs : un grand fond, puis une forme par-dessus, puis une autre. À l'écran, le résultat est parfait. Mais un logiciel de découpe range en général chaque couleur sur son propre tapis et découpe toute la forme, y compris la partie cachée. Vous obtenez des pièces qui se chevauchent au lieu de s'emboîter, et une épaisseur doublée à certains endroits en flex.",
+      },
+      {
+        type: "h3",
+        text: "6. Une mauvaise taille à l'import",
+      },
+      {
+        type: "p",
+        text: "Selon l'unité et les dimensions déclarées dans le SVG, le fichier peut arriver plus grand ou plus petit que prévu. Un logo de 8 cm qui arrive à 30 cm, ou l'inverse, change tout : les parties fines deviennent impossibles à découper, ou le motif ne tient plus sur la matière.",
+      },
+      {
+        type: "h2",
+        text: "Comment vectoriser une image pour une Cricut ?",
+      },
+      {
+        type: "p",
+        text: "La meilleure correction est celle qu'on n'a pas à faire. Avant même de vectoriser, quelques choix éliminent la plupart des défauts :",
+      },
+      {
+        type: "ul",
+        items: [
+          "Partez de l'image la plus grande et la plus propre dont vous disposez : un PNG plutôt qu'un JPG compressé, l'original plutôt qu'une capture d'écran.",
+          "Vectorisez en aplats (dans VectoFix, le préréglage « Aplats (logo, illustration) ») ou en noir et blanc pour un motif d'une seule couleur. Le préréglage « Détaillé » sert aux images à dégradés, qui ne se découpent pas.",
+          "Gardez peu de couleurs : chaque couleur est une couche de matière à découper, peler et superposer. Deux à quatre couleurs restent raisonnables pour un projet en vinyle.",
+          "Laissez le filtre de parasites actif : c'est lui qui écarte les micro-formes. Ne le baissez que si de vrais détails disparaissent.",
+          "Préférez le mode « Courbes » au mode « Polygones » : un contour fait de courbes donne une découpe plus régulière qu'une suite de segments droits.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Pour le détail du réglage du filtre et de ses effets, voyez [comment corriger les petites formes et les artefacts dans un SVG](/vectofix/blog/corriger-les-petites-formes-et-artefacts-dans-un-svg), qui donne les chiffres mesurés à 0, 2, 4 et 8.",
+      },
+      {
+        type: "h2",
+        text: "Comment corriger un SVG avant de l'envoyer à la Cricut ?",
+      },
+      {
+        type: "p",
+        text: "Si le fichier est déjà vectorisé, voici les corrections, dans l'ordre où les faire :",
+      },
+      {
+        type: "ul",
+        items: [
+          "Supprimez les micro-formes restantes. S'il y en a des centaines, retracez plutôt la zone avec un filtre plus fort : supprimer à la main prend plus de temps.",
+          "Fusionnez les formes qui se touchent et ont la même couleur. Dans Design Space, c'est le rôle de l'outil Souder (Weld) ; dans Inkscape, de l'union. Les lettres d'un mot en écriture liée deviennent ainsi une seule pièce.",
+          "Épaississez ou supprimez les parties trop fines. Un éditeur vectoriel permet d'ajouter un contour à la forme ou de la décaler vers l'extérieur ; si le détail n'apporte rien à la taille finale, retirez-le.",
+          "Supprimez les parties cachées des couleurs empilées, pour que chaque couleur n'existe que là où elle se voit. Dans un éditeur, la soustraction ou la découpe d'une forme par une autre le fait proprement.",
+          "Ajoutez un cadre d'échenillage si le motif comporte beaucoup de petites pièces : un rectangle découpé autour du dessin, qui se pèle d'un seul geste.",
+          "Vérifiez les dimensions après import, puis découpez d'abord un petit essai sur une chute de la matière prévue.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Le nombre de nœuds compte aussi : un contour chargé de nœuds inutiles ralentit la machine et produit des micro-saccades. Nous l'expliquons dans [pourquoi trop de nœuds posent problème aux machines de découpe](/vectofix/blog/trop-de-noeuds-svg-probleme-machines-de-decoupe). Et la plupart des points de notre [checklist avant la découpe laser](/vectofix/blog/checklist-corriger-un-svg-avant-de-l-envoyer-a-la-decoupe-laser) valent aussi pour la lame : formes fermées, pas de doublons, échelle vérifiée.",
+      },
+      {
+        type: "p",
+        text: "Les noms et l'emplacement exacts des outils changent d'une version de Design Space à l'autre : pour la procédure à jour, référez-vous au [centre d'aide Cricut](https://help.cricut.com). Sur Silhouette Studio, la logique est la même avec des outils équivalents.",
+      },
+      {
+        type: "h2",
+        text: "En quoi VectoFix aide-t-il pour la découpe ?",
+      },
+      {
+        type: "p",
+        text: "VectoFix intervient en amont : il vectorise votre image et vous montre où le résultat s'écarte de l'original. La vue « Carte des dégradations » colore les zones abîmées, et un score de fidélité sur 100 s'affiche avec le nombre de nœuds et le poids du fichier. Maintenir la barre d'espace affiche l'original pour comparer. Quand une zone est ratée, une lettre fine coupée en deux ou un contour qui ondule, vous la repeignez au pinceau et elle se retrace seule.",
+      },
+      {
+        type: "p",
+        text: "Le mode de traitement « Léger » est utile pour la découpe : d'après nos mesures, il produit deux fois moins de nœuds supplémentaires que le mode « Fidèle », pour 6 points de fidélité en moins dans la zone réparée. Les réglages avancés (couleurs, fusion des teintes, filtre de parasites, seuil d'angle, courbes ou polygones) permettent d'ajuster le tracé avant de commencer.",
+      },
+      {
+        type: "p",
+        text: "Ce que VectoFix ne fait pas : il n'épaissit pas les parties fines, ne soude pas les formes entre elles et n'ajoute pas de cadre d'échenillage. Ces étapes restent à faire dans votre éditeur ou dans le logiciel de la machine. Notre page [nettoyer un SVG pour la découpe laser et Cricut](/vectofix/decoupe-laser-cricut) résume ce qu'il apporte pour ces deux usages.",
+      },
+      {
+        type: "h2",
+        text: "Conclusion : concevoir pour la lame, pas pour le pixel",
+      },
+      {
+        type: "p",
+        text: "Un fichier qui paraît parfait à l'écran peut échouer sous une lame. Vectorisez en aplats avec peu de couleurs et le filtre de parasites actif, supprimez les confettis, soudez ce qui doit l'être, épaississez le trop fin, puis testez sur une chute avant de lancer la vraie découpe. [VectoFix](/vectofix) fonctionne hors ligne sur Windows ; il offre 3 exports en pleine résolution pour l'essayer, puis la version Pro coûte 39 € en achat unique.",
+      },
+    ],
+    faq: [
+      {
+        q: "Pourquoi mon SVG vectorisé se découpe-t-il mal sur ma Cricut ?",
+        a: "Parce que la vectorisation reproduit le bruit de l'image : micro-formes, traits trop fins, bords en escalier et couleurs empilées. Une lame est bien moins tolérante qu'un écran à ces défauts.",
+      },
+      {
+        q: "Comment faciliter l'échenillage ?",
+        a: "Supprimez les micro-formes, soudez les pièces qui se touchent, gardez un dessin franc et ajoutez un cadre d'échenillage autour du motif.",
+      },
+      {
+        q: "Quels réglages de vectorisation choisir pour une Cricut ?",
+        a: "Des aplats, peu de couleurs, le filtre de parasites actif et des courbes plutôt que des polygones.",
+      },
+      {
+        q: "Pourquoi mes couleurs se chevauchent-elles après la découpe ?",
+        a: "Parce que le vectoriseur a empilé les couleurs au lieu de les juxtaposer : chaque couche est découpée en entier, y compris la partie cachée. Retirez les parties masquées avant l'import.",
+      },
+      {
+        q: "VectoFix prépare-t-il les fichiers pour Cricut ?",
+        a: "Il améliore la qualité de la vectorisation et répare les zones ratées ; la soudure, l'épaississement et la mise en page se font ensuite dans votre éditeur ou dans Design Space.",
       },
     ],
   }),
