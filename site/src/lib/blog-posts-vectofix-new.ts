@@ -1518,6 +1518,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Related reading: [SVG for Cricut, common vectorization problems and their fixes](/vectofix/blog/svg-for-cricut-common-vectorization-problems).",
       },
+      {
+        type: "p",
+        text: "Related reading: where node reduction fits among the other cleanup steps for a vinyl cutter, in [how to clean up an SVG vector before vinyl cutting](/vectofix/blog/how-to-clean-up-a-vector-before-vinyl-cutting).",
+      },
     ],
     faq: [
       {
@@ -1920,6 +1924,10 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         type: "p",
         text: "À lire aussi : [SVG pour Cricut, les problèmes de vectorisation courants et leurs corrections](/vectofix/blog/svg-pour-cricut-problemes-de-vectorisation-courants).",
+      },
+      {
+        type: "p",
+        text: "À lire aussi : la place de l'allègement des nœuds parmi les autres étapes de nettoyage pour une découpe vinyle, dans [comment nettoyer un vecteur SVG avant la découpe vinyle](/vectofix/blog/nettoyer-un-vecteur-avant-la-decoupe-vinyle).",
       },
     ],
     faq: [
@@ -2356,7 +2364,7 @@ export const vectofixNewPosts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "Going further: [common vectorization problems in an SVG for Cricut](/vectofix/blog/svg-for-cricut-common-vectorization-problems), and how to fix them before cutting vinyl.",
+        text: "Going further: [common vectorization problems in an SVG for Cricut](/vectofix/blog/svg-for-cricut-common-vectorization-problems), and how to fix them before cutting vinyl. For the hands-on version in Inkscape, see [how to clean up an SVG vector before vinyl cutting](/vectofix/blog/how-to-clean-up-a-vector-before-vinyl-cutting).",
       },
     ],
     faq: [
@@ -2488,7 +2496,7 @@ export const vectofixNewPosts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "Pour aller plus loin : [les problèmes de vectorisation courants d'un SVG pour Cricut](/vectofix/blog/svg-pour-cricut-problemes-de-vectorisation-courants), et comment les corriger avant la découpe vinyle.",
+        text: "Pour aller plus loin : [les problèmes de vectorisation courants d'un SVG pour Cricut](/vectofix/blog/svg-pour-cricut-problemes-de-vectorisation-courants), et comment les corriger avant la découpe vinyle. Pour la méthode pas à pas dans Inkscape, voyez [comment nettoyer un vecteur SVG avant la découpe vinyle](/vectofix/blog/nettoyer-un-vecteur-avant-la-decoupe-vinyle).",
       },
     ],
     faq: [
@@ -2671,6 +2679,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "A file that looks perfect on screen can fail under a blade. Trace in flat colours with few colours and the speckle filter on, remove the confetti, weld what should be welded, thicken what is too thin, then test on an offcut before the real cut. [VectoFix](/vectofix/en) works offline on Windows; it gives you 3 full-resolution exports to try it, then the Pro version is a one-time €39.",
       },
+      {
+        type: "p",
+        text: "Going further: for the step-by-step cleanup in Inkscape (union, difference, outset, simplify, Plain SVG or DXF export), see [how to clean up an SVG vector before vinyl cutting](/vectofix/blog/how-to-clean-up-a-vector-before-vinyl-cutting).",
+      },
     ],
     faq: [
       {
@@ -2852,6 +2864,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Un fichier qui paraît parfait à l'écran peut échouer sous une lame. Vectorisez en aplats avec peu de couleurs et le filtre de parasites actif, supprimez les confettis, soudez ce qui doit l'être, épaississez le trop fin, puis testez sur une chute avant de lancer la vraie découpe. [VectoFix](/vectofix) fonctionne hors ligne sur Windows ; il offre 3 exports en pleine résolution pour l'essayer, puis la version Pro coûte 39 € en achat unique.",
       },
+      {
+        type: "p",
+        text: "Pour aller plus loin : la séquence de nettoyage pas à pas dans Inkscape (union, différence, dilatation, simplification, export en SVG simple ou DXF) est détaillée dans [comment nettoyer un vecteur SVG avant la découpe vinyle](/vectofix/blog/nettoyer-un-vecteur-avant-la-decoupe-vinyle).",
+      },
     ],
     faq: [
       {
@@ -2873,6 +2889,352 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         q: "VectoFix prépare-t-il les fichiers pour Cricut ?",
         a: "Il améliore la qualité de la vectorisation et répare les zones ratées ; la soudure, l'épaississement et la mise en page se font ensuite dans votre éditeur ou dans Design Space.",
+      },
+    ],
+  }),
+  make({
+    slug: "how-to-clean-up-a-vector-before-vinyl-cutting",
+    title: "How to Clean Up an SVG Vector Before Vinyl Cutting (Cricut & Silhouette Studio)",
+    metaTitle: "Clean Up an SVG Before Vinyl Cutting: Step by Step in Inkscape — VectoFix",
+    description: "Specks, shapes to merge, stacked colours, lines too thin, nodes, size and import format: the cleanup sequence for a traced SVG in Inkscape before vinyl cutting on a Cricut or Silhouette.",
+    date: "2026-11-02",
+    author: "VectoFix Team",
+    lang: "en",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "To clean a traced SVG before vinyl cutting, work in this order: first check that the trace is worth cleaning, delete specks, merge shapes of the same colour, remove the hidden parts of stacked colours, thicken what is too thin, reduce nodes with care, then set the size and save format before importing into Cricut Design Space or Silhouette Studio. Cut a test on scrap before the real job. All of this can be done in a free editor such as Inkscape.",
+      },
+      {
+        type: "p",
+        text: "This article is the hands-on companion to [SVG for Cricut: common vectorization problems](/vectofix/blog/svg-for-cricut-common-vectorization-problems), which explains why these defects spoil a cut. Here we go to the workbench: which commands to use, in what order, and which traps to avoid. Menus are those of Inkscape 1.x, with their keyboard shortcuts; the same logic applies in Illustrator or Affinity Designer with the equivalent tools.",
+      },
+      {
+        type: "h2",
+        text: "Is the trace worth cleaning, or should you redo it?",
+      },
+      {
+        type: "p",
+        text: "Ask this before opening Inkscape, because no amount of cleanup saves a bad trace. Zoom to 200 or 400% on edges and fine details. If outlines wobble everywhere, letters are merged or cut in half, or colours are poorly separated, the problem is the vectorization: retrace from a cleaner source or with other settings, as explained in [how to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization).",
+      },
+      {
+        type: "p",
+        text: "A simple rule of thumb: if you count hundreds of small specks, do not delete them by hand, retrace with a stronger speckle filter. Our measurements on the VectoFix demo logo give 2,045 shapes with the filter at 0 against 168 with the filter at 4; details are in [how to fix tiny shapes and artifacts in an SVG](/vectofix/blog/how-to-fix-tiny-shapes-and-artifacts-in-an-svg). Manual cleanup finishes a good trace; it does not rescue a bad one.",
+      },
+      {
+        type: "h2",
+        text: "How do you delete specks and group shapes?",
+      },
+      {
+        type: "h3",
+        text: "Find and delete specks",
+      },
+      {
+        type: "p",
+        text: "Open the Layers and Objects panel (Ctrl+Shift+L) to see how many objects the file holds. If each colour is already a single path, the specks are bundled into that path with their neighbours: select it and split it into pieces. Choose the command carefully. Path > Break Apart (Ctrl+Shift+K) also turns holes into solid shapes: the inside of an 'o' or an 'a' becomes a black disc. Since Inkscape 1.2, Path > Split Path separates the pieces while keeping holes; use that instead.",
+      },
+      {
+        type: "p",
+        text: "Once the pieces are separated, delete the isolated specks by clicking them or dragging a selection box around them. Keep dots that mean something: the dot of an i, punctuation, a deliberate detail of the design. Inkscape has no select-by-size; for a few dozen specks, by hand is fine; beyond that, retrace.",
+      },
+      {
+        type: "h3",
+        text: "Merge by colour",
+      },
+      {
+        type: "p",
+        text: "For cutting, each colour should ideally be a single object. Click a shape, then Edit > Select Same > Fill Color: every shape of that colour is selected. Path > Union (Ctrl++) merges them. Shapes that touch or overlap become one piece with no cut line inside: the equivalent of Design Space's Weld tool, done once in the file. Repeat for each colour.",
+      },
+      {
+        type: "h2",
+        text: "How do you handle stacked colours?",
+      },
+      {
+        type: "p",
+        text: "Many tracers stack colours: a large background, then a shape on top. On screen it looks perfect; when cut, each colour is cut whole, including the hidden part, and the vinyl layers overlap instead of fitting together. You need to cut away each lower colour wherever another one covers it.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Select the top shape and duplicate it (Ctrl+D), because the next operation consumes the top object.",
+          "Add the lower shape to the selection (Shift+click).",
+          "Path > Difference (Ctrl+-): the top copy is subtracted from the lower shape, which is now hollowed out exactly where the other colour sits.",
+          "Repeat for each pair of stacked colours, from the background forward.",
+        ],
+      },
+      {
+        type: "p",
+        text: "For deliberately layered vinyl, where one colour is applied over another to avoid gaps between layers, you keep a slight overlap instead: hollow out the lower colour, then outset the top shape slightly, as described in the next step. Either way, decide how the layers will stack before you cut.",
+      },
+      {
+        type: "h2",
+        text: "How do you thicken parts that are too thin?",
+      },
+      {
+        type: "p",
+        text: "A line that is too thin tears under the blade or lifts during weeding. Binghamton University's MakerLab gives, in its [vinyl cutting guidelines](https://www.binghamton.edu/libraries/about/locations/makerlab/services/vinyl-cutting/), a reference of about 0.5 mm for minimum line thickness, and recommends text of 10 pt or more for comfortable weeding. Treat it as an order of magnitude, not a rule: the real threshold depends on the vinyl, the blade and the pressure. Measure your thinnest parts at final size, not on screen.",
+      },
+      {
+        type: "p",
+        text: "Three ways to thicken in Inkscape:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Path > Outset (Ctrl+)) grows the whole shape by a fixed step set in the preferences (Behavior > Steps, 2 px by default). Fast, but it thickens everything, including parts that were already thick enough, and it rounds sharp corners.",
+          "Path > Dynamic Offset (Ctrl+J) adds a handle you drag to set the thickness by eye. Then convert it to a path (Path > Object to Path, Ctrl+Shift+C) before export.",
+          "Add a stroke in the same colour as the fill, then Path > Stroke to Path (Ctrl+Alt+C) and a union with the shape: the most precise method for thickening line art.",
+        ],
+      },
+      {
+        type: "p",
+        text: "If a detail is still too thin after thickening, the best fix is often to remove it or enlarge the design. A logo cut 5 cm wide does not have the same constraints as one cut at 20 cm.",
+      },
+      {
+        type: "h2",
+        text: "Should you reduce the number of nodes?",
+      },
+      {
+        type: "p",
+        text: "An outline crowded with nodes makes the blade change direction constantly, which can snag thin materials; we explain why in [why too many SVG nodes are a problem for cutting machines](/vectofix/blog/why-too-many-svg-nodes-are-a-problem-for-cutting-machines). Path > Simplify (Ctrl+L) removes some, but use it carefully: one pass is usually enough, and every extra pass rounds corners a little more and distorts letters. After simplifying, lay the shape over an original copy to check that the outlines have not moved.",
+      },
+      {
+        type: "p",
+        text: "The most effective approach is still to produce a light trace at vectorization time, in curves rather than polygons, instead of simplifying afterwards.",
+      },
+      {
+        type: "h2",
+        text: "How do you prepare the file for Design Space or Silhouette Studio?",
+      },
+      {
+        type: "ul",
+        items: [
+          "Set the size in millimetres or inches. In File > Document Properties (Ctrl+Shift+D), choose your unit and give the document the final size of the design. After import, check one measurement: an SVG can arrive at a different scale depending on its declared units.",
+          "Save as Plain SVG. File > Save a Copy, format 'Plain SVG': Inkscape-specific metadata is dropped, which avoids surprises on import.",
+          "Silhouette Studio: the free Basic Edition does not import SVG files; you need Designer Edition or higher. Otherwise, export a DXF from Inkscape (Desktop Cutting Plotter, DXF R14), which Basic accepts. DXF does not keep colours, so split them into one file per colour.",
+          "Add a weeding box if the design has many small pieces: an unfilled rectangle with a stroke, slightly larger than the design, cut with it and peeled in one go.",
+          "Remember to mirror iron-on (HTV): it is cut face down, adhesive side up. Design Space offers the option on the mat preparation screen; do not also flip the file yourself.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Finally, cut a small version on a scrap of the intended material: does the blade follow the curves without snagging, do the thin parts survive weeding, is the size right? For laser cutting the checks differ slightly (closed paths, duplicates): see our [laser cutting checklist](/vectofix/blog/how-to-fix-an-svg-before-sending-it-to-a-laser-cutter).",
+      },
+      {
+        type: "h2",
+        text: "Where does VectoFix fit in this cleanup?",
+      },
+      {
+        type: "p",
+        text: "At the very start, at the 'is the trace worth cleaning?' step. VectoFix traces your image and measures where the result departs from the original: the Damage map view colours damaged areas, and a fidelity score out of 100 is shown with the node count. When a thin letter is broken or an outline wobbles, you paint over the area with the brush and it retraces itself, without starting over. The speckle filter and curves mode produce an already lighter trace before you reach Inkscape.",
+      },
+      {
+        type: "p",
+        text: "What VectoFix does not do: it does not thicken lines, merge shapes, hollow out stacked colours or handle mirroring. Those steps stay in Inkscape or your machine's software. Our [SVG cleanup page for laser and Cricut](/vectofix/decoupe-laser-cricut) sums up what it brings to these uses.",
+      },
+      {
+        type: "h2",
+        text: "Conclusion: a clean trace, then six moves",
+      },
+      {
+        type: "p",
+        text: "A traced SVG is a cutting draft. First check that it is good, then delete specks, merge by colour, hollow out stacked colours, thicken what is too thin, lighten nodes without distortion, set size and format, and test on scrap. Twenty minutes in Inkscape saves a spoiled roll of vinyl. [VectoFix](/vectofix/en) runs offline on Windows; it offers 3 full-resolution exports to try it, then Pro is a one-time €39.",
+      },
+    ],
+    faq: [
+      {
+        q: "What free software can I use to clean an SVG before vinyl cutting?",
+        a: "Inkscape, free and open source, does everything needed: union, difference, outset, dynamic offset, simplify, and saving as Plain SVG or DXF.",
+      },
+      {
+        q: "Why do the insides of my letters turn black after splitting a path?",
+        a: "Break Apart turns holes into solid shapes. Since Inkscape 1.2, use Split Path, which keeps the holes.",
+      },
+      {
+        q: "What is the minimum line thickness for vinyl?",
+        a: "About 0.5 mm is a commonly given reference, but the real threshold depends on the vinyl, blade and pressure: measure at final size and test on scrap.",
+      },
+      {
+        q: "Why won't my SVG open in Silhouette Studio?",
+        a: "The free Basic Edition of Silhouette Studio does not import SVG files. You need Designer Edition or higher, or export a DXF from Inkscape.",
+      },
+      {
+        q: "Should I flip the file for iron-on vinyl?",
+        a: "Iron-on is cut mirrored, but Design Space offers that option when preparing the mat. Do not also flip the file, or the design will be reversed twice.",
+      },
+    ],
+  }),
+  make({
+    slug: "nettoyer-un-vecteur-avant-la-decoupe-vinyle",
+    title: "Comment nettoyer un vecteur SVG avant la découpe vinyle (Cricut, Silhouette Studio)",
+    metaTitle: "Nettoyer un SVG avant la découpe vinyle : la méthode pas à pas dans Inkscape — VectoFix",
+    description: "Parasites, formes à fusionner, couleurs empilées, traits trop fins, nœuds, taille et format d'import : la séquence de nettoyage d'un SVG vectorisé dans Inkscape avant une découpe vinyle sur Cricut ou Silhouette.",
+    date: "2026-11-02",
+    author: "L'équipe VectoFix",
+    lang: "fr",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Pour nettoyer un SVG vectorisé avant une découpe vinyle, travaillez dans cet ordre : vérifiez d'abord que le tracé mérite d'être nettoyé, supprimez les parasites, fusionnez les formes de même couleur, retirez les parties cachées des couleurs empilées, épaississez ce qui est trop fin, allégez les nœuds avec modération, puis réglez la taille et le format d'enregistrement avant l'import dans Cricut Design Space ou Silhouette Studio. Comptez une découpe d'essai sur une chute avant la vraie. Toutes ces opérations se font avec un éditeur gratuit comme Inkscape.",
+      },
+      {
+        type: "p",
+        text: "Cet article est le pendant pratique de [SVG pour Cricut : problèmes de vectorisation courants](/vectofix/blog/svg-pour-cricut-problemes-de-vectorisation-courants), qui explique pourquoi ces défauts gâchent une découpe. Ici, on passe à l'atelier : quelles commandes utiliser, dans quel ordre, et quels pièges éviter. Les menus cités sont ceux d'Inkscape 1.x, avec leur raccourci clavier, qui ne change pas d'une langue à l'autre ; la même logique s'applique dans Illustrator ou Affinity Designer avec les outils équivalents.",
+      },
+      {
+        type: "h2",
+        text: "Le tracé mérite-t-il d'être nettoyé, ou faut-il le refaire ?",
+      },
+      {
+        type: "p",
+        text: "C'est la question à se poser avant d'ouvrir Inkscape, parce qu'aucun nettoyage ne sauve un mauvais tracé. Zoomez à 200 ou 400 % sur les bords et les détails fins. Si les contours ondulent partout, si des lettres sont fondues ou coupées en deux, si les couleurs sont mal séparées, le problème vient de la vectorisation : retracez à partir d'une source plus propre ou avec d'autres réglages, comme nous l'expliquons dans [comment corriger un SVG après une vectorisation automatique](/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique).",
+      },
+      {
+        type: "p",
+        text: "Un repère simple : si vous comptez des centaines de petites taches, ne les supprimez pas à la main, retracez avec un filtre de parasites plus fort. Nos mesures sur le logo de démonstration de VectoFix donnent 2 045 formes avec le filtre à 0 contre 168 avec le filtre à 4 ; le détail est dans [comment corriger les petites formes et les artefacts dans un SVG](/vectofix/blog/corriger-les-petites-formes-et-artefacts-dans-un-svg). Le nettoyage manuel sert à finir un bon tracé, pas à rattraper un mauvais.",
+      },
+      {
+        type: "h2",
+        text: "Comment supprimer les parasites et regrouper les formes ?",
+      },
+      {
+        type: "h3",
+        text: "Repérer et supprimer les taches",
+      },
+      {
+        type: "p",
+        text: "Ouvrez le panneau Calques et objets (Ctrl+Maj+L) pour voir combien d'objets contient le fichier. Si chaque couleur est déjà un seul chemin, les taches sont collées à leurs voisines dans ce chemin : sélectionnez-le et séparez-le en morceaux. Attention au choix de la commande. Chemin > Séparer (Break Apart, Ctrl+Maj+K) transforme aussi les trous en formes pleines : l'intérieur d'un « o » ou d'un « a » devient un disque noir. Depuis Inkscape 1.2, la commande Scinder le chemin (Split Path) sépare les morceaux en conservant les trous ; préférez-la.",
+      },
+      {
+        type: "p",
+        text: "Une fois les morceaux séparés, supprimez les taches isolées en les sélectionnant au clic ou en les entourant au rectangle de sélection. Gardez les points qui ont un sens : le point d'un i, une ponctuation, un détail volontaire du dessin. Inkscape n'a pas de sélection par taille ; sur quelques dizaines de taches, la main suffit, au-delà, retracez.",
+      },
+      {
+        type: "h3",
+        text: "Fusionner par couleur",
+      },
+      {
+        type: "p",
+        text: "Pour la découpe, chaque couleur doit idéalement former un seul objet. Cliquez sur une forme, puis Édition > Sélectionner même > Couleur de remplissage : toutes les formes de cette couleur sont sélectionnées. Chemin > Union (Ctrl++) les fusionne. Les formes qui se touchent ou se chevauchent deviennent une seule pièce, sans trait de coupe à l'intérieur : c'est l'équivalent de l'outil Souder (Weld) de Design Space, mais fait une fois pour toutes dans le fichier. Répétez pour chaque couleur.",
+      },
+      {
+        type: "h2",
+        text: "Comment gérer les couleurs empilées ?",
+      },
+      {
+        type: "p",
+        text: "Beaucoup de vectoriseurs empilent les couleurs : un grand fond, puis une forme par-dessus. À l'écran, c'est parfait ; à la découpe, chaque couleur est coupée en entier, y compris la partie masquée, et les couches de vinyle se chevauchent au lieu de s'emboîter. Il faut donc creuser chaque couleur du dessous là où une autre la recouvre.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Sélectionnez la forme du dessus et dupliquez-la (Ctrl+D), car l'opération suivante consomme l'objet du dessus.",
+          "Ajoutez la forme du dessous à la sélection (Maj+clic).",
+          "Chemin > Différence (Ctrl+-) : la copie du dessus est soustraite de la forme du dessous, qui se retrouve évidée exactement à l'emplacement de l'autre couleur.",
+          "Répétez pour chaque paire de couleurs superposées, du fond vers le premier plan.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Pour un vinyle superposé volontairement, où l'on colle une couleur sur l'autre pour éviter les jours entre les couches, on garde au contraire un léger recouvrement : dans ce cas, évidez la couleur du dessous puis dilatez légèrement la forme du dessus, comme décrit à l'étape suivante. Dans tous les cas, décidez avant de découper comment les couches s'empileront.",
+      },
+      {
+        type: "h2",
+        text: "Comment épaissir les parties trop fines ?",
+      },
+      {
+        type: "p",
+        text: "Un trait trop fin se déchire sous la lame ou se soulève à l'échenillage. Le MakerLab de l'université de Binghamton donne dans ses [consignes de découpe vinyle](https://www.binghamton.edu/libraries/about/locations/makerlab/services/vinyl-cutting/) un repère d'environ 0,5 mm pour l'épaisseur minimale d'un trait, et conseille un texte de 10 points ou plus pour un échenillage confortable. C'est un ordre de grandeur, pas une règle : le seuil réel dépend du vinyle, de la lame et de la pression. Mesurez vos parties les plus fines à la taille finale, pas à l'écran.",
+      },
+      {
+        type: "p",
+        text: "Trois façons d'épaissir dans Inkscape :",
+      },
+      {
+        type: "ul",
+        items: [
+          "Chemin > Dilater (Outset, Ctrl+)) élargit toute la forme d'un pas fixe, réglable dans les préférences (Comportement > Pas, 2 px par défaut). Rapide, mais il épaissit tout, y compris ce qui était déjà assez épais, et il arrondit les angles vifs.",
+          "Chemin > Offset dynamique (Ctrl+J) ajoute une poignée que l'on tire pour régler l'épaisseur à vue. Convertissez ensuite en chemin (Chemin > Objet en chemin, Ctrl+Maj+C) avant l'export.",
+          "Ajoutez un contour de la même couleur que le remplissage, puis Chemin > Contour en chemin (Ctrl+Alt+C) et une union avec la forme : la méthode la plus précise pour épaissir un dessin au trait.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Si un détail reste trop fin même épaissi, la meilleure correction est souvent de le supprimer ou d'agrandir le motif. Un logo découpé à 5 cm de large n'a pas les mêmes contraintes qu'à 20 cm.",
+      },
+      {
+        type: "h2",
+        text: "Faut-il réduire le nombre de nœuds ?",
+      },
+      {
+        type: "p",
+        text: "Un contour chargé de nœuds fait faire à la lame une multitude de micro-changements de direction, ce qui peut accrocher les matières fines ; nous l'expliquons dans [pourquoi trop de nœuds posent problème aux machines de découpe](/vectofix/blog/trop-de-noeuds-svg-probleme-machines-de-decoupe). Chemin > Simplifier (Ctrl+L) en retire, mais à manier avec prudence : un passage suffit en général, et chaque passage supplémentaire arrondit un peu plus les angles et déforme les lettres. Après simplification, superposez la forme à une copie d'origine pour vérifier que les contours n'ont pas bougé.",
+      },
+      {
+        type: "p",
+        text: "Le plus efficace reste de produire un tracé léger dès la vectorisation, en mode courbes plutôt que polygones, plutôt que de simplifier après coup.",
+      },
+      {
+        type: "h2",
+        text: "Comment préparer le fichier pour Design Space ou Silhouette Studio ?",
+      },
+      {
+        type: "ul",
+        items: [
+          "Réglez la taille en millimètres. Dans Fichier > Propriétés du document (Ctrl+Maj+D), choisissez les millimètres comme unité et donnez au document la taille finale du motif. Après l'import, vérifiez une cote : un SVG peut arriver à une autre échelle selon les unités déclarées.",
+          "Enregistrez en SVG simple. Fichier > Enregistrer une copie, format « SVG simple » (Plain SVG) : les métadonnées propres à Inkscape disparaissent, ce qui évite des surprises à l'import.",
+          "Silhouette Studio : l'édition gratuite (Basic) n'importe pas les SVG, il faut l'édition Designer ou supérieure. Sinon, exportez en DXF depuis Inkscape (format Desktop Cutting Plotter, DXF R14), que l'édition Basic accepte. Le DXF ne garde pas les couleurs : séparez-les en un fichier par couleur.",
+          "Ajoutez un cadre d'échenillage si le motif a beaucoup de petites pièces : un rectangle sans remplissage, avec contour, un peu plus grand que le dessin, qui se découpe avec lui et se pèle d'un geste.",
+          "Pensez au miroir pour le flex thermocollant : il se découpe à l'envers, côté adhésif vers le haut. Design Space propose l'option sur l'écran de préparation du tapis ; ne retournez pas le fichier vous-même en plus.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Enfin, découpez une petite version sur une chute de la matière prévue : la lame suit-elle les courbes sans accrocher, les parties fines survivent-elles à l'échenillage, la taille est-elle la bonne ? Pour la découpe laser, les contrôles diffèrent un peu (tracés fermés, doublons) : voyez notre [checklist avant la découpe laser](/vectofix/blog/checklist-corriger-un-svg-avant-de-l-envoyer-a-la-decoupe-laser).",
+      },
+      {
+        type: "h2",
+        text: "Où VectoFix intervient-il dans ce nettoyage ?",
+      },
+      {
+        type: "p",
+        text: "Au tout début, à l'étape « le tracé mérite-t-il d'être nettoyé ? ». VectoFix vectorise votre image et mesure où le résultat s'écarte de l'original : la vue « Carte des dégradations » colore les zones abîmées, et un score de fidélité sur 100 s'affiche avec le nombre de nœuds. Quand une lettre fine est coupée ou qu'un contour ondule, vous repeignez la zone au pinceau et elle se retrace seule, sans tout recommencer. Le filtre de parasites et le mode courbes produisent un tracé déjà allégé avant d'arriver dans Inkscape.",
+      },
+      {
+        type: "p",
+        text: "Ce que VectoFix ne fait pas : il n'épaissit pas les traits, ne fusionne pas les formes, n'évide pas les couleurs empilées et ne règle pas le miroir. Ces étapes restent à faire dans Inkscape ou dans le logiciel de la machine. Notre page [nettoyer un SVG pour la découpe laser et Cricut](/vectofix/decoupe-laser-cricut) résume ce qu'il apporte pour ces usages.",
+      },
+      {
+        type: "h2",
+        text: "Conclusion : un tracé propre, puis six gestes",
+      },
+      {
+        type: "p",
+        text: "Un SVG vectorisé est un brouillon de découpe. Vérifiez d'abord qu'il est bon, puis supprimez les taches, fusionnez par couleur, évidez les couleurs empilées, épaississez le trop fin, allégez les nœuds sans déformer, réglez taille et format, et testez sur une chute. Vingt minutes dans Inkscape évitent un rouleau de vinyle gâché. [VectoFix](/vectofix) fonctionne hors ligne sur Windows ; il offre 3 exports en pleine résolution pour l'essayer, puis la version Pro coûte 39 € en achat unique.",
+      },
+    ],
+    faq: [
+      {
+        q: "Quel logiciel gratuit utiliser pour nettoyer un SVG avant la découpe vinyle ?",
+        a: "Inkscape, gratuit et open source, fait tout le nécessaire : union, différence, dilatation, offset, simplification et enregistrement en SVG simple ou en DXF.",
+      },
+      {
+        q: "Pourquoi l'intérieur de mes lettres devient-il noir après avoir séparé un chemin ?",
+        a: "La commande Séparer (Break Apart) transforme les trous en formes pleines. Depuis Inkscape 1.2, utilisez Scinder le chemin (Split Path), qui conserve les trous.",
+      },
+      {
+        q: "Quelle épaisseur minimale pour un trait en vinyle ?",
+        a: "Environ 0,5 mm est un repère souvent donné, mais le seuil réel dépend du vinyle, de la lame et de la pression : mesurez à la taille finale et testez sur une chute.",
+      },
+      {
+        q: "Mon SVG ne s'ouvre pas dans Silhouette Studio, pourquoi ?",
+        a: "L'édition gratuite de Silhouette Studio n'importe pas les SVG. Il faut l'édition Designer ou supérieure, ou exporter un DXF depuis Inkscape.",
+      },
+      {
+        q: "Faut-il retourner le fichier pour du flex thermocollant ?",
+        a: "Le flex se découpe en miroir, mais Design Space propose l'option au moment de préparer le tapis. Ne retournez pas le fichier en plus, sinon le motif sera inversé deux fois.",
       },
     ],
   }),
