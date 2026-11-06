@@ -1320,6 +1320,7 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Find where the trace went wrong, decide whether the problem is global or local, and repair local problems locally. You can try VectoFix with 3 full-resolution HD exports before deciding, and Pro is a one-time purchase of €39. If you want to see where your own SVG lost detail, open it in [VectoFix](/vectofix/en) and look at the damage map.",
       },
+      { type: "p", text: "Going further: [how to fix jagged edges after image vectorization](/vectofix/blog/how-to-fix-jagged-edges-after-image-vectorization), with measurements of the effect of the source and the settings." },
     ],
     faq: [
       {
@@ -1522,6 +1523,7 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Related reading: where node reduction fits among the other cleanup steps for a vinyl cutter, in [how to clean up an SVG vector before vinyl cutting](/vectofix/blog/how-to-clean-up-a-vector-before-vinyl-cutting).",
       },
+      { type: "p", text: "Related reading: a compressed JPG can multiply nodes by more than twenty, as our measurements on [jagged edges after vectorization](/vectofix/blog/how-to-fix-jagged-edges-after-image-vectorization) show." },
     ],
     faq: [
       {
@@ -1727,6 +1729,7 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Trouvez où le tracé a échoué, décidez si le problème est global ou local, et réparez les problèmes locaux localement. Vous pouvez essayer VectoFix avec 3 exports HD en pleine résolution avant de décider, et Pro est un achat unique de 39 €. Pour voir où votre propre SVG a perdu du détail, ouvrez-le dans [VectoFix](/vectofix) et regardez la carte des dégâts.",
       },
+      { type: "p", text: "Pour aller plus loin : [comment corriger les bords crénelés après une vectorisation](/vectofix/blog/corriger-les-bords-creneles-apres-vectorisation), avec des mesures sur l'effet de la source et des réglages." },
     ],
     faq: [
       {
@@ -1929,6 +1932,7 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "À lire aussi : la place de l'allègement des nœuds parmi les autres étapes de nettoyage pour une découpe vinyle, dans [comment nettoyer un vecteur SVG avant la découpe vinyle](/vectofix/blog/nettoyer-un-vecteur-avant-la-decoupe-vinyle).",
       },
+      { type: "p", text: "À lire aussi : un JPG compressé peut multiplier les nœuds par plus de vingt, comme le montrent nos mesures sur [les bords crénelés après une vectorisation](/vectofix/blog/corriger-les-bords-creneles-apres-vectorisation)." },
     ],
     faq: [
       {
@@ -2683,6 +2687,7 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Going further: for the step-by-step cleanup in Inkscape (union, difference, outset, simplify, Plain SVG or DXF export), see [how to clean up an SVG vector before vinyl cutting](/vectofix/blog/how-to-clean-up-a-vector-before-vinyl-cutting).",
       },
+      { type: "p", text: "Going further: where sawtooth outlines come from and how to fix them, in [how to fix jagged edges after image vectorization](/vectofix/blog/how-to-fix-jagged-edges-after-image-vectorization)." },
     ],
     faq: [
       {
@@ -2868,6 +2873,7 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Pour aller plus loin : la séquence de nettoyage pas à pas dans Inkscape (union, différence, dilatation, simplification, export en SVG simple ou DXF) est détaillée dans [comment nettoyer un vecteur SVG avant la découpe vinyle](/vectofix/blog/nettoyer-un-vecteur-avant-la-decoupe-vinyle).",
       },
+      { type: "p", text: "Pour aller plus loin : l'origine des contours en dents de scie et leur correction, dans [comment corriger les bords crénelés après une vectorisation](/vectofix/blog/corriger-les-bords-creneles-apres-vectorisation)." },
     ],
     faq: [
       {
@@ -3237,5 +3243,303 @@ export const vectofixNewPosts: BlogPost[] = [
         a: "Le flex se découpe en miroir, mais Design Space propose l'option au moment de préparer le tapis. Ne retournez pas le fichier en plus, sinon le motif sera inversé deux fois.",
       },
     ],
+  }),
+  make({
+    slug: "how-to-fix-jagged-edges-after-image-vectorization",
+    title: "How to Fix Jagged Edges After Image Vectorization",
+    metaTitle: "Jagged Edges After Vectorization: Causes and Fixes — VectoFix",
+    description: "Stair-steps, wobbly edges, sawtooth outlines: where jagged edges in an SVG come from, what our measurements say about the source and the settings, and how to fix them without losing the shape.",
+    image: {
+      src: "/images/blog/vectofix-jagged-edges-en.jpg",
+      alt: "The same logo detail traced from a 150-pixel PNG (97 nodes), a heavily compressed 600-pixel JPG (6,143 nodes) and a 1,200-pixel PNG (389 nodes): the small PNG bends the diagonal, the JPG turns it into a staircase, the large PNG follows the shape"
+    },
+    date: "2026-11-06",
+    author: "VectoFix Team",
+    lang: "en",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Jagged edges in an SVG usually come from the starting image: too small or too compressed, and the tracer faithfully follows its defects. Go back to the biggest, cleanest source you can find, trace with curves, leave the corner threshold at its default, then repair the stubborn zones locally instead of changing everything."
+      },
+      {
+        type: "p",
+        text: "You zoom in on the result and the edges look like staircases or wobble along what should be a smooth line. It is one of the most common complaints after tracing. Rather than list tips, we measured the effect of each cause on the same logo. For the overview, see [how to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization)."
+      },
+      {
+        type: "h2",
+        text: "Where do jagged edges come from?"
+      },
+      {
+        type: "ul",
+        items: [
+          "A low-resolution source. If the original shows stair-steps, the tracer has to guess the real shape from very few pixels.",
+          "JPG compression. Blocky artefacts around edges are traced as real wobbles.",
+          "Polygon mode. Tracing with straight segments instead of curves gives faceted edges by definition.",
+          "Anti-aliasing fringes. Edge pixels in an in-between color create a thin zone the trace can follow as a ragged outline.",
+          "An extreme corner threshold. It decides at what angle a turn becomes a corner: set badly, it damages corners or curves."
+        ]
+      },
+      {
+        type: "h2",
+        text: "What do the measurements say about the source?"
+      },
+      {
+        type: "p",
+        text: "We traced the site's demo logo with VectoFix's Flat preset, starting from different versions of the same image. The gap is the average difference between the rendered SVG and the original logo, on a scale of 0 to 255: the lower, the more faithful the trace. This is a single logo, so read it as an order of magnitude."
+      },
+      {
+        type: "ul",
+        items: [
+          "100-pixel-wide PNG: gap 2.81, 105 nodes.",
+          "300-pixel PNG: gap 1.14, 160 nodes.",
+          "600-pixel PNG: gap 0.65, 248 nodes.",
+          "1,200-pixel PNG: gap 0.41, 389 nodes.",
+          "600-pixel JPG, light compression: gap 1.72, 1,639 nodes, 140 shapes.",
+          "600-pixel JPG, heavy compression: gap 4.72, 6,143 nodes, 452 shapes."
+        ]
+      },
+      {
+        type: "p",
+        text: "Two lessons. Making the source twelve times bigger cuts the gap by a factor of seven: it is the strongest lever, and it costs nothing if you have the file. Compression, for its part, is worse than small size. At 600 pixels, the PNG gives 5 shapes and 248 nodes; the heavily compressed JPG gives 452 and 6,143, with a result less faithful than the 100-pixel PNG."
+      },
+      {
+        type: "p",
+        text: "What if you only have a small image? Enlarging it in a photo editor is not enough. Our 150-pixel PNG, enlarged four times by interpolation before tracing, gave a gap of 2.26 against 1.90 without enlarging, and 3,302 nodes against 97. Enlarging adds no information, it multiplies the in-between edge pixels. Look instead for the original file from whoever created the logo."
+      },
+      {
+        type: "h2",
+        text: "Which settings really make a difference?"
+      },
+      {
+        type: "p",
+        text: "The first setting to check is the mode. Choose Curves rather than Polygons: in polygon mode, the same 600-pixel PNG gives 180 nodes and no curves at all, so facets show when zoomed, even if the measured gap stays close (0.72). This mode is only justified for intentionally angular artwork."
+      },
+      {
+        type: "p",
+        text: "The corner threshold has less effect than people think. On the 600-pixel PNG, moving it from 20 to 90 changes almost nothing: between 245 and 259 nodes, gap of 0.65 to 0.67. Beyond that, corners stop being read as corners and the result degrades: at 120 the gap doubles (1.21) and nodes climb to 329. Conversely, dropping it to 20 on a small 150-pixel PNG removed nodes (81 against 97) but also hurt fidelity (2.44 against 1.90). So leave the default, 60, and do not look there for a cure for a jagged edge."
+      },
+      {
+        type: "p",
+        text: "That leaves the speckle filter: it removes the small specks created by compression, as explained in our article on [tiny shapes and artifacts in an SVG](/vectofix/blog/how-to-fix-tiny-shapes-and-artifacts-in-an-svg). Change one setting at a time and look at the result, or you will not know which one did the work."
+      },
+      {
+        type: "h2",
+        text: "How do you smooth a single bad edge?"
+      },
+      {
+        type: "p",
+        text: "If only a few edges are rough, re-tracing the whole image costs more than it gives: you risk damaging what was fine. Better to treat those zones alone. In VectoFix, you paint over the damaged edge; the zone is enlarged, re-traced with fine settings, then merged back into the SVG. The Damage map shows where the trace strays furthest from the image."
+      },
+      {
+        type: "p",
+        text: "Each repair adds nodes. On our three test images, Faithful mode gains an average of 68% fidelity in the painted zones for 21% more nodes across the file, and Light mode 62% for 13%. If the file is going to a cutting machine, keep an eye on that counter, as explained in [why too many SVG nodes are a problem for cutting machines](/vectofix/blog/why-too-many-svg-nodes-are-a-problem-for-cutting-machines)."
+      },
+      {
+        type: "p",
+        text: "One limit to know: VectoFix re-traces from your image, it does not invent a shape the pixels no longer contain. It does not edit paths node by node either. On a source that is truly too poor, smoothing by hand in a vector editor remains necessary: in Inkscape, Path > Simplify (Ctrl+L) softens a curve, at the cost of corners that are sometimes rounded."
+      },
+      {
+        type: "h2",
+        text: "Does smoother mean lighter?"
+      },
+      {
+        type: "p",
+        text: "No. Our measurements even show the opposite on good sources: the most faithful trace, from the 1,200-pixel PNG, has 389 nodes against 105 for the 100-pixel one, because it follows the real details better. The file to avoid is the compressed JPG, both heavy and poor. So look at fidelity and node count together, and stop when the edge is smooth enough for the final use: a sign or a large-format print demands more than a small web icon."
+      },
+      {
+        type: "h2",
+        text: "How do you check the result?"
+      },
+      {
+        type: "ul",
+        items: [
+          "Zoom to 400% or more on the worst edges, and flick between the result and the original.",
+          "The outline should follow the intended shape, not the pixel staircase.",
+          "Real corners must stay sharp: too much smoothing rounds them.",
+          "Check long curves, where wobbles show the most.",
+          "Look at the file at its working size: a defect visible at 800% may be invisible on a business card."
+        ]
+      },
+      {
+        type: "h2",
+        text: "Conclusion: smooth the cause, not the symptom"
+      },
+      {
+        type: "p",
+        text: "Fix the source first, then check the trace mode, then treat the stubborn zones. Do not spend your time on the corner threshold. [VectoFix](/vectofix/en) offers 3 full-resolution exports to try on your own files, and Pro is a one-time €39. If the problem goes beyond a few edges, see [how to fix a bad vectorization without starting over](/vectofix/blog/how-to-fix-a-bad-vectorization-without-starting-over)."
+      }
+    ],
+    faq: [
+      {
+        q: "Why does my SVG have stair-stepped edges?",
+        a: "Usually because the source image is small or compressed, or because the trace used polygons. On our test logo, the source had far more effect than the settings."
+      },
+      {
+        q: "Should I change the corner threshold?",
+        a: "Rarely. Between 20 and 90 it changed almost nothing on our 600-pixel PNG, and above 120 the result degraded. Leave the default unless you have a specific need."
+      },
+      {
+        q: "Does enlarging the image before tracing help?",
+        a: "Not with plain interpolation: in our test the result was less faithful and much heavier. It is better to find the original file."
+      },
+      {
+        q: "Can I smooth only part of an SVG?",
+        a: "Yes, by re-tracing only the rough zones, which is what the VectoFix brush does. The rest of the file does not move."
+      },
+      {
+        q: "Does smoother mean a lighter file?",
+        a: "Not necessarily. Look at fidelity and node count together."
+      }
+    ]
+  }),
+  make({
+    slug: "corriger-les-bords-creneles-apres-vectorisation",
+    title: "Comment corriger les bords crénelés après une vectorisation d'image",
+    metaTitle: "Bords crénelés après vectorisation : causes et corrections — VectoFix",
+    description: "Escaliers, bords tremblants, dents de scie : d'où vient le crénelage d'un SVG, ce que nos mesures disent de la source et des réglages, et comment corriger sans perdre la forme.",
+    image: {
+      src: "/images/blog/vectofix-bords-creneles-fr.jpg",
+      alt: "Le même détail d'un logo tracé depuis un PNG de 150 pixels (97 nœuds), un JPG très compressé de 600 pixels (6 143 nœuds) et un PNG de 1 200 pixels (389 nœuds) : le petit PNG déforme la diagonale, le JPG la transforme en escalier, le grand PNG suit la forme"
+    },
+    date: "2026-11-06",
+    author: "L'équipe VectoFix",
+    lang: "fr",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Les bords crénelés d'un SVG viennent le plus souvent de l'image de départ : trop petite ou trop compressée, le vectoriseur suit fidèlement ses défauts. Repartez de la source la plus grande et la plus propre possible, vectorisez en courbes, laissez le seuil d'angle à sa valeur par défaut, puis réparez localement les zones qui résistent plutôt que de tout changer."
+      },
+      {
+        type: "p",
+        text: "Vous zoomez sur le résultat, et les bords ressemblent à des escaliers ou tremblent le long de ce qui devrait être une ligne lisse. C'est l'une des plaintes les plus courantes après une vectorisation. Plutôt que d'énumérer des conseils, nous avons mesuré l'effet de chaque cause sur un même logo. Pour une vue d'ensemble, voyez [comment corriger un SVG après une vectorisation automatique](/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique)."
+      },
+      {
+        type: "h2",
+        text: "D'où viennent les bords crénelés ?"
+      },
+      {
+        type: "ul",
+        items: [
+          "Une source basse résolution. Si l'original montre des marches d'escalier, le vectoriseur doit deviner la vraie forme à partir de très peu de pixels.",
+          "La compression JPG. Les artefacts en blocs autour des bords sont tracés comme de vraies ondulations.",
+          "Le mode polygones. Tracer avec des segments droits plutôt que des courbes donne par définition des bords à facettes.",
+          "Les franges d'anticrénelage. Les pixels de bord, de couleur intermédiaire, créent une fine zone que le tracé peut suivre comme un contour irrégulier.",
+          "Un seuil d'angle extrême. Il décide à partir de quel angle un virage devient un coin : mal réglé, il abîme les coins ou les courbes."
+        ]
+      },
+      {
+        type: "h2",
+        text: "Que disent les mesures sur la source ?"
+      },
+      {
+        type: "p",
+        text: "Nous avons tracé le logo de démonstration du site avec le préréglage Aplats de VectoFix, en partant de versions différentes de la même image. L'écart est la différence moyenne entre le SVG rendu et le logo d'origine, sur une échelle de 0 à 255 : plus il est bas, plus le tracé est fidèle. Il s'agit d'un seul logo, à lire comme un ordre de grandeur."
+      },
+      {
+        type: "ul",
+        items: [
+          "PNG de 100 pixels de large : écart 2,81, 105 nœuds.",
+          "PNG de 300 pixels : écart 1,14, 160 nœuds.",
+          "PNG de 600 pixels : écart 0,65, 248 nœuds.",
+          "PNG de 1 200 pixels : écart 0,41, 389 nœuds.",
+          "JPG de 600 pixels, compression légère : écart 1,72, 1 639 nœuds, 140 formes.",
+          "JPG de 600 pixels, compression forte : écart 4,72, 6 143 nœuds, 452 formes."
+        ]
+      },
+      {
+        type: "p",
+        text: "Deux enseignements. Multiplier la taille de la source par douze divise l'écart par sept : c'est le levier le plus puissant, et il ne coûte rien si vous avez le fichier. La compression, elle, est pire que la petite taille. À 600 pixels, le PNG donne 5 formes et 248 nœuds ; le JPG très compressé en donne 452 et 6 143, avec un résultat moins fidèle que le PNG de 100 pixels."
+      },
+      {
+        type: "p",
+        text: "Et si vous n'avez qu'une petite image ? L'agrandir dans un logiciel de retouche ne suffit pas. Notre PNG de 150 pixels, agrandi quatre fois par interpolation avant le tracé, a donné un écart de 2,26 contre 1,90 sans agrandissement, et 3 302 nœuds contre 97. L'agrandissement n'ajoute pas d'information, il multiplie les pixels de bord intermédiaires. Cherchez plutôt le fichier d'origine auprès de la personne qui a créé le logo."
+      },
+      {
+        type: "h2",
+        text: "Quels réglages changent vraiment quelque chose ?"
+      },
+      {
+        type: "p",
+        text: "Le premier réglage à vérifier est le mode. Choisissez Courbes plutôt que Polygones : en mode polygones, le même PNG de 600 pixels donne 180 nœuds et aucune courbe, donc des facettes visibles au zoom, même si l'écart mesuré reste proche (0,72). Ce mode ne se justifie que pour un dessin volontairement anguleux."
+      },
+      {
+        type: "p",
+        text: "Le seuil d'angle, lui, a moins d'effet qu'on ne le croit. Sur le PNG de 600 pixels, le faire varier de 20 à 90 ne change presque rien : entre 245 et 259 nœuds, écart de 0,65 à 0,67. Au-delà, les coins cessent d'être lus comme des coins et le résultat se dégrade : à 120, l'écart double (1,21) et les nœuds montent à 329. À l'inverse, le descendre à 20 sur un petit PNG de 150 pixels a enlevé des nœuds (81 contre 97), mais a aussi dégradé la fidélité (2,44 contre 1,90). Laissez donc la valeur par défaut, 60, et ne cherchez pas là le remède à un bord crénelé."
+      },
+      {
+        type: "p",
+        text: "Reste le filtre de parasites : il retire les petites taches créées par la compression, comme l'explique notre article sur [les petites formes et artefacts dans un SVG](/vectofix/blog/corriger-les-petites-formes-et-artefacts-dans-un-svg). Changez un réglage à la fois et regardez le résultat, sinon vous ne saurez pas lequel a joué."
+      },
+      {
+        type: "h2",
+        text: "Comment lisser un seul mauvais bord ?"
+      },
+      {
+        type: "p",
+        text: "Si seuls quelques bords sont rugueux, retracer toute l'image coûte plus qu'elle ne rapporte : vous risquez d'abîmer ce qui était bon. Mieux vaut traiter ces zones seules. Dans VectoFix, vous peignez sur le bord abîmé ; la zone est agrandie, retracée avec des réglages fins, puis refusionnée dans le SVG. La Carte des dégradations montre où le tracé s'écarte le plus de l'image."
+      },
+      {
+        type: "p",
+        text: "Chaque réparation ajoute des nœuds. Sur nos trois images de test, le mode Fidèle gagne en moyenne 68 % de fidélité dans les zones peintes pour 21 % de nœuds en plus sur le fichier, et le mode Léger 62 % pour 13 %. Si le fichier part vers une machine de découpe, gardez un œil sur ce compteur, comme l'explique [pourquoi trop de nœuds posent problème aux machines de découpe](/vectofix/blog/trop-de-noeuds-svg-probleme-machines-de-decoupe)."
+      },
+      {
+        type: "p",
+        text: "Une limite à connaître : VectoFix retrace à partir de votre image, il n'invente pas la forme que les pixels ne contiennent plus. Il ne modifie pas non plus les tracés nœud par nœud. Sur une source vraiment trop pauvre, le lissage à la main dans un éditeur vectoriel reste nécessaire : dans Inkscape, Chemin > Simplifier (Ctrl+L) adoucit une courbe, au prix de coins parfois arrondis."
+      },
+      {
+        type: "h2",
+        text: "Plus lisse veut-il dire plus léger ?"
+      },
+      {
+        type: "p",
+        text: "Non. Nos mesures montrent même le contraire sur les bonnes sources : le tracé le plus fidèle, depuis le PNG de 1 200 pixels, compte 389 nœuds contre 105 pour celui de 100 pixels, parce qu'il suit mieux les détails réels. Le vrai fichier à éviter est le JPG compressé, à la fois lourd et mauvais. Regardez donc ensemble la fidélité et le nombre de nœuds, et arrêtez-vous quand le bord est assez lisse pour l'usage final : une enseigne ou une impression en grand format exigent plus qu'une petite icône web."
+      },
+      {
+        type: "h2",
+        text: "Comment vérifier le résultat ?"
+      },
+      {
+        type: "ul",
+        items: [
+          "Zoomez à 400 % ou plus sur les pires bords, et comparez à l'original en alternant entre les deux.",
+          "Le contour doit suivre la forme voulue, pas l'escalier de pixels.",
+          "Les vrais coins doivent rester nets : un lissage trop fort les arrondit.",
+          "Contrôlez les courbes longues, où les ondulations se voient le plus.",
+          "Regardez le fichier à sa taille d'usage : un défaut visible à 800 % peut être invisible sur une carte de visite."
+        ]
+      },
+      {
+        type: "h2",
+        text: "Conclusion : lisser la cause, pas le symptôme"
+      },
+      {
+        type: "p",
+        text: "Corrigez d'abord la source, vérifiez ensuite le mode de tracé, puis traitez les zones récalcitrantes. Ne passez pas votre temps sur le seuil d'angle. [VectoFix](/vectofix) offre 3 exports en pleine résolution pour essayer sur vos propres fichiers, et Pro est un achat unique de 39 €. Si le problème dépasse quelques bords, voyez [comment réparer une mauvaise vectorisation sans tout recommencer](/vectofix/blog/comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer)."
+      }
+    ],
+    faq: [
+      {
+        q: "Pourquoi mon SVG a-t-il des bords en escalier ?",
+        a: "Le plus souvent parce que l'image source est petite ou compressée, ou parce que le tracé a utilisé des polygones. Sur notre logo de test, la source avait bien plus d'effet que les réglages."
+      },
+      {
+        q: "Faut-il changer le seuil d'angle ?",
+        a: "Rarement. Entre 20 et 90, il n'a presque rien changé sur notre PNG de 600 pixels, et au-delà de 120 le résultat s'est dégradé. Laissez la valeur par défaut, sauf besoin précis."
+      },
+      {
+        q: "Agrandir l'image avant de la vectoriser aide-t-il ?",
+        a: "Pas avec une simple interpolation : sur notre test, le résultat était moins fidèle et bien plus lourd. Il vaut mieux retrouver le fichier d'origine."
+      },
+      {
+        q: "Peut-on lisser seulement une partie d'un SVG ?",
+        a: "Oui, en retraçant uniquement les zones rugueuses, ce que fait le pinceau de VectoFix. Le reste du fichier ne bouge pas."
+      },
+      {
+        q: "Plus lisse veut-il dire fichier plus léger ?",
+        a: "Pas forcément. Regardez ensemble la fidélité et le nombre de nœuds."
+      }
+    ]
   }),
 ];

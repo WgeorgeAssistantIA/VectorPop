@@ -156,6 +156,7 @@ export const seoFrDrafts: Draft[] = [
         type: "p",
         text: "Vous avez un logo à convertir maintenant ? [Essayez VectorPop gratuitement](/) : les 5 premiers exports SVG sont inclus et tout se passe sur votre machine.",
       },
+      { type: "p", text: "Vous hésitez encore entre un service web et un logiciel ? Notre comparatif [en ligne ou hors ligne sur ordinateur](/blog/vectoriser-en-ligne-ou-sur-ordinateur) passe en revue les critères, cas par cas." },
     ],
     faq: [
       {
@@ -565,6 +566,7 @@ export const seoFrDrafts: Draft[] = [
         type: "p",
         text: "Vous n'avez qu'un PNG ? [Essayez VectorPop gratuitement](/) : 5 exports SVG inclus, aucun envoi en ligne, et une version Pro à 39 € en paiement unique si vous en avez besoin plus souvent.",
       },
+      { type: "p", text: "À lire aussi : [vectoriser en ligne ou sur ordinateur, que choisir ?](/blog/vectoriser-en-ligne-ou-sur-ordinateur), avec les critères de décision et le test pour vérifier qu'un SVG est un vrai vectoriel." },
     ],
     faq: [
       {
@@ -860,6 +862,7 @@ export const seoFrDrafts: Draft[] = [
         type: "p",
         text: "Vous avez un logo à convertir ? [Essayez VectorPop gratuitement](/) : 5 exports SVG inclus, sur Windows, Linux ou Android, et une version Pro à 39 € en paiement unique si vous en avez besoin plus souvent.",
       },
+      { type: "p", text: "Pour aller plus loin : [que choisir entre un convertisseur en ligne et un logiciel installé](/blog/vectoriser-en-ligne-ou-sur-ordinateur) selon la confidentialité et la fréquence de vos conversions." },
     ],
     faq: [
       {
@@ -883,5 +886,181 @@ export const seoFrDrafts: Draft[] = [
         a: "Oui, dans Inkscape, Illustrator ou Figma : chaque zone de couleur est une forme que vous pouvez sélectionner, déplacer ou recolorer.",
       },
     ],
+  },
+  {
+    slug: "vectoriser-en-ligne-ou-sur-ordinateur",
+    title: "Vectoriser un PNG en SVG en ligne ou hors ligne sur ordinateur (sans Illustrator) : que choisir ?",
+    metaTitle: "Vectoriser un PNG en SVG : en ligne ou hors ligne ? — VectorPop",
+    description: "Confidentialité, couleur, fréquence, vrai vectoriel : les critères pour choisir entre un convertisseur PNG vers SVG en ligne et un logiciel installé, sans Illustrator.",
+    image: {
+      src: "/images/blog/vectorpop-en-ligne-ou-ordinateur-fr.jpg",
+      alt: "Trois questions pour décider : le fichier est-il confidentiel, vectorisez-vous souvent, avez-vous besoin de réglages ? Si oui, logiciel installé ; si non aux trois, un convertisseur en ligne suffit"
+    },
+    date: "2026-11-06",
+    author: "Équipe VectorPop",
+    lang: "fr",
+    content: [
+      {
+        type: "p",
+        text: "Pour convertir un PNG en SVG, en couleur ou en noir et blanc, sans Adobe Illustrator : choisissez un convertisseur en ligne pour un fichier peu sensible et un besoin ponctuel, et un logiciel installé pour des logos confidentiels, un usage régulier ou le travail sans connexion. Le critère décisif est souvent la confidentialité : avec la plupart des services en ligne, le fichier quitte votre ordinateur."
+      },
+      {
+        type: "p",
+        text: "Aucune des deux solutions n'est meilleure dans l'absolu. Une conversion d'icône pour un exposé n'a pas les mêmes exigences que le logo d'un client à livrer à un imprimeur. Cet article vous donne les critères pour trancher, et deux vérifications que presque personne ne fait avant de se fier à un convertisseur."
+      },
+      {
+        type: "h2",
+        text: "Que se passe-t-il vraiment avec un convertisseur en ligne ?"
+      },
+      {
+        type: "p",
+        text: "« En ligne » recouvre deux fonctionnements très différents. Dans le premier, le plus courant, votre image est envoyée sur un serveur, traitée là-bas, puis le SVG vous revient. Le fichier a donc été copié ailleurs, le temps de la conversion au moins. Certains services annoncent une suppression au bout d'une heure, d'autres ne disent rien de précis."
+      },
+      {
+        type: "p",
+        text: "Dans le second, le traitement se fait dans votre navigateur : la page charge le programme, et l'image reste sur votre machine. C'est une bonne nouvelle pour la confidentialité, à condition de le vérifier plutôt que de le croire. Le test est simple : chargez la page, coupez votre connexion, puis lancez la conversion avec un fichier sans importance. Si elle aboutit, le traitement est local. Les plus à l'aise peuvent aussi ouvrir l'onglet Réseau des outils de développement et regarder si le fichier part."
+      },
+      {
+        type: "h2",
+        text: "Quelles sont les forces et les limites d'un outil en ligne ?"
+      },
+      {
+        type: "ul",
+        items: [
+          "Forces : rien à installer, résultat en quelques secondes, utilisable depuis n'importe quel ordinateur, souvent gratuit pour un essai.",
+          "Limites : envoi du fichier à un tiers dans la plupart des cas, plafonds de taille ou de nombre de conversions, peu de réglages, connexion obligatoire, et un service qui peut changer ses conditions ou disparaître."
+        ]
+      },
+      {
+        type: "p",
+        text: "Pour une icône, un pictogramme ou une image sans valeur, ces limites ne gênent pas. Elles deviennent réelles quand vous recommencez dix fois pour ajuster un résultat, ou quand le fichier appartient à quelqu'un d'autre."
+      },
+      {
+        type: "h2",
+        text: "Quelles sont les forces et les limites d'un logiciel installé ?"
+      },
+      {
+        type: "ul",
+        items: [
+          "Forces : le fichier reste chez vous, le logiciel marche sans connexion, vous pouvez refaire autant d'essais que nécessaire sans rien renvoyer, et vous gardez la main sur les réglages.",
+          "Limites : une installation, des mises à jour, un temps de prise en main variable, et parfois des fonctions payantes."
+        ]
+      },
+      {
+        type: "p",
+        text: "Se passer d'Illustrator ne pose aucun problème. Inkscape est gratuit et fait la vectorisation d'images ; c'est un éditeur complet, donc puissant, mais il faut apprendre où sont les réglages. [VectorPop](/) fait une seule chose : vous déposez l'image, vous choisissez un préréglage, vous exportez le SVG. Notre [tutoriel pas à pas](/blog/vectoriser-un-logo-png-pas-a-pas) montre le parcours complet, et le [guide complet pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) compare les méthodes."
+      },
+      {
+        type: "p",
+        text: "Un point d'honnêteté sur le « hors ligne » : un logiciel local n'est pas forcément coupé d'Internet à 100 %. Dans VectorPop, la vectorisation ne demande aucune connexion et n'envoie pas vos images, mais activer une licence Pro passe par Internet, comme le premier téléchargement du module IA facultatif. Regardez ce point chez tout éditeur : ce qui compte, c'est que l'image, elle, ne parte pas."
+      },
+      {
+        type: "h2",
+        text: "Quels critères pour décider ?"
+      },
+      {
+        type: "h3",
+        text: "La confidentialité"
+      },
+      {
+        type: "p",
+        text: "Un logo de client, une marque pas encore annoncée, un document interne : ces fichiers ne vous appartiennent pas toujours, et un contrat peut vous interdire de les confier à un tiers. Dans ce cas, le local règle la question, comme le détaille notre article sur la façon de [vectoriser sans envoyer le fichier sur Internet](/blog/vectoriser-sans-envoyer-sur-internet). Si vous tenez à un service en ligne, lisez sa politique de confidentialité avant l'envoi : où vont les fichiers, combien de temps, à quoi servent-ils ?"
+      },
+      {
+        type: "h3",
+        text: "La fréquence"
+      },
+      {
+        type: "p",
+        text: "Une conversion par an ne justifie rien d'installer. Si vous vectorisez chaque semaine, les limites des outils gratuits et les allers-retours finissent par coûter plus de temps qu'une installation unique."
+      },
+      {
+        type: "h3",
+        text: "Le résultat attendu"
+      },
+      {
+        type: "p",
+        text: "Tous les outils ne se valent pas sur la couleur : certains ne produisent que du noir et blanc, d'autres réduisent fortement la palette. Vérifiez ce point si votre logo a plusieurs teintes. Regardez aussi si vous pouvez agir sur le nombre de couleurs et le nettoyage des petites taches, car un tracé parfait du premier coup est rare."
+      },
+      {
+        type: "h3",
+        text: "Le coût dans la durée"
+      },
+      {
+        type: "p",
+        text: "Comparez le bon modèle : un service au mois ou à l'usage contre un achat unique. Un abonnement se justifie pour un usage intensif, moins pour un besoin qui revient par vagues. VectorPop, par exemple, inclut 5 exports SVG gratuits, puis coûte 39 € une fois, sans abonnement."
+      },
+      {
+        type: "h2",
+        text: "Comment vérifier que le SVG obtenu est un vrai vectoriel ?"
+      },
+      {
+        type: "p",
+        text: "C'est le piège le moins connu, et il touche surtout les convertisseurs les plus simples : un fichier peut porter l'extension .svg et contenir une simple image en pixels, enveloppée dans du code. Il pèse lourd, reste flou à l'agrandissement, et votre imprimeur le refusera. Deux contrôles prennent une minute :"
+      },
+      {
+        type: "ul",
+        items: [
+          "Zoomez à 800 % : les bords doivent rester nets. S'ils deviennent des marches ou du flou, ce n'est pas du vectoriel.",
+          "Ouvrez le fichier dans un éditeur de texte comme le Bloc-notes : vous devez voir des balises path. Une balise image suivie d'une longue suite de caractères signale un PNG caché."
+        ]
+      },
+      {
+        type: "p",
+        text: "Le même test vaut pour une conversion depuis un JPG, avec ses défauts propres, décrits dans notre guide pour [convertir un JPG en SVG](/blog/convertir-jpg-en-svg)."
+      },
+      {
+        type: "h2",
+        text: "Comment comparer sans prendre de risque ?"
+      },
+      {
+        type: "p",
+        text: "Prenez un logo non sensible, ou une version de test, et passez-le dans l'outil en ligne et dans un logiciel installé. Regardez ensuite les mêmes points : la fidélité des courbes au zoom, les couleurs conservées, le nombre de petites formes parasites, et le temps qu'il vous a fallu pour obtenir un résultat utilisable. Vous saurez alors quel outil garder pour vos vrais fichiers."
+      },
+      {
+        type: "p",
+        text: "Voici le choix que nous conseillerions selon le cas :"
+      },
+      {
+        type: "ul",
+        items: [
+          "Une icône pour une présentation, une seule fois : un outil en ligne.",
+          "Le logo d'un client ou une marque non publiée : un logiciel installé, sans discussion.",
+          "Des logos chaque semaine : un logiciel installé, pour les réglages et le coût.",
+          "Un PC sans droits d'installation et un fichier sans enjeu : un outil en ligne, en vérifiant le résultat.",
+          "Un chantier sans connexion : un logiciel installé, seule option possible."
+        ]
+      },
+      {
+        type: "h2",
+        text: "Conclusion : la confidentialité d'abord"
+      },
+      {
+        type: "p",
+        text: "Posez-vous les questions dans cet ordre : le fichier peut-il sortir de mon ordinateur, à quelle fréquence vais-je recommencer, puis quel budget. Si vous cherchez une solution installée sans passer par Illustrator, [essayez VectorPop gratuitement](/) : 5 exports SVG inclus, traitement local sur Windows, Linux ou Android, et une version Pro à 39 € en paiement unique."
+      }
+    ],
+    faq: [
+      {
+        q: "Un convertisseur PNG vers SVG en ligne est-il sûr ?",
+        a: "Pour un fichier sans enjeu, oui dans la plupart des cas. Pour un fichier sensible, lisez la politique de confidentialité ou testez si le traitement se fait dans le navigateur en coupant la connexion après le chargement de la page."
+      },
+      {
+        q: "Peut-on vectoriser un PNG sans Illustrator ?",
+        a: "Oui. Inkscape le fait gratuitement, VectorPop le fait en quelques clics, et de nombreux convertisseurs en ligne proposent la même opération."
+      },
+      {
+        q: "Peut-on vectoriser hors ligne ?",
+        a: "Oui, avec un logiciel installé. Certains outils de navigateur continuent aussi de fonctionner une fois la page chargée, mais il faut le vérifier."
+      },
+      {
+        q: "Peut-on obtenir un SVG en couleur ?",
+        a: "Oui, à condition que l'outil gère la couleur : certains ne produisent que du noir et blanc. VectorPop propose des préréglages couleur et un préréglage noir et blanc."
+      },
+      {
+        q: "Comment savoir si mon SVG contient une image cachée ?",
+        a: "Ouvrez-le dans un éditeur de texte. Une balise image avec une longue suite de caractères indique un PNG enveloppé, alors que de vraies balises path indiquent du vectoriel."
+      }
+    ]
   },
 ];
