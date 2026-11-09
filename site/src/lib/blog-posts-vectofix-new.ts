@@ -2688,6 +2688,7 @@ export const vectofixNewPosts: BlogPost[] = [
         text: "Going further: for the step-by-step cleanup in Inkscape (union, difference, outset, simplify, Plain SVG or DXF export), see [how to clean up an SVG vector before vinyl cutting](/vectofix/blog/how-to-clean-up-a-vector-before-vinyl-cutting).",
       },
       { type: "p", text: "Going further: where sawtooth outlines come from and how to fix them, in [how to fix jagged edges after image vectorization](/vectofix/blog/how-to-fix-jagged-edges-after-image-vectorization)." },
+      { type: "p", text: "Starting from a PNG or JPEG logo rather than an existing SVG? The settings that matter before cutting, measured on a real example, are in [logo for vinyl cutting: vectorizing to cut](/blog/logo-for-vinyl-cutting-cricut)." },
     ],
     faq: [
       {
@@ -2874,6 +2875,7 @@ export const vectofixNewPosts: BlogPost[] = [
         text: "Pour aller plus loin : la séquence de nettoyage pas à pas dans Inkscape (union, différence, dilatation, simplification, export en SVG simple ou DXF) est détaillée dans [comment nettoyer un vecteur SVG avant la découpe vinyle](/vectofix/blog/nettoyer-un-vecteur-avant-la-decoupe-vinyle).",
       },
       { type: "p", text: "Pour aller plus loin : l'origine des contours en dents de scie et leur correction, dans [comment corriger les bords crénelés après une vectorisation](/vectofix/blog/corriger-les-bords-creneles-apres-vectorisation)." },
+      { type: "p", text: "Vous partez d'un logo en PNG ou en JPEG plutôt que d'un SVG existant ? Les réglages qui comptent avant la découpe, mesurés sur un exemple réel, sont dans [logo pour la découpe vinyle : vectoriser pour couper](/blog/logo-pour-decoupe-vinyle-cricut)." },
     ],
     faq: [
       {
@@ -3047,6 +3049,7 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "A traced SVG is a cutting draft. First check that it is good, then delete specks, merge by colour, hollow out stacked colours, thicken what is too thin, lighten nodes without distortion, set size and format, and test on scrap. Twenty minutes in Inkscape saves a spoiled roll of vinyl. [VectoFix](/vectofix/en) runs offline on Windows; it offers 3 full-resolution exports to try it, then Pro is a one-time €39.",
       },
+      { type: "p", text: "To cut down cleanup upstream, right from vectorizing the logo (color merging, speck filter), see [logo for vinyl cutting: vectorizing to cut](/blog/logo-for-vinyl-cutting-cricut)." },
     ],
     faq: [
       {
@@ -3220,6 +3223,7 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Un SVG vectorisé est un brouillon de découpe. Vérifiez d'abord qu'il est bon, puis supprimez les taches, fusionnez par couleur, évidez les couleurs empilées, épaississez le trop fin, allégez les nœuds sans déformer, réglez taille et format, et testez sur une chute. Vingt minutes dans Inkscape évitent un rouleau de vinyle gâché. [VectoFix](/vectofix) fonctionne hors ligne sur Windows ; il offre 3 exports en pleine résolution pour l'essayer, puis la version Pro coûte 39 € en achat unique.",
       },
+      { type: "p", text: "Pour réduire le nettoyage en amont, dès la vectorisation du logo (fusion des couleurs, filtre de parasites), voyez [logo pour la découpe vinyle : vectoriser pour couper](/blog/logo-pour-decoupe-vinyle-cricut)." },
     ],
     faq: [
       {

@@ -863,6 +863,7 @@ export const seoFrDrafts: Draft[] = [
         text: "Vous avez un logo à convertir ? [Essayez VectorPop gratuitement](/) : 5 exports SVG inclus, sur Windows, Linux ou Android, et une version Pro à 39 € en paiement unique si vous en avez besoin plus souvent.",
       },
       { type: "p", text: "Pour aller plus loin : [que choisir entre un convertisseur en ligne et un logiciel installé](/blog/vectoriser-en-ligne-ou-sur-ordinateur) selon la confidentialité et la fréquence de vos conversions." },
+      { type: "p", text: "Votre logo est destiné à une machine de découpe ? Les réglages propres au vinyle (nombre de couleurs, couches superposées, petites pièces) sont dans [logo pour la découpe vinyle avec une Cricut](/blog/logo-pour-decoupe-vinyle-cricut)." },
     ],
     faq: [
       {
@@ -1061,6 +1062,54 @@ export const seoFrDrafts: Draft[] = [
         q: "Comment savoir si mon SVG contient une image cachée ?",
         a: "Ouvrez-le dans un éditeur de texte. Une balise image avec une longue suite de caractères indique un PNG enveloppé, alors que de vraies balises path indiquent du vectoriel."
       }
+    ]
+  },
+  {
+    slug: "logo-pour-decoupe-vinyle-cricut",
+    title: "Logo pour la découpe vinyle (Cricut et autres) : vectoriser pour couper",
+    metaTitle: "Logo pour découpe vinyle Cricut : vectoriser pour couper — VectorPop",
+    description: "Peu de couleurs, peu de formes, des parties assez épaisses : comment vectoriser un logo pour une Cricut ou une Silhouette, avec des mesures réelles sur les réglages qui comptent.",
+    image: {
+      src: "/images/blog/vectorpop-logo-decoupe-vinyle-fr.jpg",
+      alt: "Le même logo de 3 couleurs vectorisé trois fois : JPEG abîmé avec réglages par défaut, 9 couleurs et 99 formes ; JPEG abîmé avec Seuil fusion 40 et Anti-parasites 10, 3 couleurs et 70 formes ; PNG net de 600 pixels, 3 couleurs et 3 formes"
+    },
+    date: "2026-11-09",
+    author: "Équipe VectorPop",
+    lang: "fr",
+    content: [
+      { type: "p", text: "Pour découper un logo en vinyle avec une Cricut, une Silhouette ou une autre machine, il faut un SVG simple : autant de couleurs que de feuilles de vinyle, le moins de formes possible, et des parties assez épaisses pour survivre à l'échenillage. Le meilleur réglage reste la source : un PNG net et assez grand donne d'emblée un fichier propre, alors qu'un JPEG compressé multiplie les couleurs parasites et les petits morceaux. Vectorisez en aplats, fusionnez les teintes proches, filtrez les parasites, puis coupez un petit essai." },
+      { type: "p", text: "Cet article part du logo et va jusqu'au fichier prêt à couper. Les chiffres viennent d'un test réel : le logo de démonstration de VectorPop (un éclair sur fond violet, 3 couleurs) vectorisé dans plusieurs conditions. Si votre SVG existe déjà et pose problème à la découpe, l'article [SVG pour Cricut : problèmes de vectorisation courants](/vectofix/blog/svg-pour-cricut-problemes-de-vectorisation-courants) est plus adapté." },
+      { type: "h2", text: "Pourquoi une machine de découpe a-t-elle besoin d'un SVG ?" },
+      { type: "p", text: "Une machine de découpe ne lit pas des pixels : elle promène une lame le long de contours. Un fichier vectoriel lui donne exactement cela, des tracés fermés qu'elle suit un par un. Un PNG importé tel quel oblige le logiciel de la machine à deviner les contours lui-même, avec beaucoup moins de contrôle que vous n'en avez au moment de vectoriser." },
+      { type: "p", text: "Le SVG a un second avantage : il garde la même netteté à toutes les tailles. Le même fichier sert pour un autocollant de 5 cm et pour un lettrage de vitrine de 60 cm, ce qui n'est pas le cas d'un PNG agrandi, comme le montre [l'exemple du logo flou à l'agrandissement](/blog/logo-flou-a-l-agrandissement). Pour les formats acceptés par votre logiciel, vérifiez l'[aide Cricut](https://help.cricut.com) ou la documentation de votre machine : ils varient selon les logiciels et les versions." },
+      { type: "h2", text: "Combien de couleurs garder, et comment ?" },
+      { type: "p", text: "En découpe vinyle, une couleur égale une feuille, et en général un calque dans le logiciel de la machine. Un logo de 3 couleurs doit donc donner un SVG de 3 couleurs, pas 9. C'est là que la qualité de la source pèse le plus. Sur notre test, avec le préréglage « Logo plat (couleur) » et les réglages par défaut :" },
+      { type: "ul", items: ["PNG net de 600 pixels : 3 couleurs, 3 formes. Le fichier est prêt à couper.", "Le même logo enregistré en JPEG très compressé : 9 couleurs et 99 formes. La compression a créé des teintes intermédiaires (des mauves pâles autour de l'éclair) que la vectorisation a fidèlement conservées."] },
+      { type: "p", text: "Le réflexe serait de baisser le curseur « Couleurs ». Mauvaise idée : il règle la précision de la détection, pas le nombre exact de couleurs du résultat. À 2 ou 3 sur le PNG net, le blanc et le cyan de l'éclair ont fusionné en un seul bleu clair : le logo a perdu une vraie couleur. Le bon outil est « Fusion couleurs » avec le curseur « Seuil fusion » : passé de 24 (la valeur par défaut) à 40 sur le JPEG abîmé, il a ramené le résultat aux 3 vraies couleurs du logo, sans en sacrifier aucune. Au-delà, à 60, rien n'a changé." },
+      { type: "p", text: "Pour un logo d'une seule couleur, le plus simple est le préréglage « Noir & blanc / trait » : il ne produit qu'un seul calque, quelle que soit la source. Sur notre JPEG abîmé, il a donné une seule couleur là où le préréglage couleur en trouvait 9." },
+      { type: "h2", text: "Comment éviter les dizaines de petits morceaux ?" },
+      { type: "p", text: "Une fois les couleurs réglées, reste le nombre de formes. Sur le JPEG abîmé, même ramené à 3 couleurs, le SVG contenait encore 85 formes : des fragments le long des bords, des points isolés dans le fond. Chacune est une pièce que la lame découpe et que vous devrez retirer à la pince. Le curseur « Anti-parasites » supprime les formes plus petites qu'un seuil : passé de 4 à 10, il a ramené le fichier à 70 formes. C'est mieux, mais on reste loin des 3 formes obtenues avec une bonne source." },
+      { type: "p", text: "Conclusion du test : aucun réglage ne rattrape complètement une mauvaise image. Avant de toucher aux curseurs, cherchez la plus grande version du logo dont vous disposez, en PNG plutôt qu'en JPEG ; notre guide pour [convertir un JPG en SVG](/blog/convertir-jpg-en-svg) explique pourquoi. Les réglages servent ensuite à finir le travail, pas à le sauver." },
+      { type: "p", text: "Si quelques formes indésirables subsistent, la version Pro de VectorPop permet de cliquer sur un aplat pour le supprimer (« Supprimer un aplat »). Pour un nettoyage plus poussé, union des morceaux, épaississement, simplification, la méthode pas à pas dans Inkscape est détaillée dans [comment nettoyer un vecteur avant la découpe vinyle](/vectofix/blog/nettoyer-un-vecteur-avant-la-decoupe-vinyle)." },
+      { type: "h2", text: "Que faire des couleurs superposées ?" },
+      { type: "p", text: "C'est le point que presque personne n'explique. VectorPop, comme beaucoup de vectoriseurs, produit des couleurs « empilées » : la couleur du fond est une forme pleine, et les autres couleurs sont posées par-dessus. Sur notre test, la forme violette passe entièrement sous l'éclair blanc et sous son contour cyan. À l'écran, on ne voit aucune différence. À la découpe, la feuille violette sera coupée en un seul bloc, sans trou à l'emplacement de l'éclair." },
+      { type: "p", text: "Ce n'est pas forcément un défaut. Pour du vinyle superposé, où l'on pose les couleurs l'une sur l'autre, c'est même ce qu'on veut : le léger recouvrement évite qu'un jour apparaisse entre deux couleurs. En revanche, si vous voulez poser les couleurs côte à côte, sans épaisseur supplémentaire, il faut évider la couche du dessous avec l'outil de découpe de formes du logiciel de votre machine (Slice dans Cricut Design Space). Les deux approches sont comparées dans [l'article sur les SVG pour Cricut](/vectofix/blog/svg-pour-cricut-problemes-de-vectorisation-courants)." },
+      { type: "h2", text: "Comment préparer le fichier avant la première découpe ?" },
+      { type: "p", text: "Une fois le SVG exporté, quelques vérifications évitent de gâcher une feuille de vinyle :" },
+      { type: "ul", items: ["Comptez les calques à l'import : il doit y en avoir autant que de couleurs prévues. S'il y en a plus, revenez à « Seuil fusion ».", "Mettez le logo à sa taille finale avant de juger les détails. Un trait qui paraît correct à l'écran peut être trop fin une fois réduit à 4 cm de large, et se déchirer à l'échenillage.", "Repérez les petites lettres et les pointes fines : sur un petit format, mieux vaut les épaissir ou simplifier le logo que d'espérer que la lame les respecte.", "Coupez un essai de petite taille sur une chute de vinyle avant la pièce définitive."] },
+      { type: "p", text: "Pour les étapes de vectorisation elles-mêmes, avec les libellés exacts de l'interface, voyez [vectoriser un logo PNG pas à pas](/blog/vectoriser-un-logo-png-pas-a-pas). Un dernier point, qui n'a rien de technique : si le logo n'est pas le vôtre, une marque déposée ne se reproduit pas librement pour la vendre. Pour un usage commercial, demandez l'autorisation de son titulaire." },
+      { type: "h2", text: "Quel outil utiliser pour vectoriser un logo à découper ?" },
+      { type: "p", text: "Le logiciel de votre machine sait souvent transformer une image en contours, et cela suffit pour une forme d'une seule couleur bien contrastée. Pour un logo en plusieurs couleurs, un vectoriseur dédié donne plus de contrôle sur le nombre de couleurs, la fusion des teintes et le filtrage des parasites, c'est-à-dire précisément les trois réglages qui comptent en découpe." },
+      { type: "p", text: "[VectorPop](/) fait ce travail sur votre ordinateur, sans envoyer l'image en ligne : 5 exports SVG gratuits, puis 39 € une fois pour la version Pro, sans abonnement. Le test de cet article a été fait avec la version courante et le logo de démonstration fourni avec le logiciel ; vos chiffres varieront selon votre logo, mais l'ordre de grandeur, une bonne source qui vaut mieux que tous les réglages, se vérifie à chaque fois." },
+      { type: "h2", text: "Conclusion" },
+      { type: "p", text: "Un bon fichier de découpe vinyle se joue en trois temps : partir de la meilleure source possible, régler la fusion des couleurs plutôt que le nombre de couleurs, filtrer les parasites. Vérifiez ensuite les couches superposées et la taille des détails, puis coupez un essai. Simple, épais, testé : c'est la règle qui épargne le plus de vinyle." },
+    ],
+    faq: [
+      { q: "Quel format de fichier utiliser pour une Cricut ?", a: "Le SVG est le format vectoriel le plus courant pour la découpe. Les formats acceptés dépendent du logiciel de la machine et de sa version : vérifiez-les dans l'aide de votre fabricant." },
+      { q: "Pourquoi mon SVG a-t-il plus de couleurs que mon logo ?", a: "Souvent parce que la source est un JPEG compressé : la compression crée des teintes intermédiaires que la vectorisation conserve. Partez d'un PNG net ou fusionnez les teintes proches (« Fusion couleurs », « Seuil fusion »)." },
+      { q: "Faut-il baisser le nombre de couleurs pour avoir moins de calques ?", a: "Pas en premier. Dans notre test, baisser le curseur « Couleurs » a fusionné deux vraies couleurs du logo. Monter le seuil de fusion a supprimé les fausses teintes en gardant les vraies." },
+      { q: "Pourquoi la couleur du fond est-elle découpée en un seul bloc ?", a: "Parce que les couleurs sont empilées : la forme du dessous passe sous les autres. C'est pratique pour du vinyle superposé ; pour poser les couleurs côte à côte, évidez-la dans le logiciel de la machine." },
+      { q: "Peut-on découper une photo en vinyle ?", a: "Pas telle quelle : une photo contient des milliers de nuances. Il faut d'abord la simplifier en quelques aplats, et le résultat sera une interprétation graphique, pas une reproduction fidèle." },
     ]
   },
 ];
