@@ -384,4 +384,16 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>https://www.vectorpop.fr/vectofix/blog/preparer-un-svg-pour-la-broderie-eviter-les-micro-formes</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.vectorpop.fr/vectofix/blog/preparing-an-svg-for-embroidery-avoiding-micro-shapes</loc>
+    <lastmod>2026-11-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>

@@ -1524,6 +1524,10 @@ export const vectofixNewPosts: BlogPost[] = [
         text: "Related reading: where node reduction fits among the other cleanup steps for a vinyl cutter, in [how to clean up an SVG vector before vinyl cutting](/vectofix/blog/how-to-clean-up-a-vector-before-vinyl-cutting).",
       },
       { type: "p", text: "Related reading: a compressed JPG can multiply nodes by more than twenty, as our measurements on [jagged edges after vectorization](/vectofix/blog/how-to-fix-jagged-edges-after-image-vectorization) show." },
+      {
+        type: "p",
+        text: "Embroidery raises a related problem, shapes too fine for a thread: see [preparing an SVG for embroidery](/vectofix/blog/preparing-an-svg-for-embroidery-avoiding-micro-shapes)."
+      },
     ],
     faq: [
       {
@@ -1933,6 +1937,10 @@ export const vectofixNewPosts: BlogPost[] = [
         text: "À lire aussi : la place de l'allègement des nœuds parmi les autres étapes de nettoyage pour une découpe vinyle, dans [comment nettoyer un vecteur SVG avant la découpe vinyle](/vectofix/blog/nettoyer-un-vecteur-avant-la-decoupe-vinyle).",
       },
       { type: "p", text: "À lire aussi : un JPG compressé peut multiplier les nœuds par plus de vingt, comme le montrent nos mesures sur [les bords crénelés après une vectorisation](/vectofix/blog/corriger-les-bords-creneles-apres-vectorisation)." },
+      {
+        type: "p",
+        text: "La broderie pose un problème voisin, celui des formes trop fines pour un fil : voyez [préparer un SVG pour la broderie](/vectofix/blog/preparer-un-svg-pour-la-broderie-eviter-les-micro-formes)."
+      },
     ],
     faq: [
       {
@@ -2370,6 +2378,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Going further: [common vectorization problems in an SVG for Cricut](/vectofix/blog/svg-for-cricut-common-vectorization-problems), and how to fix them before cutting vinyl. For the hands-on version in Inkscape, see [how to clean up an SVG vector before vinyl cutting](/vectofix/blog/how-to-clean-up-a-vector-before-vinyl-cutting).",
       },
+      {
+        type: "p",
+        text: "For embroidery, these tiny shapes cost even more than in cutting: a thread cannot fill a shape narrower than itself. We measured it in [preparing an SVG for embroidery](/vectofix/blog/preparing-an-svg-for-embroidery-avoiding-micro-shapes)."
+      },
     ],
     faq: [
       {
@@ -2501,6 +2513,10 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         type: "p",
         text: "Pour aller plus loin : [les problèmes de vectorisation courants d'un SVG pour Cricut](/vectofix/blog/svg-pour-cricut-problemes-de-vectorisation-courants), et comment les corriger avant la découpe vinyle. Pour la méthode pas à pas dans Inkscape, voyez [comment nettoyer un vecteur SVG avant la découpe vinyle](/vectofix/blog/nettoyer-un-vecteur-avant-la-decoupe-vinyle).",
+      },
+      {
+        type: "p",
+        text: "Pour la broderie, ces petites formes coûtent encore plus cher qu'en découpe : un fil ne peut pas remplir une forme plus étroite que lui. Nous l'avons mesuré dans [préparer un SVG pour la broderie](/vectofix/blog/preparer-un-svg-pour-la-broderie-eviter-les-micro-formes)."
       },
     ],
     faq: [
@@ -3050,6 +3066,10 @@ export const vectofixNewPosts: BlogPost[] = [
         text: "A traced SVG is a cutting draft. First check that it is good, then delete specks, merge by colour, hollow out stacked colours, thicken what is too thin, lighten nodes without distortion, set size and format, and test on scrap. Twenty minutes in Inkscape saves a spoiled roll of vinyl. [VectoFix](/vectofix/en) runs offline on Windows; it offers 3 full-resolution exports to try it, then Pro is a one-time €39.",
       },
       { type: "p", text: "To cut down cleanup upstream, right from vectorizing the logo (color merging, speck filter), see [logo for vinyl cutting: vectorizing to cut](/blog/logo-for-vinyl-cutting-cricut)." },
+      {
+        type: "p",
+        text: "If the same logo also has to be embroidered, the requirements change: minimum stroke width, text size, number of colours. See [preparing an SVG for embroidery](/vectofix/blog/preparing-an-svg-for-embroidery-avoiding-micro-shapes)."
+      },
     ],
     faq: [
       {
@@ -3224,6 +3244,10 @@ export const vectofixNewPosts: BlogPost[] = [
         text: "Un SVG vectorisé est un brouillon de découpe. Vérifiez d'abord qu'il est bon, puis supprimez les taches, fusionnez par couleur, évidez les couleurs empilées, épaississez le trop fin, allégez les nœuds sans déformer, réglez taille et format, et testez sur une chute. Vingt minutes dans Inkscape évitent un rouleau de vinyle gâché. [VectoFix](/vectofix) fonctionne hors ligne sur Windows ; il offre 3 exports en pleine résolution pour l'essayer, puis la version Pro coûte 39 € en achat unique.",
       },
       { type: "p", text: "Pour réduire le nettoyage en amont, dès la vectorisation du logo (fusion des couleurs, filtre de parasites), voyez [logo pour la découpe vinyle : vectoriser pour couper](/blog/logo-pour-decoupe-vinyle-cricut)." },
+      {
+        type: "p",
+        text: "Si le même logo doit aussi être brodé, les exigences changent : largeur minimale des traits, taille du texte, nombre de couleurs. Voyez [préparer un SVG pour la broderie](/vectofix/blog/preparer-un-svg-pour-la-broderie-eviter-les-micro-formes)."
+      },
     ],
     faq: [
       {
@@ -3543,6 +3567,306 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         q: "Plus lisse veut-il dire fichier plus léger ?",
         a: "Pas forcément. Regardez ensemble la fidélité et le nombre de nœuds."
+      }
+    ]
+  }),
+  make({
+    slug: "preparing-an-svg-for-embroidery-avoiding-micro-shapes",
+    title: "Preparing an SVG for Embroidery: Avoiding Micro-Shapes and Overly Fine Details",
+    metaTitle: "Preparing an SVG for Embroidery: Avoid Micro-Shapes — VectoFix",
+    description: "Why micro-shapes, hairlines and stray colours cause trouble in embroidery, what we measured on a real trace, and how to simplify a logo before it is digitised.",
+    image: {
+      src: "/images/blog/vectofix-svg-embroidery-en.jpg",
+      alt: "The same logo embroidered 8 cm wide: traced from a sharp 1,200-pixel PNG it has 3 areas and none too thin; traced from a compressed 600-pixel JPG it has 682 areas, 678 of them narrower than 1.27 mm, shown in red along the edges"
+    },
+    date: "2026-11-12",
+    author: "VectoFix Team",
+    lang: "en",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "To prepare an SVG for embroidery, simplify it before it is digitised: remove micro-shapes and specks, merge near-identical colours, make every stroke at least as wide as a thread can follow, and enlarge small text. The surest way to get there is to trace from the cleanest, largest source you have. A thread has a physical width: a detail finer than that cannot be stitched, however crisp it looks on screen."
+      },
+      {
+        type: "p",
+        text: "Embroidery turns a vector into stitches, and a thread is very thick compared with a pixel. A traced logo full of specks and slivers gives the digitiser, the person or software that turns the design into a stitch file, hundreds of shapes to clean up or delete. We measured this on a real trace. This article is general guidance and not specific to any embroidery software: your digitiser or your software's documentation has the exact limits for your machine and fabric. For a broader checklist after tracing, see [how to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization)."
+      },
+      {
+        type: "h2",
+        text: "Why is embroidery different from printing or cutting?"
+      },
+      {
+        type: "p",
+        text: "A printer can place a tiny dot, and a cutting machine can follow a very thin line. A needle and thread cannot: the thread has a width, and stitches need room. A shape narrower than the thread cannot be filled, and a very small shape becomes a knot of overlapping stitches or simply disappears."
+      },
+      {
+        type: "p",
+        text: "Embroidery suppliers publish minimums. [Custom Ink](https://www.customink.com/help_center/embroidery-design-tips), for example, recommends text at least 0.25 inch high (about 6.35 mm) and lines at least 0.05 inch thick (about 1.27 mm), and states that gradients and halftones cannot be embroidered. Other shops quote slightly different figures, so treat them as orders of magnitude, not as a standard. Remember too that an SVG is not what the machine reads: the design must be digitised into a stitch file, and everything you simplify beforehand is work the digitiser does not have to guess."
+      },
+      {
+        type: "h2",
+        text: "What did we measure?"
+      },
+      {
+        type: "p",
+        text: "We took our demo logo, which has three colours and three shapes, and traced it with VectoFix's Flat preset from two sources: a sharp 1,200-pixel PNG, and the same logo as a 600-pixel JPG saved at very high compression, the kind of file you get from a website or a messaging app. We then scaled each result to 8 cm wide, a size chosen for the example, and counted the visible areas once the layers are stacked, along with those narrower than 1.27 mm at their widest point."
+      },
+      {
+        type: "ul",
+        items: [
+          "Original vector logo: 3 shapes, 3 colours, no area too thin.",
+          "Traced from the sharp PNG: 4 paths, 3 colours, 3 visible areas, none too thin.",
+          "Traced from the JPG with the speckle filter at 0: 2,045 paths, 1,360 visible areas, 1,356 of them too thin.",
+          "Traced from the JPG with the Flat preset (filter 4): 168 paths, 682 visible areas, 678 of them too thin.",
+          "Traced from the JPG with the filter at 8 and colour merging at 40: 18 paths, 225 visible areas, 221 of them too thin."
+        ]
+      },
+      {
+        type: "p",
+        text: "Two lessons. The settings help a lot: going from filter 0 to filter 8 with stronger colour merging removes most paths. But they do not rescue a poor source: more than two hundred slivers remain along the edges, where compression created fringes of slightly different colour. From the clean source, there is nothing to clean up at all."
+      },
+      {
+        type: "h2",
+        text: "Which defects hurt most in embroidery?"
+      },
+      {
+        type: "ul",
+        items: [
+          "Micro-shapes and specks. Each one is an isolated area to stitch, with a jump of thread to reach it, or a shape the digitiser has to delete by hand.",
+          "Edge fringes. Thin bands of a nearly identical colour around each shape, typical of a compressed JPG. They are too narrow to stitch and blur the outline.",
+          "Too many colours. Each colour is potentially a thread change. Our JPG trace produced over a hundred slightly different fills for a logo that really has three.",
+          "Hairlines. Strokes finer than a thread cannot be rendered cleanly: they need to be thickened or removed.",
+          "Rough edges. Wobble in the outline shows in the direction of the stitches. See [how to fix jagged edges after vectorization](/vectofix/blog/how-to-fix-jagged-edges-after-image-vectorization)."
+        ]
+      },
+      {
+        type: "h2",
+        text: "How do you simplify the artwork before digitising?"
+      },
+      {
+        type: "ul",
+        items: [
+          "Start from the best source. Ask for the original file of the logo rather than a capture or an image pulled from a website. It is the step that had the most effect in our measurements.",
+          "Raise the speckle filter to remove specks, as explained in [how to fix tiny shapes and artifacts in an SVG](/vectofix/blog/how-to-fix-tiny-shapes-and-artifacts-in-an-svg).",
+          "Raise colour merging until you are back to the real colours of the logo, no more: merging too far can fuse two genuine colours.",
+          "Thicken fine strokes to a width a thread can follow, or turn them into filled shapes; remove details that will be smaller than a few millimetres at the final size.",
+          "Check the node count of the result; dense paths complicate every later step, as [why too many SVG nodes are a problem](/vectofix/blog/why-too-many-svg-nodes-are-a-problem-for-cutting-machines) explains."
+        ]
+      },
+      {
+        type: "h3",
+        text: "What about small text?"
+      },
+      {
+        type: "p",
+        text: "Small lettering is the classic problem: at small sizes, the holes in letters and the thin strokes close up. Increase the text size, choose a bolder font without fine serifs, or simplify the lettering. Then think in millimetres at the real size: a word that looks fine on a 1,000-pixel preview may end up 3 mm high on a chest logo, well below the minimums suppliers recommend."
+      },
+      {
+        type: "h2",
+        text: "What can VectoFix do, and what can it not do?"
+      },
+      {
+        type: "p",
+        text: "VectoFix improves the trace itself. Its Damage map shows where the SVG departs from your image, the brush re-traces a damaged area without touching the rest, and the fidelity score and node count tell you whether a correction has improved or worsened the file. The speckle filter and colour merging settings are the ones we used above."
+      },
+      {
+        type: "p",
+        text: "It does not digitise embroidery. It does not create stitch files, choose stitch types, set density or reduce colours to a thread chart: all of that happens in your embroidery software or with your digitiser. It also does not measure the width of each shape in millimetres; our counts above come from a separate measurement script."
+      },
+      {
+        type: "h2",
+        text: "What should you check before sending the file to a digitiser?"
+      },
+      {
+        type: "ul",
+        items: [
+          "The real size: give the final width in centimetres, and check your smallest text and finest stroke at that size.",
+          "The colour count: it should match the colours you want embroidered, not a hundred nuances.",
+          "No specks: zoom in on the edges and on the background, where isolated shapes hide.",
+          "No gradients, shadows or halftones: they cannot be stitched as such.",
+          "Fidelity: the result must still look like your logo; the checklist in [how to fix an SVG before sending it to a laser cutter](/vectofix/blog/how-to-fix-an-svg-before-sending-it-to-a-laser-cutter) applies here too."
+        ]
+      },
+      {
+        type: "h2",
+        text: "Conclusion: design for the thread"
+      },
+      {
+        type: "p",
+        text: "Simplify before you digitise. A clean, bold logo with few colours stitches better than a faithful but fussy trace, and the cleanest trace starts from the cleanest source. [VectoFix](/vectofix/en) offers 3 full-resolution exports to try it on your own files, and Pro is a one-time €39 purchase. If your files are also used for vinyl cutting, see [how to clean up a vector before vinyl cutting](/vectofix/blog/how-to-clean-up-a-vector-before-vinyl-cutting)."
+      }
+    ],
+    faq: [
+      {
+        q: "Why do micro-shapes cause problems in embroidery?",
+        a: "A thread has a physical width: a shape smaller or narrower than that cannot be filled. It becomes a knot of stitches, a needless thread jump, or a shape the digitiser has to delete."
+      },
+      {
+        q: "What minimum sizes should I aim for?",
+        a: "As an order of magnitude, Custom Ink recommends text at least 6.35 mm high and lines at least 1.27 mm thick. Ask your digitiser for the limits of your machine and fabric."
+      },
+      {
+        q: "Should I reduce colours for embroidery?",
+        a: "Yes, back to the real colours of the logo. Each colour can mean a thread change, and a compressed JPG easily produces dozens of near-identical shades."
+      },
+      {
+        q: "Can settings fix a trace made from a bad image?",
+        a: "Partly. In our test, a stronger speckle filter and colour merging cut paths from 2,045 to 18, but more than two hundred slivers remained. A clean source left none."
+      },
+      {
+        q: "Does VectoFix digitise for embroidery?",
+        a: "No. It improves the SVG; digitising into a stitch file is done in your embroidery software or by a digitiser."
+      }
+    ]
+  }),
+  make({
+    slug: "preparer-un-svg-pour-la-broderie-eviter-les-micro-formes",
+    title: "Préparer un SVG pour la broderie : éviter les micro-formes et les détails trop fins",
+    metaTitle: "Préparer un SVG pour la broderie : éviter les micro-formes — VectoFix",
+    description: "Pourquoi les micro-formes, les traits fins et les couleurs parasites posent problème en broderie, ce que nous avons mesuré sur un vrai tracé, et comment simplifier un logo avant sa numérisation.",
+    image: {
+      src: "/images/blog/vectofix-svg-broderie-fr.jpg",
+      alt: "Le même logo brodé à 8 cm de large : tracé depuis un PNG net de 1 200 pixels, il compte 3 zones et aucune trop fine ; tracé depuis un JPG compressé de 600 pixels, il compte 682 zones, dont 678 plus étroites que 1,27 mm, en rouge le long des bords"
+    },
+    date: "2026-11-12",
+    author: "L'équipe VectoFix",
+    lang: "fr",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Pour préparer un SVG à la broderie, simplifiez-le avant la numérisation : supprimez les micro-formes et les taches, fusionnez les couleurs presque identiques, donnez à chaque trait au moins la largeur qu'un fil peut suivre et agrandissez les petits textes. Le moyen le plus sûr d'y arriver est de vectoriser à partir de la source la plus propre et la plus grande possible. Un fil a une largeur physique : un détail plus fin ne peut pas être brodé, aussi net paraisse-t-il à l'écran."
+      },
+      {
+        type: "p",
+        text: "La broderie transforme un vecteur en points de couture, et un fil est très épais comparé à un pixel. Un logo vectorisé plein de taches et de liserés donne au numériseur, la personne ou le logiciel qui convertit le dessin en fichier de points, des centaines de formes à nettoyer ou à supprimer. Nous l'avons mesuré sur un vrai tracé. Cet article donne des repères généraux, pas propres à un logiciel de broderie : votre numériseur ou la documentation de votre logiciel connaissent les limites exactes de votre machine et de votre tissu. Pour une vue d'ensemble après une vectorisation, voyez [comment corriger un SVG après une vectorisation automatique](/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique)."
+      },
+      {
+        type: "h2",
+        text: "En quoi la broderie diffère-t-elle de l'impression ou de la découpe ?"
+      },
+      {
+        type: "p",
+        text: "Une imprimante peut déposer un minuscule point, et une machine de découpe peut suivre un trait très fin. Une aiguille et un fil, non : le fil a une largeur, et les points ont besoin de place. Une forme plus étroite que le fil ne peut pas être remplie, et une très petite forme devient un nœud de points qui se chevauchent, ou disparaît."
+      },
+      {
+        type: "p",
+        text: "Les fournisseurs de broderie publient des minimums. [Custom Ink](https://www.customink.com/help_center/embroidery-design-tips), par exemple, recommande un texte d'au moins 0,25 pouce de haut (environ 6,35 mm) et des traits d'au moins 0,05 pouce d'épaisseur (environ 1,27 mm), et précise que les dégradés et les trames ne se brodent pas. D'autres ateliers donnent des chiffres un peu différents : prenez-les comme des ordres de grandeur, pas comme une norme. Rappelez-vous aussi qu'un SVG n'est pas ce que lit la machine : le dessin doit être numérisé en fichier de points, et tout ce que vous simplifiez avant, le numériseur n'a pas à le deviner."
+      },
+      {
+        type: "h2",
+        text: "Qu'avons-nous mesuré ?"
+      },
+      {
+        type: "p",
+        text: "Nous avons pris notre logo de démonstration, qui compte trois couleurs et trois formes, et l'avons vectorisé avec le préréglage Aplats de VectoFix à partir de deux sources : un PNG net de 1 200 pixels, et le même logo en JPG de 600 pixels enregistré avec une compression très forte, le genre de fichier qu'on récupère sur un site web ou une messagerie. Nous avons ensuite ramené chaque résultat à 8 cm de large, une taille choisie pour l'exemple, puis compté les zones visibles une fois les calques superposés, et celles qui font moins de 1,27 mm à leur endroit le plus large."
+      },
+      {
+        type: "ul",
+        items: [
+          "Logo vectoriel d'origine : 3 formes, 3 couleurs, aucune zone trop fine.",
+          "Tracé depuis le PNG net : 4 tracés, 3 couleurs, 3 zones visibles, aucune trop fine.",
+          "Tracé depuis le JPG avec le filtre parasites à 0 : 2 045 tracés, 1 360 zones visibles, dont 1 356 trop fines.",
+          "Tracé depuis le JPG avec le préréglage Aplats (filtre à 4) : 168 tracés, 682 zones visibles, dont 678 trop fines.",
+          "Tracé depuis le JPG avec le filtre à 8 et la fusion des teintes à 40 : 18 tracés, 225 zones visibles, dont 221 trop fines."
+        ]
+      },
+      {
+        type: "p",
+        text: "Deux leçons. Les réglages aident beaucoup : passer du filtre 0 au filtre 8 avec une fusion des teintes plus forte supprime l'essentiel des tracés. Mais ils ne sauvent pas une mauvaise source : il reste plus de deux cents liserés le long des bords, là où la compression a créé des franges de couleur légèrement différente. Depuis la source propre, il n'y a tout simplement rien à nettoyer."
+      },
+      {
+        type: "h2",
+        text: "Quels défauts nuisent le plus en broderie ?"
+      },
+      {
+        type: "ul",
+        items: [
+          "Les micro-formes et les taches. Chacune est une zone isolée à broder, avec un saut de fil pour l'atteindre, ou une forme que le numériseur doit supprimer à la main.",
+          "Les franges de bord. De fines bandes d'une couleur presque identique autour de chaque forme, typiques d'un JPG compressé. Elles sont trop étroites pour être brodées et brouillent le contour.",
+          "Trop de couleurs. Chaque couleur est potentiellement un changement de fil. Notre tracé depuis le JPG a produit plus d'une centaine de remplissages légèrement différents pour un logo qui en compte réellement trois.",
+          "Les traits très fins. Un trait plus fin qu'un fil ne se rend pas proprement : il faut l'épaissir ou le supprimer.",
+          "Les bords rugueux. Les ondulations du contour se voient dans le sens des points. Voyez [comment corriger les bords crénelés après une vectorisation](/vectofix/blog/corriger-les-bords-creneles-apres-vectorisation)."
+        ]
+      },
+      {
+        type: "h2",
+        text: "Comment simplifier le dessin avant la numérisation ?"
+      },
+      {
+        type: "ul",
+        items: [
+          "Partez de la meilleure source. Demandez le fichier d'origine du logo plutôt qu'une capture ou une image récupérée sur un site. C'est l'étape qui a eu le plus d'effet dans nos mesures.",
+          "Montez le filtre parasites pour supprimer les taches, comme expliqué dans [comment corriger les petites formes et les artefacts dans un SVG](/vectofix/blog/corriger-les-petites-formes-et-artefacts-dans-un-svg).",
+          "Montez la fusion des teintes jusqu'à retrouver les vraies couleurs du logo, pas au-delà : une fusion trop forte peut confondre deux couleurs réelles.",
+          "Épaississez les traits fins jusqu'à une largeur qu'un fil peut suivre, ou transformez-les en formes pleines ; supprimez les détails qui feront moins de quelques millimètres à la taille finale.",
+          "Contrôlez le nombre de nœuds du résultat : les tracés denses compliquent toutes les étapes suivantes, comme l'explique [pourquoi trop de nœuds posent problème](/vectofix/blog/trop-de-noeuds-svg-probleme-machines-de-decoupe)."
+        ]
+      },
+      {
+        type: "h3",
+        text: "Et le petit texte ?"
+      },
+      {
+        type: "p",
+        text: "Le petit lettrage est le problème classique : à petite taille, les creux des lettres et les traits fins se referment. Agrandissez le texte, choisissez une police plus grasse et sans empattements fins, ou simplifiez le lettrage. Raisonnez ensuite en millimètres, à la taille réelle : un mot qui paraît lisible sur un aperçu de 1 000 pixels peut ne faire que 3 mm de haut sur un logo poitrine, bien en dessous des minimums recommandés par les ateliers."
+      },
+      {
+        type: "h2",
+        text: "Que peut faire VectoFix, et que ne fait-il pas ?"
+      },
+      {
+        type: "p",
+        text: "VectoFix améliore la vectorisation elle-même. Sa Carte des dégradations montre où le SVG s'écarte de votre image, le pinceau retrace une zone abîmée sans toucher au reste, et le score de fidélité et le nombre de nœuds indiquent si une correction a amélioré ou dégradé le fichier. Le filtre parasites et la fusion des teintes sont les réglages que nous avons utilisés plus haut."
+      },
+      {
+        type: "p",
+        text: "Il ne numérise pas pour la broderie. Il ne crée pas de fichier de points, ne choisit pas les types de points, ne règle pas la densité et ne ramène pas les couleurs à un nuancier de fils : tout cela se fait dans votre logiciel de broderie ou chez votre numériseur. Il ne mesure pas non plus la largeur de chaque forme en millimètres ; nos chiffres ci-dessus viennent d'un script de mesure à part."
+      },
+      {
+        type: "h2",
+        text: "Que vérifier avant d'envoyer le fichier au numériseur ?"
+      },
+      {
+        type: "ul",
+        items: [
+          "La taille réelle : indiquez la largeur finale en centimètres, et vérifiez à cette taille votre plus petit texte et votre trait le plus fin.",
+          "Le nombre de couleurs : il doit correspondre aux couleurs que vous voulez broder, pas à cent nuances.",
+          "L'absence de taches : zoomez sur les bords et sur le fond, où se cachent les formes isolées.",
+          "L'absence de dégradés, d'ombres et de trames : ils ne se brodent pas tels quels.",
+          "La fidélité : le résultat doit toujours ressembler à votre logo ; la liste de [la checklist avant la découpe laser](/vectofix/blog/checklist-corriger-un-svg-avant-de-l-envoyer-a-la-decoupe-laser) vaut aussi ici."
+        ]
+      },
+      {
+        type: "h2",
+        text: "Conclusion : concevoir pour le fil"
+      },
+      {
+        type: "p",
+        text: "Simplifiez avant de numériser. Un logo net, franc et à peu de couleurs se brode mieux qu'une vectorisation fidèle mais tatillonne, et la vectorisation la plus propre commence par la source la plus propre. [VectoFix](/vectofix) offre 3 exports en pleine résolution pour essayer sur vos propres fichiers, et Pro est un achat unique de 39 €. Si vos fichiers servent aussi à la découpe vinyle, voyez [comment nettoyer un vecteur avant la découpe vinyle](/vectofix/blog/nettoyer-un-vecteur-avant-la-decoupe-vinyle)."
+      }
+    ],
+    faq: [
+      {
+        q: "Pourquoi les micro-formes posent-elles problème en broderie ?",
+        a: "Un fil a une largeur physique : une forme plus petite ou plus étroite ne peut pas être remplie. Elle devient un nœud de points, un saut de fil inutile, ou une forme que le numériseur doit supprimer."
+      },
+      {
+        q: "Quelles tailles minimales viser ?",
+        a: "En ordre de grandeur, Custom Ink recommande un texte d'au moins 6,35 mm de haut et des traits d'au moins 1,27 mm d'épaisseur. Demandez à votre numériseur les limites de votre machine et de votre tissu."
+      },
+      {
+        q: "Faut-il réduire les couleurs pour la broderie ?",
+        a: "Oui, jusqu'aux vraies couleurs du logo. Chaque couleur peut être un changement de fil, et un JPG compressé produit facilement des dizaines de nuances presque identiques."
+      },
+      {
+        q: "Les réglages peuvent-ils rattraper un tracé fait depuis une mauvaise image ?",
+        a: "En partie. Sur notre test, un filtre parasites et une fusion des teintes plus forts ont fait passer les tracés de 2 045 à 18, mais il restait plus de deux cents liserés. La source propre n'en laissait aucun."
+      },
+      {
+        q: "VectoFix numérise-t-il pour la broderie ?",
+        a: "Non. Il améliore le SVG ; la numérisation en fichier de points se fait dans votre logiciel de broderie ou chez un numériseur."
       }
     ]
   }),
