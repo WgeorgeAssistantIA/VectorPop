@@ -3694,7 +3694,7 @@ export const vectofixNewPosts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "Simplify before you digitise. A clean, bold logo with few colours stitches better than a faithful but fussy trace, and the cleanest trace starts from the cleanest source. [VectoFix](/vectofix/en) offers 3 full-resolution exports to try it on your own files, and Pro is a one-time €39 purchase. If your files are also used for vinyl cutting, see [how to clean up a vector before vinyl cutting](/vectofix/blog/how-to-clean-up-a-vector-before-vinyl-cutting)."
+        text: "Simplify before you digitise. A clean, bold logo with few colours stitches better than a faithful but fussy trace, and the cleanest trace starts from the cleanest source. [VectoFix](/vectofix/en) offers 3 full-resolution exports to try it on your own files, and Pro is a one-time €39 purchase. If your files are also used for vinyl cutting, see [how to clean up a vector before vinyl cutting](/vectofix/blog/how-to-clean-up-a-vector-before-vinyl-cutting). To start from the logo rather than the SVG, and see what a soft shadow does to the number of colors, read [logo for embroidery: preparing a simple vector file](/blog/logo-for-embroidery)."
       }
     ],
     faq: [
@@ -3844,7 +3844,7 @@ export const vectofixNewPosts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "Simplifiez avant de numériser. Un logo net, franc et à peu de couleurs se brode mieux qu'une vectorisation fidèle mais tatillonne, et la vectorisation la plus propre commence par la source la plus propre. [VectoFix](/vectofix) offre 3 exports en pleine résolution pour essayer sur vos propres fichiers, et Pro est un achat unique de 39 €. Si vos fichiers servent aussi à la découpe vinyle, voyez [comment nettoyer un vecteur avant la découpe vinyle](/vectofix/blog/nettoyer-un-vecteur-avant-la-decoupe-vinyle)."
+        text: "Simplifiez avant de numériser. Un logo net, franc et à peu de couleurs se brode mieux qu'une vectorisation fidèle mais tatillonne, et la vectorisation la plus propre commence par la source la plus propre. [VectoFix](/vectofix) offre 3 exports en pleine résolution pour essayer sur vos propres fichiers, et Pro est un achat unique de 39 €. Si vos fichiers servent aussi à la découpe vinyle, voyez [comment nettoyer un vecteur avant la découpe vinyle](/vectofix/blog/nettoyer-un-vecteur-avant-la-decoupe-vinyle). Pour partir du logo plutôt que du SVG, et voir ce qu'un ombré fait au nombre de couleurs, lisez [logo pour la broderie : préparer un fichier vectoriel simple](/blog/logo-pour-la-broderie)."
       }
     ],
     faq: [
