@@ -707,6 +707,10 @@ export const seoFrDrafts: Draft[] = [
         type: "p",
         text: "Vous n'avez qu'un PNG ? [Essayez VectorPop gratuitement](/) : 5 exports SVG inclus, traitement local sur Windows, Linux ou Android, et une version Pro à 39 € en paiement unique si vous en avez besoin plus souvent.",
       },
+      {
+        type: "p",
+        text: "Un fond blanc autour du logo gêne la mise en page ? Voyez [comment retirer le fond blanc d'un logo](/blog/retirer-le-fond-blanc-d-un-logo) et obtenir un SVG transparent.",
+      },
     ],
     faq: [
       {
@@ -864,6 +868,7 @@ export const seoFrDrafts: Draft[] = [
       },
       { type: "p", text: "Pour aller plus loin : [que choisir entre un convertisseur en ligne et un logiciel installé](/blog/vectoriser-en-ligne-ou-sur-ordinateur) selon la confidentialité et la fréquence de vos conversions." },
       { type: "p", text: "Votre logo est destiné à une machine de découpe ? Les réglages propres au vinyle (nombre de couleurs, couches superposées, petites pièces) sont dans [logo pour la découpe vinyle avec une Cricut](/blog/logo-pour-decoupe-vinyle-cricut)." },
+      { type: "p", text: "Votre logo a un fond blanc à retirer ? La fonction « Enlever le fond », sa tolérance et son piège (le blanc voulu à l'intérieur du logo disparaît aussi) sont détaillés dans [retirer le fond blanc d'un logo](/blog/retirer-le-fond-blanc-d-un-logo)." },
     ],
     faq: [
       {
@@ -1155,6 +1160,55 @@ export const seoFrDrafts: Draft[] = [
       { q: "Un dégradé peut-il être brodé ?", a: "Pas fidèlement : les ateliers conseillent des aplats. Remplacez le dégradé par quelques couleurs franches avant de vectoriser." },
       { q: "Un petit texte se brode-t-il ?", a: "Seulement s'il est assez grand et gras : un atelier recommande au moins 6 mm de haut. Demandez la limite à votre brodeur." },
       { q: "Quel format envoyer au brodeur ?", a: "Le SVG est un bon point de départ, mais demandez-lui ses consignes : certains acceptent aussi le PNG net, l'EPS ou le PDF." },
+    ]
+  },
+  {
+    slug: "retirer-le-fond-blanc-d-un-logo",
+    title: "Retirer le fond blanc d'un logo (et obtenir un fond transparent)",
+    metaTitle: "Retirer le fond blanc d'un logo : fond transparent en SVG — VectorPop",
+    description: "Un logo sur fond blanc posé sur une couleur fait un carré blanc. Comment retirer un fond uni, quelle tolérance choisir (mesures réelles) et ce qui arrive au blanc voulu à l'intérieur du logo.",
+    image: {
+      src: "/images/blog/vectorpop-retirer-fond-blanc-fr.jpg",
+      alt: "Le même logo posé sur un fond orange, trois fois : PNG sans retrait (carré blanc), JPEG qualité 30 avec tolérance 8 (résidus blancs), même JPEG avec tolérance 60 (bord net, mais l'éclair blanc est devenu un trou)"
+    },
+    date: "2026-11-16",
+    author: "Équipe VectorPop",
+    lang: "fr",
+    content: [
+      { type: "p", text: "Pour retirer un fond blanc, cochez « Enlever le fond » dans VectorPop et réglez « Tol. fond » : tout ce qui est proche de la couleur des quatre coins devient transparent avant la vectorisation. La fonction est dans la version gratuite. Une limite à connaître : elle efface cette couleur partout dans l'image, y compris un blanc voulu à l'intérieur du logo." },
+      { type: "p", text: "Cet article explique quoi régler, ce que fait réellement la fonction (nous l'avons mesurée sur le logo de démonstration de VectorPop) et que faire quand le fond n'est pas uni." },
+      { type: "h2", text: "Pourquoi un fond blanc pose-t-il problème ?" },
+      { type: "p", text: "Un logo enregistré en PNG ou en JPEG sur fond blanc n'a pas de transparence : le blanc est une couleur comme une autre. Posé sur une photo, un tee-shirt, un site au fond coloré ou un document, il apparaît dans un rectangle blanc." },
+      { type: "p", text: "Vectoriser le logo sans retirer le fond ne règle rien : le blanc est tracé comme un aplat de plus. Sur notre logo de démonstration, le résultat compte 4 tracés dont 2 blancs ; avec le fond retiré, il n'en reste que 2, le violet et le cyan. Un SVG gère très bien la transparence : une zone sans tracé est simplement vide, et le navigateur ou le logiciel de mise en page montre ce qu'il y a derrière." },
+      { type: "h2", text: "Comment retirer un fond uni dans VectorPop ?" },
+      { type: "ul", items: ["Ouvrez le logo dans VectorPop et choisissez le préréglage « Logo plat (couleur) ». L'application propose aussi une recette « Logo sur fond uni à retirer » qui règle ces options pour vous.", "Cochez « Enlever le fond ».", "Réglez « Tol. fond » (de 0 à 120, 32 par défaut) en regardant l'aperçu, qui se met à jour tout seul.", "Exportez en SVG."] },
+      { type: "p", text: "La suppression de fond par couleur fait partie de ce que le palier gratuit garde, dans la limite de ses exports SVG. Les étapes générales de la vectorisation, avec les libellés exacts de l'interface, sont dans [vectoriser un logo PNG pas à pas](/blog/vectoriser-un-logo-png-pas-a-pas)." },
+      { type: "h2", text: "Comment la fonction décide-t-elle ce qui est du fond ?" },
+      { type: "p", text: "Elle prend la couleur des quatre coins de l'image (leur valeur médiane), puis rend transparent tout pixel dont la couleur est à une distance inférieure ou égale à la tolérance de cette couleur, la distance étant calculée sur les trois canaux rouge, vert et bleu. Tout cela se passe avant le tracé. Deux conséquences pratiques :" },
+      { type: "ul", items: ["Les quatre coins doivent être du fond. Si le logo touche un coin (image rognée au ras) ou si le fond est un dégradé, la couleur estimée est fausse.", "Le test est global : tout pixel proche de la couleur du fond disparaît, qu'il touche le bord de l'image ou non."] },
+      { type: "h2", text: "Quelle tolérance choisir ?" },
+      { type: "p", text: "Nous avons mesuré sur le logo de démonstration (un éclair blanc cerclé de cyan sur un carré violet, rendu à 600 pixels sur fond blanc), avec le préréglage « Logo plat (couleur) » :" },
+      { type: "ul", items: ["PNG net : de 0 à 120, le résultat est le même, 2 tracés et des coins transparents. Aucune tolérance particulière n'est nécessaire.", "Même logo enregistré en JPEG qualité 30 : tolérance 8, 182 tracés et des résidus blancs autour du logo ; tolérance 32 (la valeur par défaut), 47 tracés ; tolérance 60, 4 tracés et un bord net."] },
+      { type: "p", text: "La compression JPEG sème des nuances de blanc cassé et de gris le long des bords ; la tolérance sert à les rattraper. Partez de 32, montez si des résidus restent, baissez si le logo perd ses teintes claires." },
+      { type: "p", text: "Attention au sens inverse : une couleur claire du logo, proche du fond, disparaît aussi. Un gris très clair (235, 235, 235) est à une distance d'environ 35 du blanc pur : il survit à 32 et disparaît à 60." },
+      { type: "h2", text: "Et le blanc voulu à l'intérieur du logo ?" },
+      { type: "p", text: "C'est le piège principal. Dans notre logo, l'éclair est blanc : 4,75 % de l'image est du blanc entouré de couleur, contre 11,1 % de blanc de fond. Avec « Enlever le fond », l'éclair part avec le fond et laisse un trou, par lequel on voit ce qu'il y a derrière (de l'orange sur notre image). La fonction n'a pas d'option pour protéger ce blanc, et même une tolérance de 0 efface un blanc pur." },
+      { type: "p", text: "Une parade que nous avons testée : donner à ce blanc une teinte très légèrement différente dans le fichier source, par exemple (250, 250, 250) au lieu de (255, 255, 255), puis baisser la tolérance à 8 ou moins. Dans notre essai, à 4 et à 8, l'éclair est resté (4,7 % de l'image encore claire et opaque) et le fond est parti (11 % de transparence) ; à 32, il a disparu. Le prix à payer : retoucher la source dans un éditeur d'images, et seulement sur une source nette, car sur un JPEG compressé une tolérance aussi basse laisse des résidus (voir plus haut)." },
+      { type: "h2", text: "Et si le fond n'est pas uni ?" },
+      { type: "p", text: "Photo, dégradé, ombre portée : la méthode par couleur ne suffit pas. VectorPop propose alors le « Détourage IA », conçu pour les fonds complexes. Il demande de télécharger un module d'environ 120 Mo (une seule fois), il est plus lent et exclu de l'aperçu automatique : il faut lancer « Vectoriser » soi-même. C'est une fonction Pro, que l'on peut tout de même essayer dans l'aperçu ; le verrou ne tombe qu'à l'export." },
+      { type: "p", text: "Autre outil Pro, « Supprimer un aplat » : on clique une forme du SVG pour la retirer, ce qui convient à un fond qui est une forme distincte. Vérifiez le résultat : les couleurs étant empilées, une forme pleine peut rester dessous. Sur notre logo, un clic sur le fond a retiré les deux zones blanches (fond et éclair) mais n'a pas rendu les coins transparents, car le carré violet occupe toute l'image. Ce n'est donc pas un substitut à « Enlever le fond » pour un logo sur fond blanc." },
+      { type: "h2", text: "Comment vérifier le résultat ?" },
+      { type: "p", text: "Posez le logo sur une couleur franche, pas sur un fond blanc : un blanc de visionneuse masque les résidus blancs. Zoomez sur les bords et sur les zones claires à l'intérieur du logo. Si vous avez au contraire besoin d'un fond blanc voulu pour imprimer, la case « Fond blanc à l'export » ajoute un fond blanc aux fichiers SVG, PNG et PDF au lieu de la transparence." },
+      { type: "p", text: "Pour d'autres usages où un fond de trop coûte cher, voir [logo pour découpe vinyle](/blog/logo-pour-decoupe-vinyle-cricut) (une forme de plus à découper) et [logo pour la broderie](/blog/logo-pour-la-broderie). Si la source est floue ou trop petite, commencez par [logo flou à l'agrandissement](/blog/logo-flou-a-l-agrandissement), et pour la méthode générale, le [guide complet de vectorisation](/blog/comment-vectoriser-une-image-guide-complet)." },
+      { type: "h2", text: "Conclusion" },
+      { type: "p", text: "Fond uni : « Enlever le fond » avec une tolérance autour de 32, plus haute pour un JPEG, plus basse si le logo contient des teintes claires. Blanc voulu à l'intérieur : teintez-le légèrement dans la source et baissez la tolérance. Fond complexe : outils Pro. Contrôlez toujours sur une couleur franche. Pour essayer sur votre logo, [VectorPop](/) fonctionne sur votre ordinateur, sans envoyer l'image sur Internet." }
+    ],
+    faq: [
+      { q: "Peut-on retirer un fond blanc gratuitement ?", a: "Oui : « Enlever le fond » fait partie de la version gratuite de VectorPop, dans la limite des exports SVG du palier gratuit." },
+      { q: "Pourquoi des résidus blancs restent-ils autour du logo ?", a: "À cause des nuances créées par la compression JPEG et le crénelage. Montez « Tol. fond » : dans notre test, 8 laisse des résidus, 32 en laisse peu et 60 les retire." },
+      { q: "Pourquoi le blanc de mon logo disparaît-il aussi ?", a: "Parce que le test est global : tout pixel proche de la couleur du fond devient transparent, même au milieu du logo. Teintez légèrement ce blanc dans la source et baissez la tolérance." },
+      { q: "Le SVG gère-t-il la transparence ?", a: "Oui. Une zone sans tracé est vide : le navigateur ou le logiciel de mise en page montre ce qu'il y a derrière." },
+      { q: "Que faire d'un fond photo ou dégradé ?", a: "Utilisez le « Détourage IA » (fonction Pro, que l'on peut essayer dans l'aperçu) : la méthode par couleur ne convient qu'aux fonds unis." },
     ]
   },
 ];
