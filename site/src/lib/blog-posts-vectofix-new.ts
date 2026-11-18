@@ -1409,6 +1409,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "A converted SVG is an approximation, so judge it by the zones that matter for your use. Improve the source, pick the right preset, and repair what is still wrong locally. [VectoFix](/vectofix/en) shows the damage map and lets you paint over the problem, with 3 full-resolution HD exports to try and a Pro licence at a one-time €39.",
       },
+      {
+        type: "p",
+        text: "Related reading: if your source is a small logo from an email or a screenshot, see [how to vectorize a low-resolution logo without losing details](/vectofix/blog/how-to-vectorize-a-low-resolution-logo-without-losing-details)."
+      }
     ],
     faq: [
       {
@@ -1822,6 +1826,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Un SVG converti est une approximation : jugez-le sur les zones qui comptent pour votre usage. Améliorez la source, choisissez le bon préréglage et réparez localement ce qui reste faux. [VectoFix](/vectofix) montre la carte des dégâts et vous laisse peindre sur le problème, avec 3 exports HD en pleine résolution à essayer et une licence Pro à 39 € en achat unique.",
       },
+      {
+        type: "p",
+        text: "À lire aussi : si votre source est un petit logo reçu par mail ou une capture, voyez [vectoriser un logo basse résolution sans perdre les détails](/vectofix/blog/vectoriser-un-logo-basse-resolution-sans-perdre-les-details)."
+      }
     ],
     faq: [
       {
@@ -3396,6 +3404,10 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         type: "p",
         text: "Fix the source first, then check the trace mode, then treat the stubborn zones. Do not spend your time on the corner threshold. [VectoFix](/vectofix/en) offers 3 full-resolution exports to try on your own files, and Pro is a one-time €39. If the problem goes beyond a few edges, see [how to fix a bad vectorization without starting over](/vectofix/blog/how-to-fix-a-bad-vectorization-without-starting-over)."
+      },
+      {
+        type: "p",
+        text: "Going further: when the source is a very small logo, jagged corners are partly missing information, which we measured in [vectorizing a low-resolution logo without losing details](/vectofix/blog/how-to-vectorize-a-low-resolution-logo-without-losing-details)."
       }
     ],
     faq: [
@@ -3545,6 +3557,10 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         type: "p",
         text: "Corrigez d'abord la source, vérifiez ensuite le mode de tracé, puis traitez les zones récalcitrantes. Ne passez pas votre temps sur le seuil d'angle. [VectoFix](/vectofix) offre 3 exports en pleine résolution pour essayer sur vos propres fichiers, et Pro est un achat unique de 39 €. Si le problème dépasse quelques bords, voyez [comment réparer une mauvaise vectorisation sans tout recommencer](/vectofix/blog/comment-reparer-une-mauvaise-vectorisation-sans-tout-recommencer)."
+      },
+      {
+        type: "p",
+        text: "Pour aller plus loin : quand la source est un tout petit logo, une partie des coins crénelés vient de l'information absente, ce que nous avons mesuré dans [vectoriser un logo basse résolution sans perdre les détails](/vectofix/blog/vectoriser-un-logo-basse-resolution-sans-perdre-les-details)."
       }
     ],
     faq: [
@@ -3867,6 +3883,234 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         q: "VectoFix numérise-t-il pour la broderie ?",
         a: "Non. Il améliore le SVG ; la numérisation en fichier de points se fait dans votre logiciel de broderie ou chez un numériseur."
+      }
+    ]
+  }),
+  make({
+    slug: "vectoriser-un-logo-basse-resolution-sans-perdre-les-details",
+    title: "Comment vectoriser un logo basse résolution sans perdre les détails importants",
+    metaTitle: "Vectoriser un logo basse résolution : méthode et limites — VectoFix",
+    description: "Logo reçu par mail, capture ou avatar : ce que nous avons mesuré sur des sources de 64 à 400 pixels, faut-il l'agrandir avant de le vectoriser, et comment réparer localement ce qui manque.",
+    image: {
+      src: "/images/blog/vectofix-logo-basse-resolution-fr.jpg",
+      alt: "Un logo de 100 pixels, puis son tracé direct en 4 tracés (écart moyen 2,70 avec l'original, coins un peu arrondis) et son tracé après agrandissement x3 en 31 tracés (écart 2,49, bords plus nets mais pleins de parasites)"
+    },
+    date: "2026-11-18",
+    author: "L'équipe VectoFix",
+    lang: "fr",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Vectoriser un logo basse résolution fonctionne si l'on part de la meilleure source trouvable, qu'on vectorise en aplats, qu'on vérifie les parties fines à fort zoom et qu'on les répare localement. Ce qu'on ne peut pas faire, c'est retrouver un détail absent de l'image : un vectoriseur redessine ce qu'il voit, il n'invente pas ce qui manque."
+      },
+      {
+        type: "p",
+        text: "Un logo arrive en PNG de 200 pixels récupéré sur un site, une signature de mail ou un avatar de réseau social, et il vous faut un vecteur propre. Pour vérifier ce qu'on peut vraiment en attendre, nous avons réduit un logo de démo (un carré violet et un éclair, trois couleurs) à 64, 100, 200 et 400 pixels de large, puis nous l'avons tracé avec le préréglage Aplats de VectoFix. L'écart est la différence moyenne (de 0 à 255) entre le rendu du SVG et le logo d'origine : plus il est bas, plus le tracé est fidèle. Pour la technique générale, voyez notre [guide complet pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet)."
+      },
+      { type: "h2", text: "Que tenter avant de vectoriser ?" },
+      {
+        type: "p",
+        text: "Cherchez une meilleure source. Demandez le fichier d'origine au client ou au graphiste, regardez sur le site s'il existe une version plus grande, un dossier de presse ou un SVG déjà utilisé. Dix minutes de recherche peuvent économiser une heure de réparation, et notre mesure explique pourquoi : la qualité de la compression pèse plus lourd que le nombre de pixels."
+      },
+      {
+        type: "ul",
+        items: [
+          "PNG propre de 100 pixels : écart de 2,70, avec 4 tracés pour un logo qui en compte 3.",
+          "JPEG de 400 pixels (qualité 40) : écart de 3,00 et 57 tracés, donc moins fidèle et plus bruité que le PNG quatre fois plus petit.",
+          "JPEG de 100 pixels (qualité 40) : écart de 6,14 et 26 tracés."
+        ]
+      },
+      {
+        type: "p",
+        text: "Entre deux fichiers, préférez donc celui qui n'a pas été recompressé, même s'il est plus petit. Si vous n'avez que la capture d'une capture, c'est le cas le plus difficile, que nous détaillons dans [les bords crénelés après une vectorisation](/vectofix/blog/corriger-les-bords-creneles-apres-vectorisation)."
+      },
+      { type: "h2", text: "À partir de quelle taille un logo simple se vectorise-t-il bien ?" },
+      {
+        type: "p",
+        text: "Pour un logo en aplats, tracé directement, l'écart tombe vite : 6,18 à 64 pixels, 2,70 à 100, 1,48 à 200 et 0,77 à 400. Le nombre de tracés reste lui à peu près stable, entre 4 et 5, ce qui est ce qu'on attend d'un logo simple. À 64 pixels, le tracé est reconnaissable mais ses coins sont arrondis : l'image ne contient tout simplement pas l'information d'un angle vif."
+      },
+      {
+        type: "p",
+        text: "Le seuil n'est donc pas un chiffre magique, il dépend de l'usage. Pour un avatar ou une vignette, 100 pixels suffisent. Pour une découpe ou une impression grand format, où l'on voit les coins, il vaut mieux viser 200 pixels et plus, ou obtenir l'original. C'est la même logique que dans notre article sur [le logo flou à l'agrandissement](/blog/logo-flou-a-l-agrandissement), vu du côté du fichier vectoriel."
+      },
+      { type: "h2", text: "Faut-il agrandir l'image avant de la vectoriser ?" },
+      {
+        type: "p",
+        text: "C'est le conseil qu'on lit partout, et notre mesure le nuance fortement. Nous avons agrandi chaque source de trois fois (rééchantillonnage Lanczos) avant le tracé, puis comparé au tracé direct."
+      },
+      {
+        type: "ul",
+        items: [
+          "64 pixels : écart de 6,18 à 3,83 (gain réel), mais de 5 à 20 tracés.",
+          "100 pixels : écart de 2,70 à 2,49 (gain léger), mais de 4 à 31 tracés.",
+          "200 pixels : écart de 1,48 à 1,23, mais de 4 à 32 tracés.",
+          "400 pixels : écart de 0,77 à 0,98, donc un résultat moins fidèle, avec 52 tracés au lieu de 4."
+        ]
+      },
+      {
+        type: "p",
+        text: "L'agrandissement affine les bords, mais il multiplie aussi les petits tracés parasites le long des bords (on les voit sur l'image de couverture). Pour un logo de trois couleurs, passer de 4 à 31 tracés est un mauvais prix à payer pour 0,2 point de fidélité. L'agrandissement ne vaut donc la peine qu'en dessous d'environ 100 pixels, et il faut alors compter sur un nettoyage ensuite, avec le filtre de parasites ou la méthode décrite dans [corriger les petites formes et artefacts](/vectofix/blog/corriger-les-petites-formes-et-artefacts-dans-un-svg). Dans VectoFix, c'est d'ailleurs en local que l'agrandissement est utilisé : le Pinceau retrace la zone peinte après l'avoir agrandie jusqu'à trois fois, sans toucher au reste du tracé."
+      },
+      { type: "h2", text: "Quels détails sont les plus exposés ?" },
+      {
+        type: "p",
+        text: "Les lettres fines, les petites contreformes (l'intérieur d'un « e » ou d'un « a ») et les fins écarts entre deux formes. Dans une petite image, un trait ne fait qu'un ou deux pixels de large, ce qui laisse presque rien à suivre. Le vectoriseur fusionne alors ce trait avec son voisin, ou l'efface comme du bruit. Nous expliquons ce mécanisme dans [pourquoi une conversion PNG vers SVG ne ressemble pas à l'original](/vectofix/blog/pourquoi-conversion-png-svg-ne-ressemble-pas-a-l-original)."
+      },
+      {
+        type: "p",
+        text: "Un réglage global ne résout pas cela : monter le filtre de parasites efface les parasites mais aussi les traits fins, et baisser le nombre de couleurs fusionne des teintes voisines qui sont parfois deux vraies couleurs. C'est pourquoi la réparation locale est plus sûre qu'un nouveau passage avec d'autres curseurs."
+      },
+      { type: "h2", text: "Comment réparer ce qui a été perdu ?" },
+      {
+        type: "p",
+        text: "Repérez les zones abîmées, puis retracez-les localement, comme dans [comment corriger un SVG après une vectorisation automatique](/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique). VectoFix le fait en peignant sur la zone au Pinceau, avec une carte des dégradations qui montre où le SVG s'écarte de votre image. Pour des lettres simplement illisibles dans la source, les options honnêtes sont de retaper le texte dans une police voisine, ou de redessiner ces quelques formes à la main dans un éditeur comme [Inkscape](https://inkscape.org)."
+      },
+      { type: "h2", text: "Quelles limites faut-il accepter ?" },
+      {
+        type: "p",
+        text: "Un vectoriseur suit des pixels. Si la source est floue, le SVG aura des coins arrondis là où l'original en avait de vifs, comme dans notre exemple à 100 pixels. Si un trait fin a disparu de l'image, il a disparu pour de bon. Dites au client à quoi s'attendre, et obtenez le dessin d'origine si le résultat doit être exact : une découpe laser ou une enseigne ne pardonnent pas un coin arrondi."
+      },
+      { type: "h2", text: "Conclusion : meilleure source d'abord, tracé direct, réparation locale" },
+      {
+        type: "p",
+        text: "Un petit logo peut donner un bon SVG quand ses formes sont simples. Partez de la source la moins compressée, tracez-la directement en aplats, n'agrandissez que les très petites images, puis réparez ce qui compte. Vous pouvez essayer [VectoFix](/vectofix) avec 3 exports en pleine résolution ; Pro est un achat unique de 39 €. Si vous partez de zéro, [vectoriser un logo PNG pas à pas](/blog/vectoriser-un-logo-png-pas-a-pas) décrit la méthode complète."
+      }
+    ],
+    faq: [
+      {
+        q: "Peut-on vectoriser un très petit logo ?",
+        a: "Oui, mais le résultat est limité par les pixels disponibles. Dans notre mesure, un logo simple de 64 pixels donne un tracé reconnaissable aux coins arrondis, et un logo de 200 pixels ou plus un tracé net."
+      },
+      {
+        q: "Le SVG aura-t-il plus de détails que le PNG ?",
+        a: "Non. Un vectoriseur redessine ce qui est dans l'image, il ne retrouve pas le détail manquant. Il peut en revanche rendre les bords nets et le fichier redimensionnable."
+      },
+      {
+        q: "Faut-il agrandir l'image avant de la vectoriser ?",
+        a: "Rarement. Sur notre logo de démo, l'agrandissement x3 n'améliorait nettement le tracé qu'à 64 pixels, et multipliait par 4 à 13 le nombre de tracés. Pour les zones abîmées, retracer localement est plus efficace."
+      },
+      {
+        q: "Un JPEG de grande taille vaut-il mieux qu'un petit PNG ?",
+        a: "Pas forcément. Sur notre logo, un JPEG de 400 pixels en qualité 40 était moins fidèle (écart 3,00) qu'un PNG propre de 100 pixels (écart 2,70) : les parasites de compression coûtent plus que les pixels manquants."
+      },
+      {
+        q: "Vaut-il la peine de demander le fichier d'origine ?",
+        a: "Presque toujours : une meilleure source fait gagner plus de temps que n'importe quelle réparation, et c'est indispensable si le résultat doit être exact (découpe, enseigne, impression grand format)."
+      }
+    ]
+  }),
+  make({
+    slug: "how-to-vectorize-a-low-resolution-logo-without-losing-details",
+    title: "How to Vectorize a Low-Resolution Logo Without Losing Important Details",
+    metaTitle: "Vectorize a Low-Resolution Logo: Method and Limits — VectoFix",
+    description: "Logo received by email, screenshot or avatar: what we measured on sources from 64 to 400 pixels, whether to enlarge before tracing, and how to repair what is missing locally.",
+    image: {
+      src: "/images/blog/vectofix-low-resolution-logo-en.jpg",
+      alt: "A 100-pixel logo, then its direct trace in 4 paths (mean error 2.70 against the original, slightly rounded corners) and its trace after a x3 enlargement in 31 paths (error 2.49, sharper edges but full of specks)"
+    },
+    date: "2026-11-18",
+    author: "VectoFix Team",
+    lang: "en",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Vectorizing a low-resolution logo works if you start from the best source you can find, trace in flat colours, check the thin parts at high zoom and repair them locally. What you cannot do is recover detail that is not in the image: a tracer redraws what it sees, it does not invent what is missing."
+      },
+      {
+        type: "p",
+        text: "A logo arrives as a 200-pixel PNG pulled from a website, an email signature or a social media avatar, and you need a clean vector. To see what you can realistically expect, we shrank a demo logo (a purple square with a lightning bolt, three colours) to 64, 100, 200 and 400 pixels wide, then traced it with VectoFix's Flat preset. The error is the mean difference (from 0 to 255) between the rendered SVG and the original logo: the lower it is, the more faithful the trace. For the general technique, see our [complete guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide)."
+      },
+      { type: "h2", text: "What should you try before vectorizing?" },
+      {
+        type: "p",
+        text: "Look for a better source. Ask the client or designer for the original file, check the website for a larger version, a press kit or an SVG already in use. Ten minutes of searching can save an hour of repair, and our measurement shows why: compression quality matters more than pixel count."
+      },
+      {
+        type: "ul",
+        items: [
+          "Clean 100-pixel PNG: error 2.70, with 4 paths for a logo that has 3.",
+          "400-pixel JPEG (quality 40): error 3.00 and 57 paths, so less faithful and noisier than the PNG four times smaller.",
+          "100-pixel JPEG (quality 40): error 6.14 and 26 paths."
+        ]
+      },
+      {
+        type: "p",
+        text: "Between two files, prefer the one that has not been recompressed, even if it is smaller. If all you have is a screenshot of a screenshot, that is the hardest case, which we cover in [jagged edges after vectorization](/vectofix/blog/how-to-fix-jagged-edges-after-image-vectorization)."
+      },
+      { type: "h2", text: "How small can a simple logo be and still vectorize well?" },
+      {
+        type: "p",
+        text: "For a flat-colour logo traced directly, the error drops quickly: 6.18 at 64 pixels, 2.70 at 100, 1.48 at 200 and 0.77 at 400. The number of paths stays roughly stable, between 4 and 5, which is what you expect from a simple logo. At 64 pixels the trace is recognizable but its corners are rounded: the image simply does not contain the information for a sharp angle."
+      },
+      {
+        type: "p",
+        text: "So there is no magic threshold, it depends on the use. For an avatar or a thumbnail, 100 pixels is enough. For cutting or large-format printing, where corners show, aim for 200 pixels or more, or get the original. It is the same logic as in our article on [a blurry logo when enlarged](/blog/blurry-logo-when-enlarged), seen from the vector file's side."
+      },
+      { type: "h2", text: "Should you enlarge the image before tracing it?" },
+      {
+        type: "p",
+        text: "It is advice you read everywhere, and our measurement qualifies it strongly. We enlarged each source three times (Lanczos resampling) before tracing, then compared with the direct trace."
+      },
+      {
+        type: "ul",
+        items: [
+          "64 pixels: error from 6.18 to 3.83 (a real gain), but from 5 to 20 paths.",
+          "100 pixels: error from 2.70 to 2.49 (a slight gain), but from 4 to 31 paths.",
+          "200 pixels: error from 1.48 to 1.23, but from 4 to 32 paths.",
+          "400 pixels: error from 0.77 to 0.98, a less faithful result, with 52 paths instead of 4."
+        ]
+      },
+      {
+        type: "p",
+        text: "Enlarging sharpens the edges, but it also multiplies the small stray paths along the edges (you can see them in the cover image). For a three-colour logo, going from 4 to 31 paths is a poor price for 0.2 points of fidelity. Enlarging is only worth it below roughly 100 pixels, and you then need to clean up afterwards, with the speckle filter or the method in [fixing tiny shapes and artifacts](/vectofix/blog/how-to-fix-tiny-shapes-and-artifacts-in-an-svg). In VectoFix, enlargement is actually used locally: the Brush re-traces the painted zone after enlarging it up to three times, without touching the rest of the trace."
+      },
+      { type: "h2", text: "Which details are most at risk?" },
+      {
+        type: "p",
+        text: "Thin lettering, small counters (the inside of an 'e' or an 'a') and fine gaps between two shapes. In a small image, a stroke is only one or two pixels wide, which leaves almost nothing to follow. The tracer then merges that stroke with its neighbour, or erases it as noise. We explain this mechanism in [why PNG to SVG conversion doesn't look like the original](/vectofix/blog/why-png-to-svg-conversion-doesnt-look-like-the-original)."
+      },
+      {
+        type: "p",
+        text: "A global setting does not solve this: raising the speckle filter removes the specks but also the thin strokes, and lowering the colour count merges neighbouring tones that are sometimes two real colours. This is why a local repair is safer than another pass with different sliders."
+      },
+      { type: "h2", text: "How do you repair what was lost?" },
+      {
+        type: "p",
+        text: "Locate the damaged zones, then re-trace them locally, as in [how to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization). VectoFix does it by painting over the zone with the Brush, with a damage map showing where the SVG departs from your image. For letters that are simply unreadable in the source, the honest options are to retype the text in a matching font, or to redraw those few shapes by hand in an editor such as [Inkscape](https://inkscape.org)."
+      },
+      { type: "h2", text: "What limits should you accept?" },
+      {
+        type: "p",
+        text: "A tracer follows pixels. If the source is blurry, the SVG will have rounded corners where the original had sharp ones, as in our 100-pixel example. If a thin line was lost in the image, it is gone for good. Tell the client what to expect, and get the original artwork if the result must be exact: laser cutting or signage will not forgive a rounded corner."
+      },
+      { type: "h2", text: "Conclusion: best source first, direct trace, local repair" },
+      {
+        type: "p",
+        text: "A small logo can become a good SVG when its shapes are simple. Start from the least compressed source, trace it directly in flat colours, enlarge only very small images, then repair what matters. You can try [VectoFix](/vectofix/en) with 3 full-resolution exports; Pro is a one-time €39. If you are starting from scratch, [vectorizing a PNG logo step by step](/blog/vectorize-a-png-logo-step-by-step) describes the full method."
+      }
+    ],
+    faq: [
+      {
+        q: "Can I vectorize a very small logo?",
+        a: "Yes, but the result is limited by the pixels available. In our measurement, a simple 64-pixel logo gives a recognizable trace with rounded corners, and a logo of 200 pixels or more gives a clean one."
+      },
+      {
+        q: "Will the SVG have more detail than the PNG?",
+        a: "No. A tracer redraws what is in the image, it does not recover missing detail. It can, however, make the edges sharp and the file scalable."
+      },
+      {
+        q: "Should I enlarge the image before tracing?",
+        a: "Rarely. On our demo logo, a x3 enlargement clearly improved the trace only at 64 pixels, and multiplied the path count by 4 to 13. For damaged zones, re-tracing locally is more effective."
+      },
+      {
+        q: "Is a large JPEG better than a small PNG?",
+        a: "Not necessarily. On our logo, a 400-pixel JPEG at quality 40 was less faithful (error 3.00) than a clean 100-pixel PNG (error 2.70): compression artifacts cost more than missing pixels."
+      },
+      {
+        q: "Is it worth asking for the original file?",
+        a: "Almost always: a better source saves more time than any repair, and it is essential if the result must be exact (cutting, signage, large-format printing)."
       }
     ]
   }),

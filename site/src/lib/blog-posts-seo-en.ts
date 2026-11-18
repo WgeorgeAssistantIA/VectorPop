@@ -682,6 +682,10 @@ export const seoEnDrafts: Draft[] = [
         type: "p",
         text: "A white box around the logo getting in the way of your layout? See [how to remove the white background from a logo](/blog/remove-the-white-background-from-a-logo) and get a transparent SVG.",
       },
+      {
+        type: "p",
+        text: "Only have that small file and need an SVG? See [how to vectorize a low-resolution logo without losing details](/vectofix/blog/how-to-vectorize-a-low-resolution-logo-without-losing-details), with our measurements from 64 to 400 pixels."
+      }
     ],
     faq: [
       {

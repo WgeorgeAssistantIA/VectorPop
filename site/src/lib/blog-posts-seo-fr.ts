@@ -711,6 +711,10 @@ export const seoFrDrafts: Draft[] = [
         type: "p",
         text: "Un fond blanc autour du logo gêne la mise en page ? Voyez [comment retirer le fond blanc d'un logo](/blog/retirer-le-fond-blanc-d-un-logo) et obtenir un SVG transparent.",
       },
+      {
+        type: "p",
+        text: "Vous n'avez que ce petit fichier et il faut un SVG ? Voyez [comment vectoriser un logo basse résolution sans perdre les détails](/vectofix/blog/vectoriser-un-logo-basse-resolution-sans-perdre-les-details), avec nos mesures de 64 à 400 pixels."
+      }
     ],
     faq: [
       {
