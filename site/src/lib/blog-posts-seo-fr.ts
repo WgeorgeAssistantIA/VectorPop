@@ -493,6 +493,7 @@ export const seoFrDrafts: Draft[] = [
         type: "p",
         text: "Vous n'avez qu'un PNG ? [Essayez VectorPop gratuitement](/) : 5 exports SVG inclus, aucun envoi en ligne, et une version Pro à 39 € en paiement unique si vous en avez besoin plus souvent. Un logo confidentiel ? Voyez comment [vectoriser un logo sans l'envoyer sur Internet](/blog/vectoriser-sans-envoyer-sur-internet). Votre logo devient flou à l'agrandissement ? Lisez [pourquoi, et comment obtenir un logo net](/blog/logo-flou-a-l-agrandissement).",
       },
+      { type: "p", text: "Pour aller plus loin : pour un logo destiné à une bâche ou une enseigne, voyez [comment convertir un logo PNG en SVG pour l'impression grand format](/vectofix/blog/convertir-un-logo-png-en-svg-pour-l-impression-grand-format) et les contrôles à faire avant l'envoi." },
     ],
     faq: [
       {

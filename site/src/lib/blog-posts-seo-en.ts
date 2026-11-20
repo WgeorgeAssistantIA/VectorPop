@@ -464,6 +464,7 @@ export const seoEnDrafts: Draft[] = [
         type: "p",
         text: "Only have a PNG? [Try VectorPop for free](/): 5 SVG exports included, nothing uploaded online, and a Pro version at €39 as a one-time payment if you need it more often. A confidential logo? See how to [vectorize a logo without uploading it to the internet](/blog/vectorize-without-uploading-to-the-internet). Does your logo get blurry when enlarged? Read [why, and how to get a sharp logo](/blog/blurry-logo-when-enlarged).",
       },
+      { type: "p", text: "Going further: for a logo headed for a banner or a sign, see [how to convert a logo from PNG to SVG for large-format print](/vectofix/blog/how-to-convert-a-logo-from-png-to-svg-for-high-end-print) and the checks to run before sending it." },
     ],
     faq: [
       {

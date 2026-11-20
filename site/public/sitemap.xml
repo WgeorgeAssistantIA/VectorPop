@@ -432,4 +432,16 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+  <url>
+    <loc>https://www.vectorpop.fr/vectofix/blog/convertir-un-logo-png-en-svg-pour-l-impression-grand-format</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.vectorpop.fr/vectofix/blog/how-to-convert-a-logo-from-png-to-svg-for-high-end-print</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>

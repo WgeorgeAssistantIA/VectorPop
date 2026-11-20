@@ -3408,7 +3408,8 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         type: "p",
         text: "Going further: when the source is a very small logo, jagged corners are partly missing information, which we measured in [vectorizing a low-resolution logo without losing details](/vectofix/blog/how-to-vectorize-a-low-resolution-logo-without-losing-details)."
-      }
+      },
+      { type: "p", text: "Related reading: a wobble invisible on screen can reach several millimetres on a banner, as our measurement shows in [how to convert a logo from PNG to SVG for large-format print](/vectofix/blog/how-to-convert-a-logo-from-png-to-svg-for-high-end-print)." }
     ],
     faq: [
       {
@@ -3561,7 +3562,8 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         type: "p",
         text: "Pour aller plus loin : quand la source est un tout petit logo, une partie des coins crénelés vient de l'information absente, ce que nous avons mesuré dans [vectoriser un logo basse résolution sans perdre les détails](/vectofix/blog/vectoriser-un-logo-basse-resolution-sans-perdre-les-details)."
-      }
+      },
+      { type: "p", text: "À lire aussi : une ondulation invisible à l'écran peut atteindre plusieurs millimètres sur une bâche, comme le montre notre mesure dans [convertir un logo PNG en SVG pour l'impression grand format](/vectofix/blog/convertir-un-logo-png-en-svg-pour-l-impression-grand-format)." }
     ],
     faq: [
       {
@@ -3975,7 +3977,8 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         type: "p",
         text: "Un petit logo peut donner un bon SVG quand ses formes sont simples. Partez de la source la moins compressée, tracez-la directement en aplats, n'agrandissez que les très petites images, puis réparez ce qui compte. Vous pouvez essayer [VectoFix](/vectofix) avec 3 exports en pleine résolution ; Pro est un achat unique de 39 €. Si vous partez de zéro, [vectoriser un logo PNG pas à pas](/blog/vectoriser-un-logo-png-pas-a-pas) décrit la méthode complète."
-      }
+      },
+      { type: "p", text: "Pour aller plus loin : si le logo doit finir sur une bâche ou une enseigne, voyez [comment convertir un logo PNG en SVG pour l'impression grand format](/vectofix/blog/convertir-un-logo-png-en-svg-pour-l-impression-grand-format), où nous mesurons l'écart d'un tracé agrandi à 2 mètres." }
     ],
     faq: [
       {
@@ -4089,7 +4092,8 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         type: "p",
         text: "A small logo can become a good SVG when its shapes are simple. Start from the least compressed source, trace it directly in flat colours, enlarge only very small images, then repair what matters. You can try [VectoFix](/vectofix/en) with 3 full-resolution exports; Pro is a one-time €39. If you are starting from scratch, [vectorizing a PNG logo step by step](/blog/vectorize-a-png-logo-step-by-step) describes the full method."
-      }
+      },
+      { type: "p", text: "Going further: if the logo is headed for a banner or a sign, see [how to convert a logo from PNG to SVG for large-format print](/vectofix/blog/how-to-convert-a-logo-from-png-to-svg-for-high-end-print), where we measure how far a trace drifts when enlarged to 2 metres." }
     ],
     faq: [
       {
@@ -4111,6 +4115,264 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         q: "Is it worth asking for the original file?",
         a: "Almost always: a better source saves more time than any repair, and it is essential if the result must be exact (cutting, signage, large-format printing)."
+      }
+    ]
+  }),
+  make({
+    slug: "convertir-un-logo-png-en-svg-pour-l-impression-grand-format",
+    title: "Comment convertir un logo PNG en SVG pour l'impression grand format",
+    metaTitle: "Logo PNG en SVG pour bâche ou enseigne : la méthode mesurée — VectoFix",
+    description: "Bâche, enseigne, signalétique : ce que nous avons mesuré en agrandissant un logo vectorisé à 2 mètres, pourquoi le score à l'écran ne suffit pas, et les contrôles à faire avant d'envoyer le fichier.",
+    image: {
+      src: "/images/blog/vectofix-logo-impression-grand-format-fr.jpg",
+      alt: "Détail de la pointe d'un logo imprimé à 2 mètres de large : le logo d'origine, le tracé fait depuis un PNG de 300 pixels (score écran 99,3, décalage jusqu'à 8 mm, en rouge) et le tracé fait depuis un PNG de 1 200 pixels (score 99,8, décalage jusqu'à 2,4 mm)"
+    },
+    date: "2026-11-20",
+    author: "L'équipe VectoFix",
+    lang: "fr",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "Pour imprimer un logo en grand format, vectorisez-le à partir de la source la plus grande et la plus propre possible, en aplats, puis contrôlez-le à l'échelle où il sera imprimé, pas à celle de l'écran. Un tracé qui semble parfait sur votre moniteur peut s'écarter de plusieurs millimètres du logo d'origine une fois agrandi sur une bâche. Vérifiez ensuite les couleurs clés et demandez à l'imprimeur le format exact qu'il attend."
+      },
+      {
+        type: "p",
+        text: "L'impression en grand amplifie tout. Pour mesurer à quel point, nous avons pris un logo de démo (un carré violet aux coins arrondis et un éclair, trois couleurs), nous l'avons exporté en PNG de 150 à 2 400 pixels de large, puis tracé avec le préréglage Aplats de VectoFix. Chaque SVG obtenu a ensuite été agrandi comme pour un logo imprimé à 2 mètres de large et comparé au logo vectoriel d'origine. Pour savoir pourquoi l'imprimeur réclame un fichier vectoriel, lisez d'abord [pourquoi les imprimeurs demandent un fichier vectoriel](/blog/pourquoi-imprimeurs-demandent-fichier-vectoriel)."
+      },
+      { type: "h2", text: "Pourquoi un logo qui semble parfait à l'écran ne l'est pas sur une bâche ?" },
+      {
+        type: "p",
+        text: "Parce qu'un vectoriseur ne connaît que votre PNG. Il dessine des courbes qui passent au mieux par ses pixels ; entre deux pixels, il devine. À l'écran, cette part de devinette tient dans un pixel et ne se voit pas. Agrandie cinquante fois, elle devient une courbe qui s'écarte franchement de l'original."
+      },
+      {
+        type: "p",
+        text: "C'est exactement ce que montre notre mesure. Tracé depuis un PNG de 300 pixels, le logo obtient un score de fidélité de 99,3 sur 100 à l'écran, calculé comme dans VectoFix. Imprimé à 2 mètres, son contour s'écarte pourtant jusqu'à 8 mm du logo d'origine, en particulier aux pointes de l'éclair (voir l'image). Le score n'est pas faux : il dit que le SVG ressemble à votre PNG. Il ne peut pas dire ce que votre PNG ne contenait pas."
+      },
+      { type: "h2", text: "Quelle taille de source faut-il pour l'impression grand format ?" },
+      {
+        type: "p",
+        text: "La plus grande disponible, car l'écart à l'impression baisse nettement avec la taille de la source. Voici, pour un logo imprimé à 2 mètres de large, le décalage maximal mesuré entre le contour du tracé et celui du logo d'origine :"
+      },
+      {
+        type: "ul",
+        items: [
+          "PNG de 150 pixels : score écran 98,8, décalage jusqu'à 17 mm.",
+          "PNG de 300 pixels : score écran 99,3, décalage jusqu'à 8 mm.",
+          "PNG de 600 pixels : score écran 99,6, décalage jusqu'à 5 mm.",
+          "PNG de 1 200 pixels : score écran 99,8, décalage jusqu'à 2,4 mm.",
+          "PNG de 2 400 pixels : score écran 99,8, décalage jusqu'à 2 mm."
+        ]
+      },
+      {
+        type: "p",
+        text: "Deux remarques honnêtes. D'abord, les scores à l'écran sont tous excellents et très proches : ils ne permettent pas, à eux seuls, de choisir la bonne source pour une bâche. Ensuite, au-delà de 1 200 pixels le gain devient faible ; le plancher d'environ 2 mm vient en partie de la mesure elle-même (le lissage des bords au rendu). Notre logo est simple : un logo avec des lettres fines ou de petits détails demande une source plus grande encore. Si vous n'avez qu'un petit fichier, voyez [comment vectoriser un logo basse résolution sans perdre les détails](/vectofix/blog/vectoriser-un-logo-basse-resolution-sans-perdre-les-details)."
+      },
+      {
+        type: "p",
+        text: "Ce que ces millimètres représentent à l'œil dépend de la distance de lecture : une bâche lue à dix mètres pardonne plus qu'un panneau vu de près ou qu'une vitrine. Votre imprimeur connaît ces distances ; la question à vous poser est simplement de savoir si votre tracé est fidèle à cette échelle."
+      },
+      { type: "h2", text: "Comment contrôler le tracé à l'échelle d'impression ?" },
+      {
+        type: "p",
+        text: "Zoomez fort, zone par zone, en comparant avec l'original. Dans VectoFix, maintenez la touche Espace pour afficher l'original à la place du rendu SVG, au même zoom, et ouvrez la carte des dégradations : elle surligne en rouge les endroits où le SVG s'écarte de votre image. Regardez en priorité ce qui trahit un tracé approximatif une fois agrandi :"
+      },
+      {
+        type: "ul",
+        items: [
+          "Les pointes et les angles vifs, qui ont tendance à s'arrondir ou à se décaler.",
+          "Les courbes longues, qui doivent rester régulières, sans petites ondulations. Voyez [comment corriger les bords crénelés après vectorisation](/vectofix/blog/corriger-les-bords-creneles-apres-vectorisation).",
+          "Les lettres et leurs contreformes (l'intérieur d'un « o » ou d'un « e »), qui doivent garder leurs proportions.",
+          "Les parasites : une tache d'un pixel invisible à l'écran devient une marque de plusieurs millimètres. Voyez [corriger les petites formes et artefacts dans un SVG](/vectofix/blog/corriger-les-petites-formes-et-artefacts-dans-un-svg)."
+        ]
+      },
+      {
+        type: "p",
+        text: "Quand une zone est abîmée, réparez-la localement plutôt que de relancer tout le tracé avec d'autres curseurs : avec le Pinceau, VectoFix retrace seulement la zone peinte, sans toucher au reste. C'est la méthode décrite dans [comment corriger un SVG après une vectorisation automatique](/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique)."
+      },
+      { type: "h2", text: "Les couleurs du logo restent-elles exactes ?" },
+      {
+        type: "p",
+        text: "Presque, mais pas forcément au code près. Un vectoriseur construit sa palette à partir des pixels, et les bords lissés d'un PNG mélangent les teintes. Sur notre logo, le violet est ressorti identique (#7952F5), mais le blanc est devenu #FEFEFE au lieu de #FFFFFF, et le cyan #3FD6FA ou #41D4FA au lieu de #3FD7FB selon la taille de la source."
+      },
+      {
+        type: "p",
+        text: "Ces écarts sont invisibles à l'œil, mais ils comptent dans deux cas. Si votre charte impose des codes précis, remplacez les couleurs du SVG par les bonnes valeurs dans un éditeur. Et si le blanc doit être imprimé avec une encre blanche, ou au contraire laisser voir le support (vinyle, textile, plexiglas), un « presque blanc » peut être traité comme une couleur à imprimer : remettez-le en blanc pur et demandez à l'imprimeur comment il gère le blanc. Pour les teintes d'impression (CMJN, Pantone), c'est aussi lui qui vous dira comment les indiquer."
+      },
+      { type: "h2", text: "Quel format envoyer à l'imprimeur ?" },
+      {
+        type: "p",
+        text: "Celui qu'il demande : posez la question avant d'envoyer. Beaucoup d'imprimeurs acceptent le SVG, d'autres préfèrent un PDF vectoriel, un fichier AI ou EPS. VectoFix exporte en SVG (et en PNG) ; pour un PDF vectoriel, ouvrez le SVG dans un logiciel comme [Inkscape](https://inkscape.org), gratuit, et enregistrez-en une copie au format PDF. Les courbes restent des courbes : le fichier ne redevient pas une image."
+      },
+      {
+        type: "ul",
+        items: [
+          "Le texte : un logo vectorisé ne contient pas de police, les lettres sont déjà des formes. Pas de risque de police manquante chez l'imprimeur.",
+          "Les dimensions finales et le fond perdu (la marge de débord autour de la zone imprimée) : demandez les valeurs à l'imprimeur.",
+          "Le mode colorimétrique et la façon d'indiquer les couleurs de la marque.",
+          "Une épreuve : pour une enseigne ou une bâche coûteuse, demandez un bon à tirer, voire une épreuve imprimée d'un détail à l'échelle 1."
+        ]
+      },
+      { type: "h2", text: "Et si la source est trop pauvre pour un grand format ?" },
+      {
+        type: "p",
+        text: "Cherchez d'abord une meilleure source : le fichier d'origine chez le client ou le graphiste, une version plus grande sur son site, un dossier de presse. Pour un logo de quelques centaines de pixels destiné à une enseigne, c'est presque toujours le meilleur investissement de temps. À défaut, réparez les zones visibles à l'échelle d'impression, et pour les formes essentielles (les lettres du nom, un symbole), redessinez-les à la main dans un éditeur. Le résultat sera un logo propre, pas une copie exacte : dites-le au client. Pour comprendre d'où viennent les écarts, lisez [pourquoi une conversion PNG vers SVG ne ressemble pas à l'original](/vectofix/blog/pourquoi-conversion-png-svg-ne-ressemble-pas-a-l-original)."
+      },
+      { type: "h2", text: "Conclusion : juger le fichier à la taille où il sera imprimé" },
+      {
+        type: "p",
+        text: "Un score de fidélité à l'écran dit si le SVG ressemble à votre image, pas s'il tiendra sur une bâche. Partez de la plus grande source propre, tracez en aplats, contrôlez pointes, courbes et lettres à fort zoom, réparez localement, corrigez les couleurs clés, puis envoyez le format demandé par l'imprimeur. Vous pouvez essayer [VectoFix](/vectofix) avec 3 exports en pleine résolution ; Pro est un achat unique de 39 €."
+      }
+    ],
+    faq: [
+      {
+        q: "Le SVG est-il accepté pour l'impression grand format ?",
+        a: "Souvent, mais pas toujours : certains imprimeurs préfèrent un PDF vectoriel, un AI ou un EPS. Demandez avant d'envoyer ; un SVG s'enregistre en PDF vectoriel dans Inkscape."
+      },
+      {
+        q: "Quelle taille de PNG faut-il pour vectoriser un logo destiné à une bâche ?",
+        a: "La plus grande disponible. Sur notre logo imprimé à 2 m, le contour s'écartait jusqu'à 8 mm depuis un PNG de 300 pixels, contre 2,4 mm depuis 1 200 pixels."
+      },
+      {
+        q: "Un bon score de fidélité suffit-il ?",
+        a: "Non. Il compare le SVG à votre PNG, à la taille du PNG. Tous nos tracés dépassaient 98,7 sur 100, alors que leur précision à l'échelle d'une bâche variait de 2 à 17 mm."
+      },
+      {
+        q: "Les couleurs du logo restent-elles exactes ?",
+        a: "Pas toujours au code près : sur notre logo, le blanc est devenu #FEFEFE et le cyan a légèrement bougé. Remettez les couleurs de la charte dans un éditeur et demandez à l'imprimeur comment indiquer les teintes."
+      },
+      {
+        q: "Peut-on réparer une seule lettre ?",
+        a: "Oui. Dans VectoFix, le Pinceau retrace seulement la zone peinte. Pour une lettre illisible dans la source, la redessiner à la main reste plus sûr."
+      }
+    ]
+  }),
+  make({
+    slug: "how-to-convert-a-logo-from-png-to-svg-for-high-end-print",
+    title: "How to Convert a Logo From PNG to SVG for High-End, Large-Format Print",
+    metaTitle: "PNG Logo to SVG for Banners and Signs: A Measured Method — VectoFix",
+    description: "Banners, signs, wayfinding: what we measured when enlarging a vectorized logo to 2 metres, why the on-screen score is not enough, and the checks to run before sending the file.",
+    image: {
+      src: "/images/blog/vectofix-logo-large-format-print-en.jpg",
+      alt: "Close-up of the tip of a logo printed 2 metres wide: the original logo, the trace made from a 300-pixel PNG (on-screen score 99.3, off by up to 8 mm, in red) and the trace made from a 1,200-pixel PNG (score 99.8, off by up to 2.4 mm)"
+    },
+    date: "2026-11-20",
+    author: "VectoFix Team",
+    lang: "en",
+    app: "vectofix",
+    content: [
+      {
+        type: "p",
+        text: "To print a logo at large format, vectorize it from the largest and cleanest source you can get, in flat colours, then check it at the scale it will be printed, not at screen scale. A trace that looks perfect on your monitor can be several millimetres off the original logo once enlarged on a banner. Then check the key colours and ask the printer for the exact format they expect."
+      },
+      {
+        type: "p",
+        text: "Large print magnifies everything. To measure how much, we took a demo logo (a purple rounded square and a lightning bolt, three colours), exported it as a PNG from 150 to 2,400 pixels wide, and traced it with VectoFix's Flat preset. Each resulting SVG was then enlarged as for a logo printed 2 metres wide and compared with the original vector logo. For why printers ask for a vector file in the first place, start with [why printers ask for vector files](/blog/why-printers-ask-for-vector-files)."
+      },
+      { type: "h2", text: "Why doesn't a logo that looks perfect on screen hold up on a banner?" },
+      {
+        type: "p",
+        text: "Because a tracer only knows your PNG. It draws curves that pass as well as possible through its pixels; between two pixels, it guesses. On screen, that guesswork fits inside one pixel and is invisible. Enlarged fifty times, it becomes a curve that clearly departs from the original."
+      },
+      {
+        type: "p",
+        text: "That is exactly what our measurement shows. Traced from a 300-pixel PNG, the logo gets a fidelity score of 99.3 out of 100 on screen, computed as in VectoFix. Printed 2 metres wide, its outline is nonetheless up to 8 mm off the original logo, especially at the tips of the bolt (see the image). The score is not wrong: it says the SVG looks like your PNG. It cannot say what your PNG did not contain."
+      },
+      { type: "h2", text: "What source size do you need for large-format print?" },
+      {
+        type: "p",
+        text: "The largest available, because the error at print size drops sharply with the size of the source. Here, for a logo printed 2 metres wide, is the maximum offset we measured between the outline of the trace and that of the original logo:"
+      },
+      {
+        type: "ul",
+        items: [
+          "150-pixel PNG: on-screen score 98.8, off by up to 17 mm.",
+          "300-pixel PNG: on-screen score 99.3, off by up to 8 mm.",
+          "600-pixel PNG: on-screen score 99.6, off by up to 5 mm.",
+          "1,200-pixel PNG: on-screen score 99.8, off by up to 2.4 mm.",
+          "2,400-pixel PNG: on-screen score 99.8, off by up to 2 mm."
+        ]
+      },
+      {
+        type: "p",
+        text: "Two honest remarks. First, the on-screen scores are all excellent and very close: on their own, they cannot tell you which source is right for a banner. Second, beyond 1,200 pixels the gain becomes small; the floor of about 2 mm partly comes from the measurement itself (edge smoothing when rendering). Our logo is simple: a logo with thin lettering or small details needs an even larger source. If all you have is a small file, see [how to vectorize a low-resolution logo without losing details](/vectofix/blog/how-to-vectorize-a-low-resolution-logo-without-losing-details)."
+      },
+      {
+        type: "p",
+        text: "What those millimetres mean to the eye depends on viewing distance: a banner read from ten metres forgives more than a sign seen up close or a shop window. Your printer knows those distances; the question for you is simply whether your trace is faithful at that scale."
+      },
+      { type: "h2", text: "How do you check the trace at print scale?" },
+      {
+        type: "p",
+        text: "Zoom in hard, area by area, comparing with the original. In VectoFix, hold the Space bar to show the original in place of the SVG render at the same zoom, and open the damage map: it highlights in red where the SVG departs from your image. Look first at what gives away a rough trace once enlarged:"
+      },
+      {
+        type: "ul",
+        items: [
+          "Tips and sharp corners, which tend to round off or shift.",
+          "Long curves, which must stay even, without small wobbles. See [how to fix jagged edges after image vectorization](/vectofix/blog/how-to-fix-jagged-edges-after-image-vectorization).",
+          "Letters and their counters (the inside of an 'o' or an 'e'), which must keep their proportions.",
+          "Specks: a one-pixel spot invisible on screen becomes a mark several millimetres wide. See [how to fix tiny shapes and artifacts in an SVG](/vectofix/blog/how-to-fix-tiny-shapes-and-artifacts-in-an-svg)."
+        ]
+      },
+      {
+        type: "p",
+        text: "When an area is damaged, repair it locally rather than re-running the whole trace with other sliders: with the Brush, VectoFix re-traces only the painted area and leaves the rest alone. That is the method described in [how to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization)."
+      },
+      { type: "h2", text: "Do the logo's colours stay exact?" },
+      {
+        type: "p",
+        text: "Nearly, but not necessarily to the exact code. A tracer builds its palette from the pixels, and the smoothed edges of a PNG mix shades. On our logo, the purple came out identical (#7952F5), but white became #FEFEFE instead of #FFFFFF, and the cyan #3FD6FA or #41D4FA instead of #3FD7FB, depending on the source size."
+      },
+      {
+        type: "p",
+        text: "Those differences are invisible to the eye, but they matter in two cases. If your brand guidelines require precise codes, replace the SVG's colours with the right values in an editor. And if white must be printed with white ink, or on the contrary let the material show through (vinyl, textile, acrylic), an 'almost white' may be treated as a colour to print: set it back to pure white and ask the printer how they handle white. For print colours (CMYK, Pantone), they are also the ones to tell you how to specify them."
+      },
+      { type: "h2", text: "Which format should you send the printer?" },
+      {
+        type: "p",
+        text: "The one they ask for: ask before sending. Many printers accept SVG, others prefer a vector PDF, an AI or an EPS file. VectoFix exports SVG (and PNG); for a vector PDF, open the SVG in a program such as [Inkscape](https://inkscape.org), which is free, and save a copy as PDF. The curves stay curves: the file does not turn back into an image."
+      },
+      {
+        type: "ul",
+        items: [
+          "Text: a vectorized logo contains no font, the letters are already shapes. No risk of a missing font at the printer.",
+          "Final dimensions and bleed (the overflow margin around the printed area): ask the printer for the values.",
+          "Colour mode and how to specify the brand colours.",
+          "A proof: for an expensive sign or banner, ask for a proof, or even a printed proof of a detail at full scale."
+        ]
+      },
+      { type: "h2", text: "What if the source is too poor for large format?" },
+      {
+        type: "p",
+        text: "Look for a better source first: the original file from the client or the designer, a larger version on their website, a press kit. For a logo of a few hundred pixels destined for a sign, it is almost always the best use of your time. Failing that, repair the areas that show at print scale, and redraw the essential shapes (the letters of the name, a symbol) by hand in an editor. The result will be a clean logo, not an exact copy: tell the client. To understand where the differences come from, read [why a PNG to SVG conversion doesn't look like the original](/vectofix/blog/why-png-to-svg-conversion-doesnt-look-like-the-original)."
+      },
+      { type: "h2", text: "Conclusion: judge the file at the size it will be printed" },
+      {
+        type: "p",
+        text: "An on-screen fidelity score tells you whether the SVG looks like your image, not whether it will hold up on a banner. Start from the largest clean source, trace in flat colours, check tips, curves and lettering at high zoom, repair locally, fix the key colours, then send the format the printer asks for. You can try [VectoFix](/vectofix/en) with 3 full-resolution exports; Pro is a one-time €39."
+      }
+    ],
+    faq: [
+      {
+        q: "Is SVG accepted for large-format printing?",
+        a: "Often, but not always: some printers prefer a vector PDF, an AI or an EPS. Ask before sending; an SVG can be saved as a vector PDF in Inkscape."
+      },
+      {
+        q: "What PNG size do you need to vectorize a logo for a banner?",
+        a: "The largest available. On our logo printed 2 m wide, the outline was up to 8 mm off from a 300-pixel PNG, against 2.4 mm from 1,200 pixels."
+      },
+      {
+        q: "Is a good fidelity score enough?",
+        a: "No. It compares the SVG with your PNG, at the PNG's size. All our traces scored above 98.7 out of 100, while their accuracy at banner scale ranged from 2 to 17 mm."
+      },
+      {
+        q: "Do the logo's colours stay exact?",
+        a: "Not always to the exact code: on our logo, white became #FEFEFE and the cyan shifted slightly. Put the brand colours back in an editor and ask the printer how to specify shades."
+      },
+      {
+        q: "Can I repair just one letter?",
+        a: "Yes. In VectoFix, the Brush re-traces only the painted area. For a letter that is illegible in the source, redrawing it by hand is still safer."
       }
     ]
   }),
