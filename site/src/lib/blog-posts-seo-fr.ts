@@ -494,6 +494,7 @@ export const seoFrDrafts: Draft[] = [
         text: "Vous n'avez qu'un PNG ? [Essayez VectorPop gratuitement](/) : 5 exports SVG inclus, aucun envoi en ligne, et une version Pro à 39 € en paiement unique si vous en avez besoin plus souvent. Un logo confidentiel ? Voyez comment [vectoriser un logo sans l'envoyer sur Internet](/blog/vectoriser-sans-envoyer-sur-internet). Votre logo devient flou à l'agrandissement ? Lisez [pourquoi, et comment obtenir un logo net](/blog/logo-flou-a-l-agrandissement).",
       },
       { type: "p", text: "Pour aller plus loin : pour un logo destiné à une bâche ou une enseigne, voyez [comment convertir un logo PNG en SVG pour l'impression grand format](/vectofix/blog/convertir-un-logo-png-en-svg-pour-l-impression-grand-format) et les contrôles à faire avant l'envoi." },
+      { type: "p", text: "Pour aller plus loin : si le fichier doit finir sur une bâche ou un autre grand format, voyez [logo pour une bâche ou un grand format : préparer le fichier](/blog/logo-pour-une-bache-grand-format)." },
     ],
     faq: [
       {
@@ -715,7 +716,8 @@ export const seoFrDrafts: Draft[] = [
       {
         type: "p",
         text: "Vous n'avez que ce petit fichier et il faut un SVG ? Voyez [comment vectoriser un logo basse résolution sans perdre les détails](/vectofix/blog/vectoriser-un-logo-basse-resolution-sans-perdre-les-details), avec nos mesures de 64 à 400 pixels."
-      }
+      },
+      { type: "p", text: "Pour aller plus loin : si le fichier doit finir sur une bâche ou un autre grand format, voyez [logo pour une bâche ou un grand format : préparer le fichier](/blog/logo-pour-une-bache-grand-format)." },
     ],
     faq: [
       {
@@ -874,6 +876,7 @@ export const seoFrDrafts: Draft[] = [
       { type: "p", text: "Pour aller plus loin : [que choisir entre un convertisseur en ligne et un logiciel installé](/blog/vectoriser-en-ligne-ou-sur-ordinateur) selon la confidentialité et la fréquence de vos conversions." },
       { type: "p", text: "Votre logo est destiné à une machine de découpe ? Les réglages propres au vinyle (nombre de couleurs, couches superposées, petites pièces) sont dans [logo pour la découpe vinyle avec une Cricut](/blog/logo-pour-decoupe-vinyle-cricut)." },
       { type: "p", text: "Votre logo a un fond blanc à retirer ? La fonction « Enlever le fond », sa tolérance et son piège (le blanc voulu à l'intérieur du logo disparaît aussi) sont détaillés dans [retirer le fond blanc d'un logo](/blog/retirer-le-fond-blanc-d-un-logo)." },
+      { type: "p", text: "Pour aller plus loin : si le fichier doit finir sur une bâche ou un autre grand format, voyez [logo pour une bâche ou un grand format : préparer le fichier](/blog/logo-pour-une-bache-grand-format)." },
     ],
     faq: [
       {
@@ -1214,6 +1217,45 @@ export const seoFrDrafts: Draft[] = [
       { q: "Pourquoi le blanc de mon logo disparaît-il aussi ?", a: "Parce que le test est global : tout pixel proche de la couleur du fond devient transparent, même au milieu du logo. Teintez légèrement ce blanc dans la source et baissez la tolérance." },
       { q: "Le SVG gère-t-il la transparence ?", a: "Oui. Une zone sans tracé est vide : le navigateur ou le logiciel de mise en page montre ce qu'il y a derrière." },
       { q: "Que faire d'un fond photo ou dégradé ?", a: "Utilisez le « Détourage IA » (fonction Pro, que l'on peut essayer dans l'aperçu) : la méthode par couleur ne convient qu'aux fonds unis." },
+    ]
+  },
+  {
+    slug: "logo-pour-une-bache-grand-format",
+    title: "Logo pour une bâche ou un grand format : préparer le fichier",
+    metaTitle: "Logo pour une bâche ou un grand format : préparer le fichier — VectorPop",
+    description: "Bâche, roll-up, enseigne : pourquoi un PNG ne tient pas en grand format, ce qu'il faut demander à l'imprimeur et comment exporter un fichier vectoriel propre depuis VectorPop.",
+    date: "2026-11-23",
+    author: "Équipe VectorPop",
+    lang: "fr",
+    content: [
+      { type: "p", text: "Pour une bâche ou tout autre grand format, partez du logo le plus grand dont vous disposez, vectorisez-le en aplats, contrôlez les courbes à fort zoom, exportez un SVG (ou un PDF vectoriel avec la version Pro) et demandez à l'imprimeur, avant d'envoyer quoi que ce soit, le format, le mode de couleur et la taille qu'il attend. Le fichier vectoriel se redessine à la taille voulue ; le reste se règle avec l'imprimeur." },
+      { type: "p", text: "Cet article suit l'ordre du travail : pourquoi un PNG ne suffit pas (avec un calcul que vous pouvez refaire), ce qu'il faut demander à l'imprimeur, comment préparer le logo, ce que VectorPop exporte exactement, et comment contrôler le fichier avant l'envoi." },
+      { type: "h2", text: "Pourquoi un PNG ne tient-il pas sur une bâche ?" },
+      { type: "p", text: "Un PNG est une grille de pixels : sa netteté dépend du nombre de pixels par unité de longueur une fois imprimé, ce que l'on appelle la résolution (en points ou pixels par pouce, « ppp »). Le calcul est simple : pixels de l'image ÷ largeur imprimée en pouces. Prenons un logo de 600 pixels de large (une taille courante pour un PNG récupéré sur un site) imprimé sur une bâche de 3 mètres, soit environ 118 pouces : cela donne un peu plus de 5 ppp. Chaque pixel mesure alors 5 millimètres, et les bords du logo ressemblent à un escalier." },
+      { type: "p", text: "À l'inverse, pour atteindre 100 ppp sur 3 mètres, il faudrait une image d'environ 11 800 pixels de large. Ce chiffre de 100 ppp n'est qu'un exemple de calcul, pas une exigence : la résolution attendue dépend du support et de la distance de lecture, et c'est l'imprimeur qui la fixe. Retenez l'ordre de grandeur : le grand format réclame des dizaines de fois plus de pixels que ce que contient un logo de site web." },
+      { type: "p", text: "Un fichier vectoriel contourne le problème. Il ne contient pas de pixels mais des courbes décrites par des coordonnées : l'imprimeur peut les tracer à n'importe quelle taille, et le bord reste net. Pour comprendre pourquoi les imprimeurs l'exigent, lisez [pourquoi les imprimeurs demandent un fichier vectoriel](/blog/pourquoi-imprimeurs-demandent-fichier-vectoriel) ; pour voir le défaut d'un agrandissement, [logo flou à l'agrandissement](/blog/logo-flou-a-l-agrandissement)." },
+      { type: "h2", text: "Que demander à l'imprimeur avant de commencer ?" },
+      { type: "p", text: "Les exigences varient d'un imprimeur à l'autre et d'un support à l'autre : ne les supposez pas, demandez-les. Cinq questions couvrent l'essentiel :" },
+      { type: "ul", items: ["Quel format de fichier acceptez-vous ? SVG, PDF vectoriel, EPS ou autre. Un imprimeur qui n'accepte que l'EPS ou l'AI ne lira pas directement un SVG.", "Quel mode de couleur ? Beaucoup d'imprimeurs travaillent en CMJN (cyan, magenta, jaune, noir), alors que les logos d'écran sont en RVB. Les couleurs imprimées peuvent différer de celles de l'écran : demandez comment ils veulent les couleurs de marque spécifiées (référence, valeurs).", "Quelle taille finale, et faut-il un fond perdu ? Le fond perdu est la marge de décor qui dépasse du format pour éviter un liseré blanc à la découpe ; sa valeur dépend du support.", "Le texte doit-il être converti en courbes ? Dans un logo vectorisé à partir d'une image, les lettres sont déjà des tracés : aucune police à fournir. Gardez malgré tout la police d'origine si vous devez un jour modifier le texte.", "Pouvez-vous fournir une épreuve ? Pour un grand tirage, un échantillon ou une épreuve couleur évite de découvrir un défaut sur la bâche finie."] },
+      { type: "p", text: "Notez les réponses par écrit : elles décident du format d'export et de la façon de vérifier le fichier." },
+      { type: "h2", text: "Comment préparer le logo avant de vectoriser ?" },
+      { type: "ul", items: ["Partez de la plus grande source. Le logo d'origine (fichier du graphiste, ancien document) vaut mieux qu'une capture du site. Un PNG vaut mieux qu'un JPEG, dont la compression sème des teintes parasites autour des bords.", "Vectorisez en aplats. Pour un logo, le préréglage « Logo plat (couleur) » donne peu de couleurs et des formes nettes. Les étapes, avec les libellés exacts de l'interface, sont dans [vectoriser un logo PNG pas à pas](/blog/vectoriser-un-logo-png-pas-a-pas).", "Réglez le fond. Une bâche est souvent sur fond de couleur : un logo à fond blanc plaqué dessus donnerait un rectangle blanc. Voyez [retirer le fond blanc d'un logo](/blog/retirer-le-fond-blanc-d-un-logo) pour rendre le fond transparent sans perdre le blanc voulu à l'intérieur du logo.", "Gardez les couleurs de marque. Vérifiez que les teintes du SVG correspondent à celles du logo d'origine ; l'équivalence avec les références de l'imprimeur se règle ensuite avec lui."] },
+      { type: "h2", text: "Que fait VectorPop à l'export, et que ne fait-il pas ?" },
+      { type: "p", text: "Voici ce que le logiciel produit, d'après son fonctionnement :" },
+      { type: "ul", items: ["SVG : au moment de l'export, VectorPop demande la « Taille du SVG » (côté long, avec des préréglages ou une valeur libre, ou « Taille d'origine »). Cette taille ne change que les dimensions déclarées dans le fichier : le tracé n'est pas refait, la netteté reste la même quelle que soit la valeur.", "PDF vectoriel : fonction de la version Pro. Le PDF est écrit à la taille intrinsèque du SVG, exprimée en points (1 point = 1/72 de pouce), c'est-à-dire pas à l'échelle réelle de votre bâche : l'imprimeur le met à l'échelle, ce qui ne dégrade rien puisque les tracés sont des courbes.", "PNG haute définition : également Pro, jusqu'à la taille que vous choisissez ; il reste une image de pixels, donc peu adapté à un grand format.", "Pas de CMJN : VectorPop travaille en couleurs d'écran (RVB). Si l'imprimeur exige du CMJN ou des tons directs, la conversion se fait chez lui ou dans un logiciel de mise en page.", "Pas de fond perdu ni de mise en page : VectorPop vectorise le logo, il ne compose pas la bâche. Placez le logo dans le gabarit fourni par l'imprimeur."] },
+      { type: "p", text: "Côté tarifs : l'export SVG est gratuit dans la limite de 5 exports au total pour les nouvelles installations (3 par jour pour celles qui datent d'avant la version 2.0.0) ; le PDF vectoriel et le PNG haute définition demandent la version Pro, à 39 € une fois, sans abonnement. Si l'imprimeur accepte le SVG, le gratuit suffit pour un premier fichier ; sinon, l'aperçu vous permet d'essayer le tracé avant de décider." },
+      { type: "h2", text: "Comment contrôler le fichier avant de l'envoyer ?" },
+      { type: "ul", items: ["Zoomez fort : 400 % ou plus sur les angles, les lettres fines et les courbes. Un défaut invisible à l'écran à taille normale s'étale sur plusieurs millimètres sur une bâche de 2 ou 3 mètres.", "Comparez à l'original : le bouton « Comparer » de VectorPop ouvre une comparaison avant/après à glissière (original contre SVG) ; cherchez les détails perdus ou les morceaux parasites.", "Ouvrez le SVG ailleurs : dans un navigateur ou un autre logiciel de dessin, pour vérifier qu'il s'affiche pareil hors de VectorPop.", "Comptez les couleurs : un logo à 3 couleurs doit donner un fichier à 3 couleurs ; davantage signale des teintes parasites, souvent venues d'un JPEG.", "Demandez l'épreuve : pour un tirage important, c'est la seule vérification qui inclut les couleurs réelles."] },
+      { type: "p", text: "Pour savoir de combien un tracé agrandi s'écarte de l'original, nous avons mesuré le cas d'un logo de démonstration porté à 2 mètres : l'article [convertir un logo PNG en SVG pour l'impression grand format](/vectofix/blog/convertir-un-logo-png-en-svg-pour-l-impression-grand-format) donne les écarts selon la résolution du PNG de départ. L'écart maximal passe d'environ 17,5 mm avec un PNG de 150 pixels à environ 2 mm avec un PNG de 2 400 pixels : partir d'une bonne source compte plus que n'importe quel réglage." },
+      { type: "h2", text: "Conclusion" },
+      { type: "p", text: "En grand format, deux choses décident du résultat : un fichier vectoriel issu de la meilleure source possible, et un accord préalable avec l'imprimeur sur le format, le mode de couleur et la taille. Faites le calcul des pixels si vous hésitez encore, vectorisez en aplats, exportez en SVG ou en PDF vectoriel, contrôlez à fort zoom, et demandez une épreuve pour un gros tirage. Pour essayer, [VectorPop](/) vectorise sur votre ordinateur, sans envoyer l'image en ligne." },
+    ],
+    faq: [
+      { q: "Un PNG suffit-il pour une bâche ?", a: "En général non. Un PNG de 600 pixels de large imprimé sur 3 mètres tombe à environ 5 pixels par pouce : les bords paraissent en escalier. Un fichier vectoriel se redessine à la taille voulue." },
+      { q: "Quel format de fichier envoyer à l'imprimeur ?", a: "Celui qu'il demande. Le SVG et le PDF vectoriel sont courants, mais certains imprimeurs veulent de l'EPS ou de l'AI : posez la question avant d'exporter." },
+      { q: "VectorPop exporte-t-il en CMJN ?", a: "Non, VectorPop travaille en couleurs d'écran (RVB). Si l'imprimeur exige du CMJN ou des tons directs, la conversion se fait chez lui ou dans un logiciel de mise en page." },
+      { q: "Le PDF de VectorPop est-il à l'échelle de la bâche ?", a: "Non : il est écrit à la taille intrinsèque du SVG, en points. Comme il est vectoriel, l'imprimeur peut l'agrandir à la taille voulue sans perte de netteté." },
+      { q: "Peut-on exporter en gratuit pour un grand format ?", a: "L'export SVG est gratuit dans la limite de 5 exports au total (nouvelles installations). Le PDF vectoriel et le PNG haute définition demandent la version Pro, à 39 € une fois." },
     ]
   },
 ];

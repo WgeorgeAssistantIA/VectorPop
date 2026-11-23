@@ -465,6 +465,7 @@ export const seoEnDrafts: Draft[] = [
         text: "Only have a PNG? [Try VectorPop for free](/): 5 SVG exports included, nothing uploaded online, and a Pro version at €39 as a one-time payment if you need it more often. A confidential logo? See how to [vectorize a logo without uploading it to the internet](/blog/vectorize-without-uploading-to-the-internet). Does your logo get blurry when enlarged? Read [why, and how to get a sharp logo](/blog/blurry-logo-when-enlarged).",
       },
       { type: "p", text: "Going further: for a logo headed for a banner or a sign, see [how to convert a logo from PNG to SVG for large-format print](/vectofix/blog/how-to-convert-a-logo-from-png-to-svg-for-high-end-print) and the checks to run before sending it." },
+      { type: "p", text: "Going further: if the file is headed for a banner or another large format, see [logo for a banner or large format: preparing the file](/blog/logo-for-a-large-format-banner)." },
     ],
     faq: [
       {
@@ -686,7 +687,8 @@ export const seoEnDrafts: Draft[] = [
       {
         type: "p",
         text: "Only have that small file and need an SVG? See [how to vectorize a low-resolution logo without losing details](/vectofix/blog/how-to-vectorize-a-low-resolution-logo-without-losing-details), with our measurements from 64 to 400 pixels."
-      }
+      },
+      { type: "p", text: "Going further: if the file is headed for a banner or another large format, see [logo for a banner or large format: preparing the file](/blog/logo-for-a-large-format-banner)." },
     ],
     faq: [
       {
@@ -845,6 +847,7 @@ export const seoEnDrafts: Draft[] = [
       { type: "p", text: "Going further: [how to choose between an online converter and installed software](/blog/vectorize-online-or-on-your-computer) depending on confidentiality and how often you convert." },
       { type: "p", text: "Is your logo headed for a cutting machine? The vinyl-specific settings (number of colors, stacked layers, small pieces) are in [logo for vinyl cutting with a Cricut](/blog/logo-for-vinyl-cutting-cricut)." },
       { type: "p", text: "Does your logo have a white background to remove? The 'Remove background' option, its tolerance and its trap (white you want to keep inside the logo disappears too) are covered in [remove the white background from a logo](/blog/remove-the-white-background-from-a-logo)." },
+      { type: "p", text: "Going further: if the file is headed for a banner or another large format, see [logo for a banner or large format: preparing the file](/blog/logo-for-a-large-format-banner)." },
     ],
     faq: [
       {
@@ -1185,6 +1188,45 @@ export const seoEnDrafts: Draft[] = [
       { q: "Why does the white inside my logo disappear too?", a: "Because the test is global: any pixel close to the background colour becomes transparent, even in the middle of the logo. Tint that white slightly in the source and lower the tolerance." },
       { q: "Does SVG support transparency?", a: "Yes. An area with no path is empty: the browser or layout software shows whatever is behind it." },
       { q: "What about a photo or gradient background?", a: "Use 'AI background removal' (a Pro feature you can try in the preview): the colour method only suits plain backgrounds." },
+    ]
+  },
+  {
+    slug: "logo-for-a-large-format-banner",
+    title: "Logo for a Banner or Large Format: Preparing the File",
+    metaTitle: "Logo for a Banner or Large Format: Preparing the File — VectorPop",
+    description: "Banner, roll-up, signage: why a PNG fails at large format, what to ask the printer, and how to export a clean vector file from VectorPop.",
+    date: "2026-11-23",
+    author: "VectorPop Team",
+    lang: "en",
+    content: [
+      { type: "p", text: "For a banner or any other large format, start from the largest logo you have, vectorize it in flat colors, check the curves at high zoom, export an SVG (or a vector PDF with the Pro version) and ask the printer, before sending anything, which format, color mode and size they expect. A vector file is redrawn at whatever size you need; the rest is settled with the printer." },
+      { type: "p", text: "This article follows the order of the work: why a PNG is not enough (with a calculation you can redo), what to ask the printer, how to prepare the logo, what VectorPop exports exactly, and how to check the file before sending it." },
+      { type: "h2", text: "Why does a PNG not hold up on a banner?" },
+      { type: "p", text: "A PNG is a grid of pixels: how sharp it looks depends on how many pixels there are per unit of length once printed, the resolution (pixels or dots per inch, 'ppi'). The calculation is simple: image pixels ÷ printed width in inches. Take a logo 600 pixels wide (a common size for a PNG grabbed from a website) printed on a 3-metre banner, about 118 inches: that gives a little over 5 ppi. Each pixel is then 5 millimetres wide, and the edges of the logo look like a staircase." },
+      { type: "p", text: "Conversely, to reach 100 ppi over 3 metres you would need an image about 11,800 pixels wide. The 100 ppi figure is only a worked example, not a requirement: the resolution expected depends on the material and the reading distance, and the printer sets it. Keep the order of magnitude: large format needs dozens of times more pixels than a website logo contains." },
+      { type: "p", text: "A vector file sidesteps the problem. It holds no pixels but curves described by coordinates: the printer can draw them at any size and the edge stays sharp. To understand why printers require it, read [why printers ask for vector files](/blog/why-printers-ask-for-vector-files); to see what enlarging does wrong, [blurry logo when enlarged](/blog/blurry-logo-when-enlarged)." },
+      { type: "h2", text: "What should you ask the printer before you start?" },
+      { type: "p", text: "Requirements vary from one printer and one material to the next: do not assume them, ask. Five questions cover the essentials:" },
+      { type: "ul", items: ["Which file format do you accept? SVG, vector PDF, EPS or something else. A printer that only takes EPS or AI will not read an SVG directly.", "Which color mode? Many printers work in CMYK (cyan, magenta, yellow, black), while screen logos are RGB. Printed colors can differ from what you see on screen: ask how they want brand colors specified (reference, values).", "What final size, and is a bleed needed? The bleed is the margin of artwork extending past the trim to avoid a white edge when cutting; its value depends on the material.", "Must the text be converted to outlines? In a logo vectorized from an image, the letters are already paths: there is no font to supply. Still keep the original font in case you ever need to edit the text.", "Can you provide a proof? For a large print run, a sample or a color proof avoids discovering a flaw on the finished banner."] },
+      { type: "p", text: "Write the answers down: they decide the export format and how you check the file." },
+      { type: "h2", text: "How do you prepare the logo before vectorizing?" },
+      { type: "ul", items: ["Start from the largest source. The original logo (the designer's file, an old document) beats a website screenshot. A PNG beats a JPEG, whose compression scatters stray shades around the edges.", "Vectorize in flat colors. For a logo, the 'Flat logo (color)' preset gives few colors and clean shapes. The steps, with the exact interface labels, are in [vectorize a PNG logo step by step](/blog/vectorize-a-png-logo-step-by-step).", "Handle the background. A banner is often on a colored background: a logo with a white background dropped on it would show a white rectangle. See [remove the white background from a logo](/blog/remove-the-white-background-from-a-logo) to make the background transparent without losing the white you want inside the logo.", "Keep the brand colors. Check that the SVG shades match the original logo; matching them to the printer's references is settled with the printer afterwards."] },
+      { type: "h2", text: "What does VectorPop do at export, and what does it not do?" },
+      { type: "p", text: "Here is what the software produces, based on how it works:" },
+      { type: "ul", items: ["SVG: at export, VectorPop asks for the 'SVG size' (longest side, with presets or a custom value, or 'Original size'). That size only changes the dimensions declared in the file: the tracing is not redone, and sharpness is the same whatever the value.", "Vector PDF: a Pro feature. The PDF is written at the SVG's intrinsic size, expressed in points (1 point = 1/72 of an inch), that is, not at your banner's real scale: the printer scales it, which loses nothing since the paths are curves.", "High-definition PNG: also Pro, up to the size you choose; it remains a pixel image, so poorly suited to large format.", "No CMYK: VectorPop works in screen colors (RGB). If the printer requires CMYK or spot colors, the conversion happens on their side or in layout software.", "No bleed and no layout: VectorPop vectorizes the logo, it does not compose the banner. Place the logo in the template the printer gives you."] },
+      { type: "p", text: "On pricing: SVG export is free within 5 exports in total for new installs (3 per day for installs that predate version 2.0.0); vector PDF and high-definition PNG need the Pro version, €39 once, no subscription. If the printer accepts SVG, the free tier is enough for a first file; otherwise the preview lets you try the tracing before you decide." },
+      { type: "h2", text: "How do you check the file before sending it?" },
+      { type: "ul", items: ["Zoom in hard: 400% or more on corners, thin letters and curves. A flaw invisible at normal screen size spreads over several millimetres on a 2 or 3 metre banner.", "Compare with the original: VectorPop's 'Compare' button opens a before/after slider (original versus SVG); look for lost details or stray fragments.", "Open the SVG elsewhere: in a browser or another drawing program, to check it looks the same outside VectorPop.", "Count the colors: a 3-color logo should give a 3-color file; more points to stray shades, often from a JPEG.", "Ask for a proof: for a large run, it is the only check that includes the real colors."] },
+      { type: "p", text: "To see how far an enlarged tracing drifts from the original, we measured the case of a demo logo blown up to 2 metres: the article [how to convert a logo from PNG to SVG for high-end print](/vectofix/blog/how-to-convert-a-logo-from-png-to-svg-for-high-end-print) gives the deviations by starting PNG resolution. The maximum deviation goes from about 17.5 mm with a 150-pixel PNG to about 2 mm with a 2,400-pixel PNG: starting from a good source matters more than any setting." },
+      { type: "h2", text: "Conclusion" },
+      { type: "p", text: "In large format, two things decide the result: a vector file made from the best possible source, and an agreement with the printer beforehand on format, color mode and size. Do the pixel calculation if you still hesitate, vectorize in flat colors, export as SVG or vector PDF, check at high zoom, and ask for a proof on a big run. To try it, [VectorPop](/) vectorizes on your computer, without uploading the image." },
+    ],
+    faq: [
+      { q: "Is a PNG enough for a banner?", a: "Generally not. A 600-pixel-wide PNG printed over 3 metres drops to about 5 pixels per inch: the edges look stair-stepped. A vector file is redrawn at whatever size you need." },
+      { q: "Which file format should I send to the printer?", a: "The one they ask for. SVG and vector PDF are common, but some printers want EPS or AI: ask before exporting." },
+      { q: "Does VectorPop export in CMYK?", a: "No, VectorPop works in screen colors (RGB). If the printer requires CMYK or spot colors, the conversion is done on their side or in layout software." },
+      { q: "Is VectorPop's PDF at the banner's scale?", a: "No: it is written at the SVG's intrinsic size, in points. Because it is vector, the printer can enlarge it to the size needed without losing sharpness." },
+      { q: "Can I export for large format on the free tier?", a: "SVG export is free within 5 exports in total (new installs). Vector PDF and high-definition PNG need the Pro version, €39 once." },
     ]
   },
 ];

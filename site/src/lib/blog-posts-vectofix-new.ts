@@ -4222,7 +4222,8 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         type: "p",
         text: "Un score de fidélité à l'écran dit si le SVG ressemble à votre image, pas s'il tiendra sur une bâche. Partez de la plus grande source propre, tracez en aplats, contrôlez pointes, courbes et lettres à fort zoom, réparez localement, corrigez les couleurs clés, puis envoyez le format demandé par l'imprimeur. Vous pouvez essayer [VectoFix](/vectofix) avec 3 exports en pleine résolution ; Pro est un achat unique de 39 €."
-      }
+      },
+      { type: "p", text: "Pour le côté pratique, de la préparation du logo à l'export et aux questions à poser à l'imprimeur, voyez [logo pour une bâche ou un grand format : préparer le fichier](/blog/logo-pour-une-bache-grand-format)." },
     ],
     faq: [
       {
@@ -4351,7 +4352,8 @@ export const vectofixNewPosts: BlogPost[] = [
       {
         type: "p",
         text: "An on-screen fidelity score tells you whether the SVG looks like your image, not whether it will hold up on a banner. Start from the largest clean source, trace in flat colours, check tips, curves and lettering at high zoom, repair locally, fix the key colours, then send the format the printer asks for. You can try [VectoFix](/vectofix/en) with 3 full-resolution exports; Pro is a one-time €39."
-      }
+      },
+      { type: "p", text: "For the practical side, from preparing the logo to exporting and what to ask the printer, see [logo for a banner or large format: preparing the file](/blog/logo-for-a-large-format-banner)." },
     ],
     faq: [
       {
