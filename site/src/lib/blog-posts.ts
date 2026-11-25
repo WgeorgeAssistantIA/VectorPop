@@ -194,7 +194,7 @@ export const posts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "The second is thinking SVG is always lighter. For a logo, an SVG typically weighs 2 to 10 KB against 100 to 500 KB for the equivalent high-resolution PNG — a real win. For a photo, tracing it into vector can easily produce a file several times larger than the PNG, because you've replaced a compact pixel grid with thousands of individual shapes. Lighter isn't a property of the format; it's a property of the match between format and content.",
+        text: "The second is thinking SVG is always lighter. For a logo, the gap depends on the size of the PNG: our demo logo, traced automatically, weighs 18.7 KB as SVG, against 19.7 KB as a 600-pixel PNG (almost a tie) and 193 KB as a 4,000-pixel PNG — there, a real win ([our measurements](/blog/what-is-a-vector-file)). For a photo, tracing it into vector can easily produce a file several times larger than the PNG, because you've replaced a compact pixel grid with thousands of individual shapes. Lighter isn't a property of the format; it's a property of the match between format and content.",
       },
       { type: "h2", text: "So what if you only have a PNG?" },
       {
@@ -408,7 +408,7 @@ export const posts: BlogPost[] = [
       },
       {
         type: "p",
-        text: "La seconde consiste à croire que le SVG est toujours plus léger. Pour un logo, un SVG pèse en général 2 à 10 Ko contre 100 à 500 Ko pour l'équivalent PNG haute résolution — un vrai gain. Pour une photo, la vectoriser peut facilement produire un fichier plusieurs fois plus lourd que le PNG, car vous remplacez une grille de pixels compacte par des milliers de formes individuelles. La légèreté n'est pas une propriété du format ; c'est une propriété de l'adéquation entre le format et le contenu.",
+        text: "La seconde consiste à croire que le SVG est toujours plus léger. Pour un logo, l'écart dépend de la taille du PNG : notre logo de démonstration, tracé automatiquement, pèse 18,7 Ko en SVG, contre 19,7 Ko en PNG de 600 pixels (presque égalité) et 193 Ko en PNG de 4 000 pixels — là, un vrai gain ([nos mesures](/blog/qu-est-ce-qu-un-fichier-vectoriel)). Pour une photo, la vectoriser peut facilement produire un fichier plusieurs fois plus lourd que le PNG, car vous remplacez une grille de pixels compacte par des milliers de formes individuelles. La légèreté n'est pas une propriété du format ; c'est une propriété de l'adéquation entre le format et le contenu.",
       },
       { type: "h2", text: "Et si vous n'avez qu'un PNG ?" },
       {
