@@ -22,9 +22,9 @@ export const vectofixNewPosts: BlogPost[] = [
     slug: "how-to-fix-a-bad-vectorization-without-starting-over",
     title: "How to Fix a Bad Vectorization Without Starting Over: The Complete Decision Guide",
     metaTitle:
-      "Fix Bad Vectorization Without Redrawing — VectoFix",
+      "Bad Vectorization? Fix It Without Redrawing — VectoFix",
     description:
-      "Stop redrawing bad vector traces in Illustrator. Learn how to diagnose vectorization errors, avoid global slider traps, and repair SVG paths locally.",
+      "Your converted logo lost its small text or filled-in letters? See how to tell what went wrong, why one global slider makes it worse, and how to repair only the damaged zones.",
     date: "2026-08-20",
     author: "VectoFix Team",
     lang: "en",
@@ -465,9 +465,9 @@ export const vectofixNewPosts: BlogPost[] = [
     slug: "what-is-vector-repair-guide-to-vector-qa",
     title: "What Is Vector Repair? The Missing Step Between Tracing and Production",
     metaTitle:
-      "What Is Vector Repair? Complete QA Guide — VectoFix",
+      "Vector Repair (Vector Rework) Explained — VectoFix",
     description:
-      "Discover Vector Repair: the quality assurance step that pinpoints raster-to-vector drift with heatmaps and heals broken SVG paths before manufacturing.",
+      "Vector repair, or vector rework, is the check-and-fix step after auto-tracing: measure where the SVG drifted from the source, then repair only those zones before production.",
     date: "2026-08-25",
     author: "VectoFix Team",
     lang: "en",
@@ -2068,9 +2068,9 @@ export const vectofixNewPosts: BlogPost[] = [
     slug: "how-to-fix-an-svg-before-sending-it-to-a-laser-cutter",
     title: "How to Fix an SVG Before Laser Cutting (LightBurn, Double Lines & Nodes Checklist)",
     metaTitle:
-      "SVG Checklist Before Laser Cutting (LightBurn) — VectoFix",
+      "Fix an SVG Before Laser Cutting: 10-Point Checklist — VectoFix",
     description:
-      "A ten-point checklist for a cut-ready SVG in LightBurn or your laser software: scale, closed paths, double lines, nodes, stray shapes, layers, text and a scrap test.",
+      "Is your SVG ready for LightBurn? Ten checks before you cut: scale, open paths, double lines, too many nodes, stray shapes, layers, text as paths, plus a scrap-material test.",
     image: { src: "/images/blog/vectofix-checklist-svg-laser-en.jpg", alt: "Ten-point checklist before laser cutting an SVG, in four stages: structure (scale, closed paths, duplicates), weight (node count, stray shapes), job setup (layers, line weights, text as paths, overlaps), then a scrap test" },
     date: "2026-10-23",
     author: "VectoFix Team",
@@ -3283,8 +3283,8 @@ export const vectofixNewPosts: BlogPost[] = [
   make({
     slug: "how-to-fix-jagged-edges-after-image-vectorization",
     title: "How to Fix Jagged Edges After Image Vectorization",
-    metaTitle: "Jagged Edges After Vectorization: Causes and Fixes — VectoFix",
-    description: "Stair-steps, wobbly edges, sawtooth outlines: where jagged edges in an SVG come from, what our measurements say about the source and the settings, and how to fix them without losing the shape.",
+    metaTitle: "Jagged SVG Edges After Vectorizing? How to Fix Them — VectoFix",
+    description: "Stair-steps and wobbly outlines in your SVG? We traced the same logo from three sources: one JPG gave 6,143 nodes, a clean PNG 389. See what to fix first, and what doesn't help.",
     image: {
       src: "/images/blog/vectofix-jagged-edges-en.jpg",
       alt: "The same logo detail traced from a 150-pixel PNG (97 nodes), a heavily compressed 600-pixel JPG (6,143 nodes) and a 1,200-pixel PNG (389 nodes): the small PNG bends the diagonal, the JPG turns it into a staircase, the large PNG follows the shape"

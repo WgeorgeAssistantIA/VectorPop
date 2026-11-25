@@ -129,7 +129,16 @@ export const seoEnDrafts: Draft[] = [
       },
       {
         type: "p",
-        text: "If your vectorized result has damaged areas, another tool in the range, [VectoFix](/vectofix), repairs traces that lost detail, locally. And if your vectorization is for print, our article on [why printers ask for vector files](/blog/why-printers-ask-for-vector-files) explains which formats to supply.",
+        text: "And if your vectorization is for print, our article on [why printers ask for vector files](/blog/why-printers-ask-for-vector-files) explains which formats to supply.",
+      },
+      { type: "h2", text: "After vectorizing: what if the result is wrong?" },
+      {
+        type: "p",
+        text: "Even a good trace can lose a thin letter, fill in a small counter or leave jagged edges. Before you start again, find out what kind of problem you have. [How to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization) gives the order of checks, and [jagged edges after vectorization](/vectofix/blog/how-to-fix-jagged-edges-after-image-vectorization) shows how much the source file matters. If the SVG is headed for a cutter, run the [10-point laser cutting checklist](/vectofix/blog/how-to-fix-an-svg-before-sending-it-to-a-laser-cutter) first.",
+      },
+      {
+        type: "p",
+        text: "When only some zones are damaged, [VectoFix](/vectofix/en), from the same team, shows where the trace drifted from the source and re-traces just those zones locally, instead of redoing the whole file.",
       },
       { type: "h2", text: "Conclusion: where to start" },
       {
@@ -297,7 +306,7 @@ export const seoEnDrafts: Draft[] = [
       },
       {
         type: "p",
-        text: "Once you have the SVG, two checks avoid bad surprises: look at the number of shapes (a simple logo needs only a few dozen) and test the file in your printer's or cutting machine's software. Where a trace lost detail, [VectoFix](/vectofix) lets you repair it locally.",
+        text: "Once you have the SVG, two checks avoid bad surprises: look at the number of shapes (a simple logo needs only a few dozen) and test the file in your printer's or cutting machine's software. Where a trace lost detail, see [how to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization), or repair it locally with [VectoFix](/vectofix/en).",
       },
       { type: "h2", text: "Conclusion: a clean JPG beats a miracle setting" },
       {
@@ -445,7 +454,7 @@ export const seoEnDrafts: Draft[] = [
       },
       {
         type: "p",
-        text: "If the trace lost detail in places, [VectoFix](/vectofix) lets you repair damaged areas locally without starting over. When in doubt, send the printer a preview of the SVG and ask them to confirm before production starts.",
+        text: "If the trace lost detail in places, [VectoFix](/vectofix/en) lets you repair damaged areas locally without starting over. When in doubt, send the printer a preview of the SVG and ask them to confirm before production starts.",
       },
       {
         type: "p",

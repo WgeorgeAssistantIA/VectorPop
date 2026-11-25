@@ -39,13 +39,6 @@ export const Route = createFileRoute("/vectofix/en")({
           ],
           offers: { "@type": "Offer", price: "39", priceCurrency: "EUR" },
           image: "https://www.vectorpop.fr/og.png",
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: "4.9",
-            ratingCount: "24",
-            bestRating: "5",
-            worstRating: "1",
-          },
         }),
       },
       {
