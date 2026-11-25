@@ -208,7 +208,7 @@ export const posts: BlogPost[] = [
       { type: "h2", text: "Going further" },
       {
         type: "p",
-        text: "Once you know which format you need, the next step is getting it. Our [guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide) explains how to turn a PNG or JPG into a clean SVG, and [why printers ask for vector files](/blog/why-printers-ask-for-vector-files) explains which formats to supply. Is your logo already blurry when enlarged? See [how to get a sharp logo](/blog/blurry-logo-when-enlarged).",
+        text: "Once you know which format you need, the next step is getting it. Our [guide to vectorizing an image](/blog/how-to-vectorize-an-image-complete-guide) explains how to turn a PNG or JPG into a clean SVG, and [why printers ask for vector files](/blog/why-printers-ask-for-vector-files) explains which formats to supply. Is your logo already blurry when enlarged? See [how to get a sharp logo](/blog/blurry-logo-when-enlarged). Not sure about your file? See [what a vector file is and how to check yours](/blog/what-is-a-vector-file).",
       },
     ],
   }),
@@ -422,7 +422,7 @@ export const posts: BlogPost[] = [
       { type: "h2", text: "Pour aller plus loin" },
       {
         type: "p",
-        text: "Une fois le bon format identifié, reste à l'obtenir. Notre [guide pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) explique comment transformer un PNG ou un JPG en SVG propre, et [pourquoi les imprimeurs demandent du vectoriel](/blog/pourquoi-imprimeurs-demandent-fichier-vectoriel) précise les formats à fournir. Votre logo est déjà flou dès qu'on l'agrandit ? Voyez [comment obtenir un logo net](/blog/logo-flou-a-l-agrandissement).",
+        text: "Une fois le bon format identifié, reste à l'obtenir. Notre [guide pour vectoriser une image](/blog/comment-vectoriser-une-image-guide-complet) explique comment transformer un PNG ou un JPG en SVG propre, et [pourquoi les imprimeurs demandent du vectoriel](/blog/pourquoi-imprimeurs-demandent-fichier-vectoriel) précise les formats à fournir. Votre logo est déjà flou dès qu'on l'agrandit ? Voyez [comment obtenir un logo net](/blog/logo-flou-a-l-agrandissement). Un doute sur votre fichier ? Voyez [ce qu'est un fichier vectoriel et comment le vérifier](/blog/qu-est-ce-qu-un-fichier-vectoriel).",
       },
     ],
   }),
