@@ -10,9 +10,9 @@ export const seoFrDrafts: Draft[] = [
     slug: "comment-vectoriser-une-image-guide-complet",
     title: "Comment vectoriser une image ? Guide complet pour obtenir un SVG propre",
     metaTitle:
-      "Comment vectoriser une image en SVG ? — VectorPop",
+      "Comment vectoriser une image : 4 méthodes comparées — VectorPop",
     description:
-      "Vectoriser transforme des pixels en courbes éditables. Découvrez les 4 méthodes (Inkscape, Illustrator, local), les réglages clés et les pièges à éviter.",
+      "Vectoriser transforme des pixels en courbes éditables. Comparez 4 méthodes (Illustrator, Inkscape, outils en ligne, logiciel local), les réglages clés et les pièges à éviter.",
     date: "2026-10-01",
     author: "Équipe VectorPop",
     lang: "fr",
@@ -185,9 +185,9 @@ export const seoFrDrafts: Draft[] = [
     slug: "convertir-jpg-en-svg",
     title: "Comment convertir un JPG en SVG sans perdre en qualité ?",
     metaTitle:
-      "Convertir un JPG en SVG proprement — VectorPop",
+      "Convertir un JPG en SVG : pas à pas, résultat propre — VectorPop",
     description:
-      "Convertir un JPG compressé en SVG propre demande de bons réglages. Suivez notre méthode pas à pas pour obtenir un vectoriel net sans artefacts.",
+      "La compression JPG ajoute du bruit qui abîme le tracé. Réduisez les artefacts, choisissez le bon préréglage et obtenez un SVG propre (ce qui marche, et les limites).",
     date: "2026-10-01",
     author: "Équipe VectorPop",
     lang: "fr",
@@ -365,9 +365,9 @@ export const seoFrDrafts: Draft[] = [
     slug: "pourquoi-imprimeurs-demandent-fichier-vectoriel",
     title: "Pourquoi les imprimeurs demandent-ils un fichier vectoriel ?",
     metaTitle:
-      "Pourquoi les imprimeurs veulent du vectoriel — VectorPop",
+      "Pourquoi l'imprimeur veut du vectoriel (et quoi envoyer) — VectorPop",
     description:
-      "Sérigraphie, broderie, enseignes : découvrez pourquoi les imprimeurs refusent les PNG et exigent du SVG ou PDF vectoriel, et comment leur fournir.",
+      "Votre imprimeur refuse votre PNG ? Sérigraphie, broderie et enseignes exigent du vectoriel. Voici pourquoi, quels formats envoyer (SVG, PDF, EPS) et comment en obtenir un depuis un logo en image.",
     date: "2026-10-01",
     author: "Équipe VectorPop",
     lang: "fr",

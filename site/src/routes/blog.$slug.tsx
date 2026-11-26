@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Clock, ArrowLeft, Download } from "lucide-react";
 import { renderInline } from "@/lib/inline-links";
+import { hreflangLinks } from "@/lib/blog-alternates";
 import { getPost, posts, type BlogPost as BlogPostType } from "@/lib/blog-posts";
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/blog/$slug")({
             ]
           : []),
       ],
-      links: [{ rel: "canonical", href: canonical }],
+      links: [{ rel: "canonical", href: canonical }, ...hreflangLinks(post.slug)],
       scripts: [
         {
           type: "application/ld+json",

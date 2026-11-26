@@ -10,9 +10,9 @@ export const seoEnDrafts: Draft[] = [
     slug: "how-to-vectorize-an-image-complete-guide",
     title: "How to Vectorize an Image: A Complete Guide to Getting a Clean SVG",
     metaTitle:
-      "How to Vectorize an Image into Clean SVG — VectorPop",
+      "How to Vectorize an Image: 4 Methods Compared — VectorPop",
     description:
-      "Vectorizing turns pixels into scalable curves. Compare 4 methods (Illustrator, Inkscape, online, local app), essential settings, and image requirements.",
+      "Vectorizing turns pixels into scalable curves. Compare 4 ways to do it (Illustrator, Inkscape, online tools, a local app), the settings that matter, and which images work best.",
     date: "2026-10-01",
     author: "VectorPop Team",
     lang: "en",
@@ -182,9 +182,9 @@ export const seoEnDrafts: Draft[] = [
     slug: "convert-jpg-to-svg",
     title: "How to Convert a JPG to SVG Without Losing Quality",
     metaTitle:
-      "Convert JPG to SVG Without Quality Loss — VectorPop",
+      "Convert JPG to SVG: Step-by-Step, Clean Results — VectorPop",
     description:
-      "JPG compression makes clean tracing tricky. Follow our step-by-step guide to eliminate compression artifacts and convert JPG to crisp, scalable SVG.",
+      "JPG compression adds noise that ruins a trace. Learn how to reduce artifacts, pick the right preset and convert a JPG to a clean, scalable SVG (what works, and where it has limits).",
     date: "2026-10-01",
     author: "VectorPop Team",
     lang: "en",
@@ -349,9 +349,9 @@ export const seoEnDrafts: Draft[] = [
     slug: "why-printers-ask-for-vector-files",
     title: "Why Do Printers Ask for a Vector File?",
     metaTitle:
-      "Why Printers Ask for Vector Files — VectorPop",
+      "Why Printers Ask for Vector Files (and What to Send) — VectorPop",
     description:
-      "Screen printing, embroidery, signs: learn why print shops reject PNG files in favor of SVG or PDF vectors, and how to deliver production-ready files.",
+      "Printer rejected your PNG? Screen printing, embroidery and signs need vectors. See why, which formats to send (SVG, PDF, EPS) and how to get a vector file from a logo you only have as an image.",
     date: "2026-10-01",
     author: "VectorPop Team",
     lang: "en",

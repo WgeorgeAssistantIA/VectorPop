@@ -561,13 +561,6 @@ export const Route = createFileRoute("/")({
             price: "0",
             priceCurrency: "EUR",
           },
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: "4.9",
-            ratingCount: "48",
-            bestRating: "5",
-            worstRating: "1",
-          },
         }),
       },
       {
