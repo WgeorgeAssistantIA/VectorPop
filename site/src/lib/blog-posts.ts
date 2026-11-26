@@ -779,6 +779,10 @@ export const posts: BlogPost[] = [
         type: "p",
         text: "Related reading: [how to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization).",
       },
+      {
+        type: "p",
+        text: "To repair only the damaged zone without redoing everything, read [how to repair a vector trace without re-tracing the entire image](/vectofix/blog/how-to-repair-a-vector-trace-without-re-tracing-the-entire-image).",
+      },
     ],
   }),
 
@@ -1214,6 +1218,10 @@ export const posts: BlogPost[] = [
       {
         type: "p",
         text: "À lire aussi : [comment corriger un SVG après une vectorisation automatique](/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique).",
+      },
+      {
+        type: "p",
+        text: "Pour ne réparer que la zone abîmée sans tout refaire, lisez [comment réparer un tracé vectoriel sans retracer toute l'image](/vectofix/blog/reparer-un-trace-vectoriel-sans-retracer-toute-l-image).",
       },
     ],
   }),

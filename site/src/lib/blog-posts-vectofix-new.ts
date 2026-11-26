@@ -247,6 +247,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "Related reading: [how to fix an SVG after automatic vectorization](/vectofix/blog/how-to-fix-an-svg-after-automatic-vectorization), a checklist for the moment right after conversion.",
       },
+      {
+        type: "p",
+        text: "To repair only the damaged zone without redoing everything, read [how to repair a vector trace without re-tracing the entire image](/vectofix/blog/how-to-repair-a-vector-trace-without-re-tracing-the-entire-image).",
+      },
     ],
   }),
 
@@ -855,6 +859,10 @@ export const vectofixNewPosts: BlogPost[] = [
         type: "p",
         text: "À lire aussi : [comment corriger un SVG après une vectorisation automatique](/vectofix/blog/corriger-un-svg-apres-vectorisation-automatique), une checklist pour l'instant qui suit la conversion.",
       },
+      {
+        type: "p",
+        text: "Pour ne réparer que la zone abîmée sans tout refaire, lisez [comment réparer un tracé vectoriel sans retracer toute l'image](/vectofix/blog/reparer-un-trace-vectoriel-sans-retracer-toute-l-image).",
+      },
     ],
   }),
 
@@ -1321,6 +1329,10 @@ export const vectofixNewPosts: BlogPost[] = [
         text: "Find where the trace went wrong, decide whether the problem is global or local, and repair local problems locally. You can try VectoFix with 3 full-resolution HD exports before deciding, and Pro is a one-time purchase of €39. If you want to see where your own SVG lost detail, open it in [VectoFix](/vectofix/en) and look at the damage map.",
       },
       { type: "p", text: "Going further: [how to fix jagged edges after image vectorization](/vectofix/blog/how-to-fix-jagged-edges-after-image-vectorization), with measurements of the effect of the source and the settings." },
+      {
+        type: "p",
+        text: "To repair only the damaged zone without redoing everything, read [how to repair a vector trace without re-tracing the entire image](/vectofix/blog/how-to-repair-a-vector-trace-without-re-tracing-the-entire-image).",
+      },
     ],
     faq: [
       {
@@ -1738,6 +1750,10 @@ export const vectofixNewPosts: BlogPost[] = [
         text: "Trouvez où le tracé a échoué, décidez si le problème est global ou local, et réparez les problèmes locaux localement. Vous pouvez essayer VectoFix avec 3 exports HD en pleine résolution avant de décider, et Pro est un achat unique de 39 €. Pour voir où votre propre SVG a perdu du détail, ouvrez-le dans [VectoFix](/vectofix) et regardez la carte des dégâts.",
       },
       { type: "p", text: "Pour aller plus loin : [comment corriger les bords crénelés après une vectorisation](/vectofix/blog/corriger-les-bords-creneles-apres-vectorisation), avec des mesures sur l'effet de la source et des réglages." },
+      {
+        type: "p",
+        text: "Pour ne réparer que la zone abîmée sans tout refaire, lisez [comment réparer un tracé vectoriel sans retracer toute l'image](/vectofix/blog/reparer-un-trace-vectoriel-sans-retracer-toute-l-image).",
+      },
     ],
     faq: [
       {
